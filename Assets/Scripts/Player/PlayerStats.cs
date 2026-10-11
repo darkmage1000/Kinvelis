@@ -26,6 +26,8 @@ namespace Wildbond
         public const int MaxSkillRank = 10;
         /// <summary>What the explorer looks like (character creator; changeable from the Gear tab).</summary>
         public Appearance look = new Appearance();
+        /// <summary>Kin designed in the kin maker: the designs are saved, the species are rebuilt on load.</summary>
+        public System.Collections.Generic.List<CustomKin> customKin = new System.Collections.Generic.List<CustomKin>();
         public const int SkillCount = 9;
         /// <summary>Skills offered on level-up (in display order).</summary>
         public static readonly PlayerSkill[] ActiveSkills = { PlayerSkill.Vitality, PlayerSkill.Endurance, PlayerSkill.Toughness, PlayerSkill.Warding, PlayerSkill.Craftsmanship };

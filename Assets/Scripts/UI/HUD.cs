@@ -53,6 +53,23 @@ namespace Wildbond
 
         Canvas canvas;
 
+        /// <summary>Photo mode: the HUD turns invisible but every control still answers.</summary>
+        public void SetFaded(bool faded)
+        {
+            if (safe == null) return;
+            var g = safe.GetComponent<CanvasGroup>();
+            if (g == null) g = safe.gameObject.AddComponent<CanvasGroup>();   // (not ??: a missing built-in component is a fake null in the editor)
+            g.alpha = faded ? 0f : 1f;
+            // the quest goal box is GameManager's, a sibling of the safe area
+            var goal = root != null ? root.Find("Goal") : null;
+            if (goal != null)
+            {
+                var gg = goal.GetComponent<CanvasGroup>();
+                if (gg == null) gg = goal.gameObject.AddComponent<CanvasGroup>();
+                gg.alpha = faded ? 0f : 1f;
+            }
+        }
+
         public void Build(Canvas c)
         {
             I = this;

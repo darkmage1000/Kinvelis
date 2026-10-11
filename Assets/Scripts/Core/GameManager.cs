@@ -88,6 +88,7 @@ namespace Wildbond
 
             // which world? (main menu hands over a slot and optionally new-world settings)
             SaveSystem.MigrateLegacy();
+            ContentDB.ClearCustom();   // the last world's made-up kin
             SaveData save = null;
             if (GameSession.NewWorld != null)
             {
@@ -98,6 +99,8 @@ namespace Wildbond
             else
             {
                 save = SaveSystem.Load();
+                if (save != null && save.player != null && save.player.customKin != null)
+                    foreach (var ck in save.player.customKin) ContentDB.RegisterCustom(ContentSeed.BuildCustom(ck));   // before anything asks a kin for its species
                 WorldRules.Current = save != null && save.world != null ? save.world : new WorldSettings { seed = save != null && save.seed != 0 ? save.seed : worldSeed };
             }
             if (WorldRules.Current.seed == 0) WorldRules.Current.seed = worldSeed;
@@ -936,6 +939,27 @@ namespace Wildbond
 
         /// <summary>A Hatchery egg hatched: same bookkeeping as a capture, without the capture XP.</summary>
         /// <summary>A kin bought from a settlement's Kinkeeper joins the roster (and the Dex) like any other.</summary>
+        /// <summary>The kin maker's BRING IT TO LIFE: saves the design, makes its species and hands over one of them.</summary>
+        public CreatureData CreateCustomKin(CustomKin design)
+        {
+            if (design == null) return null;
+            var k = design.Clone();
+            k.id = "custom_" + System.Guid.NewGuid().ToString("N").Substring(0, 8);
+            Player.Stats.customKin.Add(k);
+            var sp = ContentSeed.BuildCustom(k);
+            ContentDB.RegisterCustom(sp);
+            if (RenderSettings.sun != null) ItemIcons.RenderAll(RenderSettings.sun);   // its portrait
+            int best = 1;
+            foreach (var loc in new[] { KinLocation.Party, KinLocation.Base, KinLocation.Box }) foreach (var o in Party.In(loc)) best = Mathf.Max(best, o.level);
+            var d = CreatureFactory.RollWild(sp, Mathf.Max(1, best - 2), BiomeId.Meadow, false);
+            d.shimmer = false; d.alpha = false; d.regional = false; d.mutation = Mutation.None;
+            d.look = new KinLook { rolled = true };   // exactly as it was drawn
+            d.capturedAt = System.DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            Confetti(Player.Position + Vector3.up * 1.2f);
+            OnKinBought(d, "dream");
+            return d;
+        }
+
         public void OnKinBought(CreatureData d, string seller)
         {
             var s = Player.Stats;

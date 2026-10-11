@@ -25,8 +25,14 @@ namespace Wildbond
             {
                 bool valid = true;
                 foreach (var s in sprites.Values) if (s == null || s.texture == null) { valid = false; break; }
-                if (valid) return;
-                sprites.Clear();
+                if (!valid) sprites.Clear();
+                else
+                {
+                    // everything is there unless a kin was made since (the kin maker): then only the missing ones are drawn
+                    bool missing = false;
+                    foreach (var sp in ContentDB.SpeciesList) if (!sprites.ContainsKey("kin_" + sp.id)) { missing = true; break; }
+                    if (!missing) return;
+                }
             }
             // isolated, predictable lighting for the icon pass (EnvironmentSystem takes over afterwards)
             bool fog = RenderSettings.fog;
@@ -80,13 +86,14 @@ namespace Wildbond
             var jobs = new List<(string key, Mesh mesh, bool longItem)>();
             foreach (var kv in ContentDB.Items)
             {
+                if (sprites.ContainsKey(kv.Key)) continue;
                 var m = ItemModels.Build(kv.Value);
                 if (m != null) jobs.Add((kv.Key, m, kv.Value.category == ItemCategory.Tool || kv.Value.category == ItemCategory.Weapon));
             }
             foreach (var bd in ContentDB.BuildingList)
-                jobs.Add(("bld_" + bd.id, ModelBuilder.BuildStatic(bd.parts, bd.palette, "bldicon_" + bd.id), false));
+                if (!sprites.ContainsKey("bld_" + bd.id)) jobs.Add(("bld_" + bd.id, ModelBuilder.BuildStatic(bd.parts, bd.palette, "bldicon_" + bd.id), false));
             foreach (var sp in ContentDB.SpeciesList)
-                if (sp.parts != null && sp.parts.Length > 0)
+                if (sp.parts != null && sp.parts.Length > 0 && !sprites.ContainsKey("kin_" + sp.id))
                     jobs.Add(("kin_" + sp.id, ModelBuilder.BuildStatic(sp.parts, sp.palette, "kinicon_" + sp.id), false));
 
             foreach (var job in jobs)

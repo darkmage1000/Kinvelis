@@ -19,17 +19,20 @@ html: `
 <li><b>Custom</b>: move any slider yourself. See <a href="#/guide/rules">World rules</a>.</li>
 </ul>
 
-<h2 id="partner">2. Pick a partner</h2>
+<h2 id="explorer">2. Make your explorer</h2>
+<p>Before the world loads you design who you are: a male or female build, skin, one of ten hair styles, eye colour, one of seven starter outfits in any two colours, something for your head and whether you carry a pack. <b>SURPRISE ME</b> rolls the lot. It is looks only, and you can change any of it later from <b>Gear &gt; CHANGE LOOK</b> (or Settings &gt; MY LOOK).</p>
+
+<h2 id="partner">3. Pick a partner</h2>
 <p>You choose one of three partners. All three are Normal type and all three are good; pick the one you like the look of.</p>
 <p><span data-kin="knuckub, chiskit, hopling"></span></p>
 <p>The two you don't pick are not gone for good: the Kinkeepers of Cinderhold and Frostgate look after them, and you can <a href="#/quests/PARTNERS">earn both later</a>.</p>
 
-<h2 id="tools">3. Pick things up and make tools</h2>
+<h2 id="tools">4. Pick things up and make tools</h2>
 <p>You start on a walled plateau. Walk up to the sticks, stones and fiber bundles on the ground and tap <b>PICK UP</b>. Then open <b>MENU &gt; CRAFT</b> and make:</p>
 <p><span data-items="Stone Hatchet, Stone Pick"></span></p>
 <p>Bare hands can chop a tree or crack a rock, but very slowly. A hatchet or pick is many times faster, and the game swaps to the right tool for you when you hit a tree or a rock. Hold <b>ATTACK</b> to keep swinging.</p>
 
-<h2 id="catch">4. Make seeds and catch a kin</h2>
+<h2 id="catch">5. Make seeds and catch a kin</h2>
 <p>Kin are caught with thrown seeds. Craft some <span data-items="Tether Seed"></span> by hand, then:</p>
 <ol>
 <li>Tap <b>SEED</b>. You hold a seed ready; an arc shows where it will land and a number shows your chance.</li>
@@ -38,13 +41,13 @@ html: `
 </ol>
 <p>Near the start the wild kin are level 1 to 3 and mostly gentle, so this is a safe place to learn. Everything about the odds is on the <a href="#/guide/catching">Catching</a> page.</p>
 
-<h2 id="fight">5. Fight as a pair</h2>
+<h2 id="fight">6. Fight as a pair</h2>
 <p>Your partner follows you and fights beside you. The four chips above the buttons are its skills: tap one to order it. Tap <b>KIN SWAP</b> to change which of your party is out. See <a href="#/guide/fighting">Fighting</a>.</p>
 
-<h2 id="camp">6. Put down a Hearthstone</h2>
+<h2 id="camp">7. Put down a Hearthstone</h2>
 <p>Tap <b>BUILD</b> and place a <b>Hearthstone</b>. That is your camp: a ring around it where you can build, store things and put kin to work. It is also where you wake up if you are knocked out. Start with one structure that makes something (a Lumber Mill, Stone Quarry or Forage Hut) and give it a worker. See <a href="#/guide/camp">Camp</a>.</p>
 
-<h2 id="village">7. Walk to Hearthmere</h2>
+<h2 id="village">8. Walk to Hearthmere</h2>
 <p>Drop down through the stone gate to the Dawnfield Waystone and follow the pale path with the lantern posts. It leads to <b>Hearthmere</b>, the first village, about 260 m away. There you will find Kinkeeper Juno's kin shop, a request board, two rival tamers on the road outside, and Maro the Seeker, who starts the <a href="#/guide/legends">legend hunts</a> much later.</p>
 <p>Touch any waystone you find to attune it. After that you can fast travel to it from the Map.</p>
 
@@ -239,6 +242,10 @@ html: `
 </ul>
 <p>One of the three is its specialty and is always the highest. The grade is shown on the Kin tab; a kin with an S in what you need it for is worth keeping.</p>
 
+<h2 id="looks">No two alike</h2>
+<p>Every kin also has its own <b>look</b>. Two of the same kind differ in size, how stocky they are, the size of the head, tail and wings, the tint of the coat, and markings: dark spots, pale spots, a stripe down the back or a star on the forehead. The Kin tab sums it up in a line such as "Big, long-tailed, vivid coat, dark spots".</p>
+<p>Looks change nothing about how a kin fights or works. They are passed on: an egg lands somewhere between its two parents in every feature and usually wears one parent's marking, so you can breed for a look.</p>
+
 <h2 id="traits">Traits</h2>
 <p>Most kin also have a trait or two that nudge their stats or work:</p>
 <div data-view="traits"></div>
@@ -271,6 +278,19 @@ html: `
 <li><b>Surfing</b>: any Tide kin, and any kin that lives by the water, will carry you across water with no harness. This is how you reach the five outer lands.</li>
 <li><b>Gliding</b> and the <b>grapple</b> are items: <span data-items="Gale Glider, Vine Grapple"></span>.</li>
 </ul>
+
+<h2 id="maker">Dream up a kin</h2>
+<p><b>Kin tab &gt; DREAM UP A KIN</b> opens the kin maker. Choose a body (four legs, two legs, round or flying), a size, ears, horns, a tail, wings, a face, three colours and an element, give it a name, and tap <b>BRING IT TO LIFE</b>. It joins you as a real kin a couple of levels below your strongest.</p>
+<ul>
+<li>Its element decides its moves and its camp job (plus a little hauling).</li>
+<li>It is about as strong as an Uncommon kin, so it is a friend rather than a shortcut.</li>
+<li>You can make three in a world, or twelve with the Toy Box on.</li>
+<li>Made-up kin never appear in the wild and do not count toward Dex milestones.</li>
+</ul>
+
+<h2 id="cards">Kin cards and photos</h2>
+<p><b>KIN CARD</b> on any kin's page lays it out like a trading card: its own picture, name, kind, level, quality, looks and how long it has been with you. <b>SAVE PICTURE</b> puts the card in your phone's photos and <b>SHARE</b> opens the share sheet.</p>
+<p><b>Settings &gt; PHOTO MODE</b> clears the screen while leaving the controls working, so you can still walk, look and pinch to zoom. <b>SNAP</b> saves what you see.</p>
 
 <h2 id="dex">The Kin Dex</h2>
 <p>The Dex records every kind you have seen, beaten and caught, and where you saw it. It pays you back in two ways.</p>
@@ -305,6 +325,16 @@ html: `
 <li>You can work a structure yourself: stand at it and tap <b>WORK</b>. You are about half as fast as a level-1 kin.</li>
 <li>Your companion pitches in by itself while you are inside the camp ring. You can switch that off on Camp &gt; Workers.</li>
 </ul>
+
+<h2 id="life">Life at camp</h2>
+<p>Kin with nothing to do no longer just wander:</p>
+<ul>
+<li>They <b>welcome you</b> when you come home after a while away.</li>
+<li>They <b>nap</b> in the afternoon, and sleep at night if there are beds.</li>
+<li>Two idle kin will <b>play tag</b>.</li>
+<li>A hungry kin with no food to eat lies down and <b>sulks</b> under a grey cloud. A hungry kin that is working puffs one now and then: time to stock the Feed Box.</li>
+</ul>
+<p>None of this costs work. A kin with a job it can do always does the job first.</p>
 
 <h2 id="stations">Stations and orders</h2>
 <p>The Campfire, Workbench and Alloy Forge are <b>stations</b>. Each has its own screen (tap COOK or CRAFT at it): choose a recipe and how many, and it becomes an order that the station's worker finishes. Recipes you make with your own hands are on the Craft tab.</p>

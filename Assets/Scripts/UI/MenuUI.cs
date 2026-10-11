@@ -129,6 +129,7 @@ namespace Wildbond
             if (dirty) { dirty = false; Rebuild(); }
             if (Tab == MenuTab.Camp || Tab == MenuTab.Craft || Tab == MenuTab.Station || Tab == MenuTab.Outpost) LiveRefresh();
             TickGearPreview();
+            TickKinCard();
         }
 
         float liveTimer;

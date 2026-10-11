@@ -79,6 +79,28 @@ namespace Wildbond
             BuildingList.Sort((a, c) => a.unlockLevel != c.unlockLevel ? a.unlockLevel.CompareTo(c.unlockLevel) : string.CompareOrdinal(a.id, c.id));
         }
 
+        // ---- kin the player made (rebuilt from the save each time a world loads) ----
+        static readonly List<SpeciesDef> customs = new List<SpeciesDef>();
+
+        public static void RegisterCustom(SpeciesDef d)
+        {
+            if (d == null || string.IsNullOrEmpty(d.id)) return;
+            d.dexNumber = 900 + customs.Count;
+            Species[d.id] = d;
+            SpeciesList.Add(d);
+            customs.Add(d);
+        }
+
+        /// <summary>The kin maker's work in progress: findable by id, in no list.</summary>
+        public static void SetPreview(SpeciesDef d) { if (d != null) Species[d.id] = d; }
+
+        /// <summary>Forgets the last world's custom kin (ContentDB outlives a world).</summary>
+        public static void ClearCustom()
+        {
+            foreach (var d in customs) { Species.Remove(d.id); SpeciesList.Remove(d); }
+            customs.Clear();
+        }
+
         public static ItemDef Item(string id) => id != null && Items.TryGetValue(id, out var d) ? d : null;
         public static SpeciesDef Sp(string id) => id != null && Species.TryGetValue(id, out var d) ? d : null;
         public static AbilityDef Ability(string id) => id != null && Abilities.TryGetValue(id, out var d) ? d : null;

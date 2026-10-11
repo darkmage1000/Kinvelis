@@ -261,6 +261,7 @@ namespace Wildbond
             LeftRight(out var left, out var right, 0.46f);
             var list = TrackedList(left);
             Header(list, $"Kin  <size=24>Registered {stats.registeredSpecies.Count}/{ContentDB.SpeciesList.Count}</size>");
+            UIFactory.Size(UIFactory.Button(list, $"DREAM UP A KIN  ({stats.customKin.Count}/{CustomKinLimit})", ShowKinMaker, new Color(0.5f, 0.35f, 0.7f), 26), 74);
             foreach (var loc in new[] { KinLocation.Party, KinLocation.Base, KinLocation.Box, KinLocation.Expedition, KinLocation.Outpost })
             {
                 int cnt = party.CountIn(loc);
@@ -370,7 +371,8 @@ namespace Wildbond
             var nrow = UIFactory.HRow(p, 70, 12);
             UIFactory.Size(UIFactory.Label(nrow.transform, "Name", 24, Color.white), 64, 110);
             var nameIn = UIFactory.Input(nrow.transform, d.nickname ?? "", d.RegionalName, 26);
-            UIFactory.Size(nameIn, 64, 420);
+            UIFactory.Size(nameIn, 64, 360);
+            UIFactory.Size(UIFactory.Button(nrow.transform, "KIN CARD", () => ShowKinCard(d), new Color(0.3f, 0.42f, 0.7f), 22), 64, 200);
             nameIn.characterLimit = 14;
             nameIn.onEndEdit.AddListener(v => { d.nickname = string.IsNullOrWhiteSpace(v) ? null : v.Trim(); GameEvents.RaiseRosterChanged(); });
             if (d.location == KinLocation.Expedition) { Para(p, UIFactory.Col("Away on an expedition (Camp > Expeditions).", Gold), 24); return; }
@@ -541,7 +543,9 @@ namespace Wildbond
             var gm = GameManager.I;
             var list = TrackedList(content);
             Header(list, "Settings");
-            UIFactory.Size(UIFactory.Button(list, "MY LOOK  (body, hair, outfit, colours)", OpenLook, new Color(0.5f, 0.35f, 0.7f), 28), 80);
+            var lookRow = UIFactory.HRow(list, 84, 12);
+            UIFactory.Size(UIFactory.Button(lookRow.transform, "MY LOOK  (body, hair, outfit, colours)", OpenLook, new Color(0.5f, 0.35f, 0.7f), 26), 80, 560);
+            UIFactory.Size(UIFactory.Button(lookRow.transform, "PHOTO MODE", () => { Close(); PhotoMode.Enter(); }, new Color(0.3f, 0.42f, 0.7f), 26), 80, 320);
             var q = UIFactory.HRow(list, 84, 12);
             var ql = UIFactory.Label(q.transform, "Graphics", 26, Color.white); UIFactory.Size(ql, 80, 300);
             foreach (QualityTier t in System.Enum.GetValues(typeof(QualityTier)))

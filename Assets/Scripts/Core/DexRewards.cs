@@ -33,7 +33,7 @@ namespace Wildbond
         };
 
         // every kind counts: the partners can be earned (Quests: PARTNERS) and the Kraken can be bound with a Deepcall Seed
-        public static bool Counts(SpeciesDef sp) => sp != null;
+        public static bool Counts(SpeciesDef sp) => sp != null && !sp.custom;   // ...but not the ones you made yourself
 
         public static int Total
         {

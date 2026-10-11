@@ -18,6 +18,8 @@ namespace Wildbond
         public bool starter;
         [Tooltip("Only ever met as a boss: can't be caught, so it doesn't count toward Dex completion.")]
         public bool bossOnly;
+        /// <summary>Made by the player in the kin maker (ContentSeed.BuildCustom): never wild, never sold, not counted by the Dex.</summary>
+        [System.NonSerialized] public bool custom;
         public string role;
 
         [Header("Habitat")]
