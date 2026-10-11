@@ -75,6 +75,8 @@ namespace Wildbond
                 }
             }
 
+            if (TickCampLife(bm, dt)) return;   // greeting you, or in the middle of a game
+
             // eat when hungry and food exists
             if (State != AIState.ToEat && State != AIState.Eating && Data.hunger < 30f && bm.HasFeedBox && bm.HasFood)
             {
@@ -142,6 +144,7 @@ namespace Wildbond
                         SetState(AIState.Rest, Random.Range(6f, 12f));
                         break;
                     }
+                    if (CampIdleChoice(bm)) break;   // a nap, a game of tag, or a sulk
                     moveTarget = RandomPointNear(bm.CorePosition, 7f);
                     SetState(AIState.Wander, Random.Range(3f, 6f));
                     break;
@@ -195,6 +198,7 @@ namespace Wildbond
         {
             get
             {
+                if (CampMoodLabel != null) return CampMoodLabel;
                 switch (State)
                 {
                     case AIState.Working: return "Working";

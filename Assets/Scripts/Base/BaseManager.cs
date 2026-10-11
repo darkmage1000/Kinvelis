@@ -49,6 +49,11 @@ namespace Wildbond
         public readonly List<CraftOrder> Orders = new List<CraftOrder>();
 
         readonly Dictionary<string, CreatureActor> workerActors = new Dictionary<string, CreatureActor>();
+        public IEnumerable<CreatureActor> WorkerActors => workerActors.Values;
+        /// <summary>Time.time of the player's last return to the camp ring after a while away (-99 = never).</summary>
+        public float PlayerArrival { get; private set; } = -99f;
+        bool playerInRing;
+        float playerLeftAt = -999f;
         bool actorsOut;
         float assistTimer;
 
@@ -433,6 +438,17 @@ namespace Wildbond
             if (!HasBase) return;
             float dist = Vector3.Distance(playerPos, CorePosition);
             bool near = dist < actorRange;
+            // coming home: after 40 s or more away, the kin at camp welcome you (CreatureActor.CampLife)
+            bool inRing = dist < Radius;
+            if (inRing && !playerInRing && Time.time - playerLeftAt > 40f)
+            {
+                PlayerArrival = Time.time + (actorsOut ? 0f : 0.6f);   // give freshly spawned actors a moment to exist
+                bool anyone = false;
+                foreach (var d in GameManager.I.Party.In(KinLocation.Base)) if (!d.Fainted) { anyone = true; break; }
+                if (anyone) { SynthAudio.Play(Sfx.Pluck, 1.25f, 0.4f); GameEvents.Say("Your kin are glad to see you home.", new Color(1f, 0.7f, 0.85f)); }
+            }
+            if (!inRing && playerInRing) playerLeftAt = Time.time;
+            playerInRing = inRing;
             if (near && !actorsOut)
             {
                 actorsOut = true;

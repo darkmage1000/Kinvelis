@@ -224,6 +224,7 @@ namespace Wildbond
             deathTimer = 0f;
             for (int i = 0; i < cooldowns.Length; i++) cooldowns[i] = Random.Range(0.5f, 2f);
             RefreshAbilities();
+            EndMood(); greetedArrival = Time.time;   // camp life starts clean (a kin that has only just appeared doesn't re-greet)
             ModelBuilder.ApplyLook(Rig, d, RenderAssets.Creature);   // a pooled model is this kin's now
             ApplyWorldSize();
             Home = pos;
@@ -575,7 +576,7 @@ namespace Wildbond
             Vector3 face = Vector3.zero;
             if (pendingAbility >= 0 && pendingTarget != null) face = pendingTarget.Position - next;
             else if (animSpeed > 0.3f) face = flat;
-            else if ((State == AIState.Alert || State == AIState.Working) && faceTarget.sqrMagnitude > 0.01f) face = faceTarget - next;
+            else if ((State == AIState.Alert || State == AIState.Working || faceAnyState) && faceTarget.sqrMagnitude > 0.01f) face = faceTarget - next;
             face.y = 0f;
             if (face.sqrMagnitude > 0.001f)
             {

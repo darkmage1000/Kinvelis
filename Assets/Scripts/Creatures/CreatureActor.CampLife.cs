@@ -1,0 +1,166 @@
+using UnityEngine;
+
+namespace Wildbond
+{
+    /// <summary>
+    /// Life at camp beyond work: kin run up their little welcome when you come home, nap in the day when there is
+    /// nothing to do (and breathe out Zzz while asleep), play tag with each other, and sulk when they are hungry and
+    /// there is no food. None of it costs work: a kin with a job it can do always does the job first, so these only
+    /// fill time that used to be aimless wandering (a hungry kin that is working just puffs a grey cloud now and then).
+    /// </summary>
+    public partial class CreatureActor
+    {
+        enum CampMood { None, Greet, Play, Sulk }
+        CampMood mood;
+        float moodTimer, moodFx, napFx, sulkFx;
+        CreatureActor playMate;
+        bool playChaser;
+        float greetedArrival = -99f;
+        /// <summary>Face faceTarget whatever the state (greeting).</summary>
+        bool faceAnyState;
+
+        public string CampMoodLabel => mood == CampMood.Greet ? "Welcoming you home" : mood == CampMood.Play ? "Playing" : mood == CampMood.Sulk ? "Hungry and sulking" : null;
+
+        void EndMood()
+        {
+            mood = CampMood.None;
+            playMate = null;
+            faceAnyState = false;
+        }
+
+        Vector3 HeadPoint => transform.position + Vector3.up * (BodyRadius * 2f + 0.3f);
+
+        /// <summary>Runs before the worker's ordinary thinking. True = the kin is busy being itself this frame.</summary>
+        bool TickCampLife(BaseManager bm, float dt)
+        {
+            // asleep: a slow stream of Zzz
+            if (State == AIState.Rest && mood != CampMood.Sulk)
+            {
+                napFx -= dt;
+                if (napFx <= 0f)
+                {
+                    napFx = 1.2f;
+                    Fx.Mote(HeadPoint, new Vector3(Random.Range(-0.15f, 0.15f), 0.55f, Random.Range(-0.15f, 0.15f)), new Color(0.75f, 0.85f, 1f), 0.17f, 1.5f, false);
+                }
+            }
+            // working on an empty stomach: it shows
+            if (State == AIState.Working && Data.hunger < 15f)
+            {
+                sulkFx -= dt;
+                if (sulkFx <= 0f) { sulkFx = 2.4f; Fx.Puff(HeadPoint, new Color(0.45f, 0.45f, 0.5f), 0.3f, 0.9f); }
+            }
+
+            // you just came home
+            if (mood == CampMood.None && bm.PlayerArrival > greetedArrival && Time.time - bm.PlayerArrival < 1.5f)
+            {
+                greetedArrival = bm.PlayerArrival;
+                bool asleepAtNight = State == AIState.Rest && EnvironmentSystem.I != null && EnvironmentSystem.I.IsNight;
+                if (!asleepAtNight && haulCount == 0 && FlatDist(transform.position, GameManager.I.Player.Position) < 26f)
+                {
+                    mood = CampMood.Greet;
+                    moodTimer = Random.Range(1.8f, 2.8f);
+                    moodFx = Random.Range(0f, 0.35f);
+                }
+            }
+
+            switch (mood)
+            {
+                case CampMood.Greet:
+                    moodTimer -= dt;
+                    faceAnyState = true;
+                    faceTarget = GameManager.I.Player.Position;
+                    moodFx -= dt;
+                    if (moodFx <= 0f)
+                    {
+                        moodFx = 0.55f;
+                        Rig.Squash();
+                        Fx.Burst(HeadPoint, new Color(1f, 0.5f, 0.7f), 3, 1.6f, 0.22f, 0.8f);
+                    }
+                    if (moodTimer <= 0f) EndMood();
+                    return true;
+
+                case CampMood.Play:
+                    moodTimer -= dt;
+                    if (playMate == null || !playMate.gameObject.activeInHierarchy || playMate.mood != CampMood.Play || moodTimer <= 0f || State == AIState.Defend)
+                    {
+                        EndMood();
+                        if (State != AIState.Defend) SetState(AIState.Idle, Random.Range(0.5f, 1.5f));
+                        return false;
+                    }
+                    if (playChaser)
+                    {
+                        if (moodFx > 0f) { moodFx -= dt; return true; }   // counting to three before giving chase
+                        MoveTo(playMate.transform.position, RunSpeed * 0.9f);
+                        if (FlatDist(transform.position, playMate.transform.position) < BodyRadius + playMate.BodyRadius + 0.45f)
+                        {
+                            // tag! the other one is "it" now
+                            Rig.Squash(); playMate.Rig.Squash();
+                            Fx.Sparkle((transform.position + playMate.transform.position) * 0.5f + Vector3.up * 0.6f, new Color(1f, 0.92f, 0.45f), 8, 0.5f);
+                            playChaser = false;
+                            moveTarget = RandomPointNear(bm.CorePosition, 8f);
+                            playMate.playChaser = true;
+                            playMate.moodFx = 0.7f;
+                        }
+                    }
+                    else
+                    {
+                        if (FlatDist(transform.position, moveTarget) < 1f) moveTarget = RandomPointNear(bm.CorePosition, 8f);
+                        MoveTo(moveTarget, RunSpeed * 0.8f);
+                    }
+                    return true;
+
+                case CampMood.Sulk:
+                    if (Data.hunger >= 25f || (bm.HasFeedBox && bm.HasFood) || State != AIState.Rest) { EndMood(); return false; }
+                    sulkFx -= dt;
+                    if (sulkFx <= 0f) { sulkFx = 1.5f; Fx.Puff(HeadPoint, new Color(0.42f, 0.42f, 0.48f), 0.34f, 1f); }
+                    return false;   // it is lying down (Rest); the ordinary brain ends the rest
+            }
+            return false;
+        }
+
+        /// <summary>A worker with nothing to do picks something other than wandering. True = it has.</summary>
+        bool CampIdleChoice(BaseManager bm)
+        {
+            if (mood != CampMood.None) return false;
+            // nothing to eat: lie down and sulk about it
+            if (Data.hunger < 15f && !(bm.HasFeedBox && bm.HasFood))
+            {
+                mood = CampMood.Sulk;
+                sulkFx = 0.3f;
+                SetState(AIState.Rest, Random.Range(6f, 10f));
+                return true;
+            }
+            float roll = Random.value;
+            // an afternoon nap
+            if (roll < 0.16f)
+            {
+                SetState(AIState.Rest, Random.Range(7f, 13f));
+                return true;
+            }
+            // a game of tag with whoever else is free
+            if (roll < 0.46f && Data.hunger > 30f)
+            {
+                CreatureActor mate = null; float best = 14f;
+                foreach (var a in bm.WorkerActors)
+                {
+                    if (a == null || a == this || !a.gameObject.activeInHierarchy || a.mood != CampMood.None) continue;
+                    if (a.State != AIState.Idle && a.State != AIState.Wander) continue;
+                    if (a.Data == null || a.Data.hunger < 30f || a.workBuilding != null && a.workBuilding.CanWork(a.Data) && !a.workBuilding.Def.isCore) continue;
+                    float d = FlatDist(transform.position, a.transform.position);
+                    if (d < best) { best = d; mate = a; }
+                }
+                if (mate != null)
+                {
+                    float t = Random.Range(6f, 9f);
+                    mood = CampMood.Play; playMate = mate; playChaser = true; moodTimer = t; moodFx = 0.5f;
+                    mate.mood = CampMood.Play; mate.playMate = this; mate.playChaser = false; mate.moodTimer = t;
+                    mate.moveTarget = RandomPointNear(bm.CorePosition, 8f);
+                    SetState(AIState.Wander, t + 1f);
+                    mate.SetState(AIState.Wander, t + 1f);
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+}
