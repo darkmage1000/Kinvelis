@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a59f06879879d34a9c3ed8aeab89d8f, type: 3}
+  m_Name: Recipe_starsteel_raiment
+  m_EditorClassIdentifier: 
+  id: starsteel_raiment
+  outputItem: starsteel_raiment
+  outputCount: 1
+  inputs:
+  - itemId: starsteel_bar
+    count: 10
+  - itemId: blightsteel_bar
+    count: 3
+  - itemId: pelt
+    count: 6
+  station: 1
+  work: 100
+  unlockLevel: 17

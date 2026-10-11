@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1add58a51849408438b7235809d63b65, type: 3}
+  m_Name: Building_hearthstone
+  m_EditorClassIdentifier: 
+  id: hearthstone
+  displayName: Hearthstone
+  description: The heart of your camp. Claims land, stores kin and items. Only one.
+  cost:
+  - itemId: stone
+    count: 10
+  - itemId: wood
+    count: 5
+  - itemId: fiber
+    count: 5
+  unlockLevel: 1
+  footprint: 1.6
+  isCore: 1
+  workType: 7
+  secondaryWorkType: 0
+  workerSlots: 2
+  outputItem: 
+  outputCount: 1
+  workPerUnit: 10
+  inputItem: 
+  inputCount: 0
+  bufferCap: 30
+  storageSlots: 24
+  station: 0
+  boostPercent: 0
+  feeds: 0
+  beds: 0
+  palette:
+    primary: {r: 0.5568628, g: 0.5411765, b: 0.57254905, a: 1}
+    secondary: {r: 0.42352942, g: 0.40784314, b: 0.45490196, a: 1}
+    accent: {r: 0.70980394, g: 0.6901961, b: 0.627451, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.49019608, g: 0.9490196, b: 1, a: 1}
+  parts:
+  - shape: 2
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.15, z: 0}
+    scale: {x: 3.2, y: 0.3, z: 3.2}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.4, z: 0}
+    scale: {x: 2.2, y: 0.3, z: 2.2}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 5
+    group: 0
+    slot: 6
+    pos: {x: 0, y: 0.5, z: 0}
+    scale: {x: 0.9, y: 2.4, z: 0.9}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 5
+    group: 0
+    slot: 6
+    pos: {x: 0.5, y: 0.5, z: 0.2}
+    scale: {x: 0.4, y: 1.1, z: 0.4}
+    rot: {x: 0, y: 0, z: -20}
+  - shape: 5
+    group: 0
+    slot: 6
+    pos: {x: -0.45, y: 0.5, z: -0.25}
+    scale: {x: 0.35, y: 0.9, z: 0.35}
+    rot: {x: 10, y: 0, z: 25}
+  - shape: 6
+    group: 0
+    slot: 2
+    pos: {x: 1.2, y: 0.35, z: 0.6}
+    scale: {x: 0.6, y: 0.5, z: 0.6}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 6
+    group: 0
+    slot: 2
+    pos: {x: -1.1, y: 0.35, z: 0.8}
+    scale: {x: 0.5, y: 0.45, z: 0.5}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 6
+    group: 0
+    slot: 2
+    pos: {x: 0.1, y: 0.35, z: -1.3}
+    scale: {x: 0.55, y: 0.5, z: 0.55}
+    rot: {x: 0, y: 0, z: 0}

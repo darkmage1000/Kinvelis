@@ -1,0 +1,194 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_034_needlekit
+  m_EditorClassIdentifier: 
+  id: needlekit
+  dexNumber: 34
+  displayName: Needlekit
+  lore: A pinecone sprite that plants a sapling everywhere it sleeps. Whole Rimepine
+    forests trace a Needlekit's wanderings.
+  personality: Earnest, quiet, smells of resin.
+  element1: 1
+  element2: 4
+  rarity: 0
+  starter: 0
+  bossOnly: 0
+  role: 
+  biomes: 4
+  spawnTime: 0
+  nearWater: 0
+  spawnCondition: 0
+  spawnWeight: 2.4
+  minGroup: 1
+  maxGroup: 3
+  temperament: 1
+  baseHp: 55
+  baseAtk: 11
+  baseDef: 12
+  walkSpeed: 2
+  runSpeed: 5
+  size: 0.78
+  locomotion: 0
+  captureMod: 1
+  abilities:
+  - needle_volley
+  - frost_breath
+  rareAbilities:
+  - root_ram
+  work:
+  - type: 1
+    level: 2
+  - type: 5
+    level: 2
+  perk: 1
+  overworldRole: 'Companion: +50% wood.'
+  mountable: 0
+  mountSpeed: 11
+  mountJump: 8
+  mountSeat: {x: 0, y: 1, z: 0}
+  drops:
+  - itemId: wood
+    min: 1
+    max: 2
+    chance: 0.9
+  - itemId: fiber
+    min: 1
+    max: 1
+    chance: 0.6
+  palette:
+    primary: {r: 0.22745098, g: 0.47843137, b: 0.3529412, a: 1}
+    secondary: {r: 0.78431374, g: 0.65882355, b: 0.47058824, a: 1}
+    accent: {r: 0.41568628, g: 0.2901961, b: 0.1882353, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.95686275, g: 0.98039216, b: 1, a: 1}
+  shimmerPalette:
+    primary: {r: 0.78431374, g: 0.41568628, b: 0.22745098, a: 1}
+    secondary: {r: 0.9411765, g: 0.8156863, b: 0.627451, a: 1}
+    accent: {r: 0.41568628, g: 0.22745098, b: 0.1254902, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.8784314, b: 0.4392157, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  parts:
+  - shape: 3
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.34, z: 0}
+    scale: {x: 0.46, y: 0.42, z: 0.46}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 3
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.52, z: 0}
+    scale: {x: 0.38, y: 0.34, z: 0.38}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.36, z: 0.16}
+    scale: {x: 0.26, y: 0.24, z: 0.1}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 3
+    group: 1
+    slot: 0
+    pos: {x: 0, y: 0.72, z: 0}
+    scale: {x: 0.28, y: 0.28, z: 0.28}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 6
+    pos: {x: 0, y: 0.84, z: 0}
+    scale: {x: 0.16, y: 0.08, z: 0.16}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: 0.06, y: 0.44, z: 0.2}
+    scale: {x: 0.05, y: 0.0575, z: 0.035}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: -0.06, y: 0.44, z: 0.2}
+    scale: {x: 0.05, y: 0.0575, z: 0.035}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: 0.074999996, y: 0.4525, z: 0.215}
+    scale: {x: 0.0175, y: 0.0175, z: 0.0175}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: -0.074999996, y: 0.4525, z: 0.215}
+    scale: {x: 0.0175, y: 0.0175, z: 0.0175}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 2
+    group: 7
+    slot: 2
+    pos: {x: 0.26, y: 0.34, z: 0.02}
+    scale: {x: 0.03, y: 0.2, z: 0.03}
+    rot: {x: 0, y: 0, z: -40}
+  - shape: 2
+    group: 6
+    slot: 2
+    pos: {x: -0.26, y: 0.34, z: 0.02}
+    scale: {x: 0.03, y: 0.2, z: 0.03}
+    rot: {x: 0, y: -0, z: 40}
+  - shape: 4
+    group: 3
+    slot: 2
+    pos: {x: 0.08, y: 0.08, z: 0}
+    scale: {x: 0.05, y: 0.16, z: 0.05}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 4
+    group: 2
+    slot: 2
+    pos: {x: -0.08, y: 0.08, z: 0}
+    scale: {x: 0.05, y: 0.16, z: 0.05}
+    rot: {x: 0, y: -0, z: -0}
+  pivots:
+  - group: 1
+    pivot: {x: 0, y: 0.6, z: 0}
+  - group: 7
+    pivot: {x: 0.2, y: 0.4, z: 0}
+  - group: 6
+    pivot: {x: -0.2, y: 0.4, z: 0}
+  - group: 3
+    pivot: {x: 0.08, y: 0.16, z: 0}
+  - group: 2
+    pivot: {x: -0.08, y: 0.16, z: 0}
+  regional:
+    enabled: 0
+    biome: 0
+    formName: 
+    element2: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  extraAnim: 0
+  aura: 0

@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d410b7e3ca321b469fb7773a4c2b8dc, type: 3}
+  m_Name: Item_ironbark_greaves
+  m_EditorClassIdentifier: 
+  id: ironbark_greaves
+  displayName: Ironbark Greaves
+  description: Shin plates that never seem to tire you.
+  category: 8
+  maxStack: 1
+  iconColor: {r: 0.627451, g: 0.6509804, b: 0.72156864, a: 1}
+  iconGlyph: Bt
+  foodValue: 0
+  healValue: 0
+  kinHealValue: 0
+  bonusInventorySlots: 0
+  toolKind: 0
+  toolPower: 0
+  weaponDamage: 0
+  captureMult: 1
+  equipSlot: 3
+  rarity: 1
+  mods:
+  - stat: 0
+    element: 0
+    value: 5
+  - stat: 4
+    element: 0
+    value: 15
+  unique: 0
+  gearStyle: 1
+  trimColor: {r: 0.41568628, g: 0.26666668, b: 0.14117648, a: 1}
+  alphaDrop: 0

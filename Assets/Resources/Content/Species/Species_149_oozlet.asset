@@ -1,0 +1,176 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_149_oozlet
+  m_EditorClassIdentifier: 
+  id: oozlet
+  dexNumber: 149
+  displayName: Oozlet
+  lore: A blob of something from the bottom of a blight pool that woke up friendly.
+    It leaves a glowing trail and means no harm by it.
+  personality: Sweet, sticky, doesn't know it's toxic.
+  element1: 8
+  element2: 3
+  rarity: 0
+  starter: 0
+  bossOnly: 0
+  role: 
+  biomes: 16
+  spawnTime: 0
+  nearWater: 0
+  spawnCondition: 0
+  spawnWeight: 2.2
+  minGroup: 1
+  maxGroup: 3
+  temperament: 1
+  baseHp: 58
+  baseAtk: 9
+  baseDef: 12
+  walkSpeed: 1.8
+  runSpeed: 4.8
+  size: 0.55
+  locomotion: 2
+  captureMod: 1
+  abilities:
+  - venom_spit
+  - tackle
+  rareAbilities:
+  - toxic_cloud
+  work:
+  - type: 4
+    level: 2
+  - type: 8
+    level: 1
+  perk: 8
+  overworldRole: 'Companion: slowly restores your HP.'
+  mountable: 0
+  mountSpeed: 11
+  mountJump: 8
+  mountSeat: {x: 0, y: 1, z: 0}
+  drops:
+  - itemId: gel
+    min: 1
+    max: 2
+    chance: 0.9
+  palette:
+    primary: {r: 0.47843137, g: 0.8156863, b: 0.22745098, a: 1}
+    secondary: {r: 0.8156863, g: 1, b: 0.5647059, a: 1}
+    accent: {r: 0.6901961, g: 0.3529412, b: 0.7529412, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.9098039, g: 1, b: 0.4392157, a: 1}
+  shimmerPalette:
+    primary: {r: 0.30364215, g: 0.24269651, b: 0.89568627, a: 1}
+    secondary: {r: 0.5282353, g: 0.5549262, b: 1, a: 1}
+    accent: {r: 0.6800705, g: 0.8529412, b: 0.37689343, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.4152941, g: 0.6019094, b: 1, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  parts:
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.1, z: 0}
+    scale: {x: 0.66, y: 0.2, z: 0.62}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.28, z: 0}
+    scale: {x: 0.5, y: 0.46, z: 0.48}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: -0.1, y: 0.42, z: 0.1}
+    scale: {x: 0.14, y: 0.1, z: 0.08}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0.1, y: 0.52, z: -0.04}
+    scale: {x: 0.16, y: 0.18, z: 0.16}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 5
+    pos: {x: 0.1104, y: 0.3306, z: 0.22559999}
+    scale: {x: 0.1, y: 0.115, z: 0.07}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 5
+    pos: {x: -0.1104, y: 0.3306, z: 0.22559999}
+    scale: {x: 0.1, y: 0.115, z: 0.07}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 0
+    slot: 4
+    pos: {x: 0.12539999, y: 0.3556, z: 0.25559998}
+    scale: {x: 0.035, y: 0.035, z: 0.035}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 4
+    pos: {x: -0.12539999, y: 0.3556, z: 0.25559998}
+    scale: {x: 0.035, y: 0.035, z: 0.035}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 0
+    slot: 5
+    pos: {x: 0, y: 0.2, z: 0.232}
+    scale: {x: 0.1, y: 0.05, z: 0.03}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 11
+    slot: 6
+    pos: {x: 0.16, y: 0.7, z: 0}
+    scale: {x: 0.1, y: 0.1, z: 0.1}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 11
+    slot: 6
+    pos: {x: -0.12, y: 0.82, z: 0.04}
+    scale: {x: 0.07, y: 0.07, z: 0.07}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 11
+    slot: 6
+    pos: {x: 0.02, y: 0.94, z: -0.06}
+    scale: {x: 0.05, y: 0.05, z: 0.05}
+    rot: {x: 0, y: 0, z: 0}
+  pivots:
+  - group: 11
+    pivot: {x: 0, y: 0.7, z: 0}
+  regional:
+    enabled: 0
+    biome: 0
+    formName: 
+    element2: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  extraAnim: 3
+  aura: 6

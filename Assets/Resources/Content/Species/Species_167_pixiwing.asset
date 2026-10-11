@@ -1,0 +1,251 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_167_pixiwing
+  m_EditorClassIdentifier: 
+  id: pixiwing
+  dexNumber: 167
+  displayName: Pixiwing
+  lore: A finger-high sprite with four wings of light. It steals single buttons,
+    never the pair, and nobody has found where they go.
+  personality: Flighty, teasing, bursts into giggles.
+  element1: 9
+  element2: 7
+  rarity: 0
+  starter: 0
+  role: 
+  biomes: 64
+  spawnTime: 0
+  nearWater: 0
+  spawnCondition: 0
+  spawnWeight: 2.2
+  minGroup: 2
+  maxGroup: 4
+  temperament: 0
+  baseHp: 41
+  baseAtk: 10
+  baseDef: 7
+  walkSpeed: 3.3
+  runSpeed: 9
+  size: 0.5
+  locomotion: 3
+  captureMod: 1
+  abilities:
+  - prism_dust
+  - seed_gust
+  rareAbilities:
+  - aurora_veil
+  work:
+  - type: 6
+    level: 1
+  - type: 10
+    level: 1
+  perk: 5
+  overworldRole: 'Companion: lights up the night around you.'
+  mountable: 0
+  mountSpeed: 11
+  mountJump: 8
+  mountSeat: {x: 0, y: 1, z: 0}
+  drops:
+  - itemId: fiber
+    min: 1
+    max: 2
+    chance: 0.9
+  palette:
+    primary: {r: 0.9411765, g: 0.84705883, b: 1, a: 1}
+    secondary: {r: 0.72156864, g: 0.5647059, b: 0.8784314, a: 1}
+    accent: {r: 1, g: 0.6039216, b: 0.8156863, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.627451, g: 1, b: 0.9411765, a: 1}
+  shimmerPalette:
+    primary: {r: 0.9705339, g: 1, b: 0.7823529, a: 1}
+    secondary: {r: 0.92097753, g: 0.9284314, b: 0.55573255, a: 1}
+    accent: {r: 0.5699254, g: 1, b: 0.56352943, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.58470595, b: 0.84962, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  parts:
+  - shape: 4
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.72, z: 0}
+    scale: {x: 0.16, y: 0.3, z: 0.16}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 0
+    pos: {x: 0, y: 0.94, z: 0.02}
+    scale: {x: 0.26, y: 0.25, z: 0.25}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 5
+    pos: {x: 0.0676, y: 0.9556, z: 0.124}
+    scale: {x: 0.08, y: 0.09199999, z: 0.055999998}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 5
+    pos: {x: -0.0676, y: 0.9556, z: 0.124}
+    scale: {x: 0.08, y: 0.09199999, z: 0.055999998}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: 0.0826, y: 0.9756, z: 0.148}
+    scale: {x: 0.027999999, y: 0.027999999, z: 0.027999999}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: -0.0826, y: 0.9756, z: 0.148}
+    scale: {x: 0.027999999, y: 0.027999999, z: 0.027999999}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 2
+    pos: {x: 0.0858, y: 0.9218, z: 0.1006}
+    scale: {x: 0.051999997, y: 0.0338, z: 0.025999999}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 2
+    pos: {x: -0.0858, y: 0.9218, z: 0.1006}
+    scale: {x: 0.051999997, y: 0.0338, z: 0.025999999}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: -0.05, y: 1.05, z: 0.04}
+    scale: {x: 0.025, y: 0.025, z: 0.07668116}
+    rot: {x: 294.09485, y: 296.56503, z: 43.664967}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: -0.07, y: 1.0999999, z: 0.049999997}
+    scale: {x: 0.023333333, y: 0.023333333, z: 0.07668116}
+    rot: {x: 305.29498, y: 289.6538, z: 40.058758}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: -0.099802986, y: 1.1447043, z: 0.06064392}
+    scale: {x: 0.021666666, y: 0.021666666, z: 0.07668116}
+    rot: {x: 316.93613, y: 285.72525, z: 33.272705}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: -0.1383215, y: 1.1821035, z: 0.07148931}
+    scale: {x: 0.02, y: 0.02, z: 0.07668116}
+    rot: {x: 328.3884, y: 283.1236, z: 25.32528}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: 0.05, y: 1.05, z: 0.04}
+    scale: {x: 0.025, y: 0.025, z: 0.07668116}
+    rot: {x: 294.09485, y: 63.434967, z: 316.33502}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: 0.07, y: 1.0999999, z: 0.049999997}
+    scale: {x: 0.023333333, y: 0.023333333, z: 0.07668116}
+    rot: {x: 305.29498, y: 70.34618, z: 319.94125}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: 0.099802986, y: 1.1447043, z: 0.06064392}
+    scale: {x: 0.021666666, y: 0.021666666, z: 0.07668116}
+    rot: {x: 316.93613, y: 74.27475, z: 326.7273}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: 0.1383215, y: 1.1821035, z: 0.07148931}
+    scale: {x: 0.02, y: 0.02, z: 0.07668116}
+    rot: {x: 328.3884, y: 76.87641, z: 334.6747}
+  - shape: 0
+    group: 1
+    slot: 6
+    pos: {x: -0.17845193, y: 1.2074655, z: 0.08084537}
+    scale: {x: 0.06, y: 0.06, z: 0.06}
+    rot: {x: 11.149077, y: 6.156418, z: 57.70755}
+  - shape: 0
+    group: 1
+    slot: 6
+    pos: {x: 0.17845193, y: 1.2074655, z: 0.08084537}
+    scale: {x: 0.06, y: 0.06, z: 0.06}
+    rot: {x: 11.149077, y: 353.84357, z: 302.29245}
+  - shape: 0
+    group: 10
+    slot: 6
+    pos: {x: 0.23021345, y: 0.9461868, z: -0.04}
+    scale: {x: 0.44, y: 0.05, z: 0.3}
+    rot: {x: 0, y: -0, z: 35}
+  - shape: 0
+    group: 9
+    slot: 6
+    pos: {x: -0.23021345, y: 0.9461868, z: -0.04}
+    scale: {x: 0.44, y: 0.05, z: 0.3}
+    rot: {x: 0, y: 0, z: -35}
+  - shape: 0
+    group: 10
+    slot: 2
+    pos: {x: 0.2, y: 0.64, z: -0.06}
+    scale: {x: 0.3, y: 0.04, z: 0.2}
+    rot: {x: 0, y: 0, z: -25}
+  - shape: 0
+    group: 9
+    slot: 2
+    pos: {x: -0.2, y: 0.64, z: -0.06}
+    scale: {x: 0.3, y: 0.04, z: 0.2}
+    rot: {x: 0, y: -0, z: 25}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: 0.04, y: 0.54, z: 0.02}
+    scale: {x: 0.04, y: 0.12, z: 0.04}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: -0.04, y: 0.54, z: 0.02}
+    scale: {x: 0.04, y: 0.12, z: 0.04}
+    rot: {x: 0, y: -0, z: -0}
+  pivots:
+  - group: 10
+    pivot: {x: 0.05, y: 0.82, z: -0.04}
+  - group: 9
+    pivot: {x: -0.05, y: 0.82, z: -0.04}
+  - group: 1
+    pivot: {x: 0, y: 0.86, z: 0}
+  regional:
+    enabled: 0
+    biome: 0
+    formName: 
+    element2: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  extraAnim: 0
+  aura: 7

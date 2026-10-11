@@ -1,0 +1,212 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_017_bumbleloom
+  m_EditorClassIdentifier: 
+  id: bumbleloom
+  dexNumber: 17
+  displayName: Bumbleloom
+  lore: A fuzzy bee that weaves pollen into tiny gardens. Where a Bumbleloom sleeps,
+    flowers bloom by morning.
+  personality: Busy, polite, hums work songs.
+  element1: 1
+  element2: 7
+  rarity: 1
+  starter: 0
+  bossOnly: 0
+  role: 
+  biomes: 1
+  spawnTime: 0
+  nearWater: 0
+  spawnCondition: 0
+  spawnWeight: 1.6
+  minGroup: 1
+  maxGroup: 3
+  temperament: 1
+  baseHp: 50
+  baseAtk: 11
+  baseDef: 9
+  walkSpeed: 2.4
+  runSpeed: 6
+  size: 0.75
+  locomotion: 3
+  captureMod: 1
+  abilities:
+  - pollen_burst
+  - needle_volley
+  rareAbilities:
+  - seed_gust
+  work:
+  - type: 5
+    level: 3
+  - type: 6
+    level: 1
+  - type: 10
+    level: 1
+  perk: 3
+  overworldRole: 'Companion: +50% berries and fiber.'
+  mountable: 0
+  mountSpeed: 11
+  mountJump: 8
+  mountSeat: {x: 0, y: 1, z: 0}
+  drops:
+  - itemId: berry
+    min: 1
+    max: 2
+    chance: 0.8
+  - itemId: fiber
+    min: 1
+    max: 1
+    chance: 0.5
+  palette:
+    primary: {r: 1, g: 0.8235294, b: 0.22745098, a: 1}
+    secondary: {r: 0.9098039, g: 0.95686275, b: 1, a: 1}
+    accent: {r: 1, g: 0.6039216, b: 0.22745098, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.9411765, b: 0.627451, a: 1}
+  shimmerPalette:
+    primary: {r: 0.41568628, g: 0.9411765, b: 0.7529412, a: 1}
+    secondary: {r: 0.9411765, g: 1, b: 0.972549, a: 1}
+    accent: {r: 0.16470589, g: 0.6901961, b: 0.627451, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 1, b: 1, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  parts:
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.95, z: -0.05}
+    scale: {x: 0.45, y: 0.42, z: 0.55}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 0
+    slot: 5
+    pos: {x: 0, y: 0.95, z: -0.12}
+    scale: {x: 0.46, y: 0.06, z: 0.43}
+    rot: {x: 90, y: 0, z: 0}
+  - shape: 2
+    group: 0
+    slot: 5
+    pos: {x: 0, y: 0.95, z: -0.25}
+    scale: {x: 0.38, y: 0.06, z: 0.36}
+    rot: {x: 90, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 4
+    pos: {x: 0, y: 0.98, z: 0.14}
+    scale: {x: 0.34, y: 0.3, z: 0.14}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 3
+    group: 8
+    slot: 5
+    pos: {x: 0, y: 0.9, z: -0.36}
+    scale: {x: 0.06, y: 0.14, z: 0.06}
+    rot: {x: -90, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 5
+    pos: {x: 0, y: 1, z: 0.28}
+    scale: {x: 0.3, y: 0.28, z: 0.28}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: 0.08, y: 1.04, z: 0.39}
+    scale: {x: 0.07, y: 0.0805, z: 0.049}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: -0.08, y: 1.04, z: 0.39}
+    scale: {x: 0.07, y: 0.0805, z: 0.049}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: 0.095, y: 1.0575, z: 0.41099998}
+    scale: {x: 0.0245, y: 0.0245, z: 0.0245}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: -0.095, y: 1.0575, z: 0.41099998}
+    scale: {x: 0.0245, y: 0.0245, z: 0.0245}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 2
+    group: 1
+    slot: 5
+    pos: {x: 0.06, y: 1.2, z: 0.3}
+    scale: {x: 0.02, y: 0.16, z: 0.02}
+    rot: {x: 20, y: 0, z: -15}
+  - shape: 2
+    group: 1
+    slot: 5
+    pos: {x: -0.06, y: 1.2, z: 0.3}
+    scale: {x: 0.02, y: 0.16, z: 0.02}
+    rot: {x: 20, y: -0, z: 15}
+  - shape: 0
+    group: 1
+    slot: 2
+    pos: {x: 0.08, y: 1.28, z: 0.33}
+    scale: {x: 0.05, y: 0.05, z: 0.05}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 2
+    pos: {x: -0.08, y: 1.28, z: 0.33}
+    scale: {x: 0.05, y: 0.05, z: 0.05}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 10
+    slot: 1
+    pos: {x: 0.22, y: 1.2, z: -0.05}
+    scale: {x: 0.3, y: 0.05, z: 0.2}
+    rot: {x: 0, y: 0, z: -25}
+  - shape: 0
+    group: 9
+    slot: 1
+    pos: {x: -0.22, y: 1.2, z: -0.05}
+    scale: {x: 0.3, y: 0.05, z: 0.2}
+    rot: {x: 0, y: -0, z: 25}
+  pivots:
+  - group: 1
+    pivot: {x: 0, y: 1, z: 0.2}
+  - group: 10
+    pivot: {x: 0.12, y: 1.15, z: -0.05}
+  - group: 9
+    pivot: {x: -0.12, y: 1.15, z: -0.05}
+  - group: 8
+    pivot: {x: 0, y: 0.92, z: -0.3}
+  regional:
+    enabled: 0
+    biome: 0
+    formName: 
+    element2: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  extraAnim: 0
+  aura: 0

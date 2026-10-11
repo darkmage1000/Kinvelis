@@ -1,0 +1,262 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_058_cindling
+  m_EditorClassIdentifier: 
+  id: cindling
+  dexNumber: 58
+  displayName: Cindling
+  lore: A fox kit with a candle-flame for a tail. It curls up on cooling lava like
+    a hearth rug and purrs like a kettle.
+  personality: Nosy, cuddly, sneezes sparks.
+  element1: 2
+  element2: 0
+  rarity: 0
+  starter: 0
+  bossOnly: 0
+  role: 
+  biomes: 3
+  spawnTime: 0
+  nearWater: 0
+  spawnCondition: 0
+  spawnWeight: 2.4
+  minGroup: 1
+  maxGroup: 3
+  temperament: 2
+  baseHp: 44
+  baseAtk: 11
+  baseDef: 7
+  walkSpeed: 2.6
+  runSpeed: 6.5
+  size: 0.6
+  locomotion: 1
+  captureMod: 1
+  abilities:
+  - ember_spit
+  - tackle
+  rareAbilities:
+  - flame_dash
+  work:
+  - type: 3
+    level: 1
+  - type: 7
+    level: 1
+  perk: 6
+  overworldRole: 'Companion: warmth aura (slower hunger) + light.'
+  mountable: 0
+  mountSpeed: 11
+  mountJump: 8
+  mountSeat: {x: 0, y: 1, z: 0}
+  drops:
+  - itemId: cinder
+    min: 1
+    max: 1
+    chance: 0.6
+  - itemId: pelt
+    min: 1
+    max: 1
+    chance: 0.5
+  palette:
+    primary: {r: 0.9411765, g: 0.5411765, b: 0.22745098, a: 1}
+    secondary: {r: 1, g: 0.9411765, b: 0.8156863, a: 1}
+    accent: {r: 0.78431374, g: 0.2509804, b: 0.16470589, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.84705883, b: 0.2901961, a: 1}
+  shimmerPalette:
+    primary: {r: 0.3529412, g: 0.5411765, b: 0.9411765, a: 1}
+    secondary: {r: 0.9098039, g: 0.95686275, b: 1, a: 1}
+    accent: {r: 0.16470589, g: 0.2901961, b: 0.7529412, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.68235296, g: 0.9411765, b: 1, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  parts:
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.28, z: -0.02}
+    scale: {x: 0.32, y: 0.3, z: 0.44}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.24, z: 0.1}
+    scale: {x: 0.24, y: 0.2, z: 0.22}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 0
+    pos: {x: 0, y: 0.5, z: 0.22}
+    scale: {x: 0.42, y: 0.38, z: 0.38}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: 0, y: 0.43, z: 0.36}
+    scale: {x: 0.2, y: 0.14, z: 0.14}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 5
+    pos: {x: 0, y: 0.45, z: 0.435}
+    scale: {x: 0.05, y: 0.04, z: 0.03}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 3
+    group: 1
+    slot: 0
+    pos: {x: 0.15, y: 0.74, z: 0.18}
+    scale: {x: 0.16, y: 0.26, z: 0.08}
+    rot: {x: 0, y: 0, z: -18}
+  - shape: 3
+    group: 1
+    slot: 0
+    pos: {x: -0.15, y: 0.74, z: 0.18}
+    scale: {x: 0.16, y: 0.26, z: 0.08}
+    rot: {x: 0, y: -0, z: 18}
+  - shape: 3
+    group: 1
+    slot: 2
+    pos: {x: 0.15, y: 0.72, z: 0.2}
+    scale: {x: 0.09, y: 0.16, z: 0.05}
+    rot: {x: 0, y: 0, z: -18}
+  - shape: 3
+    group: 1
+    slot: 2
+    pos: {x: -0.15, y: 0.72, z: 0.2}
+    scale: {x: 0.09, y: 0.16, z: 0.05}
+    rot: {x: 0, y: -0, z: 18}
+  - shape: 3
+    group: 1
+    slot: 6
+    pos: {x: 0, y: 0.74, z: 0.26}
+    scale: {x: 0.08, y: 0.16, z: 0.08}
+    rot: {x: -15, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: 0.11, y: 0.54, z: 0.37}
+    scale: {x: 0.085, y: 0.09775, z: 0.0595}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: -0.11, y: 0.54, z: 0.37}
+    scale: {x: 0.085, y: 0.09775, z: 0.0595}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: 0.125, y: 0.56125003, z: 0.3955}
+    scale: {x: 0.02975, y: 0.02975, z: 0.02975}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: -0.125, y: 0.56125003, z: 0.3955}
+    scale: {x: 0.02975, y: 0.02975, z: 0.02975}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 8
+    slot: 2
+    pos: {x: 0, y: 0.36, z: -0.3}
+    scale: {x: 0.2, y: 0.24, z: 0.24}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 3
+    group: 8
+    slot: 6
+    pos: {x: 0, y: 0.52, z: -0.36}
+    scale: {x: 0.2, y: 0.34, z: 0.2}
+    rot: {x: -25, y: 0, z: 0}
+  - shape: 2
+    group: 3
+    slot: 0
+    pos: {x: 0.1, y: 0.08, z: 0.12}
+    scale: {x: 0.08, y: 0.16, z: 0.08}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 2
+    slot: 0
+    pos: {x: -0.1, y: 0.08, z: 0.12}
+    scale: {x: 0.08, y: 0.16, z: 0.08}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 2
+    group: 5
+    slot: 0
+    pos: {x: 0.1, y: 0.08, z: -0.16}
+    scale: {x: 0.08, y: 0.16, z: 0.08}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 4
+    slot: 0
+    pos: {x: -0.1, y: 0.08, z: -0.16}
+    scale: {x: 0.08, y: 0.16, z: 0.08}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 2
+    group: 3
+    slot: 5
+    pos: {x: 0.1, y: 0.025, z: 0.12}
+    scale: {x: 0.09199999, y: 0.05, z: 0.09199999}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 2
+    slot: 5
+    pos: {x: -0.1, y: 0.025, z: 0.12}
+    scale: {x: 0.09199999, y: 0.05, z: 0.09199999}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 2
+    group: 5
+    slot: 5
+    pos: {x: 0.1, y: 0.025, z: -0.16}
+    scale: {x: 0.09199999, y: 0.05, z: 0.09199999}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 4
+    slot: 5
+    pos: {x: -0.1, y: 0.025, z: -0.16}
+    scale: {x: 0.09199999, y: 0.05, z: 0.09199999}
+    rot: {x: 0, y: -0, z: -0}
+  pivots:
+  - group: 1
+    pivot: {x: 0, y: 0.4, z: 0.12}
+  - group: 8
+    pivot: {x: 0, y: 0.3, z: -0.2}
+  - group: 3
+    pivot: {x: 0.1, y: 0.16, z: 0.12}
+  - group: 2
+    pivot: {x: -0.1, y: 0.16, z: 0.12}
+  - group: 5
+    pivot: {x: 0.1, y: 0.16, z: -0.16}
+  - group: 4
+    pivot: {x: -0.1, y: 0.16, z: -0.16}
+  regional:
+    enabled: 0
+    biome: 0
+    formName: 
+    element2: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  extraAnim: 0
+  aura: 1

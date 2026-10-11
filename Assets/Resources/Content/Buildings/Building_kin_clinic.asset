@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1add58a51849408438b7235809d63b65, type: 3}
+  m_Name: Building_kin_clinic
+  m_EditorClassIdentifier: 
+  id: kin_clinic
+  displayName: Kin Clinic
+  description: Fainted kin resting in camp recover three times sooner and wake at
+    60% health. Resting kin heal twice as fast.
+  cost:
+  - itemId: wood
+    count: 20
+  - itemId: pelt
+    count: 8
+  - itemId: gel
+    count: 6
+  - itemId: ingot
+    count: 4
+  unlockLevel: 1
+  footprint: 1.3
+  isCore: 0
+  category: 4
+  workType: 0
+  secondaryWorkType: 0
+  workerSlots: 0
+  outputItem: 
+  outputCount: 1
+  workPerUnit: 10
+  inputItem: 
+  inputCount: 0
+  bufferCap: 30
+  storageSlots: 0
+  station: 0
+  boostPercent: 0
+  feeds: 0
+  beds: 0
+  palette:
+    primary: {r: 0.9411765, g: 0.9254902, b: 0.8784314, a: 1}
+    secondary: {r: 0.72156864, g: 0.65882355, b: 0.53333336, a: 1}
+    accent: {r: 0.9098039, g: 0.3529412, b: 0.41568628, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.5411765, g: 1, b: 0.7529412, a: 1}
+  parts:
+  - shape: 1
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.15, z: 0}
+    scale: {x: 2.6, y: 0.3, z: 2.2}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 1.05, z: -0.3}
+    scale: {x: 2.4, y: 1.6, z: 1.4}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 1.95, z: -0.1}
+    scale: {x: 2.7, y: 0.16, z: 2}
+    rot: {x: 8, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 2
+    pos: {x: 0, y: 1.3, z: 0.42}
+    scale: {x: 0.6, y: 0.18, z: 0.04}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 2
+    pos: {x: 0, y: 1.3, z: 0.42}
+    scale: {x: 0.18, y: 0.6, z: 0.04}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0.8, y: 0.45, z: 0.75}
+    scale: {x: 0.8, y: 0.3, z: 0.5}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 6
+    pos: {x: -0.9, y: 0.6, z: 0.8}
+    scale: {x: 0.3, y: 0.4, z: 0.3}
+    rot: {x: 0, y: 0, z: 0}

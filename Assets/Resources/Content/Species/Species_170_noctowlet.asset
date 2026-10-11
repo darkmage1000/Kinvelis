@@ -1,0 +1,221 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_170_noctowlet
+  m_EditorClassIdentifier: 
+  id: noctowlet
+  dexNumber: 170
+  displayName: Noctowlet
+  lore: A round little owl whose eyes glow like twin moons. It sees perfectly in
+    the dark and stares at you to prove it.
+  personality: Wise-looking, actually clueless, loves a head scratch.
+  element1: 8
+  element2: 9
+  rarity: 1
+  starter: 0
+  role: 
+  biomes: 64
+  spawnTime: 2
+  nearWater: 0
+  spawnCondition: 0
+  spawnWeight: 1.3
+  minGroup: 1
+  maxGroup: 2
+  temperament: 2
+  baseHp: 60
+  baseAtk: 13
+  baseDef: 12
+  walkSpeed: 2.7
+  runSpeed: 7.3
+  size: 0.75
+  locomotion: 3
+  captureMod: 1
+  abilities:
+  - hex_flicker
+  - gust_slash
+  rareAbilities:
+  - glow_pulse
+  work:
+  - type: 6
+    level: 2
+  - type: 7
+    level: 1
+  perk: 5
+  overworldRole: 'Companion: lights up the night around you.'
+  mountable: 0
+  mountSpeed: 11
+  mountJump: 8
+  mountSeat: {x: 0, y: 1, z: 0}
+  drops:
+  - itemId: pelt
+    min: 1
+    max: 2
+    chance: 0.9
+  palette:
+    primary: {r: 0.22745098, g: 0.20392157, b: 0.3764706, a: 1}
+    secondary: {r: 0.72156864, g: 0.6901961, b: 0.84705883, a: 1}
+    accent: {r: 0.9411765, g: 0.6901961, b: 0.2509804, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.6901961, g: 0.9411765, b: 1, a: 1}
+  shimmerPalette:
+    primary: {r: 0.4564706, g: 0.37921712, b: 0.23165883, a: 1}
+    secondary: {r: 0.89705884, g: 0.83510196, b: 0.67578435, a: 1}
+    accent: {r: 0.26000005, g: 0.88429105, b: 1, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.64117646, b: 0.7452806, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  parts:
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.72, z: 0}
+    scale: {x: 0.44, y: 0.52, z: 0.42}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.66, z: 0.08}
+    scale: {x: 0.34, y: 0.36, z: 0.3}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: 0.1, y: 0.86, z: 0.12}
+    scale: {x: 0.2, y: 0.2, z: 0.1}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: -0.1, y: 0.86, z: 0.12}
+    scale: {x: 0.2, y: 0.2, z: 0.1}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 0
+    slot: 6
+    pos: {x: 0.1, y: 0.86, z: 0.165}
+    scale: {x: 0.1, y: 0.115, z: 0.07}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 6
+    pos: {x: -0.1, y: 0.86, z: 0.165}
+    scale: {x: 0.1, y: 0.115, z: 0.07}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 0
+    slot: 4
+    pos: {x: 0.115, y: 0.885, z: 0.19500001}
+    scale: {x: 0.035, y: 0.035, z: 0.035}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 4
+    pos: {x: -0.115, y: 0.885, z: 0.19500001}
+    scale: {x: 0.035, y: 0.035, z: 0.035}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 3
+    group: 0
+    slot: 2
+    pos: {x: 0, y: 0.8, z: 0.19}
+    scale: {x: 0.06, y: 0.1, z: 0.06}
+    rot: {x: 160, y: 0, z: 0}
+  - shape: 3
+    group: 0
+    slot: 0
+    pos: {x: 0.14, y: 1.02, z: 0.02}
+    scale: {x: 0.1, y: 0.18, z: 0.08}
+    rot: {x: 0, y: 0, z: -25}
+  - shape: 3
+    group: 0
+    slot: 0
+    pos: {x: -0.14, y: 1.02, z: 0.02}
+    scale: {x: 0.1, y: 0.18, z: 0.08}
+    rot: {x: 0, y: -0, z: 25}
+  - shape: 0
+    group: 10
+    slot: 0
+    pos: {x: 0.35588458, y: 0.66999996, z: -0.02}
+    scale: {x: 0.36, y: 0.05, z: 0.3}
+    rot: {x: 0, y: -0, z: -30}
+  - shape: 0
+    group: 9
+    slot: 0
+    pos: {x: -0.35588458, y: 0.66999996, z: -0.02}
+    scale: {x: 0.36, y: 0.05, z: 0.3}
+    rot: {x: 0, y: 0, z: 30}
+  - shape: 0
+    group: 0
+    slot: 6
+    pos: {x: 0, y: 0.62, z: 0.215}
+    scale: {x: 0.07, y: 0.07, z: 0.04}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 6
+    pos: {x: 0.08, y: 0.56, z: 0.2}
+    scale: {x: 0.05, y: 0.05, z: 0.04}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 6
+    pos: {x: -0.08, y: 0.56, z: 0.2}
+    scale: {x: 0.05, y: 0.05, z: 0.04}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 8
+    slot: 0
+    pos: {x: 0, y: 0.52, z: -0.2}
+    scale: {x: 0.2, y: 0.05, z: 0.2}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 2
+    pos: {x: 0.08, y: 0.46, z: 0.06}
+    scale: {x: 0.07, y: 0.06, z: 0.1}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 2
+    pos: {x: -0.08, y: 0.46, z: 0.06}
+    scale: {x: 0.07, y: 0.06, z: 0.1}
+    rot: {x: 0, y: -0, z: -0}
+  pivots:
+  - group: 10
+    pivot: {x: 0.2, y: 0.76, z: -0.02}
+  - group: 9
+    pivot: {x: -0.2, y: 0.76, z: -0.02}
+  - group: 8
+    pivot: {x: 0, y: 0.54, z: -0.14}
+  regional:
+    enabled: 0
+    biome: 0
+    formName: 
+    element2: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  extraAnim: 0
+  aura: 0

@@ -1,0 +1,201 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_021_burrowby
+  m_EditorClassIdentifier: 
+  id: burrowby
+  dexNumber: 21
+  displayName: Burrowby
+  lore: A near-blind mole with enormous digging claws. It tunnels so fast the ground
+    ripples behind it.
+  personality: Shy, sleepy, tidy about its tunnels.
+  element1: 6
+  element2: 0
+  rarity: 0
+  starter: 0
+  role: 
+  biomes: 3
+  spawnTime: 0
+  nearWater: 0
+  spawnCondition: 0
+  spawnWeight: 2.2
+  minGroup: 1
+  maxGroup: 2
+  temperament: 0
+  baseHp: 50
+  baseAtk: 10
+  baseDef: 12
+  walkSpeed: 1.8
+  runSpeed: 5
+  size: 0.7
+  locomotion: 1
+  captureMod: 1
+  abilities:
+  - tackle
+  - mud_shot
+  rareAbilities:
+  - roll_crush
+  work:
+  - type: 2
+    level: 2
+  - type: 10
+    level: 1
+  perk: 2
+  overworldRole: 'Companion: +50% stone and ore from rocks.'
+  mountable: 0
+  mountSpeed: 11
+  mountJump: 8
+  mountSeat: {x: 0, y: 1, z: 0}
+  drops:
+  - itemId: stone
+    min: 1
+    max: 3
+    chance: 1
+  - itemId: ore
+    min: 1
+    max: 1
+    chance: 0.2
+  palette:
+    primary: {r: 0.3529412, g: 0.2901961, b: 0.26666668, a: 1}
+    secondary: {r: 0.9411765, g: 0.65882355, b: 0.627451, a: 1}
+    accent: {r: 0.5411765, g: 0.47843137, b: 0.4392157, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.5411765, b: 0.627451, a: 1}
+  shimmerPalette:
+    primary: {r: 0.9098039, g: 0.8784314, b: 0.8156863, a: 1}
+    secondary: {r: 1, g: 0.8156863, b: 0.84705883, a: 1}
+    accent: {r: 0.78431374, g: 0.72156864, b: 0.65882355, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.41568628, b: 0.5411765, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  parts:
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.25, z: 0}
+    scale: {x: 0.5, y: 0.4, z: 0.62}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 3
+    group: 1
+    slot: 1
+    pos: {x: 0, y: 0.26, z: 0.44}
+    scale: {x: 0.16, y: 0.22, z: 0.16}
+    rot: {x: 90, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 6
+    pos: {x: 0, y: 0.26, z: 0.56}
+    scale: {x: 0.07, y: 0.07, z: 0.07}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: 0.08, y: 0.34, z: 0.35}
+    scale: {x: 0.035, y: 0.04025, z: 0.0245}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: -0.08, y: 0.34, z: 0.35}
+    scale: {x: 0.035, y: 0.04025, z: 0.0245}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: 0.095, y: 0.34875, z: 0.3605}
+    scale: {x: 0.01225, y: 0.01225, z: 0.01225}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: -0.095, y: 0.34875, z: 0.3605}
+    scale: {x: 0.01225, y: 0.01225, z: 0.01225}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 1
+    group: 3
+    slot: 1
+    pos: {x: 0.22, y: 0.06, z: 0.28}
+    scale: {x: 0.18, y: 0.05, z: 0.15}
+    rot: {x: 0, y: 20, z: 0}
+  - shape: 1
+    group: 2
+    slot: 1
+    pos: {x: -0.22, y: 0.06, z: 0.28}
+    scale: {x: 0.18, y: 0.05, z: 0.15}
+    rot: {x: 0, y: -20, z: -0}
+  - shape: 3
+    group: 8
+    slot: 1
+    pos: {x: 0, y: 0.2, z: -0.36}
+    scale: {x: 0.05, y: 0.12, z: 0.05}
+    rot: {x: -100, y: 0, z: 0}
+  - shape: 2
+    group: 3
+    slot: 0
+    pos: {x: 0.16, y: 0.06, z: 0.22}
+    scale: {x: 0.08, y: 0.12, z: 0.08}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 2
+    slot: 0
+    pos: {x: -0.16, y: 0.06, z: 0.22}
+    scale: {x: 0.08, y: 0.12, z: 0.08}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 2
+    group: 5
+    slot: 0
+    pos: {x: 0.16, y: 0.06, z: -0.2}
+    scale: {x: 0.08, y: 0.12, z: 0.08}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 4
+    slot: 0
+    pos: {x: -0.16, y: 0.06, z: -0.2}
+    scale: {x: 0.08, y: 0.12, z: 0.08}
+    rot: {x: 0, y: -0, z: -0}
+  pivots:
+  - group: 1
+    pivot: {x: 0, y: 0.26, z: 0.25}
+  - group: 8
+    pivot: {x: 0, y: 0.22, z: -0.3}
+  - group: 3
+    pivot: {x: 0.16, y: 0.12, z: 0.22}
+  - group: 2
+    pivot: {x: -0.16, y: 0.12, z: 0.22}
+  - group: 5
+    pivot: {x: 0.16, y: 0.12, z: -0.2}
+  - group: 4
+    pivot: {x: -0.16, y: 0.12, z: -0.2}
+  regional:
+    enabled: 1
+    biome: 1
+    formName: Dust
+    element2: 7
+    palette:
+      primary: {r: 0.78431374, g: 0.6039216, b: 0.41568628, a: 1}
+      secondary: {r: 0.9411765, g: 0.7529412, b: 0.627451, a: 1}
+      accent: {r: 0.627451, g: 0.47843137, b: 0.3529412, a: 1}
+      eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+      glow: {r: 1, g: 0.6039216, b: 0.47843137, a: 1}
+  extraAnim: 0
+  aura: 0

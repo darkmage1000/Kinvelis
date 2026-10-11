@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d410b7e3ca321b469fb7773a4c2b8dc, type: 3}
+  m_Name: Item_prismatic_seed
+  m_EditorClassIdentifier: 
+  id: prismatic_seed
+  displayName: Prismatic Seed
+  description: Maro's masterwork. It works on any hunted legend like that legend's
+    own seed - certain at 10% health or less - and the legend caught with it comes
+    out a shimmer. If a throw misses or the legend breaks free, it returns to your
+    hand.
+  category: 4
+  maxStack: 10
+  iconColor: {r: 1, g: 0.6901961, b: 0.9411765, a: 1}
+  iconGlyph: Ls
+  foodValue: 0
+  healValue: 0
+  kinHealValue: 0
+  bonusInventorySlots: 0
+  mealMods: []
+  mealMinutes: 0
+  toolKind: 0
+  toolPower: 0
+  weaponDamage: 0
+  captureMult: 2.4
+  legendFor: '*'
+  shimmerSeed: 1
+  equipSlot: 0
+  rarity: 0
+  mods: []
+  unique: 0
+  gearStyle: 0
+  trimColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  alphaDrop: 0

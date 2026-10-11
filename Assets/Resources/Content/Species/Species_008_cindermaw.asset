@@ -1,0 +1,216 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_008_cindermaw
+  m_EditorClassIdentifier: 
+  id: cindermaw
+  dexNumber: 8
+  displayName: Cindermaw
+  lore: A basalt-plated lizard that swallows hot stones to keep its magma belly glowing.
+    Charges anything that stands on its vent.
+  personality: Hot-headed, territorial, secretly loves belly rubs.
+  element1: 2
+  element2: 6
+  rarity: 2
+  starter: 0
+  role: 
+  biomes: 2
+  spawnTime: 0
+  nearWater: 0
+  spawnWeight: 0.8
+  minGroup: 1
+  maxGroup: 1
+  temperament: 4
+  baseHp: 120
+  baseAtk: 19
+  baseDef: 17
+  walkSpeed: 2
+  runSpeed: 6
+  size: 1.3
+  locomotion: 1
+  captureMod: 1
+  abilities:
+  - magma_maw
+  - ember_spit
+  rareAbilities:
+  - pebble_toss
+  work:
+  - type: 3
+    level: 3
+  - type: 2
+    level: 2
+  perk: 7
+  overworldRole: 'Companion: +50% ore and cinder when mining.'
+  mountable: 0
+  mountSpeed: 11
+  mountJump: 8
+  mountSeat: {x: 0, y: 1, z: 0}
+  drops:
+  - itemId: cinder
+    min: 1
+    max: 3
+    chance: 1
+  - itemId: ore
+    min: 1
+    max: 2
+    chance: 0.5
+  palette:
+    primary: {r: 0.22745098, g: 0.1882353, b: 0.19607843, a: 1}
+    secondary: {r: 0.5411765, g: 0.18039216, b: 0.101960786, a: 1}
+    accent: {r: 0.3529412, g: 0.2901961, b: 0.28235295, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.47843137, b: 0.101960786, a: 1}
+  shimmerPalette:
+    primary: {r: 0.101960786, g: 0.13333334, b: 0.2509804, a: 1}
+    secondary: {r: 0.16470589, g: 0.2901961, b: 0.5411765, a: 1}
+    accent: {r: 0.22745098, g: 0.2901961, b: 0.41568628, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.22745098, g: 0.9411765, b: 1, a: 1}
+  parts:
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.46, z: 0}
+    scale: {x: 0.72, y: 0.46, z: 1.3}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.38, z: 0.05}
+    scale: {x: 0.6, y: 0.3, z: 1.1}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 3
+    group: 0
+    slot: 6
+    pos: {x: 0, y: 0.74, z: 0.3}
+    scale: {x: 0.14, y: 0.3, z: 0.14}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 3
+    group: 0
+    slot: 6
+    pos: {x: 0, y: 0.78, z: 0}
+    scale: {x: 0.17, y: 0.34, z: 0.17}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 3
+    group: 0
+    slot: 6
+    pos: {x: 0, y: 0.74, z: -0.3}
+    scale: {x: 0.14, y: 0.3, z: 0.14}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 6
+    group: 0
+    slot: 2
+    pos: {x: 0.2, y: 0.66, z: 0.05}
+    scale: {x: 0.26, y: 0.2, z: 0.4}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 6
+    group: 0
+    slot: 2
+    pos: {x: -0.2, y: 0.66, z: 0.05}
+    scale: {x: 0.26, y: 0.2, z: 0.4}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 0
+    pos: {x: 0, y: 0.54, z: 0.82}
+    scale: {x: 0.46, y: 0.3, z: 0.52}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 1
+    slot: 1
+    pos: {x: 0, y: 0.42, z: 0.88}
+    scale: {x: 0.38, y: 0.1, z: 0.44}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 6
+    group: 1
+    slot: 2
+    pos: {x: 0.14, y: 0.67, z: 0.9}
+    scale: {x: 0.13, y: 0.1, z: 0.14}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 6
+    group: 1
+    slot: 2
+    pos: {x: -0.14, y: 0.67, z: 0.9}
+    scale: {x: 0.13, y: 0.1, z: 0.14}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 6
+    pos: {x: 0.15, y: 0.61, z: 0.97}
+    scale: {x: 0.07, y: 0.06, z: 0.05}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 6
+    pos: {x: -0.15, y: 0.61, z: 0.97}
+    scale: {x: 0.07, y: 0.06, z: 0.05}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 4
+    group: 3
+    slot: 0
+    pos: {x: 0.42, y: 0.22, z: 0.4}
+    scale: {x: 0.16, y: 0.42, z: 0.16}
+    rot: {x: 0, y: 0, z: 38}
+  - shape: 4
+    group: 2
+    slot: 0
+    pos: {x: -0.42, y: 0.22, z: 0.4}
+    scale: {x: 0.16, y: 0.42, z: 0.16}
+    rot: {x: 0, y: -0, z: -38}
+  - shape: 4
+    group: 5
+    slot: 0
+    pos: {x: 0.42, y: 0.22, z: -0.4}
+    scale: {x: 0.16, y: 0.42, z: 0.16}
+    rot: {x: 0, y: 0, z: 38}
+  - shape: 4
+    group: 4
+    slot: 0
+    pos: {x: -0.42, y: 0.22, z: -0.4}
+    scale: {x: 0.16, y: 0.42, z: 0.16}
+    rot: {x: 0, y: -0, z: -38}
+  - shape: 3
+    group: 8
+    slot: 0
+    pos: {x: 0, y: 0.4, z: -1.05}
+    scale: {x: 0.32, y: 0.9, z: 0.3}
+    rot: {x: -95, y: 0, z: 0}
+  - shape: 3
+    group: 8
+    slot: 6
+    pos: {x: 0, y: 0.37, z: -1.42}
+    scale: {x: 0.13, y: 0.26, z: 0.13}
+    rot: {x: -95, y: 0, z: 0}
+  pivots:
+  - group: 1
+    pivot: {x: 0, y: 0.5, z: 0.6}
+  - group: 3
+    pivot: {x: 0.32, y: 0.36, z: 0.4}
+  - group: 2
+    pivot: {x: -0.32, y: 0.36, z: 0.4}
+  - group: 5
+    pivot: {x: 0.32, y: 0.36, z: -0.4}
+  - group: 4
+    pivot: {x: -0.32, y: 0.36, z: -0.4}
+  - group: 8
+    pivot: {x: 0, y: 0.45, z: -0.6}
+  regional:
+    enabled: 0
+    biome: 0
+    formName: 
+    element2: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}

@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d410b7e3ca321b469fb7773a4c2b8dc, type: 3}
+  m_Name: Item_outpost_kit
+  m_EditorClassIdentifier: 
+  id: outpost_kit
+  displayName: Outpost Kit
+  description: USE it while standing on dry ground in an outer land to found an outpost
+    there (one per land). Station two kin and a caravan brings what they gather home.
+    Packing an outpost up returns the kit.
+  category: 5
+  maxStack: 5
+  iconColor: {r: 0.84705883, g: 0.6901961, b: 0.4392157, a: 1}
+  iconGlyph: Ok
+  foodValue: 0
+  healValue: 0
+  kinHealValue: 0
+  bonusInventorySlots: 0
+  mealMods: []
+  mealMinutes: 0
+  toolKind: 0
+  toolPower: 0
+  weaponDamage: 0
+  captureMult: 1
+  equipSlot: 0
+  rarity: 0
+  mods: []
+  unique: 0
+  gearStyle: 0
+  trimColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  alphaDrop: 0

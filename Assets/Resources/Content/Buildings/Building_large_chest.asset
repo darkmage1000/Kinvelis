@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1add58a51849408438b7235809d63b65, type: 3}
+  m_Name: Building_large_chest
+  m_EditorClassIdentifier: 
+  id: large_chest
+  displayName: Large Chest
+  description: '+40 camp storage slots: twice a Storage Chest, in a banded trunk.'
+  cost:
+  - itemId: wood
+    count: 30
+  - itemId: fiber
+    count: 10
+  - itemId: stone
+    count: 6
+  unlockLevel: 1
+  footprint: 1.25
+  isCore: 0
+  workType: 0
+  secondaryWorkType: 0
+  workerSlots: 0
+  outputItem: 
+  outputCount: 1
+  workPerUnit: 10
+  inputItem: 
+  inputCount: 0
+  bufferCap: 30
+  storageSlots: 40
+  station: 0
+  boostPercent: 0
+  feeds: 0
+  beds: 0
+  palette:
+    primary: {r: 0.5411765, g: 0.3529412, b: 0.19607843, a: 1}
+    secondary: {r: 0.41568628, g: 0.26666668, b: 0.14901961, a: 1}
+    accent: {r: 0.78431374, g: 0.627451, b: 0.3764706, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.8784314, b: 0.4392157, a: 1}
+  parts:
+  - shape: 1
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.5, z: 0}
+    scale: {x: 2, y: 1, z: 1.2}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 1, z: 0}
+    scale: {x: 1.2, y: 2, z: 1.2}
+    rot: {x: 0, y: 0, z: 90}
+  - shape: 1
+    group: 0
+    slot: 1
+    pos: {x: -0.7, y: 0.62, z: 0}
+    scale: {x: 0.14, y: 1.3, z: 1.28}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 1
+    pos: {x: 0.7, y: 0.62, z: 0}
+    scale: {x: 0.14, y: 1.3, z: 1.28}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 2
+    pos: {x: 0, y: 0.92, z: 0.62}
+    scale: {x: 0.26, y: 0.3, z: 0.08}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.06, z: 0}
+    scale: {x: 2.15, y: 0.12, z: 1.35}
+    rot: {x: 0, y: 0, z: 0}

@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1add58a51849408438b7235809d63b65, type: 3}
+  m_Name: Building_kin_nest
+  m_EditorClassIdentifier: 
+  id: kin_nest
+  displayName: Kin Nest
+  description: Beds for 2 workers. Rested kin work 15% faster.
+  cost:
+  - itemId: fiber
+    count: 10
+  - itemId: wood
+    count: 4
+  unlockLevel: 1
+  footprint: 1
+  isCore: 0
+  workType: 0
+  secondaryWorkType: 0
+  workerSlots: 0
+  outputItem: 
+  outputCount: 1
+  workPerUnit: 10
+  inputItem: 
+  inputCount: 0
+  bufferCap: 30
+  storageSlots: 0
+  station: 0
+  boostPercent: 0
+  feeds: 0
+  beds: 2
+  palette:
+    primary: {r: 0.8509804, g: 0.7529412, b: 0.56078434, a: 1}
+    secondary: {r: 0.5411765, g: 0.41568628, b: 0.2509804, a: 1}
+    accent: {r: 0.9490196, g: 0.9019608, b: 0.7882353, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.827451, b: 0.41568628, a: 1}
+  parts:
+  - shape: 2
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.15, z: 0}
+    scale: {x: 1.8, y: 0.3, z: 1.8}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 7
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.2, z: 0}
+    scale: {x: 1.6, y: 0.4, z: 1.6}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 2
+    pos: {x: 0, y: 0.3, z: 0}
+    scale: {x: 1, y: 0.2, z: 1}
+    rot: {x: 0, y: 0, z: 0}

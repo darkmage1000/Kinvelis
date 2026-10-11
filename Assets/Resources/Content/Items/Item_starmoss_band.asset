@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d410b7e3ca321b469fb7773a4c2b8dc, type: 3}
+  m_Name: Item_starmoss_band
+  m_EditorClassIdentifier: 
+  id: starmoss_band
+  displayName: Starmoss Band
+  description: A living ring of starmoss. It mends you as you walk.
+  category: 8
+  maxStack: 1
+  iconColor: {r: 0.16470589, g: 0.8156863, b: 0.6901961, a: 1}
+  iconGlyph: Rg
+  foodValue: 0
+  healValue: 0
+  kinHealValue: 0
+  bonusInventorySlots: 0
+  mealMods: []
+  mealMinutes: 0
+  toolKind: 0
+  toolPower: 0
+  weaponDamage: 0
+  captureMult: 1
+  legendFor: 
+  shimmerSeed: 0
+  equipSlot: 6
+  rarity: 3
+  mods:
+  - stat: 2
+    element: 0
+    value: 25
+  - stat: 5
+    element: 0
+    value: 0.2
+  - stat: 8
+    element: 0
+    value: 0.1
+  unique: 0
+  gearStyle: 2
+  trimColor: {r: 0.9098039, g: 1, b: 0.972549, a: 1}
+  alphaDrop: 0

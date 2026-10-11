@@ -1,0 +1,196 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_103_hopling
+  m_EditorClassIdentifier: 
+  id: hopling
+  dexNumber: 103
+  displayName: Hopling
+  lore: A long-eared hare whose scarf always streams as if in a breeze. Travellers
+    say a Hopling can outrun a storm - and bring you home through it.
+  personality: Cheerful, restless, protective of the weary.
+  element1: 0
+  element2: 0
+  rarity: 2
+  starter: 1
+  role: Scout
+  biomes: 0
+  spawnTime: 0
+  nearWater: 0
+  spawnWeight: 0
+  minGroup: 1
+  maxGroup: 2
+  temperament: 0
+  baseHp: 70
+  baseAtk: 13
+  baseDef: 11
+  walkSpeed: 3.4
+  runSpeed: 9.5
+  size: 0.9
+  locomotion: 2
+  captureMod: 1
+  abilities:
+  - quick_kick
+  - dazzle_hop
+  rareAbilities: []
+  work:
+  - type: 7
+    level: 3
+  - type: 10
+    level: 2
+  - type: 5
+    level: 1
+  perk: 11
+  overworldRole: 'Tailwind: +15% speed, -35% stamina use, and an emergency heal when
+    you drop low. Dazzle Hop makes kin drowsy (easier captures).'
+  mountable: 0
+  mountSpeed: 11
+  mountJump: 8
+  mountSeat: {x: 0, y: 1, z: 0}
+  drops: []
+  palette:
+    primary: {r: 0.9254902, g: 0.9098039, b: 0.8862745, a: 1}
+    secondary: {r: 1, g: 0.7058824, b: 0.76862746, a: 1}
+    accent: {r: 0.17254902, g: 0.72156864, b: 0.6901961, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.9490196, b: 0.65882355, a: 1}
+  shimmerPalette:
+    primary: {r: 1, g: 0.84313726, b: 0.627451, a: 1}
+    secondary: {r: 1, g: 0.5411765, b: 0.5411765, a: 1}
+    accent: {r: 0.5411765, g: 0.3529412, b: 0.84705883, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 1, b: 1, a: 1}
+  parts:
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.34, z: 0}
+    scale: {x: 0.44, y: 0.44, z: 0.52}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 0
+    slot: 2
+    pos: {x: 0, y: 0.5, z: 0.1}
+    scale: {x: 0.34, y: 0.08, z: 0.34}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 2
+    pos: {x: 0.1, y: 0.47, z: -0.12}
+    scale: {x: 0.08, y: 0.04, z: 0.32}
+    rot: {x: 20, y: 20, z: 0}
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0.12, y: 0.05, z: 0.12}
+    scale: {x: 0.12, y: 0.08, z: 0.22}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: -0.12, y: 0.05, z: 0.12}
+    scale: {x: 0.12, y: 0.08, z: 0.22}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0.14, y: 0.1, z: -0.12}
+    scale: {x: 0.14, y: 0.14, z: 0.26}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: -0.14, y: 0.1, z: -0.12}
+    scale: {x: 0.14, y: 0.14, z: 0.26}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 8
+    slot: 4
+    pos: {x: 0, y: 0.36, z: -0.3}
+    scale: {x: 0.17, y: 0.17, z: 0.17}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 0
+    pos: {x: 0, y: 0.6, z: 0.22}
+    scale: {x: 0.36, y: 0.34, z: 0.34}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 4
+    group: 1
+    slot: 0
+    pos: {x: 0.09, y: 0.95, z: 0.16}
+    scale: {x: 0.1, y: 0.44, z: 0.06}
+    rot: {x: 0, y: 0, z: -10}
+  - shape: 4
+    group: 1
+    slot: 0
+    pos: {x: -0.09, y: 0.95, z: 0.16}
+    scale: {x: 0.1, y: 0.44, z: 0.06}
+    rot: {x: 0, y: -0, z: 10}
+  - shape: 4
+    group: 1
+    slot: 1
+    pos: {x: 0.09, y: 0.95, z: 0.185}
+    scale: {x: 0.05, y: 0.34, z: 0.03}
+    rot: {x: 0, y: 0, z: -10}
+  - shape: 4
+    group: 1
+    slot: 1
+    pos: {x: -0.09, y: 0.95, z: 0.185}
+    scale: {x: 0.05, y: 0.34, z: 0.03}
+    rot: {x: 0, y: -0, z: 10}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: 0, y: 0.58, z: 0.39}
+    scale: {x: 0.06, y: 0.05, z: 0.04}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: 0.1, y: 0.64, z: 0.34}
+    scale: {x: 0.075, y: 0.08625, z: 0.052500002}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: -0.1, y: 0.64, z: 0.34}
+    scale: {x: 0.075, y: 0.08625, z: 0.052500002}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: 0.115, y: 0.65875, z: 0.3625}
+    scale: {x: 0.026250001, y: 0.026250001, z: 0.026250001}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: -0.115, y: 0.65875, z: 0.3625}
+    scale: {x: 0.026250001, y: 0.026250001, z: 0.026250001}
+    rot: {x: 0, y: -0, z: -0}
+  pivots:
+  - group: 1
+    pivot: {x: 0, y: 0.5, z: 0.14}
+  - group: 8
+    pivot: {x: 0, y: 0.36, z: -0.24}
+  regional:
+    enabled: 0
+    biome: 0
+    formName: 
+    element2: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}

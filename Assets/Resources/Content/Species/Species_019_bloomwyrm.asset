@@ -1,0 +1,202 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_019_bloomwyrm
+  m_EditorClassIdentifier: 
+  id: bloomwyrm
+  dexNumber: 19
+  displayName: Bloomwyrm
+  lore: An ancient serpent whose scales are petals. Legends say the Great Bloomtree
+    grew from a Bloomwyrm's shed skin.
+  personality: Serene, ancient, terrifying when its garden is trampled.
+  element1: 1
+  element2: 9
+  rarity: 3
+  starter: 0
+  role: 
+  biomes: 1
+  spawnTime: 0
+  nearWater: 0
+  spawnWeight: 0.12
+  minGroup: 1
+  maxGroup: 1
+  temperament: 3
+  baseHp: 150
+  baseAtk: 24
+  baseDef: 20
+  walkSpeed: 2.4
+  runSpeed: 7
+  size: 1.4
+  locomotion: 4
+  captureMod: 1
+  abilities:
+  - petal_storm
+  - glint_beam
+  rareAbilities:
+  - cyclone
+  work:
+  - type: 5
+    level: 4
+  - type: 1
+    level: 2
+  perk: 3
+  overworldRole: 'Companion: +50% berries & fiber. Camp: legendary gardener.'
+  mountable: 0
+  mountSpeed: 11
+  mountJump: 8
+  mountSeat: {x: 0, y: 1, z: 0}
+  drops:
+  - itemId: fiber
+    min: 4
+    max: 8
+    chance: 1
+  - itemId: crystal
+    min: 1
+    max: 1
+    chance: 0.6
+  palette:
+    primary: {r: 0.2901961, g: 0.627451, b: 0.3764706, a: 1}
+    secondary: {r: 0.9411765, g: 0.9098039, b: 0.7529412, a: 1}
+    accent: {r: 0.16470589, g: 0.47843137, b: 0.2509804, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.6039216, b: 0.8156863, a: 1}
+  shimmerPalette:
+    primary: {r: 0.9098039, g: 0.8156863, b: 1, a: 1}
+    secondary: {r: 1, g: 0.972549, b: 1, a: 1}
+    accent: {r: 0.627451, g: 0.4392157, b: 0.8784314, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.8784314, b: 0.4392157, a: 1}
+  parts:
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.3, z: 0}
+    scale: {x: 0.48, y: 0.4416, z: 0.528}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 2
+    pos: {x: 0, y: 0.2808, z: -0.34}
+    scale: {x: 0.43199998, y: 0.39744, z: 0.4752}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.26160002, z: -0.68}
+    scale: {x: 0.384, y: 0.35328, z: 0.42240003}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 8
+    slot: 2
+    pos: {x: 0, y: 0.24240002, z: -1.02}
+    scale: {x: 0.336, y: 0.30912, z: 0.3696}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 8
+    slot: 0
+    pos: {x: 0, y: 0.22320001, z: -1.36}
+    scale: {x: 0.288, y: 0.26496, z: 0.3168}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 8
+    slot: 2
+    pos: {x: 0, y: 0.20400003, z: -1.7}
+    scale: {x: 0.24000001, y: 0.22080001, z: 0.26400003}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 8
+    slot: 0
+    pos: {x: 0, y: 0.18480001, z: -2.04}
+    scale: {x: 0.192, y: 0.17664, z: 0.21120001}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 6
+    pos: {x: 0, y: 0.54, z: 0}
+    scale: {x: 0.22, y: 0.08, z: 0.22}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 6
+    pos: {x: 0, y: 0.5, z: -0.68}
+    scale: {x: 0.18, y: 0.07, z: 0.18}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 8
+    slot: 6
+    pos: {x: 0, y: 0.4, z: -1.36}
+    scale: {x: 0.14, y: 0.06, z: 0.14}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 3
+    group: 8
+    slot: 6
+    pos: {x: 0, y: 0.2, z: -2.3}
+    scale: {x: 0.1, y: 0.3, z: 0.1}
+    rot: {x: -90, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 0
+    pos: {x: 0, y: 0.5, z: 0.42}
+    scale: {x: 0.42, y: 0.36, z: 0.46}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: 0, y: 0.4, z: 0.52}
+    scale: {x: 0.32, y: 0.12, z: 0.32}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 6
+    pos: {x: 0.12, y: 0.58, z: 0.58}
+    scale: {x: 0.07, y: 0.07, z: 0.06}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 6
+    pos: {x: -0.12, y: 0.58, z: 0.58}
+    scale: {x: 0.07, y: 0.07, z: 0.06}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 2
+    pos: {x: 0.15, y: 0.72, z: 0.34}
+    scale: {x: 0.08, y: 0.26, z: 0.12}
+    rot: {x: -30, y: 0, z: -20}
+  - shape: 0
+    group: 1
+    slot: 2
+    pos: {x: -0.15, y: 0.72, z: 0.34}
+    scale: {x: 0.08, y: 0.26, z: 0.12}
+    rot: {x: -30, y: -0, z: 20}
+  - shape: 0
+    group: 1
+    slot: 6
+    pos: {x: 0, y: 0.74, z: 0.38}
+    scale: {x: 0.2, y: 0.12, z: 0.2}
+    rot: {x: 0, y: 0, z: 0}
+  pivots:
+  - group: 8
+    pivot: {x: 0, y: 0.3, z: -0.85}
+  - group: 1
+    pivot: {x: 0, y: 0.4, z: 0.22}
+  regional:
+    enabled: 0
+    biome: 0
+    formName: 
+    element2: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}

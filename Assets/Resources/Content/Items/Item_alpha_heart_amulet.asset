@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d410b7e3ca321b469fb7773a4c2b8dc, type: 3}
+  m_Name: Item_alpha_heart_amulet
+  m_EditorClassIdentifier: 
+  id: alpha_heart_amulet
+  displayName: Alpha Heart Amulet
+  description: Still beats, faintly.
+  category: 8
+  maxStack: 1
+  iconColor: {r: 0.76862746, g: 0.22745098, b: 0.22745098, a: 1}
+  iconGlyph: Am
+  foodValue: 0
+  healValue: 0
+  kinHealValue: 0
+  bonusInventorySlots: 0
+  toolKind: 0
+  toolPower: 0
+  weaponDamage: 0
+  captureMult: 1
+  equipSlot: 4
+  rarity: 3
+  mods:
+  - stat: 2
+    element: 0
+    value: 40
+  - stat: 0
+    element: 0
+    value: 4
+  - stat: 5
+    element: 0
+    value: 0.1
+  unique: 0
+  gearStyle: 3
+  trimColor: {r: 1, g: 0.827451, b: 0.41568628, a: 1}
+  alphaDrop: 1

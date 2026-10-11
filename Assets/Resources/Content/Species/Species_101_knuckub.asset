@@ -1,0 +1,232 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_101_knuckub
+  m_EditorClassIdentifier: 
+  id: knuckub
+  dexNumber: 101
+  displayName: Knuckub
+  lore: A bear cub that wraps its paws in woven reed and spars with anything that
+    moves. It never backs down from a friend's fight.
+  personality: Brave, hot-headed, fiercely loyal.
+  element1: 0
+  element2: 0
+  rarity: 2
+  starter: 1
+  role: Fighter
+  biomes: 0
+  spawnTime: 0
+  nearWater: 0
+  spawnWeight: 0
+  minGroup: 1
+  maxGroup: 2
+  temperament: 2
+  baseHp: 88
+  baseAtk: 17
+  baseDef: 14
+  walkSpeed: 2.6
+  runSpeed: 7.2
+  size: 0.95
+  locomotion: 0
+  captureMod: 1
+  abilities:
+  - pummel_rush
+  - brace_bash
+  rareAbilities: []
+  work:
+  - type: 7
+    level: 2
+  - type: 1
+    level: 1
+  - type: 2
+    level: 1
+  perk: 9
+  overworldRole: 'Vanguard: +15% melee damage for you. Hits 20% harder on the kin
+    you''re fighting.'
+  mountable: 0
+  mountSpeed: 11
+  mountJump: 8
+  mountSeat: {x: 0, y: 1, z: 0}
+  drops: []
+  palette:
+    primary: {r: 0.65882355, g: 0.40784314, b: 0.22745098, a: 1}
+    secondary: {r: 0.94509804, g: 0.8509804, b: 0.6901961, a: 1}
+    accent: {r: 0.84705883, g: 0.26666668, b: 0.22745098, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.96862745, g: 0.94509804, b: 0.8901961, a: 1}
+  shimmerPalette:
+    primary: {r: 0.22745098, g: 0.22745098, b: 0.26666668, a: 1}
+    secondary: {r: 0.78431374, g: 0.78431374, b: 0.83137256, a: 1}
+    accent: {r: 0.9411765, g: 0.6901961, b: 0.1254902, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 1, b: 1, a: 1}
+  parts:
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.55, z: 0}
+    scale: {x: 0.64, y: 0.68, z: 0.54}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.52, z: 0.15}
+    scale: {x: 0.44, y: 0.48, z: 0.3}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 0
+    slot: 2
+    pos: {x: 0, y: 0.84, z: 0.02}
+    scale: {x: 0.5, y: 0.08, z: 0.44}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 2
+    pos: {x: 0.12, y: 0.78, z: -0.24}
+    scale: {x: 0.1, y: 0.2, z: 0.04}
+    rot: {x: 0, y: 0, z: 25}
+  - shape: 0
+    group: 1
+    slot: 0
+    pos: {x: 0, y: 1.06, z: 0.06}
+    scale: {x: 0.5, y: 0.44, z: 0.44}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: 0, y: 1, z: 0.27}
+    scale: {x: 0.22, y: 0.16, z: 0.14}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 5
+    pos: {x: 0, y: 1.03, z: 0.34}
+    scale: {x: 0.07, y: 0.06, z: 0.05}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 0
+    pos: {x: 0.18, y: 1.27, z: 0.02}
+    scale: {x: 0.15, y: 0.15, z: 0.08}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 0
+    pos: {x: -0.18, y: 1.27, z: 0.02}
+    scale: {x: 0.15, y: 0.15, z: 0.08}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: 0.18, y: 1.27, z: 0.05}
+    scale: {x: 0.08, y: 0.08, z: 0.03}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: -0.18, y: 1.27, z: 0.05}
+    scale: {x: 0.08, y: 0.08, z: 0.03}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: 0.1, y: 1.1, z: 0.25}
+    scale: {x: 0.07, y: 0.0805, z: 0.049}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: -0.1, y: 1.1, z: 0.25}
+    scale: {x: 0.07, y: 0.0805, z: 0.049}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: 0.115, y: 1.1175001, z: 0.271}
+    scale: {x: 0.0245, y: 0.0245, z: 0.0245}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: -0.115, y: 1.1175001, z: 0.271}
+    scale: {x: 0.0245, y: 0.0245, z: 0.0245}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 4
+    group: 7
+    slot: 0
+    pos: {x: 0.34, y: 0.56, z: 0.04}
+    scale: {x: 0.16, y: 0.32, z: 0.16}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 4
+    group: 6
+    slot: 0
+    pos: {x: -0.34, y: 0.56, z: 0.04}
+    scale: {x: 0.16, y: 0.32, z: 0.16}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 7
+    slot: 6
+    pos: {x: 0.36, y: 0.38, z: 0.08}
+    scale: {x: 0.2, y: 0.2, z: 0.2}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 6
+    slot: 6
+    pos: {x: -0.36, y: 0.38, z: 0.08}
+    scale: {x: 0.2, y: 0.2, z: 0.2}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 4
+    group: 3
+    slot: 0
+    pos: {x: 0.14, y: 0.16, z: 0}
+    scale: {x: 0.18, y: 0.3, z: 0.18}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 4
+    group: 2
+    slot: 0
+    pos: {x: -0.14, y: 0.16, z: 0}
+    scale: {x: 0.18, y: 0.3, z: 0.18}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 3
+    slot: 1
+    pos: {x: 0.14, y: 0.03, z: 0.05}
+    scale: {x: 0.18, y: 0.08, z: 0.22}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 2
+    slot: 1
+    pos: {x: -0.14, y: 0.03, z: 0.05}
+    scale: {x: 0.18, y: 0.08, z: 0.22}
+    rot: {x: 0, y: -0, z: -0}
+  pivots:
+  - group: 1
+    pivot: {x: 0, y: 0.86, z: 0.04}
+  - group: 7
+    pivot: {x: 0.3, y: 0.72, z: 0}
+  - group: 6
+    pivot: {x: -0.3, y: 0.72, z: 0}
+  - group: 3
+    pivot: {x: 0.14, y: 0.3, z: 0}
+  - group: 2
+    pivot: {x: -0.14, y: 0.3, z: 0}
+  regional:
+    enabled: 0
+    biome: 0
+    formName: 
+    element2: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}

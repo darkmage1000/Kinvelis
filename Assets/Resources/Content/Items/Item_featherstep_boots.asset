@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d410b7e3ca321b469fb7773a4c2b8dc, type: 3}
+  m_Name: Item_featherstep_boots
+  m_EditorClassIdentifier: 
+  id: featherstep_boots
+  displayName: Featherstep Boots
+  description: Gel-cushioned soles. Jump off anything.
+  category: 8
+  maxStack: 1
+  iconColor: {r: 0.9098039, g: 0.8784314, b: 0.78431374, a: 1}
+  iconGlyph: Bt
+  foodValue: 0
+  healValue: 0
+  kinHealValue: 0
+  bonusInventorySlots: 0
+  toolKind: 0
+  toolPower: 0
+  weaponDamage: 0
+  captureMult: 1
+  equipSlot: 3
+  rarity: 2
+  mods:
+  - stat: 0
+    element: 0
+    value: 3
+  - stat: 6
+    element: 0
+    value: 0.04
+  unique: 4
+  gearStyle: 0
+  trimColor: {r: 0.56078434, g: 0.8156863, b: 1, a: 1}
+  alphaDrop: 0

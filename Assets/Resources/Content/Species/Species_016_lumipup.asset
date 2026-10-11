@@ -1,0 +1,240 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_016_lumipup
+  m_EditorClassIdentifier: 
+  id: lumipup
+  dexNumber: 16
+  displayName: Lumipup
+  lore: A puppy born under a meteor shower, still wearing a halo of starlight. It
+    glows brighter when happy.
+  personality: Adoring, bouncy, afraid of the dark (ironically).
+  element1: 9
+  element2: 0
+  rarity: 1
+  starter: 0
+  bossOnly: 0
+  role: 
+  biomes: 65
+  spawnTime: 0
+  nearWater: 0
+  spawnCondition: 0
+  spawnWeight: 1.4
+  minGroup: 1
+  maxGroup: 2
+  temperament: 2
+  baseHp: 58
+  baseAtk: 13
+  baseDef: 10
+  walkSpeed: 2.8
+  runSpeed: 7.5
+  size: 0.8
+  locomotion: 1
+  captureMod: 1
+  abilities:
+  - tackle
+  - glint_beam
+  rareAbilities:
+  - aurora_veil
+  work:
+  - type: 7
+    level: 2
+  - type: 9
+    level: 1
+  - type: 3
+    level: 1
+  perk: 5
+  overworldRole: 'Companion: lights up the night around you.'
+  mountable: 0
+  mountSpeed: 11
+  mountJump: 8
+  mountSeat: {x: 0, y: 1, z: 0}
+  drops:
+  - itemId: pelt
+    min: 1
+    max: 2
+    chance: 0.8
+  - itemId: crystal
+    min: 1
+    max: 1
+    chance: 0.06
+  palette:
+    primary: {r: 1, g: 0.95686275, b: 0.8627451, a: 1}
+    secondary: {r: 1, g: 0.8784314, b: 0.6901961, a: 1}
+    accent: {r: 0.9411765, g: 0.7529412, b: 0.3764706, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.9411765, b: 0.5019608, a: 1}
+  shimmerPalette:
+    primary: {r: 0.6901961, g: 0.65882355, b: 1, a: 1}
+    secondary: {r: 0.84705883, g: 0.8156863, b: 1, a: 1}
+    accent: {r: 0.47843137, g: 0.41568628, b: 0.8784314, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.68235296, g: 0.9411765, b: 1, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  parts:
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.36, z: 0}
+    scale: {x: 0.4, y: 0.38, z: 0.56}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 0
+    pos: {x: 0, y: 0.56, z: 0.3}
+    scale: {x: 0.38, y: 0.34, z: 0.34}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: 0, y: 0.5, z: 0.46}
+    scale: {x: 0.16, y: 0.12, z: 0.12}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 5
+    pos: {x: 0, y: 0.52, z: 0.52}
+    scale: {x: 0.05, y: 0.04, z: 0.04}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 2
+    pos: {x: 0.2, y: 0.56, z: 0.26}
+    scale: {x: 0.08, y: 0.24, z: 0.13}
+    rot: {x: 0, y: 0, z: 20}
+  - shape: 0
+    group: 1
+    slot: 2
+    pos: {x: -0.2, y: 0.56, z: 0.26}
+    scale: {x: 0.08, y: 0.24, z: 0.13}
+    rot: {x: 0, y: -0, z: -20}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: 0.09, y: 0.6, z: 0.43}
+    scale: {x: 0.065, y: 0.07475, z: 0.0455}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: -0.09, y: 0.6, z: 0.43}
+    scale: {x: 0.065, y: 0.07475, z: 0.0455}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: 0.105000004, y: 0.61625004, z: 0.4495}
+    scale: {x: 0.02275, y: 0.02275, z: 0.02275}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: -0.105000004, y: 0.61625004, z: 0.4495}
+    scale: {x: 0.02275, y: 0.02275, z: 0.02275}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 2
+    group: 1
+    slot: 6
+    pos: {x: 0, y: 0.82, z: 0.28}
+    scale: {x: 0.32, y: 0.02, z: 0.32}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 3
+    group: 8
+    slot: 6
+    pos: {x: 0, y: 0.5, z: -0.33}
+    scale: {x: 0.1, y: 0.26, z: 0.1}
+    rot: {x: -60, y: 0, z: 0}
+  - shape: 2
+    group: 3
+    slot: 0
+    pos: {x: 0.12, y: 0.1, z: 0.17}
+    scale: {x: 0.09, y: 0.2, z: 0.09}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 2
+    slot: 0
+    pos: {x: -0.12, y: 0.1, z: 0.17}
+    scale: {x: 0.09, y: 0.2, z: 0.09}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 2
+    group: 5
+    slot: 0
+    pos: {x: 0.12, y: 0.1, z: -0.17}
+    scale: {x: 0.09, y: 0.2, z: 0.09}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 4
+    slot: 0
+    pos: {x: -0.12, y: 0.1, z: -0.17}
+    scale: {x: 0.09, y: 0.2, z: 0.09}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 2
+    group: 3
+    slot: 1
+    pos: {x: 0.12, y: 0.025, z: 0.17}
+    scale: {x: 0.1035, y: 0.05, z: 0.1035}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 2
+    slot: 1
+    pos: {x: -0.12, y: 0.025, z: 0.17}
+    scale: {x: 0.1035, y: 0.05, z: 0.1035}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 2
+    group: 5
+    slot: 1
+    pos: {x: 0.12, y: 0.025, z: -0.17}
+    scale: {x: 0.1035, y: 0.05, z: 0.1035}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 4
+    slot: 1
+    pos: {x: -0.12, y: 0.025, z: -0.17}
+    scale: {x: 0.1035, y: 0.05, z: 0.1035}
+    rot: {x: 0, y: -0, z: -0}
+  pivots:
+  - group: 1
+    pivot: {x: 0, y: 0.45, z: 0.2}
+  - group: 8
+    pivot: {x: 0, y: 0.42, z: -0.26}
+  - group: 3
+    pivot: {x: 0.12, y: 0.2, z: 0.17}
+  - group: 2
+    pivot: {x: -0.12, y: 0.2, z: 0.17}
+  - group: 5
+    pivot: {x: 0.12, y: 0.2, z: -0.17}
+  - group: 4
+    pivot: {x: -0.12, y: 0.2, z: -0.17}
+  regional:
+    enabled: 0
+    biome: 0
+    formName: 
+    element2: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  extraAnim: 0
+  aura: 0

@@ -1,0 +1,243 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_038_aurorox
+  m_EditorClassIdentifier: 
+  id: aurorox
+  dexNumber: 38
+  displayName: Aurorox
+  lore: A great musk-ox that carries the northern lights in its mane. Herds migrate
+    along the ridges on the longest nights.
+  personality: Gentle, immovable, sings in deep hums.
+  element1: 9
+  element2: 4
+  rarity: 3
+  starter: 0
+  role: 
+  biomes: 4
+  spawnTime: 0
+  nearWater: 0
+  spawnWeight: 0.12
+  minGroup: 1
+  maxGroup: 1
+  temperament: 1
+  baseHp: 170
+  baseAtk: 20
+  baseDef: 24
+  walkSpeed: 2
+  runSpeed: 6
+  size: 1.5
+  locomotion: 1
+  captureMod: 1
+  abilities:
+  - aurora_veil
+  - frost_breath
+  rareAbilities:
+  - glint_beam
+  work:
+  - type: 7
+    level: 3
+  - type: 8
+    level: 3
+  - type: 9
+    level: 1
+  perk: 6
+  overworldRole: 'Companion: warmth aura + light. Camp: legendary hauler. MOUNT:
+    rideable with a Kin Harness.'
+  mountable: 1
+  mountSpeed: 11.5
+  mountJump: 7.5
+  mountSeat: {x: 0, y: 1.36, z: -0.08}
+  drops:
+  - itemId: pelt
+    min: 4
+    max: 6
+    chance: 1
+  - itemId: crystal
+    min: 1
+    max: 2
+    chance: 0.8
+  palette:
+    primary: {r: 0.22745098, g: 0.22745098, b: 0.3529412, a: 1}
+    secondary: {r: 0.3529412, g: 0.3529412, b: 0.47843137, a: 1}
+    accent: {r: 0.5411765, g: 0.41568628, b: 1, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.41568628, g: 1, b: 0.8156863, a: 1}
+  shimmerPalette:
+    primary: {r: 0.9411765, g: 0.9098039, b: 0.84705883, a: 1}
+    secondary: {r: 0.84705883, g: 0.78431374, b: 0.6901961, a: 1}
+    accent: {r: 1, g: 0.5411765, b: 0.41568628, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.8784314, b: 0.4392157, a: 1}
+  parts:
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.85, z: 0}
+    scale: {x: 0.95, y: 0.85, z: 1.3}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.55, z: 0}
+    scale: {x: 0.96, y: 0.5, z: 1.26}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 6
+    pos: {x: 0, y: 1.27, z: 0.1}
+    scale: {x: 0.08, y: 0.06, z: 0.95}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 2
+    pos: {x: 0.14, y: 1.24, z: 0}
+    scale: {x: 0.06, y: 0.05, z: 0.82}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 6
+    pos: {x: -0.14, y: 1.23, z: -0.05}
+    scale: {x: 0.06, y: 0.05, z: 0.78}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 0
+    pos: {x: 0, y: 0.8, z: 0.84}
+    scale: {x: 0.44, y: 0.44, z: 0.42}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 1
+    slot: 4
+    pos: {x: 0.26, y: 0.98, z: 0.76}
+    scale: {x: 0.1, y: 0.38, z: 0.1}
+    rot: {x: 0, y: 0, z: -70}
+  - shape: 2
+    group: 1
+    slot: 4
+    pos: {x: -0.26, y: 0.98, z: 0.76}
+    scale: {x: 0.1, y: 0.38, z: 0.1}
+    rot: {x: 0, y: -0, z: 70}
+  - shape: 3
+    group: 1
+    slot: 4
+    pos: {x: 0.46, y: 0.88, z: 0.78}
+    scale: {x: 0.08, y: 0.22, z: 0.08}
+    rot: {x: 0, y: 0, z: -150}
+  - shape: 3
+    group: 1
+    slot: 4
+    pos: {x: -0.46, y: 0.88, z: 0.78}
+    scale: {x: 0.08, y: 0.22, z: 0.08}
+    rot: {x: 0, y: -0, z: 150}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: 0.12, y: 0.88, z: 0.98}
+    scale: {x: 0.06, y: 0.069, z: 0.042}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: -0.12, y: 0.88, z: 0.98}
+    scale: {x: 0.06, y: 0.069, z: 0.042}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: 0.13499999, y: 0.895, z: 0.998}
+    scale: {x: 0.021, y: 0.021, z: 0.021}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: -0.13499999, y: 0.895, z: 0.998}
+    scale: {x: 0.021, y: 0.021, z: 0.021}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 8
+    slot: 6
+    pos: {x: 0, y: 0.95, z: -0.72}
+    scale: {x: 0.2, y: 0.2, z: 0.24}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 3
+    slot: 1
+    pos: {x: 0.32, y: 0.2, z: 0.42}
+    scale: {x: 0.22, y: 0.4, z: 0.22}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 2
+    slot: 1
+    pos: {x: -0.32, y: 0.2, z: 0.42}
+    scale: {x: 0.22, y: 0.4, z: 0.22}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 2
+    group: 5
+    slot: 1
+    pos: {x: 0.32, y: 0.2, z: -0.42}
+    scale: {x: 0.22, y: 0.4, z: 0.22}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 4
+    slot: 1
+    pos: {x: -0.32, y: 0.2, z: -0.42}
+    scale: {x: 0.22, y: 0.4, z: 0.22}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 2
+    group: 3
+    slot: 5
+    pos: {x: 0.32, y: 0.025, z: 0.42}
+    scale: {x: 0.253, y: 0.05, z: 0.253}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 2
+    slot: 5
+    pos: {x: -0.32, y: 0.025, z: 0.42}
+    scale: {x: 0.253, y: 0.05, z: 0.253}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 2
+    group: 5
+    slot: 5
+    pos: {x: 0.32, y: 0.025, z: -0.42}
+    scale: {x: 0.253, y: 0.05, z: 0.253}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 4
+    slot: 5
+    pos: {x: -0.32, y: 0.025, z: -0.42}
+    scale: {x: 0.253, y: 0.05, z: 0.253}
+    rot: {x: 0, y: -0, z: -0}
+  pivots:
+  - group: 1
+    pivot: {x: 0, y: 0.85, z: 0.6}
+  - group: 8
+    pivot: {x: 0, y: 0.95, z: -0.6}
+  - group: 3
+    pivot: {x: 0.32, y: 0.4, z: 0.42}
+  - group: 2
+    pivot: {x: -0.32, y: 0.4, z: 0.42}
+  - group: 5
+    pivot: {x: 0.32, y: 0.4, z: -0.42}
+  - group: 4
+    pivot: {x: -0.32, y: 0.4, z: -0.42}
+  regional:
+    enabled: 0
+    biome: 0
+    formName: 
+    element2: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}

@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d410b7e3ca321b469fb7773a4c2b8dc, type: 3}
+  m_Name: Item_rimecloak
+  m_EditorClassIdentifier: 
+  id: rimecloak
+  displayName: Rimecloak
+  description: Woven with rime threads. Snow slides right off.
+  category: 8
+  maxStack: 1
+  iconColor: {r: 0.41568628, g: 0.78431374, b: 0.9411765, a: 1}
+  iconGlyph: Ar
+  foodValue: 0
+  healValue: 0
+  kinHealValue: 0
+  bonusInventorySlots: 0
+  toolKind: 0
+  toolPower: 0
+  weaponDamage: 0
+  captureMult: 1
+  equipSlot: 2
+  rarity: 2
+  mods:
+  - stat: 0
+    element: 0
+    value: 11
+  - stat: 12
+    element: 4
+    value: 0.25
+  - stat: 2
+    element: 0
+    value: 20
+  unique: 8
+  gearStyle: 2
+  trimColor: {r: 0.9098039, g: 0.972549, b: 1, a: 1}
+  alphaDrop: 0

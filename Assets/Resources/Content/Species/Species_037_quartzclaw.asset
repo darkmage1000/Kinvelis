@@ -1,0 +1,228 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_037_quartzclaw
+  m_EditorClassIdentifier: 
+  id: quartzclaw
+  dexNumber: 37
+  displayName: Quartzclaw
+  lore: A mountain-lake crab that grows its shell from rime crystal. Old Quartzclaws
+    look like walking geodes.
+  personality: Defensive, stubborn, clacks when happy.
+  element1: 6
+  element2: 4
+  rarity: 1
+  starter: 0
+  bossOnly: 0
+  role: 
+  biomes: 4
+  spawnTime: 0
+  nearWater: 1
+  spawnCondition: 0
+  spawnWeight: 1.5
+  minGroup: 1
+  maxGroup: 2
+  temperament: 3
+  baseHp: 70
+  baseAtk: 15
+  baseDef: 18
+  walkSpeed: 1.6
+  runSpeed: 4.2
+  size: 0.9
+  locomotion: 1
+  captureMod: 1
+  abilities:
+  - shell_slam
+  - crystal_shard
+  rareAbilities:
+  - mud_shot
+  work:
+  - type: 2
+    level: 2
+  - type: 6
+    level: 1
+  perk: 2
+  overworldRole: 'Companion: +50% stone and ore from rocks.'
+  mountable: 0
+  mountSpeed: 11
+  mountJump: 8
+  mountSeat: {x: 0, y: 1, z: 0}
+  drops:
+  - itemId: crystal
+    min: 1
+    max: 1
+    chance: 0.4
+  - itemId: stone
+    min: 1
+    max: 2
+    chance: 0.8
+  palette:
+    primary: {r: 0.78431374, g: 0.41568628, b: 0.3529412, a: 1}
+    secondary: {r: 0.6039216, g: 0.9098039, b: 1, a: 1}
+    accent: {r: 0.9098039, g: 0.5411765, b: 0.41568628, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 1, b: 1, a: 1}
+  shimmerPalette:
+    primary: {r: 0.2901961, g: 0.2901961, b: 0.3529412, a: 1}
+    secondary: {r: 1, g: 0.8156863, b: 0.4392157, a: 1}
+    accent: {r: 0.41568628, g: 0.41568628, b: 0.47843137, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 1, b: 1, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  parts:
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.3, z: 0}
+    scale: {x: 0.82, y: 0.32, z: 0.62}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 5
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.36, z: -0.05}
+    scale: {x: 0.18, y: 0.36, z: 0.18}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 5
+    group: 0
+    slot: 1
+    pos: {x: 0.18, y: 0.36, z: 0.05}
+    scale: {x: 0.12, y: 0.26, z: 0.12}
+    rot: {x: 0, y: 0, z: -25}
+  - shape: 5
+    group: 0
+    slot: 1
+    pos: {x: -0.16, y: 0.36, z: -0.08}
+    scale: {x: 0.12, y: 0.24, z: 0.12}
+    rot: {x: 0, y: 0, z: 25}
+  - shape: 0
+    group: 7
+    slot: 2
+    pos: {x: 0.46, y: 0.3, z: 0.36}
+    scale: {x: 0.28, y: 0.2, z: 0.24}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 6
+    slot: 2
+    pos: {x: -0.46, y: 0.3, z: 0.36}
+    scale: {x: 0.28, y: 0.2, z: 0.24}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 3
+    group: 7
+    slot: 2
+    pos: {x: 0.46, y: 0.32, z: 0.52}
+    scale: {x: 0.08, y: 0.18, z: 0.06}
+    rot: {x: 90, y: 0, z: 0}
+  - shape: 3
+    group: 6
+    slot: 2
+    pos: {x: -0.46, y: 0.32, z: 0.52}
+    scale: {x: 0.08, y: 0.18, z: 0.06}
+    rot: {x: 90, y: -0, z: -0}
+  - shape: 2
+    group: 1
+    slot: 0
+    pos: {x: 0.08, y: 0.44, z: 0.26}
+    scale: {x: 0.03, y: 0.16, z: 0.03}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 1
+    slot: 0
+    pos: {x: -0.08, y: 0.44, z: 0.26}
+    scale: {x: 0.03, y: 0.16, z: 0.03}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: 0.08, y: 0.54, z: 0.26}
+    scale: {x: 0.07, y: 0.07, z: 0.07}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 3
+    pos: {x: -0.08, y: 0.54, z: 0.26}
+    scale: {x: 0.07, y: 0.07, z: 0.07}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: 0.09, y: 0.56, z: 0.29}
+    scale: {x: 0.025, y: 0.025, z: 0.025}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: -0.09, y: 0.56, z: 0.29}
+    scale: {x: 0.025, y: 0.025, z: 0.025}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 2
+    group: 3
+    slot: 0
+    pos: {x: 0.36, y: 0.1, z: 0.12}
+    scale: {x: 0.05, y: 0.2, z: 0.05}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 2
+    slot: 0
+    pos: {x: -0.36, y: 0.1, z: 0.12}
+    scale: {x: 0.05, y: 0.2, z: 0.05}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 2
+    group: 5
+    slot: 0
+    pos: {x: 0.36, y: 0.1, z: -0.18}
+    scale: {x: 0.05, y: 0.2, z: 0.05}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 4
+    slot: 0
+    pos: {x: -0.36, y: 0.1, z: -0.18}
+    scale: {x: 0.05, y: 0.2, z: 0.05}
+    rot: {x: 0, y: -0, z: -0}
+  pivots:
+  - group: 1
+    pivot: {x: 0, y: 0.36, z: 0.25}
+  - group: 7
+    pivot: {x: 0.34, y: 0.3, z: 0.26}
+  - group: 6
+    pivot: {x: -0.34, y: 0.3, z: 0.26}
+  - group: 3
+    pivot: {x: 0.36, y: 0.2, z: 0.12}
+  - group: 2
+    pivot: {x: -0.36, y: 0.2, z: 0.12}
+  - group: 5
+    pivot: {x: 0.36, y: 0.2, z: -0.18}
+  - group: 4
+    pivot: {x: -0.36, y: 0.2, z: -0.18}
+  regional:
+    enabled: 0
+    biome: 0
+    formName: 
+    element2: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  extraAnim: 0
+  aura: 0

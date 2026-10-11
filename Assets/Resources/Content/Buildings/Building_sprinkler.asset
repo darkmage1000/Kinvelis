@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1add58a51849408438b7235809d63b65, type: 3}
+  m_Name: Building_sprinkler
+  m_EditorClassIdentifier: 
+  id: sprinkler
+  displayName: Sprinkler
+  description: 'Farms (Berry Plot, Forage Hut) work 40% faster while it runs: camp
+    power or an Irrigating kin.'
+  cost:
+  - itemId: ingot
+    count: 3
+  - itemId: gel
+    count: 6
+  - itemId: wood
+    count: 6
+  unlockLevel: 6
+  footprint: 0.8
+  isCore: 0
+  workType: 4
+  secondaryWorkType: 0
+  workerSlots: 1
+  outputItem: 
+  outputCount: 1
+  workPerUnit: 10
+  inputItem: 
+  inputCount: 0
+  bufferCap: 30
+  storageSlots: 0
+  station: 0
+  boostPercent: 0
+  feeds: 0
+  beds: 0
+  palette:
+    primary: {r: 0.41568628, g: 0.5411765, b: 0.6039216, a: 1}
+    secondary: {r: 0.22745098, g: 0.3137255, b: 0.3764706, a: 1}
+    accent: {r: 0.34509805, g: 0.78431374, b: 1, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.7490196, g: 0.9411765, b: 1, a: 1}
+  parts:
+  - shape: 2
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.15, z: 0}
+    scale: {x: 1, y: 0.3, z: 1}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.9, z: 0}
+    scale: {x: 0.2, y: 1.5, z: 0.2}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 0
+    slot: 2
+    pos: {x: 0, y: 1.7, z: 0}
+    scale: {x: 1.2, y: 0.1, z: 0.2}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 6
+    pos: {x: 0.6, y: 1.68, z: 0}
+    scale: {x: 0.2, y: 0.2, z: 0.2}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 6
+    pos: {x: -0.6, y: 1.68, z: 0}
+    scale: {x: 0.2, y: 0.2, z: 0.2}
+    rot: {x: 0, y: 0, z: 0}

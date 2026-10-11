@@ -1,0 +1,282 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Wildbond
+{
+    /// <summary>Procedural animation for part-based models: gait, hop, hover, wing flap, tail wag, lunge, hit flash.</summary>
+    public class CreatureRig : MonoBehaviour
+    {
+        const int GroupCount = (int)BodyGroup.Count;
+
+        /// <summary>A human skeleton (torso, elbows, knees): walks with bending knees and elbows, can crouch and tuck.</summary>
+        public bool Human => groups[(int)BodyGroup.Torso] != null && groups[(int)BodyGroup.ShinR] != null && groups[(int)BodyGroup.ForearmR] != null;
+        /// <summary>0-1: how low a human is holding itself (sneaking). Eased in Animate.</summary>
+        public float Crouch;
+        /// <summary>0-1: off the ground (knees tuck, arms lift a little).</summary>
+        public float Air;
+        float crouchNow, airNow;
+        float humanHeadPitch, humanHeadYaw;
+
+        public Transform Model { get; private set; }
+        public Locomotion Loco { get; private set; }
+        readonly Transform[] groups = new Transform[GroupCount];
+        readonly Quaternion[] baseRot = new Quaternion[GroupCount];
+        readonly Vector3[] basePos = new Vector3[GroupCount];
+        readonly List<Renderer> renderers = new List<Renderer>(10);
+        static MaterialPropertyBlock mpb;
+        static readonly int FlashId = Shader.PropertyToID("_FlashColor");
+
+        float scale = 1f;
+        float phase, t;
+        float lunge, flash, squash;
+        Color flashColor = Color.white;
+        bool flashing;
+        public float HoverHeight => Loco == Locomotion.Flyer ? 0.35f * scale : 0f;
+        /// <summary>How the Extra group moves (set from the species after Setup).</summary>
+        public ExtraAnim ExtraMode;
+
+        public void Setup(Transform model, Locomotion loco, float s)
+        {
+            Model = model;
+            Loco = loco;
+            scale = s;
+            renderers.Clear();
+            ExtraMode = ExtraAnim.None;
+            for (int i = 0; i < GroupCount; i++) groups[i] = null;
+            phase = Random.value * 10f;
+            t = Random.value * 10f;
+        }
+
+        public void Register(BodyGroup g, Transform tr, Renderer r)
+        {
+            groups[(int)g] = tr;
+            baseRot[(int)g] = tr.localRotation;
+            basePos[(int)g] = tr.localPosition;
+            renderers.Add(r);
+        }
+
+        public void SetVisible(bool v)
+        {
+            for (int i = 0; i < renderers.Count; i++) renderers[i].enabled = v;
+        }
+
+        public void Flash(Color c, float duration = 0.12f)
+        {
+            flashColor = c;
+            flash = duration;
+        }
+
+        public void Lunge() => lunge = 1f;
+        public void Squash() => squash = 1f;
+
+        public Transform GetGroup(BodyGroup g) => groups[(int)g];
+
+        /// <summary>Overrides a group's rotation after Animate (e.g. player sword swing).</summary>
+        public void OverrideRot(BodyGroup g, Quaternion r) => SetRot(g, r);
+
+        void SetRot(BodyGroup g, Quaternion r)
+        {
+            var tr = groups[(int)g];
+            if (tr != null) tr.localRotation = baseRot[(int)g] * r;
+        }
+
+        /// <summary>speed = current horizontal speed (m/s). working = do a work animation.</summary>
+        public void Animate(float dt, float speed, bool working, bool sleeping)
+        {
+            if (Model == null) return;
+            t += dt;
+            float norm = Mathf.Clamp01(speed / (3.5f * Mathf.Max(0.6f, scale)));
+            float freq = 3f + speed * 1.8f / Mathf.Max(0.6f, scale);
+            phase += dt * freq;
+            float s = Mathf.Sin(phase), c = Mathf.Cos(phase);
+
+            Vector3 modelPos = Vector3.zero;
+            Vector3 modelScale = Vector3.one * scale;
+            Quaternion modelRot = Quaternion.identity;
+
+            switch (Loco)
+            {
+                case Locomotion.Quadruped:
+                    SetRot(BodyGroup.LegFL, Quaternion.Euler(s * 38f * norm, 0, 0));
+                    SetRot(BodyGroup.LegBR, Quaternion.Euler(s * 38f * norm, 0, 0));
+                    SetRot(BodyGroup.LegFR, Quaternion.Euler(-s * 38f * norm, 0, 0));
+                    SetRot(BodyGroup.LegBL, Quaternion.Euler(-s * 38f * norm, 0, 0));
+                    modelPos.y = Mathf.Abs(c) * 0.05f * scale * norm;
+                    break;
+                case Locomotion.Biped:
+                    if (Human) { AnimateHuman(dt, s, c, norm, working, ref modelPos, ref modelRot); break; }
+                    SetRot(BodyGroup.LegFL, Quaternion.Euler(s * 42f * norm, 0, 0));
+                    SetRot(BodyGroup.LegFR, Quaternion.Euler(-s * 42f * norm, 0, 0));
+                    SetRot(BodyGroup.ArmL, Quaternion.Euler(-s * 35f * norm, 0, 0));
+                    SetRot(BodyGroup.ArmR, Quaternion.Euler(s * 35f * norm, 0, 0));
+                    modelPos.y = Mathf.Abs(c) * 0.06f * scale * norm;
+                    modelRot = Quaternion.Euler(0, 0, s * 4f * norm);
+                    break;
+                case Locomotion.Hopper:
+                {
+                    float hop = norm > 0.05f ? Mathf.Abs(Mathf.Sin(phase * 0.6f)) : 0f;
+                    modelPos.y = hop * 0.3f * scale;
+                    float sq = 1f + (norm > 0.05f ? (0.5f - hop) * 0.25f : Mathf.Sin(t * 2.5f) * 0.04f);
+                    modelScale = new Vector3(scale / Mathf.Sqrt(sq), scale * sq, scale / Mathf.Sqrt(sq));
+                    break;
+                }
+                case Locomotion.Slither:
+                {
+                    // serpentine: body yaw sway, tail counter-sway, slight head lift
+                    float sway = Mathf.Sin(phase * 0.8f) * (6f + 16f * norm);
+                    modelRot = Quaternion.Euler(0, sway, 0);
+                    SetRot(BodyGroup.Tail, Quaternion.Euler(0, -sway * 2.2f, Mathf.Sin(phase * 0.8f + 1f) * 4f));
+                    modelPos.y = Mathf.Abs(Mathf.Sin(phase * 1.6f)) * 0.02f * scale;
+                    break;
+                }
+                case Locomotion.Flyer:
+                    modelPos.y = HoverHeight + Mathf.Sin(t * 2.2f) * 0.08f * scale;
+                    modelRot = Quaternion.Euler(norm * 12f, 0, 0);
+                    break;
+            }
+
+            // wings (flyers always, birds when running)
+            float beat = 1f / Mathf.Max(1f, scale);   // the bigger the kin, the slower and heavier its wingbeat
+            float flap = Loco == Locomotion.Flyer ? Mathf.Sin(t * 13f * beat) * 38f : (norm > 0.7f ? Mathf.Sin(t * 16f * beat) * 30f : Mathf.Sin(t * 2f) * 3f);
+            SetRot(BodyGroup.WingL, Quaternion.Euler(0, 0, -flap));
+            SetRot(BodyGroup.WingR, Quaternion.Euler(0, 0, flap));
+
+            // species effects living in the Extra group (orbiting shards, propellers, floating puffs)
+            var ex = groups[(int)BodyGroup.Extra];
+            if (ex != null && ExtraMode != ExtraAnim.None)
+            {
+                Vector3 exBase = basePos[(int)BodyGroup.Extra];
+                switch (ExtraMode)
+                {
+                    case ExtraAnim.Orbit:
+                        ex.localRotation = Quaternion.Euler(0, t * 80f, 0);
+                        ex.localPosition = exBase + Vector3.up * (Mathf.Sin(t * 1.7f) * 0.03f);
+                        break;
+                    case ExtraAnim.Spin: ex.localRotation = Quaternion.Euler(0, t * (300f + 600f * norm), 0); break;
+                    case ExtraAnim.Bob:
+                        ex.localPosition = exBase + Vector3.up * (0.04f + Mathf.Sin(t * 1.6f) * 0.05f);
+                        ex.localRotation = Quaternion.Euler(0, Mathf.Sin(t * 0.9f) * 20f, 0);
+                        break;
+                    case ExtraAnim.Pulse: ex.localScale = Vector3.one * (1f + Mathf.Sin(t * 3f) * 0.12f); break;
+                }
+            }
+
+            // tail wag + head bob
+            float wag = Mathf.Sin(t * (norm > 0.1f ? 9f : 3f)) * (norm > 0.1f ? 12f : 18f);
+            if (Loco != Locomotion.Slither) SetRot(BodyGroup.Tail, Quaternion.Euler(Mathf.Sin(t * 2f) * 4f, wag, 0));
+            float headPitch = norm * s * 5f + Mathf.Sin(t * 1.7f) * 3f;
+            float headYaw = Mathf.Sin(t * 0.7f) * 10f * (1f - norm);
+
+            if (working && Human)
+            {
+                headPitch += 10f + Mathf.Sin(t * 6f) * 6f;   // AnimateHuman has already set the arms and the lean
+            }
+            else if (working)
+            {
+                headPitch += 18f + Mathf.Sin(t * 10f) * 14f;
+                SetRot(BodyGroup.ArmL, Quaternion.Euler(-40f + Mathf.Sin(t * 10f) * 40f, 0, 0));
+                SetRot(BodyGroup.ArmR, Quaternion.Euler(-40f + Mathf.Sin(t * 10f + 1.5f) * 40f, 0, 0));
+                modelPos.y += Mathf.Abs(Mathf.Sin(t * 10f)) * 0.04f * scale;
+            }
+            if (Human) { headPitch += humanHeadPitch; headYaw += humanHeadYaw; }
+            if (sleeping)
+            {
+                headPitch = 25f;
+                modelScale.y *= 0.92f + Mathf.Sin(t * 1.2f) * 0.03f;
+            }
+
+            if (lunge > 0f)
+            {
+                lunge = Mathf.Max(0f, lunge - dt * 4f);
+                float k = Mathf.Sin(lunge * Mathf.PI);
+                modelPos.z += k * 0.35f * scale;
+                headPitch += k * 25f;
+            }
+            if (squash > 0f)
+            {
+                squash = Mathf.Max(0f, squash - dt * 5f);
+                float k = Mathf.Sin(squash * Mathf.PI) * 0.25f;
+                modelScale = new Vector3(modelScale.x * (1f + k), modelScale.y * (1f - k), modelScale.z * (1f + k));
+            }
+            SetRot(BodyGroup.Head, Quaternion.Euler(headPitch, headYaw, 0));
+
+            // idle breathing
+            float breathe = 1f + Mathf.Sin(t * 2.3f) * 0.015f;
+            Model.localPosition = modelPos;
+            Model.localRotation = modelRot;
+            Model.localScale = new Vector3(modelScale.x, modelScale.y * breathe, modelScale.z);
+
+            UpdateFlash(dt);
+        }
+
+        /// <summary>Leg lengths of the human plan (hip to knee, knee to sole): how far the hips sink when the knees bend.</summary>
+        const float Thigh = 0.37f, Shin = 0.43f;
+
+        /// <summary>
+        /// Walk and run for the human skeleton: thighs swing and each knee folds as its leg comes forward; arms swing
+        /// against the legs with the elbows bent (more the faster you go); the torso twists a little against the hips
+        /// and leans into a run. Crouch folds the legs under the hips and tips the torso forward; Air tucks the knees.
+        /// Everything here is the base pose: the player lays swings, riding and swimming over it afterwards.
+        /// </summary>
+        void AnimateHuman(float dt, float s, float c, float norm, bool working, ref Vector3 modelPos, ref Quaternion modelRot)
+        {
+            crouchNow = Mathf.MoveTowards(crouchNow, Mathf.Clamp01(Crouch), dt * 5f);
+            airNow = Mathf.MoveTowards(airNow, Mathf.Clamp01(Air), dt * 7f);
+            float cr = crouchNow, air = airNow, gait = norm * (1f - air);
+
+            float stride = 40f * gait * (1f - 0.3f * cr);
+            float hipBase = -48f * cr - 24f * air, kneeBase = 6f + 92f * cr + 50f * air;
+            // a knee folds while its leg is travelling forward (the foot clears the ground), then straightens to land
+            float kneeL = kneeBase + 60f * gait * Mathf.Max(0f, -c), kneeR = kneeBase + 60f * gait * Mathf.Max(0f, c);
+            SetRot(BodyGroup.LegFL, Quaternion.Euler(hipBase + s * stride, 0, 0));
+            SetRot(BodyGroup.LegFR, Quaternion.Euler(hipBase - s * stride, 0, 0));
+            SetRot(BodyGroup.ShinL, Quaternion.Euler(kneeL, 0, 0));
+            SetRot(BodyGroup.ShinR, Quaternion.Euler(kneeR, 0, 0));
+            // hips sink by what the bent legs lose in height
+            float hip = (48f * cr + 24f * air) * Mathf.Deg2Rad, shin = (44f * cr + 26f * air) * Mathf.Deg2Rad;
+            modelPos.y += (Mathf.Abs(c) * 0.05f * gait - (Thigh * (1f - Mathf.Cos(hip)) + Shin * (1f - Mathf.Cos(shin))) * (1f - air)) * scale;
+
+            if (working)
+            {
+                // hammering / kneading: both forearms pump from the elbow, the body nods with it
+                float w = Mathf.Sin(t * 6f), w2 = Mathf.Sin(t * 6f + 1.4f);
+                SetRot(BodyGroup.ArmL, Quaternion.Euler(-38f + w * 14f, 0, -6f));
+                SetRot(BodyGroup.ArmR, Quaternion.Euler(-38f + w2 * 14f, 0, 6f));
+                SetRot(BodyGroup.ForearmL, Quaternion.Euler(-58f + w * 30f, 0, 0));
+                SetRot(BodyGroup.ForearmR, Quaternion.Euler(-58f + w2 * 30f, 0, 0));
+                SetRot(BodyGroup.Torso, Quaternion.Euler(14f + w * 4f, 0, 0));
+                humanHeadPitch = 0f; humanHeadYaw = 0f;
+                return;
+            }
+            float swing = 30f * gait;
+            float elbow = 12f + 50f * norm + 14f * cr;
+            SetRot(BodyGroup.ArmL, Quaternion.Euler(-s * swing - 12f * cr, 0, -3f - 22f * air));
+            SetRot(BodyGroup.ArmR, Quaternion.Euler(s * swing - 12f * cr, 0, 3f + 22f * air));
+            SetRot(BodyGroup.ForearmL, Quaternion.Euler(-(elbow + Mathf.Max(0f, s) * 16f * gait), 0, 0));
+            SetRot(BodyGroup.ForearmR, Quaternion.Euler(-(elbow + Mathf.Max(0f, -s) * 16f * gait), 0, 0));
+            float twist = s * 7f * gait, lean = 5f * norm + 26f * cr + Mathf.Sin(t * 2.3f) * 0.8f;
+            SetRot(BodyGroup.Torso, Quaternion.Euler(lean, twist, 0));
+            humanHeadPitch = -18f * cr;   // look ahead, not at the ground
+            humanHeadYaw = -twist;
+            modelRot = Quaternion.Euler(0, 0, s * 2.5f * gait);
+        }
+
+        void UpdateFlash(float dt)
+        {
+            if (flash > 0f)
+            {
+                flash -= dt;
+                if (mpb == null) mpb = new MaterialPropertyBlock();
+                var col = flashColor; col.a = Mathf.Clamp01(flash / 0.12f) * 0.85f;
+                mpb.SetColor(FlashId, col);
+                for (int i = 0; i < renderers.Count; i++) renderers[i].SetPropertyBlock(mpb);
+                flashing = true;
+            }
+            else if (flashing)
+            {
+                flashing = false;
+                for (int i = 0; i < renderers.Count; i++) renderers[i].SetPropertyBlock(null);
+            }
+        }
+    }
+}

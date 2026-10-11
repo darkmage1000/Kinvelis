@@ -1,0 +1,242 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_153_rotgrub
+  m_EditorClassIdentifier: 
+  id: rotgrub
+  dexNumber: 153
+  displayName: Rotgrub
+  lore: A fat pale grub that chews through dead wood and dreams of being something
+    with wings. It has been dreaming a very long time.
+  personality: Hopeful, slow, eats when anxious.
+  element1: 8
+  element2: 6
+  rarity: 0
+  starter: 0
+  bossOnly: 0
+  role: 
+  biomes: 16
+  spawnTime: 0
+  nearWater: 0
+  spawnCondition: 0
+  spawnWeight: 2.2
+  minGroup: 1
+  maxGroup: 3
+  temperament: 1
+  baseHp: 58
+  baseAtk: 9
+  baseDef: 12
+  walkSpeed: 1.8
+  runSpeed: 4.8
+  size: 0.7
+  locomotion: 4
+  captureMod: 1
+  abilities:
+  - acid_bite
+  - mud_shot
+  rareAbilities:
+  - roll_crush
+  work:
+  - type: 2
+    level: 2
+  - type: 5
+    level: 1
+  perk: 2
+  overworldRole: 'Companion: +50% stone and ore from rocks.'
+  mountable: 0
+  mountSpeed: 11
+  mountJump: 8
+  mountSeat: {x: 0, y: 1, z: 0}
+  drops:
+  - itemId: gel
+    min: 1
+    max: 2
+    chance: 0.9
+  - itemId: stone
+    min: 1
+    max: 1
+    chance: 0.3
+  palette:
+    primary: {r: 0.84705883, g: 0.8156863, b: 0.65882355, a: 1}
+    secondary: {r: 0.6901961, g: 0.65882355, b: 0.47058824, a: 1}
+    accent: {r: 0.47843137, g: 0.2901961, b: 0.1882353, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.7529412, g: 1, b: 0.3764706, a: 1}
+  shimmerPalette:
+    primary: {r: 0.6674824, g: 0.8353419, b: 0.9270588, a: 1}
+    secondary: {r: 0.46901515, g: 0.63792217, b: 0.7401961, a: 1}
+    accent: {r: 0.21639027, g: 0.57843137, b: 0.5318552, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.35882354, g: 0.41253737, b: 1, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  parts:
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.26, z: 0}
+    scale: {x: 0.48, y: 0.4416, z: 0.528}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.2312, z: -0.26}
+    scale: {x: 0.408, y: 0.37536, z: 0.4488}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 8
+    slot: 0
+    pos: {x: 0, y: 0.2024, z: -0.52}
+    scale: {x: 0.336, y: 0.30912, z: 0.3696}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 8
+    slot: 1
+    pos: {x: 0, y: 0.17359999, z: -0.78}
+    scale: {x: 0.264, y: 0.24288, z: 0.2904}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 8
+    slot: 0
+    pos: {x: 0, y: 0.14479999, z: -1.04}
+    scale: {x: 0.192, y: 0.17664, z: 0.21120001}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 2
+    pos: {x: 0, y: 0.28, z: 0.2}
+    scale: {x: 0.4, y: 0.38, z: 0.34}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 5
+    pos: {x: 0.103999995, y: 0.32, z: 0.36}
+    scale: {x: 0.07, y: 0.0805, z: 0.049}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 5
+    pos: {x: -0.103999995, y: 0.32, z: 0.36}
+    scale: {x: 0.07, y: 0.0805, z: 0.049}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: 0.118999995, y: 0.3375, z: 0.381}
+    scale: {x: 0.0245, y: 0.0245, z: 0.0245}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 4
+    pos: {x: -0.118999995, y: 0.3375, z: 0.381}
+    scale: {x: 0.0245, y: 0.0245, z: 0.0245}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 3
+    group: 1
+    slot: 5
+    pos: {x: 0.08, y: 0.18, z: 0.38}
+    scale: {x: 0.05, y: 0.12, z: 0.05}
+    rot: {x: 110, y: 0, z: 20}
+  - shape: 3
+    group: 1
+    slot: 5
+    pos: {x: -0.08, y: 0.18, z: 0.38}
+    scale: {x: 0.05, y: 0.12, z: 0.05}
+    rot: {x: 110, y: -0, z: -20}
+  - shape: 3
+    group: 0
+    slot: 2
+    pos: {x: 0.17, y: 0.030000001, z: 0}
+    scale: {x: 0.052500002, y: 0.075, z: 0.052500002}
+    rot: {x: 180, y: 0, z: 0}
+  - shape: 3
+    group: 0
+    slot: 2
+    pos: {x: -0.17, y: 0.030000001, z: 0}
+    scale: {x: 0.052500002, y: 0.075, z: 0.052500002}
+    rot: {x: 180, y: -0, z: -0}
+  - shape: 3
+    group: 0
+    slot: 2
+    pos: {x: 0.17, y: 0.040000003, z: -0.25}
+    scale: {x: 0.07, y: 0.1, z: 0.07}
+    rot: {x: 180, y: 0, z: 0}
+  - shape: 3
+    group: 0
+    slot: 2
+    pos: {x: -0.17, y: 0.040000003, z: -0.25}
+    scale: {x: 0.07, y: 0.1, z: 0.07}
+    rot: {x: 180, y: -0, z: -0}
+  - shape: 3
+    group: 0
+    slot: 2
+    pos: {x: 0.17, y: 0.030000001, z: -0.5}
+    scale: {x: 0.052500002, y: 0.075, z: 0.052500002}
+    rot: {x: 180, y: 0, z: 0}
+  - shape: 3
+    group: 0
+    slot: 2
+    pos: {x: -0.17, y: 0.030000001, z: -0.5}
+    scale: {x: 0.052500002, y: 0.075, z: 0.052500002}
+    rot: {x: 180, y: -0, z: -0}
+  - shape: 0
+    group: 0
+    slot: 6
+    pos: {x: 0.2, y: 0.32, z: -0.26}
+    scale: {x: 0.08, y: 0.08, z: 0.08}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 6
+    pos: {x: -0.2, y: 0.32, z: -0.26}
+    scale: {x: 0.08, y: 0.08, z: 0.08}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 0
+    group: 8
+    slot: 6
+    pos: {x: 0.14, y: 0.26, z: -0.8}
+    scale: {x: 0.07, y: 0.07, z: 0.07}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 8
+    slot: 6
+    pos: {x: -0.14, y: 0.26, z: -0.8}
+    scale: {x: 0.07, y: 0.07, z: 0.07}
+    rot: {x: 0, y: -0, z: -0}
+  pivots:
+  - group: 8
+    pivot: {x: 0, y: 0.26, z: -0.39}
+  - group: 1
+    pivot: {x: 0, y: 0.24, z: 0.06}
+  regional:
+    enabled: 0
+    biome: 0
+    formName: 
+    element2: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  extraAnim: 0
+  aura: 0

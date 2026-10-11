@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d410b7e3ca321b469fb7773a4c2b8dc, type: 3}
+  m_Name: Item_blightscale_seed
+  m_EditorClassIdentifier: 
+  id: blightscale_seed
+  displayName: Blightscale Seed
+  description: Wrapped in a shed scale of Noxaris. It binds nothing else, works at
+    any level, and once the legend is at 10% health or less it cannot fail (ordinary
+    seeds top out near 55% there). Readied for you when the legend appears.
+  category: 4
+  maxStack: 10
+  iconColor: {r: 0.72156864, g: 1, b: 0.2509804, a: 1}
+  iconGlyph: Ls
+  foodValue: 0
+  healValue: 0
+  kinHealValue: 0
+  bonusInventorySlots: 0
+  mealMods: []
+  mealMinutes: 0
+  toolKind: 0
+  toolPower: 0
+  weaponDamage: 0
+  captureMult: 2.4
+  legendFor: noxaris
+  shimmerSeed: 0
+  equipSlot: 0
+  rarity: 0
+  mods: []
+  unique: 0
+  gearStyle: 0
+  trimColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  alphaDrop: 0

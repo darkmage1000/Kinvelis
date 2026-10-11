@@ -1,0 +1,176 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f6e9aa7862a5349a754976c586dbb9, type: 3}
+  m_Name: Species_014_zapfly
+  m_EditorClassIdentifier: 
+  id: zapfly
+  dexNumber: 14
+  displayName: Zapfly
+  lore: A dragonfly that hums at the same pitch as a thunderstorm. Its wings leave
+    a tingle in the air.
+  personality: Twitchy, inquisitive, loves shiny puddles.
+  element1: 5
+  element2: 0
+  rarity: 0
+  starter: 0
+  bossOnly: 0
+  role: 
+  biomes: 1
+  spawnTime: 0
+  nearWater: 0
+  spawnCondition: 0
+  spawnWeight: 2.2
+  minGroup: 1
+  maxGroup: 3
+  temperament: 2
+  baseHp: 40
+  baseAtk: 11
+  baseDef: 7
+  walkSpeed: 3
+  runSpeed: 7.5
+  size: 0.75
+  locomotion: 3
+  captureMod: 1
+  abilities:
+  - static_dart
+  - spark_peck
+  rareAbilities:
+  - seed_gust
+  work:
+  - type: 9
+    level: 1
+  - type: 3
+    level: 1
+  - type: 10
+    level: 1
+  perk: 5
+  overworldRole: 'Companion: a crackling light at night.'
+  mountable: 0
+  mountSpeed: 11
+  mountJump: 8
+  mountSeat: {x: 0, y: 1, z: 0}
+  drops:
+  - itemId: fiber
+    min: 1
+    max: 1
+    chance: 0.6
+  - itemId: crystal
+    min: 1
+    max: 1
+    chance: 0.05
+  palette:
+    primary: {r: 0.84705883, g: 0.9098039, b: 0.22745098, a: 1}
+    secondary: {r: 0.22745098, g: 0.41568628, b: 0.84705883, a: 1}
+    accent: {r: 0.84705883, g: 0.9411765, b: 1, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.9098039, b: 0.2901961, a: 1}
+  shimmerPalette:
+    primary: {r: 1, g: 0.3529412, b: 0.8156863, a: 1}
+    secondary: {r: 0.41568628, g: 0.16470589, b: 0.84705883, a: 1}
+    accent: {r: 1, g: 0.8784314, b: 0.972549, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 1, b: 1, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  parts:
+  - shape: 0
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 1, z: 0.18}
+    scale: {x: 0.18, y: 0.17, z: 0.22}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 4
+    group: 8
+    slot: 1
+    pos: {x: 0, y: 1, z: -0.28}
+    scale: {x: 0.09, y: 0.72, z: 0.09}
+    rot: {x: 90, y: 0, z: 0}
+  - shape: 0
+    group: 8
+    slot: 6
+    pos: {x: 0, y: 1, z: -0.62}
+    scale: {x: 0.07, y: 0.07, z: 0.07}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 1
+    pos: {x: 0, y: 1.02, z: 0.35}
+    scale: {x: 0.2, y: 0.18, z: 0.18}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 6
+    pos: {x: 0.07, y: 1.05, z: 0.4}
+    scale: {x: 0.1, y: 0.11, z: 0.09}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 1
+    slot: 6
+    pos: {x: -0.07, y: 1.05, z: 0.4}
+    scale: {x: 0.1, y: 0.11, z: 0.09}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 1
+    group: 10
+    slot: 2
+    pos: {x: 0.3, y: 1.05, z: 0.2}
+    scale: {x: 0.5, y: 0.02, z: 0.13}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 9
+    slot: 2
+    pos: {x: -0.3, y: 1.05, z: 0.2}
+    scale: {x: 0.5, y: 0.02, z: 0.13}
+    rot: {x: 0, y: -0, z: -0}
+  - shape: 1
+    group: 10
+    slot: 2
+    pos: {x: 0.27, y: 1.04, z: 0.04}
+    scale: {x: 0.44, y: 0.02, z: 0.11}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 9
+    slot: 2
+    pos: {x: -0.27, y: 1.04, z: 0.04}
+    scale: {x: 0.44, y: 0.02, z: 0.11}
+    rot: {x: 0, y: -0, z: -0}
+  pivots:
+  - group: 1
+    pivot: {x: 0, y: 1, z: 0.28}
+  - group: 10
+    pivot: {x: 0.05, y: 1.04, z: 0.12}
+  - group: 9
+    pivot: {x: -0.05, y: 1.04, z: 0.12}
+  - group: 8
+    pivot: {x: 0, y: 1, z: 0.05}
+  regional:
+    enabled: 0
+    biome: 0
+    formName: 
+    element2: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  extraAnim: 0
+  aura: 0

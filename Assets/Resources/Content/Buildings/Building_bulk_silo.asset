@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1add58a51849408438b7235809d63b65, type: 3}
+  m_Name: Building_bulk_silo
+  m_EditorClassIdentifier: 
+  id: bulk_silo
+  displayName: Bulk Silo
+  description: +60 base storage slots in one tall tower.
+  cost:
+  - itemId: wood
+    count: 40
+  - itemId: stone
+    count: 20
+  - itemId: ingot
+    count: 6
+  unlockLevel: 1
+  footprint: 1.3
+  isCore: 0
+  workType: 0
+  secondaryWorkType: 0
+  workerSlots: 0
+  outputItem: 
+  outputCount: 1
+  workPerUnit: 10
+  inputItem: 
+  inputCount: 0
+  bufferCap: 30
+  storageSlots: 60
+  station: 0
+  boostPercent: 0
+  feeds: 0
+  beds: 0
+  palette:
+    primary: {r: 0.65882355, g: 0.45490196, b: 0.24705882, a: 1}
+    secondary: {r: 0.47843137, g: 0.32156864, b: 0.1882353, a: 1}
+    accent: {r: 0.8509804, g: 0.7529412, b: 0.56078434, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.827451, b: 0.41568628, a: 1}
+  parts:
+  - shape: 2
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.2, z: 0}
+    scale: {x: 2.4, y: 0.4, z: 2.4}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 2, z: 0}
+    scale: {x: 2, y: 3.4, z: 2}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 1.2, z: 0}
+    scale: {x: 2.08, y: 0.14, z: 2.08}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 2.8, z: 0}
+    scale: {x: 2.08, y: 0.14, z: 2.08}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 3
+    group: 0
+    slot: 2
+    pos: {x: 0, y: 4.3, z: 0}
+    scale: {x: 2.5, y: 1.2, z: 2.5}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.9, z: 1}
+    scale: {x: 0.7, y: 1.2, z: 0.08}
+    rot: {x: 0, y: 0, z: 0}
