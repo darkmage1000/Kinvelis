@@ -112,6 +112,8 @@ namespace Wildbond
         public static int Slot = 0;
         /// <summary>Non-null => create a brand-new world in Slot with these settings (overwrites the slot).</summary>
         public static WorldSettings NewWorld;
+        /// <summary>The explorer made in the character creator for that new world (null = the classic look).</summary>
+        public static Appearance NewLook;
         /// <summary>True once the main menu has handed off (false when Main.unity is played directly in the editor).</summary>
         public static bool FromMenu;
         public const string WorldScene = "Main";

@@ -152,11 +152,119 @@ namespace Wildbond
                 mr.receiveShadows = true;
                 rig.Register(grp, go.transform, mr);
             }
+            ApplyLook(rig, d, mat);
             return rig;
         }
 
-        /// <summary>Animated model from an arbitrary plan (used for the player avatar).</summary>
-        public static CreatureRig BuildCustom(string key, BodyPart[] parts, GroupPivot[] pivots, Palette pal, Transform parent, Material mat, Locomotion loco, float scale)
+        // ------------------------------------------------------------ one kin's own look
+        static readonly Dictionary<string, Mesh> marks = new Dictionary<string, Mesh>();
+
+        /// <summary>Gives a rig the look of one particular kin (KinLook): proportions, coat tint, marking.</summary>
+        public static void ApplyLook(CreatureRig rig, CreatureData d, Material mat)
+        {
+            if (rig == null || d == null || d.Species == null) return;
+            var l = d.Look;
+            Mesh mark = null; var grp = BodyGroup.Body;
+            if (l.mark > 0 && d.Species.rarity != Rarity.Legendary && !d.Species.bossOnly) mark = GetMark(d, l.mark, out grp);
+            rig.SetLook(l, mark, grp, mat);
+        }
+
+        static bool Round(PartShape s) => s == PartShape.Sphere || s == PartShape.Capsule || s == PartShape.Rock;
+
+        /// <summary>The biggest rounded part of a group: what a marking is painted on (-1 = the kind has none).</summary>
+        static int MarkHost(SpeciesDef sp, BodyGroup g)
+        {
+            int best = -1; float vol = 0f;
+            for (int i = 0; i < sp.parts.Length; i++)
+            {
+                var p = sp.parts[i];
+                if (p.group != g || !Round(p.shape)) continue;
+                float v = p.scale.x * p.scale.y * p.scale.z;
+                if (v > vol) { vol = v; best = i; }
+            }
+            return best;
+        }
+
+        /// <summary>Can a kin of this kind show this marking at all? (KinLook.Describe leaves it out if not.)</summary>
+        public static bool CanMark(SpeciesDef sp, int mark)
+        {
+            if (sp == null || sp.parts == null || mark <= 0 || sp.rarity == Rarity.Legendary || sp.bossOnly) return false;
+            return MarkHost(sp, mark == 4 ? BodyGroup.Head : BodyGroup.Body) >= 0;
+        }
+
+        /// <summary>
+        /// A marking as a thin overlay: flat discs laid on the surface of the kin's biggest body part (spots, a stripe
+        /// along the back) or head (a star on the forehead), coloured from that part's own colour. One mesh per model
+        /// and marking, shared by every kin that has it.
+        /// </summary>
+        static Mesh GetMark(CreatureData d, int mark, out BodyGroup grp)
+        {
+            grp = mark == 4 ? BodyGroup.Head : BodyGroup.Body;
+            string key = d.ModelKey + "|m" + mark;
+            if (marks.TryGetValue(key, out var mesh)) return mesh;
+            var sp = d.Species;
+            int host = MarkHost(sp, grp);
+            if (host < 0) { marks[key] = null; return null; }
+            var p = sp.parts[host];
+            Color baseCol = d.Palette.Get(p.slot);
+            Color col = mark == 1 ? (Color)Darker(baseCol, 0.5f)
+                      : mark == 3 ? (Color)Darker(Color.Lerp(baseCol, d.Palette.secondary, 0.5f), 0.6f)
+                      : Color.Lerp(baseCol, Color.white, mark == 4 ? 0.9f : 0.72f);
+            Vector3 r = p.scale * 0.5f, centre = p.pos - PivotOf(sp.pivots, grp);
+            Quaternion R = Quaternion.Euler(p.rot), Rinv = Quaternion.Inverse(R);
+            float unit = Mathf.Min(r.x, Mathf.Min(r.y, r.z));
+            var mk = new MeshBuilder();
+
+            // a disc on the surface in a direction given in model space (up = the kin's back, +z = its front)
+            void Disc(Vector3 dir, float size, float stretchZ)
+            {
+                Vector3 u = (Rinv * dir).normalized;
+                float k = 1f / Mathf.Sqrt(u.x * u.x / (r.x * r.x) + u.y * u.y / (r.y * r.y) + u.z * u.z / (r.z * r.z));
+                Vector3 s = u * k;                                                             // where that ray leaves the ellipsoid
+                Vector3 n = new Vector3(s.x / (r.x * r.x), s.y / (r.y * r.y), s.z / (r.z * r.z)).normalized;
+                float lift = p.shape == PartShape.Capsule ? unit * 0.16f : unit * 0.03f;   // a capsule is fatter than the ellipsoid inside it
+                Vector3 pos = centre + R * (s + n * lift);
+                Vector3 nw = R * n;
+                Quaternion rot = Quaternion.LookRotation(Vector3.ProjectOnPlane(Vector3.forward, nw).sqrMagnitude > 0.01f ? Vector3.ProjectOnPlane(Vector3.forward, nw) : Vector3.right, nw);
+                float dsz = unit * size;
+                mk.Sphere(Matrix4x4.TRS(pos, rot, new Vector3(dsz, dsz * 0.3f, dsz * stretchZ)), col, 8, 4);
+            }
+
+            switch (mark)
+            {
+                case 1:
+                case 2:
+                    Disc(new Vector3(0.38f, 0.9f, 0.25f), 0.52f, 1f);
+                    Disc(new Vector3(-0.45f, 0.8f, -0.1f), 0.62f, 1f);
+                    Disc(new Vector3(0.12f, 0.75f, -0.62f), 0.46f, 1f);
+                    Disc(new Vector3(-0.2f, 0.7f, 0.66f), 0.4f, 1f);
+                    Disc(new Vector3(0.78f, 0.5f, -0.3f), 0.44f, 1f);
+                    Disc(new Vector3(-0.8f, 0.42f, 0.3f), 0.36f, 1f);
+                    break;
+                case 3:
+                    for (int i = -2; i <= 2; i++) Disc(new Vector3(0f, 1f, i * 0.42f), 0.44f, 1.7f);
+                    break;
+                case 4:
+                    Disc(new Vector3(0f, 0.62f, 0.78f), 0.5f, 1f);
+                    Disc(new Vector3(0f, 0.86f, 0.5f), 0.26f, 1.3f);
+                    break;
+            }
+            mesh = mk.VertexCount > 0 ? mk.ToMesh($"{sp.id}_mark{mark}") : null;
+            marks[key] = mesh;
+            return mesh;
+        }
+
+        /// <summary>Forgets a custom model's meshes (the character creator makes a new one for every change).</summary>
+        public static void DropCustom(string key)
+        {
+            if (key == null || !cache.TryGetValue(key, out var meshes)) return;
+            foreach (var m in meshes) if (m != null) Object.Destroy(m);
+            cache.Remove(key);
+        }
+
+        /// <summary>Animated model from an arbitrary plan (the explorer and every human NPC).</summary>
+        /// <param name="colors">Optional: one colour per part, used instead of the palette (the explorer's own look has more colours than a palette holds).</param>
+        public static CreatureRig BuildCustom(string key, BodyPart[] parts, GroupPivot[] pivots, Palette pal, Transform parent, Material mat, Locomotion loco, float scale, Color[] colors = null)
         {
             if (!cache.TryGetValue(key, out var meshes))
             {
@@ -166,7 +274,8 @@ namespace Wildbond
                     mb.Clear();
                     var grp = (BodyGroup)g;
                     Vector3 pivot = PivotOf(pivots, grp);
-                    foreach (var p in parts) if (p.group == grp) AddPart(mb, p, pal.Get(p.slot), pivot);
+                    for (int i = 0; i < parts.Length; i++)
+                        if (parts[i].group == grp) AddPart(mb, parts[i], colors != null ? colors[i] : pal.Get(parts[i].slot), pivot);
                     if (mb.VertexCount > 0) meshes[g] = mb.ToMesh($"{key}_{grp}");
                 }
                 cache[key] = meshes;

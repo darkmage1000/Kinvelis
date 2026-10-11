@@ -325,6 +325,7 @@ namespace Wildbond
             if (d.shimmer) ShimmerSection(p, d);
             Para(p, $"<i>{sp.lore}</i>\nPersonality: {sp.personality}", 22);
             Para(p, $"HP {Mathf.CeilToInt(d.CurrentHp)}/{Mathf.CeilToInt(d.MaxHp)}    ATK {d.Atk:0}    DEF {d.Def:0}    SPD x{d.SpeedMul:0.00}\nXP {d.xp}/{CreatureData.XpToNext(d.level)}", 24, Color.white);
+            Para(p, "Looks: " + d.Look.Describe(sp) + "  <size=18>(its own; eggs take after their parents)</size>", 21, Color.white);
             Para(p, "Quality: " + Aptitude.Summary(d) + $"\n<size=19>Combat x{d.CombatAptMul:0.00} stats  ·  Work x{d.WorkAptMul:0.00} speed  ·  Travel x{d.TravelAptMul:0.00} speed, x{d.MountStaminaMul:0.00} riding stamina</size>", 22, Color.white);
 
             var traits = new List<string>();
@@ -540,6 +541,7 @@ namespace Wildbond
             var gm = GameManager.I;
             var list = TrackedList(content);
             Header(list, "Settings");
+            UIFactory.Size(UIFactory.Button(list, "MY LOOK  (body, hair, outfit, colours)", OpenLook, new Color(0.5f, 0.35f, 0.7f), 28), 80);
             var q = UIFactory.HRow(list, 84, 12);
             var ql = UIFactory.Label(q.transform, "Graphics", 26, Color.white); UIFactory.Size(ql, 80, 300);
             foreach (QualityTier t in System.Enum.GetValues(typeof(QualityTier)))

@@ -177,12 +177,24 @@ namespace Wildbond
             if (wantHide != hatHidden)
             {
                 hatHidden = wantHide;
-                // rebuild the base body without (or with) the ranger hat
-                if (Rig != null && Rig.Model != null) Destroy(Rig.Model.gameObject);
-                Rig = ModelBuilder.BuildCustom(hatHidden ? "player_nohat" : "player", hatHidden ? PlayerLook.PartsNoHat : PlayerLook.Parts, PlayerLook.Pivots, PlayerLook.Palette, transform, RenderAssets.Creature, Locomotion.Biped, 1f);
-                weaponVisual = null; weaponVisualId = null;
-                gearObjects.Clear();
+                // rebuild the base body without (or with) what the explorer wears on the head
+                RebuildBody();
             }
+            ArmorVisuals.Apply(Rig, Stats, gearObjects);
+        }
+
+        void RebuildBody()
+        {
+            if (Rig != null && Rig.Model != null) Destroy(Rig.Model.gameObject);
+            Rig = AvatarLook.BuildRig(Stats.look, hatHidden, transform);
+            weaponVisual = null; weaponVisualId = null;
+            gearObjects.Clear();
+        }
+
+        /// <summary>The explorer's look was changed (Gear tab > CHANGE LOOK): build the new body and put the gear back on it.</summary>
+        public void RebuildLook()
+        {
+            RebuildBody();
             ArmorVisuals.Apply(Rig, Stats, gearObjects);
         }
         public Element Element1 => Element.Normal;
@@ -192,7 +204,8 @@ namespace Wildbond
         {
             Stats = stats;
             cam = camRig;
-            Rig = ModelBuilder.BuildCustom("player", PlayerLook.Parts, PlayerLook.Pivots, PlayerLook.Palette, transform, RenderAssets.Creature, Locomotion.Biped, 1f);
+            if (Stats.look == null) Stats.look = new Appearance();
+            Rig = AvatarLook.BuildRig(Stats.look, false, transform);
         }
 
         public void Teleport(Vector3 p, float yaw)

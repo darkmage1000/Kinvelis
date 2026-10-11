@@ -11,6 +11,10 @@ namespace Wildbond
     {
         int selectedGearSlot = -1;
         GearPreview gearPreview;
+        bool gearLookMode;
+
+        /// <summary>Opens the character creator in the menu (Settings > MY LOOK, for worlds where the Gear tab is hidden).</summary>
+        public void OpenLook() { gearLookMode = true; selectedGearSlot = -1; Open(MenuTab.Gear); }
 
         static Color RarityCol(Rarity r) => RarityInfo.Color(r);
 
@@ -54,7 +58,34 @@ namespace Wildbond
             var right = UIFactory.Rect(content, "Right");
             right.Anchors(new Vector2(0.56f, 0), new Vector2(1, 1), new Vector2(8, 16), new Vector2(-16, -16));
             var list = TrackedList(right);
-            if (selectedGearSlot < 0) { GearOverview(list, stats); RestoreScroll(); return; }
+            if (gearLookMode)
+            {
+                var head = UIFactory.HRow(list, 84);
+                UIFactory.Size(UIFactory.Label(head.transform, "<b>Your look</b>", 34, Color.white), 84, 190);
+                UIFactory.Size(UIFactory.Button(head.transform, "SURPRISE ME", () =>
+                {
+                    stats.look = Appearance.Random();
+                    GameManager.I.Player.RebuildLook();
+                    Rebuild();
+                }, new Color(0.5f, 0.35f, 0.7f), 26), 84, 230);
+                UIFactory.Size(UIFactory.Button(head.transform, "DONE", () =>
+                {
+                    gearLookMode = false;
+                    if (WorldRules.Current.simpleControls) Open(MenuTab.Settings); else Rebuild();
+                }, new Color(0.2f, 0.55f, 0.42f), 30), 84, 180);
+                LookEditor.Build(list, stats.look, () =>
+                {
+                    GameManager.I.Player.RebuildLook();
+                    gearPreview.Sync(stats);
+                });
+                RestoreScroll();
+                return;
+            }
+            if (selectedGearSlot < 0)
+            {
+                UIFactory.Size(UIFactory.Button(list, "CHANGE LOOK  (body, hair, outfit, colours)", () => { gearLookMode = true; Rebuild(); }, new Color(0.5f, 0.35f, 0.7f), 28), 80);
+                GearOverview(list, stats); RestoreScroll(); return;
+            }
 
             int slot = selectedGearSlot;
             var kind = GearSlots.Kind[slot];
@@ -234,6 +265,7 @@ namespace Wildbond
         readonly List<GameObject> gear = new List<GameObject>();
         int version = -1;
         bool hat = true;
+        string lookKey;
         float yaw = 200f;
 
         public GearPreview()
@@ -261,15 +293,17 @@ namespace Wildbond
 
         public void Sync(PlayerStats stats)
         {
-            if (stats.GearVersion == version && rig != null) return;
-            version = stats.GearVersion;
             bool wantHat = string.IsNullOrEmpty(stats.gear[GearSlots.Head]);
-            if (rig == null || wantHat != hat)
+            string key = stats.look != null ? stats.look.Key(!wantHat) : null;
+            if (stats.GearVersion == version && rig != null && key == lookKey) return;
+            version = stats.GearVersion;
+            if (rig == null || wantHat != hat || key != lookKey)
             {
                 hat = wantHat;
+                lookKey = key;
                 if (rig != null && rig.Model != null) Object.Destroy(rig.Model.gameObject);
                 gear.Clear();
-                rig = ModelBuilder.BuildCustom(hat ? "player" : "player_nohat", hat ? PlayerLook.Parts : PlayerLook.PartsNoHat, PlayerLook.Pivots, PlayerLook.Palette, root.transform, RenderAssets.Creature, Locomotion.Biped, 1f);
+                rig = AvatarLook.BuildRig(stats.look, !hat, root.transform);
                 SetLayer(rig.Model);
             }
             ArmorVisuals.Apply(rig, stats, gear);

@@ -76,6 +76,13 @@ namespace Wildbond
             }
         }
 
+        /// <summary>This kin's own size, build, coat tint and marking (see KinLook). Null in old saves: read it through <see cref="Look"/>.</summary>
+        public KinLook look;
+        public KinLook Look
+        {
+            get { if (look == null || !look.rolled) look = KinLook.FromUid(uid); return look; }
+        }
+
         public float SizeScale => (alpha ? 1.55f : 1f) * (mutation == Mutation.Giant ? 1.3f : 1f) * (1f + 0.12f * stage);
 
         public string ModelKey => $"{speciesId}|{(shimmer ? 1 + shimmerVariant : 0)}{(regional ? 1 : 0)}{(alpha ? 1 : 0)}{(int)mutation}{stage}";

@@ -18,6 +18,13 @@ namespace Wildbond
             Creature = Load("WB_Creature", "Wildbond/VertexLit");
             if (Creature.HasProperty("_Rim")) Creature.SetFloat("_Rim", 0.4f);
             if (Creature.HasProperty("_VertexGlow")) Creature.SetFloat("_VertexGlow", 1.15f);
+            // kin and people are drawn with a dark outline on Medium and High: the same material, a shader with one more pass
+            plainShader = Creature.shader;
+            var om = Resources.Load<Material>("Materials/WB_CreatureOutline");
+            outlineShader = om != null ? om.shader : Shader.Find("Wildbond/VertexLitOutline");
+            GameEvents.QualityChanged -= ApplyOutline;
+            GameEvents.QualityChanged += ApplyOutline;
+            ApplyOutline();
             Building = Load("WB_Building", "Wildbond/VertexLit");
             Ghost = Load("WB_Ghost", "Wildbond/VertexLit");
             if (Ghost.HasProperty("_Emission")) Ghost.SetFloat("_Emission", 0.6f);
@@ -28,6 +35,19 @@ namespace Wildbond
             var soft = SoftDot();
             SetupParticle(Particle, false, soft);
             SetupParticle(ParticleAdd, true, soft);
+        }
+
+        static Shader plainShader, outlineShader;
+        /// <summary>Player setting (Settings > Outlines); Low quality never draws them.</summary>
+        public static bool OutlinesWanted = true;
+
+        public static void ApplyOutline()
+        {
+            if (Creature == null || plainShader == null) return;
+            bool on = OutlinesWanted && outlineShader != null && QualityProfile.Current.tier != QualityTier.Low;
+            var want = on ? outlineShader : plainShader;
+            if (Creature.shader != want) Creature.shader = want;
+            if (Creature.HasProperty("_Outline")) Creature.SetFloat("_Outline", 1f);
         }
 
         /// <summary>Configures a URP particle material as transparent (runtime-safe, no editor GUI needed).</summary>

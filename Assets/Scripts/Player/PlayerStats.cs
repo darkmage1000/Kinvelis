@@ -24,6 +24,8 @@ namespace Wildbond
     public class PlayerStats
     {
         public const int MaxSkillRank = 10;
+        /// <summary>What the explorer looks like (character creator; changeable from the Gear tab).</summary>
+        public Appearance look = new Appearance();
         public const int SkillCount = 9;
         /// <summary>Skills offered on level-up (in display order).</summary>
         public static readonly PlayerSkill[] ActiveSkills = { PlayerSkill.Vitality, PlayerSkill.Endurance, PlayerSkill.Toughness, PlayerSkill.Warding, PlayerSkill.Craftsmanship };

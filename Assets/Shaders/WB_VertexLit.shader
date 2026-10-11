@@ -10,6 +10,8 @@ Shader "Wildbond/VertexLit"
         _Rim ("Rim", Range(0, 1)) = 0.25
         _Wrap ("Light Wrap", Range(0, 1)) = 0.45
         _FlashColor ("Flash Color", Color) = (1,1,1,0)
+        _Coat ("Coat (hue turn, saturation, brightness)", Vector) = (0,1,1,0)
+        _Outline ("Outline width (used by Wildbond/VertexLitOutline)", Range(0, 3)) = 1
     }
     SubShader
     {
@@ -41,6 +43,8 @@ Shader "Wildbond/VertexLit"
                 half _Rim;
                 half _Wrap;
                 half4 _FlashColor;
+                half4 _Coat;
+                half _Outline;
             CBUFFER_END
 
             struct Attributes
@@ -69,6 +73,16 @@ Shader "Wildbond/VertexLit"
                 o.positionWS = p.positionWS;
                 o.normalWS = TransformObjectToWorldNormal(v.normalOS);
                 half4 vc = v.color;
+                // one kin's own coat (CreatureRig.SetLook): turn the hue about the grey axis, then saturation and brightness
+                if (_Coat.x != 0.0)
+                {
+                    half ang = _Coat.x * 6.2831853;
+                    half cs = cos(ang), sn = sin(ang);
+                    half3 k = half3(0.57735, 0.57735, 0.57735);
+                    vc.rgb = vc.rgb * cs + cross(k, vc.rgb) * sn + k * (dot(k, vc.rgb) * (1.0 - cs));
+                }
+                half grey = dot(vc.rgb, half3(0.3, 0.59, 0.11));
+                vc.rgb = saturate(lerp(half3(grey, grey, grey), vc.rgb, _Coat.y) * _Coat.z);
             #if !defined(UNITY_COLORSPACE_GAMMA)
                 vc.rgb = SRGBToLinear(vc.rgb); // palettes are authored in sRGB
             #endif
@@ -128,6 +142,8 @@ Shader "Wildbond/VertexLit"
                 half _Rim;
                 half _Wrap;
                 half4 _FlashColor;
+                half4 _Coat;
+                half _Outline;
             CBUFFER_END
 
             float3 _LightDirection;
@@ -185,6 +201,8 @@ Shader "Wildbond/VertexLit"
                 half _Rim;
                 half _Wrap;
                 half4 _FlashColor;
+                half4 _Coat;
+                half _Outline;
             CBUFFER_END
 
             struct Attributes { float4 positionOS : POSITION; UNITY_VERTEX_INPUT_INSTANCE_ID };

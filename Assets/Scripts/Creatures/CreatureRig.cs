@@ -25,6 +25,12 @@ namespace Wildbond
         readonly List<Renderer> renderers = new List<Renderer>(10);
         static MaterialPropertyBlock mpb;
         static readonly int FlashId = Shader.PropertyToID("_FlashColor");
+        static readonly int CoatId = Shader.PropertyToID("_Coat");
+        // this individual's look (KinLook): body proportions, coat tint, marking overlay
+        Vector3 lookScale = Vector3.one;
+        Vector4 coat = new Vector4(0f, 1f, 1f, 0f);
+        bool hasCoat;
+        GameObject markGo; MeshFilter markMf; MeshRenderer markMr;
 
         float scale = 1f;
         float phase, t;
@@ -43,6 +49,7 @@ namespace Wildbond
             renderers.Clear();
             ExtraMode = ExtraAnim.None;
             for (int i = 0; i < GroupCount; i++) groups[i] = null;
+            lookScale = Vector3.one; hasCoat = false; markGo = null; markMf = null; markMr = null;
             phase = Random.value * 10f;
             t = Random.value * 10f;
         }
@@ -58,6 +65,66 @@ namespace Wildbond
         public void SetVisible(bool v)
         {
             for (int i = 0; i < renderers.Count; i++) renderers[i].enabled = v;
+        }
+
+        /// <summary>
+        /// Makes this model one particular kin: its size and build (model scale), head / tail / wing sizes (group
+        /// scales), coat tint (a property block the hit flash shares) and marking (an overlay mesh riding on the body
+        /// or head, or none). Called whenever a model is given to a kin, including pooled ones being reused.
+        /// </summary>
+        public void SetLook(KinLook l, Mesh mark, BodyGroup markGroup, Material mat)
+        {
+            lookScale = l != null ? l.BodyScale : Vector3.one;
+            GroupScale(BodyGroup.Head, l != null ? l.head : 1f);
+            GroupScale(BodyGroup.Tail, l != null ? l.tail : 1f);
+            GroupScale(BodyGroup.WingL, l != null ? l.wing : 1f);
+            GroupScale(BodyGroup.WingR, l != null ? l.wing : 1f);
+            hasCoat = l != null && !l.PlainCoat;
+            coat = hasCoat ? l.Coat : new Vector4(0f, 1f, 1f, 0f);
+
+            var host = mark != null ? groups[(int)markGroup] : null;
+            if (host == null) { if (markGo != null) markGo.SetActive(false); }
+            else
+            {
+                if (markGo == null)
+                {
+                    markGo = new GameObject("Mark");
+                    markMf = markGo.AddComponent<MeshFilter>();
+                    markMr = markGo.AddComponent<MeshRenderer>();
+                    markMr.sharedMaterial = mat;
+                    markMr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                    renderers.Add(markMr);
+                }
+                markGo.layer = host.gameObject.layer;
+                markGo.transform.SetParent(host, false);
+                markGo.transform.localPosition = Vector3.zero;
+                markGo.transform.localRotation = Quaternion.identity;
+                markGo.transform.localScale = Vector3.one;
+                markMf.sharedMesh = mark;
+                markGo.SetActive(true);
+            }
+            flashing = false;
+            ApplyBlock(Color.clear, false);
+        }
+
+        void GroupScale(BodyGroup g, float s)
+        {
+            var tr = groups[(int)g];
+            if (tr != null) tr.localScale = Vector3.one * s;
+        }
+
+        void ApplyBlock(Color flashCol, bool flashOn)
+        {
+            if (!flashOn && !hasCoat)
+            {
+                for (int i = 0; i < renderers.Count; i++) if (renderers[i] != null) renderers[i].SetPropertyBlock(null);
+                return;
+            }
+            if (mpb == null) mpb = new MaterialPropertyBlock();
+            mpb.Clear();
+            if (flashOn) mpb.SetColor(FlashId, flashCol);
+            if (hasCoat) mpb.SetVector(CoatId, coat);
+            for (int i = 0; i < renderers.Count; i++) if (renderers[i] != null) renderers[i].SetPropertyBlock(mpb);
         }
 
         public void Flash(Color c, float duration = 0.12f)
@@ -204,7 +271,7 @@ namespace Wildbond
             float breathe = 1f + Mathf.Sin(t * 2.3f) * 0.015f;
             Model.localPosition = modelPos;
             Model.localRotation = modelRot;
-            Model.localScale = new Vector3(modelScale.x, modelScale.y * breathe, modelScale.z);
+            Model.localScale = new Vector3(modelScale.x * lookScale.x, modelScale.y * breathe * lookScale.y, modelScale.z * lookScale.z);
 
             UpdateFlash(dt);
         }
@@ -266,16 +333,14 @@ namespace Wildbond
             if (flash > 0f)
             {
                 flash -= dt;
-                if (mpb == null) mpb = new MaterialPropertyBlock();
                 var col = flashColor; col.a = Mathf.Clamp01(flash / 0.12f) * 0.85f;
-                mpb.SetColor(FlashId, col);
-                for (int i = 0; i < renderers.Count; i++) renderers[i].SetPropertyBlock(mpb);
+                ApplyBlock(col, true);
                 flashing = true;
             }
             else if (flashing)
             {
                 flashing = false;
-                for (int i = 0; i < renderers.Count; i++) renderers[i].SetPropertyBlock(null);
+                ApplyBlock(Color.clear, false);   // back to the coat tint alone (or nothing)
             }
         }
     }

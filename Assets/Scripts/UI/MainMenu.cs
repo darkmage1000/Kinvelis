@@ -27,6 +27,10 @@ namespace Wildbond
         WorldSettings draft = WorldSettings.FromPreset(WorldPreset.Normal);
         int draftSlot = -1;
         string draftSeedText = "";
+        Appearance draftLook = new Appearance();
+        CreatureRig lookRig;
+        Transform lookStand;
+        float lookYaw = 200f;
 
         void Awake()
         {
@@ -143,6 +147,75 @@ namespace Wildbond
                 rigs[i].Animate(Time.unscaledDeltaTime, 0f, false, false);
                 if (Mathf.Repeat(t + i * 1.3f, 5f) < Time.unscaledDeltaTime) { rigs[i].Squash(); rigs[i].Lunge(); }
             }
+            if (lookRig != null && lookStand != null)
+            {
+                lookYaw += Time.unscaledDeltaTime * 26f;
+                lookStand.rotation = Quaternion.Euler(0f, lookYaw, 0f);
+                lookRig.Animate(Time.unscaledDeltaTime, 0f, false, false);
+            }
+        }
+
+        // ============================================================ CHARACTER CREATOR
+        /// <summary>
+        /// The step between CREATE WORLD and the loading page: the explorer stands on a little stone in front of the
+        /// camera, turning slowly, while the panel on the left changes them (LookEditor).
+        /// </summary>
+        void ShowCreator()
+        {
+            var list = NewPanel("Your explorer");
+            if (lookStand == null)
+            {
+                var cam = Camera.main.transform;
+                var go = new GameObject("LookStand");
+                // on the right of the view, close enough to fill it from boots to hat
+                go.transform.position = cam.position + cam.forward * 4.3f + cam.right * 1.6f - cam.up * 1.0f;
+                lookStand = go.transform;
+                var mb = new MeshBuilder();
+                mb.Cylinder(Matrix4x4.TRS(new Vector3(0, -0.09f, 0), Quaternion.identity, new Vector3(1.15f, 0.18f, 1.15f)), new Color(0.36f, 0.4f, 0.5f), new Color(0.52f, 0.56f, 0.66f), 20, 0.9f, true);
+                var plinth = new GameObject("Plinth");
+                plinth.transform.SetParent(lookStand, false);
+                plinth.AddComponent<MeshFilter>().sharedMesh = mb.ToMesh("menu_plinth");
+                plinth.AddComponent<MeshRenderer>().sharedMaterial = RenderAssets.Creature;
+            }
+            if (stage != null) stage.gameObject.SetActive(false);
+            RebuildLookModel();
+
+            var top = UIFactory.HRow(list, 90);
+            UIFactory.Size(UIFactory.Button(top.transform, "SURPRISE ME", () => { draftLook = Appearance.Random(); ShowCreator(); }, new Color(0.5f, 0.35f, 0.7f), 28), 90, 320);
+            UIFactory.Size(UIFactory.Button(top.transform, "CLASSIC", () => { draftLook = new Appearance(); ShowCreator(); }, UIFactory.ButtonCol, 28), 90, 240);
+            UIFactory.Size(UIFactory.Label(top.transform, "Looks only: nothing here changes how you play, and you can change it later from the Gear tab.", 20, UIFactory.TextDim), 90, 420);
+
+            LookEditor.Build(list, draftLook, RebuildLookModel);
+
+            var go2 = UIFactory.HRow(list, 110, 16);
+            UIFactory.Size(UIFactory.Button(go2.transform, "BACK", () => { CloseCreator(); ShowNewWorld(); }, new Color(0.3f, 0.3f, 0.34f), 32), 100, 220);
+            UIFactory.Size(UIFactory.Button(go2.transform, "START", StartWorld, new Color(0.2f, 0.55f, 0.42f), 36), 100, 560);
+        }
+
+        string lookKey;
+        void RebuildLookModel()
+        {
+            if (lookStand == null) return;
+            if (lookRig != null && lookRig.Model != null) Destroy(lookRig.Model.gameObject);
+            if (lookKey != null) ModelBuilder.DropCustom(lookKey);
+            lookKey = draftLook.Key(false);
+            lookRig = AvatarLook.BuildRig(draftLook, false, lookStand);
+        }
+
+        void CloseCreator()
+        {
+            if (lookStand != null) Destroy(lookStand.gameObject);
+            lookStand = null; lookRig = null;
+            if (stage != null) stage.gameObject.SetActive(true);
+        }
+
+        void StartWorld()
+        {
+            GameSession.Slot = draftSlot;
+            GameSession.NewWorld = draft.Clone();
+            GameSession.NewLook = draftLook.Clone();
+            GameSession.FromMenu = true;
+            LoadWorld();
         }
 
         // ============================================================ PANELS
@@ -357,7 +430,7 @@ namespace Wildbond
 
             var go = UIFactory.HRow(list, 110, 14);
             UIFactory.Size(UIFactory.Button(go.transform, "BACK", ShowHome, new Color(0.3f, 0.3f, 0.34f), 32), 100, 220);
-            UIFactory.Size(UIFactory.Button(go.transform, "CREATE WORLD", CreateWorld, new Color(0.2f, 0.55f, 0.42f), 36), 100, 560);
+            UIFactory.Size(UIFactory.Button(go.transform, "NEXT: YOUR EXPLORER", CreateWorld, new Color(0.2f, 0.55f, 0.42f), 36), 100, 560);
         }
 
         void Header(Transform list, string text)
@@ -383,13 +456,7 @@ namespace Wildbond
             if (draftSlot < 0) { SynthAudio.Play(Sfx.Clunk); return; }
             if (string.IsNullOrWhiteSpace(draft.worldName)) draft.worldName = "Rimewild Isle";
             draft.seed = ParseSeed(draftSeedText);
-            void Go()
-            {
-                GameSession.Slot = draftSlot;
-                GameSession.NewWorld = draft.Clone();
-                GameSession.FromMenu = true;
-                LoadWorld();
-            }
+            void Go() => ShowCreator();   // who are you? then StartWorld
             if (SaveSystem.SlotExists(draftSlot)) Confirm("Overwrite world?", $"Slot {draftSlot + 1} already has a world. Replace it with \"{draft.worldName}\"?", Go);
             else Go();
         }
@@ -410,6 +477,7 @@ namespace Wildbond
         {
             GameSession.Slot = slot;
             GameSession.NewWorld = null;
+            GameSession.NewLook = null;
             GameSession.FromMenu = true;
             LoadWorld();
         }

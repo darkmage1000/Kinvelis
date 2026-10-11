@@ -224,6 +224,7 @@ namespace Wildbond
             deathTimer = 0f;
             for (int i = 0; i < cooldowns.Length; i++) cooldowns[i] = Random.Range(0.5f, 2f);
             RefreshAbilities();
+            ModelBuilder.ApplyLook(Rig, d, RenderAssets.Creature);   // a pooled model is this kin's now
             ApplyWorldSize();
             Home = pos;
             pos.y = GroundY(pos);

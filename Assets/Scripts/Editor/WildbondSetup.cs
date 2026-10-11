@@ -49,6 +49,7 @@ namespace Wildbond.EditorTools
             Mat("WB_Terrain", "Wildbond/VertexLit", m => { m.SetFloat("_Rim", 0.05f); m.SetFloat("_Wrap", 0.5f); });
             Mat("WB_Props", "Wildbond/VertexLit", m => { m.enableInstancing = true; m.SetFloat("_Rim", 0.15f); });
             Mat("WB_Creature", "Wildbond/VertexLit", m => { m.SetFloat("_Rim", 0.4f); });
+            Mat("WB_CreatureOutline", "Wildbond/VertexLitOutline", m => { m.SetFloat("_Rim", 0.4f); });   // keeps the outline shader in builds (RenderAssets.ApplyOutline)
             Mat("WB_Building", "Wildbond/VertexLit", m => { m.SetFloat("_Rim", 0.15f); });
             Mat("WB_Ghost", "Wildbond/VertexLit", m => { m.SetFloat("_Emission", 0.6f); });
             Mat("WB_Water", "Wildbond/Water", null);

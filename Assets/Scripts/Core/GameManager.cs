@@ -227,6 +227,7 @@ namespace Wildbond
         PlayerStats NewPlayerStats()
         {
             var s = new PlayerStats();
+            if (GameSession.NewLook != null) { s.look = GameSession.NewLook.Clone(); GameSession.NewLook = null; }
             s.EnsureValid();
             s.Bag.Add("tether_seed", 3);
             s.Bag.Add("berry", 6);

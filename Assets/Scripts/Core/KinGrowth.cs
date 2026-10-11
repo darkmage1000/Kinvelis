@@ -125,6 +125,7 @@ namespace Wildbond
                         if (Array.IndexOf(sp.rareAbilities, ab) >= 0 && UnityEngine.Random.value < 0.6f)
                         { var l = new List<string>(d.abilities); if (l.Count >= 2) l[1] = ab; else l.Add(ab); d.abilities = l.ToArray(); }
 
+            d.look = KinLook.Inherit(a.Look, b.Look);   // it takes after both of them
             a.EnsureAptitude(); b.EnsureAptitude();
             d.apt = new int[3];
             int best = 0;
