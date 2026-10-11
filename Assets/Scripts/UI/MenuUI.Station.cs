@@ -129,9 +129,18 @@ namespace Wildbond
             if (d.category == ItemCategory.CaptureSeed)
             {
                 int cap = CaptureSystem.SeedLevelCap(d);
-                parts.Add(cap >= 99 ? "Any level kin" : $"Kin up to Lv {cap}");
-                if (CaptureSystem.SeedBonus(d) > 1.001f) parts.Add($"catch x{CaptureSystem.SeedBonus(d):0.00}");
-                if (CaptureSystem.IsLegendSeed(d)) parts.Add("certain catch at 10% health or less");
+                if (d.id == Wardens.KrakenSeed)
+                {
+                    // a boss's seed follows its own rule (CaptureSystem.Chance): nothing until it is nearly beaten
+                    parts.Add("Binds only the Kraken");
+                    parts.Add($"no hold above {CaptureSystem.BossSeedHp * 100f:0}% health, then {CaptureSystem.BossSeedMin * 100f:0}-{CaptureSystem.BossSeedMax * 100f:0}%");
+                }
+                else
+                {
+                    parts.Add(cap >= 99 ? "Any level kin" : $"Kin up to Lv {cap}");
+                    if (CaptureSystem.SeedBonus(d) > 1.001f) parts.Add($"catch x{CaptureSystem.SeedBonus(d):0.00}");
+                    if (CaptureSystem.IsLegendSeed(d)) parts.Add("certain catch at 10% health or less");
+                }
                 if (d.shimmerSeed) parts.Add("the catch is a shimmer");
             }
             if (PlayerStats.IsGear(d))
