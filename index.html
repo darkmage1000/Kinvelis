@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kinvelis Wiki</title>
+<meta name="description" content="The player's guide to Kinvelis: every kin, skill, item and structure, the eight lands, the Wardens, quests, and how everything works.">
+<link rel="icon" href="img/icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <button id="navBtn" class="navbtn" aria-label="Open the contents" aria-expanded="false">&#9776;</button>
+  <a class="brand" href="#/"><img src="img/icon.png" alt="" width="34" height="34"><span>KINVELIS</span><em>wiki</em></a>
+  <form id="searchForm" class="search" role="search">
+    <input id="searchBox" type="search" placeholder="Search kin, skills, items, places..." aria-label="Search the wiki" autocomplete="off">
+  </form>
+</header>
+<div class="shell">
+  <nav id="nav" class="side" aria-label="Contents"></nav>
+  <main id="main" class="main" tabindex="-1"><p class="loading">Loading the wiki...</p></main>
+</div>
+<footer class="foot">
+  <span>Kinvelis player wiki. The lists on this site are exported from the game itself<span id="stamp"></span>.</span>
+  <a href="https://github.com/darkmage1000/Kinvelis">Project on GitHub</a>
+</footer>
+<script src="guides.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
