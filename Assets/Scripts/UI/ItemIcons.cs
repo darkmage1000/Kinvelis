@@ -94,10 +94,11 @@ namespace Wildbond
                 var mesh = job.mesh;
                 mf.sharedMesh = mesh;
                 bool longItem = job.longItem;
-                // long items stand diagonally across the icon; others get a gentle turn
+                // long items stand diagonally across the icon; others get a gentle turn; kin are turned to face the
+                // camera (their models look down +z, which is the way the camera looks, so unturned they show their backs)
                 Quaternion rot = longItem
                     ? Quaternion.AngleAxis(-42f, viewDir) * Quaternion.LookRotation(Vector3.up, Vector3.Cross(Vector3.up, viewDir).normalized)
-                    : Quaternion.Euler(0f, -20f, 0f);
+                    : Quaternion.Euler(0f, job.key.StartsWith("kin_") ? 180f : -20f, 0f);
                 holder.transform.rotation = rot;
                 // center + fit
                 var b = mesh.bounds;
@@ -454,6 +455,121 @@ namespace Wildbond
                     Seed(mb, C("#ffe06a"), C("#e0a02a"), C("#8fe8ff"), C("#ffffff"));
                     mb.Crystal(M(0, 0.62f, 0, 0.14f, 0.28f, 0.14f), C("#8fe8ff"), C("#ffffff"));
                     break;
+                // ---- legend and boss seeds: the seed shape in each legend's colours, with the thing it was made from ----
+                case "moonpearl_seed":
+                    Seed(mb, C("#b4c6ff"), C("#5a70c8"), C("#f6f8ff"), C("#dff0ff"));
+                    mb.Sphere(M(0, 0.86f, 0, 0.24f, 0.24f, 0.24f), C("#ffffff"), C("#d8dcf8"), 10, 6);
+                    mb.Sphere(M(-0.12f, 0.32f, -0.28f, 0.14f, 0.14f, 0.14f), C("#ffffff"), 8, 5);
+                    mb.Sphere(M(0.18f, 0.32f, -0.25f, 0.14f, 0.14f, 0.14f), C("#ffffff"), 8, 5);
+                    break;
+                case "lanternfruit_seed":
+                    Seed(mb, C("#fff09a"), C("#ffb84a"), C("#3f7a4a"), C("#5ac04a"));
+                    mb.Cylinder(M(0.2f, 0.82f, 0, 0.03f, 0.2f, 0.03f, 0, 0, -50), C("#3f7a4a"), 5, 1f, true);
+                    mb.Sphere(M(0.32f, 0.7f, 0, 0.24f, 0.3f, 0.24f), C("#fff6c0"), C("#ff9a2a"), 8, 6);
+                    break;
+                case "emberglass_seed":
+                    Seed(mb, C("#ff9a4a"), C("#b8301a"), C("#3a2020"), C("#ffd24a"));
+                    mb.Crystal(M(0, 0.58f, 0, 0.18f, 0.4f, 0.18f), C("#ff7a2a"), C("#fff0a0"));
+                    mb.Crystal(M(0.14f, 0.56f, 0.04f, 0.12f, 0.26f, 0.12f, 0, 0, -32), C("#ff5a1a"), C("#ffd24a"));
+                    mb.Crystal(M(-0.14f, 0.56f, -0.02f, 0.12f, 0.24f, 0.12f, 0, 0, 34), C("#ff5a1a"), C("#ffd24a"));
+                    break;
+                case "blightscale_seed":
+                    Seed(mb, C("#8a6ac0"), C("#3a2a5a"), C("#9be04a"), C("#c8ff6a"));
+                    for (int i = 0; i < 5; i++)
+                    {
+                        float a = (i - 2) * 0.5f;
+                        mb.Sphere(M(Mathf.Sin(a) * 0.27f, 0.52f - (i % 2) * 0.1f, -Mathf.Cos(a) * 0.27f, 0.2f, 0.2f, 0.06f, -20, -a * Mathf.Rad2Deg, 0), C("#5a4090"), C("#2a1c48"), 6, 4);
+                    }
+                    break;
+                case "starmane_seed":
+                    Seed(mb, C("#4a4ab8"), C("#1a1a5a"), C("#ffe9a0"), C("#bff8ff"));
+                    for (int i = 0; i < 6; i++)
+                        mb.Sphere(M(0.06f + i * 0.07f, 0.78f + Mathf.Sin(i * 0.9f) * 0.09f, 0, 0.13f - i * 0.012f, 0.13f - i * 0.012f, 0.13f - i * 0.012f), C("#9af4ff"), C("#e8ffff"), 6, 4);
+                    mb.Crystal(M(-0.16f, 0.5f, -0.22f, 0.08f, 0.18f, 0.08f, -30, 0, 20), C("#fff6c0"), C("#ffffff"));
+                    mb.Crystal(M(0.14f, 0.12f, -0.22f, 0.07f, 0.16f, 0.07f, -30, 0, -20), C("#fff6c0"), C("#ffffff"));
+                    break;
+                case "prismatic_seed":
+                    Seed(mb, C("#e6dcff"), C("#9a80d8"), C("#d8b04a"), C("#ffffff"));
+                    mb.Crystal(M(0, 0.6f, 0, 0.16f, 0.4f, 0.16f), C("#ff7ad0"), C("#ffd0f0"));
+                    mb.Crystal(M(0.15f, 0.58f, 0.03f, 0.12f, 0.28f, 0.12f, 0, 0, -34), C("#7ae8ff"), C("#e0fbff"));
+                    mb.Crystal(M(-0.15f, 0.58f, -0.02f, 0.12f, 0.28f, 0.12f, 0, 0, 34), C("#ffe46a"), C("#fff8c8"));
+                    break;
+                case "deepcall_seed":
+                    mb.Sphere(M(0, 0.36f, 0, 0.62f, 0.66f, 0.62f), C("#3a3260"), C("#0e0c1c"), 12, 8);
+                    mb.Cylinder(M(0, 0.36f, 0, 0.66f, 0.08f, 0.66f, 0, 0, 32), C("#2f7a5a"), C("#4fae7e"), 12, 1f, true);
+                    mb.Cylinder(M(0, 0.36f, 0, 0.66f, 0.08f, 0.66f, 20, 0, -34), C("#256648"), C("#3f9a6c"), 12, 1f, true);
+                    mb.Sphere(M(0.2f, 0.72f, 0.04f, 0.3f, 0.06f, 0.14f, 0, 0, -35), C("#4fae7e"), 6, 4);
+                    mb.Sphere(M(-0.12f, 0.74f, 0, 0.24f, 0.06f, 0.12f, 0, 0, 40), C("#3f9a6c"), 6, 4);
+                    mb.Sphere(M(-0.14f, 0.52f, -0.22f, 0.13f, 0.1f, 0.06f), C("#bfe8ff"), 6, 4);
+                    break;
+                // ---- the five outer ores (same colours as their veins in PropCatalog) and their bars ----
+                case "saltglass":
+                    mb.Rock(M(0, 0.2f, 0, 0.85f, 0.4f, 0.75f), C("#c8b890"), C("#e0d4b0"), 61u, 7, 5);
+                    mb.Crystal(M(0, 0.22f, 0, 0.36f, 0.72f, 0.36f), C("#3cb8b0"), C("#a4f0e8"));
+                    mb.Crystal(M(0.24f, 0.2f, -0.06f, 0.24f, 0.46f, 0.24f, 0, 0, -26), C("#48c4bc"), C("#b4f6ee"));
+                    mb.Crystal(M(-0.22f, 0.2f, -0.08f, 0.22f, 0.4f, 0.22f, 0, 0, 28), C("#34a8a0"), C("#98e8e0"));
+                    break;
+                case "bog_iron":
+                    OreChunk(mb, C("#4a4a3a"), C("#5e6048"), C("#3a5a3a"), C("#8ab06a"), 67u);
+                    mb.Sphere(M(-0.32f, 0.2f, -0.26f, 0.3f, 0.12f, 0.24f), C("#6a8a3a"), 6, 4);
+                    break;
+                case "sunsteel_ore":
+                    OreChunk(mb, C("#8e6a42"), C("#a88458"), C("#f0a818"), C("#ffe060"), 71u);
+                    break;
+                case "blight_ore":
+                    OreChunk(mb, C("#3a3444"), C("#4a4458"), C("#8a40c8"), C("#b8ff40"), 73u);
+                    mb.Sphere(M(-0.1f, 0.2f, -0.37f, 0.1f, 0.22f, 0.08f), C("#b8ff40"), 6, 4);
+                    break;
+                case "starcrystal":
+                    mb.Rock(M(0, 0.18f, 0, 0.8f, 0.36f, 0.7f), C("#2e2e52"), C("#44447a"), 79u, 7, 5);
+                    mb.Crystal(M(0, 0.2f, 0, 0.38f, 0.8f, 0.38f), C("#6a58e8"), C("#c4bcff"));
+                    mb.Crystal(M(0.24f, 0.2f, -0.06f, 0.22f, 0.44f, 0.22f, 0, 0, -30), C("#7a6af0"), C("#d0c8ff"));
+                    mb.Crystal(M(-0.22f, 0.2f, -0.08f, 0.2f, 0.38f, 0.2f, 0, 0, 30), C("#5a4ad8"), C("#b8b0ff"));
+                    mb.Sphere(M(-0.04f, 0.56f, -0.13f, 0.1f, 0.1f, 0.06f), C("#ffffff"), 6, 4);
+                    break;
+                case "saltglass_bar": Bars(mb, C("#38a8a0"), C("#9aeee6")); break;
+                case "bogsteel_bar": Bars(mb, C("#3a4630"), C("#7e9068")); break;
+                case "sunsteel_bar": Bars(mb, C("#d08a18"), C("#ffd448")); break;
+                case "blightsteel_bar":
+                    Bars(mb, C("#3e2c58"), C("#7e62a8"));
+                    mb.Box(M(0.08f, 0.485f, 0.02f, 0.5f, 0.012f, 0.05f, 0, 30, 0), C("#b8ff40"));
+                    break;
+                case "starsteel_bar":
+                    Bars(mb, C("#5048c0"), C("#b4acff"));
+                    mb.Crystal(M(0.08f, 0.47f, 0.02f, 0.1f, 0.2f, 0.1f), C("#bff8ff"), C("#ffffff"));
+                    break;
+                // ---- ammunition ----
+                case "arrow":
+                    Shaft(mb, M(-0.2f, 0.02f, 0.06f, 1, 1, 1, 0, 0, -34), false);
+                    Shaft(mb, M(0f, 0f, 0f, 1, 1, 1, 0, 0, -46), false);
+                    Shaft(mb, M(0.2f, 0.02f, -0.06f, 1, 1, 1, 0, 0, -58), false);
+                    break;
+                case "bolt":
+                    Shaft(mb, M(-0.18f, 0.02f, 0.06f, 1, 1, 1, 0, 0, -34), true);
+                    Shaft(mb, M(0f, 0f, 0f, 1, 1, 1, 0, 0, -46), true);
+                    Shaft(mb, M(0.18f, 0.02f, -0.06f, 1, 1, 1, 0, 0, -58), true);
+                    break;
+                case "warden_heart":
+                    // a heart cut from crystal on a gold setting
+                    {
+                        // built flat-on, then leaned back so the camera (above, on the -z side) sees the whole shape
+                        var h = new MeshBuilder();
+                        h.Sphere(M(-0.19f, 0.5f, 0, 0.48f, 0.46f, 0.36f), C("#ff7aa8"), C("#e8386e"), 10, 7);
+                        h.Sphere(M(0.19f, 0.5f, 0, 0.48f, 0.46f, 0.36f), C("#ff7aa8"), C("#e8386e"), 10, 7);
+                        h.Cylinder(M(0, 0.2f, 0, 0.8f, 0.54f, 0.36f, 0, 0, 180), C("#ff6a96"), C("#b01850"), 14, 0f, true);
+                        h.Sphere(M(-0.22f, 0.6f, -0.15f, 0.16f, 0.1f, 0.05f, 0, 0, 30), C("#ffe0ec"), 6, 4);
+                        mb.Append(h, M(0, 0.16f, 0, 1, 1, 1, 30, 49, 0));   // 49 = the camera's bearing in model space
+                        mb.Cylinder(M(0, 0.05f, 0, 0.4f, 0.1f, 0.4f), C("#b88a2a"), C("#f0cc5a"), 10, 0.7f, true);
+                    }
+                    break;
+                case "outpost_kit":
+                    mb.Box(M(0, 0.25f, 0, 0.84f, 0.5f, 0.6f), C("#8a5a30"), C("#b88a50"));
+                    mb.Box(M(-0.26f, 0.25f, 0, 0.08f, 0.52f, 0.62f), C("#5a3a1e"));
+                    mb.Box(M(0.26f, 0.25f, 0, 0.08f, 0.52f, 0.62f), C("#5a3a1e"));
+                    mb.Capsule(M(-0.06f, 0.6f, 0.06f, 0.2f, 0.66f, 0.2f, 0, 0, 90), C("#5a9a4a"), 8);
+                    mb.Cylinder(M(0.3f, 0.86f, -0.16f, 0.05f, 0.9f, 0.05f), C("#7a5232"), 5, 1f, true);
+                    mb.Box(M(0.5f, 1.16f, -0.16f, 0.36f, 0.24f, 0.02f), C("#e86a2a"), C("#ffb04a"));
+                    break;
                 default:
                     mb.Box(M(0, 0.3f, 0, 0.6f, 0.6f, 0.6f), d.iconColor);
                     break;
@@ -472,6 +588,37 @@ namespace Wildbond
             mb.Cylinder(M(0, 0.32f, 0, 0.6f, 0.1f, 0.6f), band, 12, 1f, true);
             mb.Cone(M(0, 0.7f, 0, 0.12f, 0.22f, 0.12f), sprout, 6);
             mb.Sphere(M(0.14f, 0.74f, 0, 0.22f, 0.06f, 0.12f, 0, 0, -35), sprout, 6, 4);
+        }
+
+        /// <summary>A lump of rock with nuggets of ore showing (the plain "ore" icon, in any land's colours).</summary>
+        static void OreChunk(MeshBuilder mb, Color32 rock, Color32 rockTop, Color32 ore, Color32 oreTop, uint seed)
+        {
+            mb.Rock(M(0, 0.32f, 0, 0.85f, 0.65f, 0.75f), rock, rockTop, seed, 7, 5);
+            mb.Rock(M(0.14f, 0.58f, -0.12f, 0.34f, 0.28f, 0.34f), ore, oreTop, seed + 2u, 5, 4);
+            mb.Rock(M(-0.24f, 0.44f, -0.2f, 0.28f, 0.24f, 0.28f), ore, oreTop, seed + 6u, 5, 4);
+            mb.Rock(M(0.1f, 0.28f, -0.34f, 0.22f, 0.2f, 0.22f), ore, oreTop, seed + 9u, 5, 4);
+        }
+
+        /// <summary>Two stacked bars (the ingot icon, tinted).</summary>
+        static void Bars(MeshBuilder mb, Color32 dark, Color32 light)
+        {
+            mb.Cylinder(M(0, 0.12f, 0, 0.9f, 0.24f, 0.42f), dark, light, 4, 0.78f, true);
+            mb.Cylinder(M(0.08f, 0.36f, 0.02f, 0.9f, 0.24f, 0.42f, 0, 12, 0), dark, light, 4, 0.78f, true);
+        }
+
+        /// <summary>One arrow or crossbow bolt, built point up and placed by <paramref name="m"/>.</summary>
+        static void Shaft(MeshBuilder mb, Matrix4x4 m, bool bolt)
+        {
+            var a = new MeshBuilder();
+            float len = bolt ? 0.62f : 0.96f, thick = bolt ? 0.075f : 0.05f;
+            a.Cylinder(M(0, len * 0.5f, 0, thick, len, thick), bolt ? C("#6a4a2a") : C("#c9a26a"), bolt ? C("#8a6238") : C("#e0bc84"), 6, 1f, true);
+            if (bolt) a.Cylinder(M(0, len + 0.13f, 0, 0.2f, 0.28f, 0.2f), C("#7a8094"), C("#e4e8f4"), 4, 0f, true);
+            else a.Cone(M(0, len + 0.1f, 0, 0.15f, 0.22f, 0.15f), C("#8a8a94"), 4);
+            Color32 f = bolt ? C("#b8bcc8") : C("#e0523a"), f2 = bolt ? C("#8a8e9a") : C("#fff0e0");
+            float fy = bolt ? 0.1f : 0.14f, fh = bolt ? 0.16f : 0.24f;
+            a.Box(M(0, fy, 0, 0.2f, fh, 0.016f), f, f2);
+            a.Box(M(0, fy, 0, 0.016f, fh, 0.2f), f, f2);
+            mb.Append(a, m);
         }
     }
 }
