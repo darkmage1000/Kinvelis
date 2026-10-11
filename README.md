@@ -27,4 +27,4 @@ Keyboard in the editor: WASD move, right mouse look, F or click attack, G seed, 
 
 `CLAUDE.md` is the running design and architecture log: how each system works, where it lives, and why it was built that way. Inside the code the game still goes by its working title, "Wildbond" (namespace, editor menu, package id).
 
-`docs/` holds the player wiki, published with GitHub Pages. Its data is exported from the game by **Wildbond > Export Wiki Data** (in Play mode).
+`docs/` holds the player wiki. Its lists and pictures are exported from the game by **Wildbond > Export Wiki Data** (in Play mode, with a world loaded); `bash Tools/publish_wiki.sh` then publishes the committed folder to the `gh-pages` branch, which GitHub Pages serves.
