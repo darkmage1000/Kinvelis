@@ -71,7 +71,7 @@ namespace Wildbond
             H("#f2ead8"), H("#c4372e"), H("#e86aa8"), H("#4a8ee8"), H("#3fae6a"), H("#8a5ad8"),
         };
         public static readonly Color[] EyeColors = { new Color(0.1f, 0.08f, 0.1f), H("#4a2c14"), H("#2a5ab8"), H("#2a8a4a"), H("#7a3ab8"), H("#b8421e") };
-        public static readonly string[] OutfitNames = { "Explorer", "Trail tunic", "Vest", "Skirt and sash", "Overalls", "Cloak", "Hoodie" };
+        public static readonly string[] OutfitNames = { "Explorer", "Trail tunic", "Vest", "Dress", "Overalls", "Cloak", "Hoodie" };
         /// <summary>Clothing colours. The first three are the original explorer's jacket, trousers and leather, so index 0 / 0 / 0 is the classic look.</summary>
         public static readonly Color[] Cloth =
         {
@@ -85,6 +85,8 @@ namespace Wildbond
         public const int DefaultA = 0, DefaultB = 1, DefaultAccent = 2;
 
         static readonly Color Dark = new Color(0.12f, 0.1f, 0.12f), White = new Color(0.97f, 0.97f, 0.97f);
+        /// <summary>A darker tone of a cloth colour (cuffs, hems, the inside of a hood).</summary>
+        static Color Shade(Color c, float k) => new Color(c.r * k, c.g * k, c.b * k, 1f);
 
         static T At<T>(T[] list, int i) => list[Mathf.Clamp(i, 0, list.Length - 1)];
         /// <summary>The three clothing colour fields are offsets from the classic colours, so a new Appearance() is the original explorer.</summary>
@@ -140,11 +142,12 @@ namespace Wildbond
             {
                 case 1: sleeves = 1; legs = 0; break;                       // trail tunic
                 case 2: sleeves = 1; top = White; sleeve = White; break;    // vest over a shirt
-                case 3: sleeves = 1; hipCol = A; break;                     // skirt and sash (leggings in B)
+                case 3: sleeves = 1; hipCol = A; break;                     // dress (leggings in B)
                 case 4: break;                                              // overalls: shirt A, the rest B
-                case 5: break;                                              // cloak
+                case 5: top = B; sleeve = B; legCol = Shade(B, 0.72f); hipCol = legCol; break;   // cloak (A) over a tunic (B)
                 case 6: legs = 0; shoes = 1; break;                         // hoodie and shorts
             }
+            float bulk = outfit == 6 ? 0.022f : 0f;                         // a hoodie's sleeves are roomy
 
             // ---- hips, belt ----
             o.Add(PartShape.Sphere, BodyGroup.Body, hipCol, 0, 0.82f, 0, hipW, 0.28f, 0.3f);
@@ -156,7 +159,7 @@ namespace Wildbond
 
             // ---- torso ----
             o.Add(PartShape.Capsule, BodyGroup.Torso, top, 0, 1.14f, 0, tw, 0.54f, td);
-            if (fem) o.Add(PartShape.Sphere, BodyGroup.Torso, top, 0, 1.25f, 0.07f, tw * 0.74f, 0.15f, 0.15f);
+            if (fem) o.Add(PartShape.Sphere, BodyGroup.Torso, outfit == 2 ? A : top, 0, 1.25f, 0.07f, tw * 0.74f, 0.15f, 0.15f);   // (the waistcoat closes over it)
             o.Add(PartShape.Cylinder, BodyGroup.Torso, skin, 0, 1.43f, 0, fem ? 0.12f : 0.14f, 0.1f, fem ? 0.12f : 0.14f);
             Color shoulder = sleeves == 0 ? skin : sleeve;
             o.Add(PartShape.Sphere, BodyGroup.Torso, shoulder, sx, 1.33f, 0, sr, sr * 0.94f, sr * 1.06f);
@@ -168,16 +171,17 @@ namespace Wildbond
                     o.Add(PartShape.Dome, BodyGroup.Body, A, 0, 0.7f, 0, hipW + 0.1f, 0.5f, 0.42f);
                     o.Add(PartShape.Cylinder, BodyGroup.Body, C, 0, 0.92f, 0, tw + 0.02f, 0.05f, td + 0.03f);
                     break;
-                case 2:   // vest: two open front panels and a back
-                    o.Add(PartShape.Box, BodyGroup.Torso, A, tw * 0.3f, 1.15f, td * 0.36f, tw * 0.36f, 0.44f, td * 0.5f);
-                    o.Add(PartShape.Box, BodyGroup.Torso, A, -tw * 0.3f, 1.15f, td * 0.36f, tw * 0.36f, 0.44f, td * 0.5f);
-                    o.Add(PartShape.Box, BodyGroup.Torso, A, 0, 1.15f, -td * 0.36f, tw * 0.96f, 0.44f, td * 0.5f);
+                case 2:   // waistcoat: two rounded halves that wrap the sides and leave the shirt showing down the front, three buttons
+                    o.Add(PartShape.Capsule, BodyGroup.Torso, A, tw * 0.31f, 1.125f, 0, tw * 0.54f, 0.5f, td * 1.12f);
+                    o.Add(PartShape.Capsule, BodyGroup.Torso, A, -tw * 0.31f, 1.125f, 0, tw * 0.54f, 0.5f, td * 1.12f);
+                    o.Add(PartShape.Capsule, BodyGroup.Torso, A, 0, 1.125f, -td * 0.2f, tw * 0.94f, 0.5f, td * 0.76f);
+                    for (int i = 0; i < 3; i++)
+                        o.Add(PartShape.Sphere, BodyGroup.Torso, C, tw * 0.1f, 1.22f - i * 0.1f, td * 0.56f, 0.035f, 0.035f, 0.025f);
                     break;
-                case 3:   // bell skirt to mid-thigh, a sash across the chest
-                    o.Add(PartShape.Dome, BodyGroup.Body, A, 0, 0.55f, 0, hipW + 0.2f, 0.74f, 0.52f);
-                    o.Add(PartShape.Cylinder, BodyGroup.Body, C, 0, 0.92f, 0, tw + 0.03f, 0.07f, td + 0.03f);
-                    o.Add(PartShape.Box, BodyGroup.Torso, C, 0, 1.17f, td * 0.5f - 0.01f, tw * 0.95f, 0.08f, 0.04f, 0, 0, 38);
-                    o.Add(PartShape.Box, BodyGroup.Torso, C, 0, 1.17f, -td * 0.5f + 0.01f, tw * 0.95f, 0.08f, 0.04f, 0, 0, -38);
+                case 3:   // dress: one colour from the collar to a bell skirt at the knee, trimmed at the neck and the hem
+                    o.Add(PartShape.Dome, BodyGroup.Body, A, 0, 0.5f, 0, hipW + 0.24f, 0.82f, 0.56f);
+                    o.Add(PartShape.Cylinder, BodyGroup.Body, C, 0, 0.52f, 0, hipW + 0.285f, 0.05f, 0.605f);
+                    o.Add(PartShape.Cylinder, BodyGroup.Torso, C, 0, 1.385f, 0, tw * 0.52f, 0.035f, td * 0.82f);
                     break;
                 case 4:   // overalls: bib, two straps, a pocket
                     o.Add(PartShape.Box, BodyGroup.Torso, B, 0, 1.08f, td * 0.5f - 0.005f, tw * 0.62f, 0.3f, 0.05f);
@@ -186,17 +190,29 @@ namespace Wildbond
                     o.Add(PartShape.Box, BodyGroup.Torso, B, -tw * 0.25f, 1.27f, 0, 0.06f, 0.2f, td * 1.06f);
                     o.Add(PartShape.Box, BodyGroup.Torso, C, 0, 1.1f, td * 0.5f + 0.02f, tw * 0.3f, 0.1f, 0.02f);
                     break;
-                case 5:   // cloak: a cape down the back and a scarf at the collar
-                    o.Add(PartShape.Box, BodyGroup.Torso, B, 0, 1.2f, -td * 0.5f - 0.04f, tw + 0.02f, 0.36f, 0.05f, 5);
-                    o.Add(PartShape.Box, BodyGroup.Torso, B, 0, 0.88f, -td * 0.5f - 0.075f, tw + 0.14f, 0.36f, 0.05f, 9);
-                    o.Add(PartShape.Cylinder, BodyGroup.Torso, C, 0, 1.39f, 0, tw * 0.74f, 0.1f, td * 1.05f);
-                    o.Add(PartShape.Box, BodyGroup.Torso, C, tw * 0.2f, 1.27f, td * 0.5f, 0.09f, 0.22f, 0.04f, 0, 0, -8);
+                case 5:   // travelling cloak: a mantle over the shoulders, a long cape to the knee, the hood down, a clasp at the throat
+                    o.Add(PartShape.Dome, BodyGroup.Torso, A, 0, 1.17f, -0.01f, tw + 0.3f, 0.52f, td + 0.26f);
+                    // the cape hangs in five folds that fan out toward the hem and wrap a little round the sides
+                    for (int i = -2; i <= 2; i++)
+                    {
+                        float side = Mathf.Abs(i) * 0.5f;                       // 0 in the middle, 1 at the edges
+                        o.Add(PartShape.Capsule, BodyGroup.Torso, Shade(A, (i & 1) == 0 ? 0.92f : 0.8f),
+                            i * (tw + 0.16f) * 0.22f, 0.84f, -td * 0.5f - 0.085f + side * 0.07f,
+                            (tw + 0.16f) * 0.3f, 0.92f, 0.1f, 6f, i * -11f, i * 5.5f);
+                    }
+                    // the hood lies flat between the shoulders, a cowl stands round the neck
+                    o.Add(PartShape.Sphere, BodyGroup.Torso, Shade(A, 0.9f), 0, 1.36f, -td * 0.5f - 0.07f, tw * 0.74f, 0.2f, 0.16f, -18);
+                    o.Add(PartShape.Cylinder, BodyGroup.Torso, A, 0, 1.415f, -0.005f, tw * 0.62f, 0.08f, td * 1.02f);
+                    o.Add(PartShape.Sphere, BodyGroup.Torso, C, 0, 1.345f, (td + 0.26f) * 0.36f, 0.07f, 0.07f, 0.05f);
                     break;
-                case 6:   // hoodie: the hood down behind the neck, a front pocket, drawstrings
-                    o.Add(PartShape.Sphere, BodyGroup.Torso, A, 0, 1.4f, -td * 0.5f, tw * 0.7f, 0.2f, 0.2f);
-                    o.Add(PartShape.Box, BodyGroup.Torso, B, 0, 1.0f, td * 0.5f, tw * 0.6f, 0.13f, 0.04f);
-                    o.Add(PartShape.Box, BodyGroup.Torso, White, 0.035f, 1.29f, td * 0.5f + 0.01f, 0.018f, 0.12f, 0.015f);
-                    o.Add(PartShape.Box, BodyGroup.Torso, White, -0.035f, 1.29f, td * 0.5f + 0.01f, 0.018f, 0.12f, 0.015f);
+                case 6:   // hoodie: a roomy body with a ribbed hem, the hood down, a raised collar, a pouch pocket and drawstrings
+                    o.Add(PartShape.Capsule, BodyGroup.Torso, A, 0, 1.13f, 0, tw + 0.05f, 0.52f, td + 0.05f);
+                    o.Add(PartShape.Cylinder, BodyGroup.Torso, Shade(A, 0.78f), 0, 0.9f, 0, tw + 0.05f, 0.08f, td + 0.06f);
+                    o.Add(PartShape.Sphere, BodyGroup.Torso, A, 0, 1.345f, -td * 0.5f - 0.06f, tw * 0.8f, 0.24f, 0.17f, -14);
+                    o.Add(PartShape.Cylinder, BodyGroup.Torso, A, 0, 1.395f, 0, tw * 0.6f, 0.07f, td * 0.95f);
+                    o.Add(PartShape.Capsule, BodyGroup.Torso, Shade(A, 0.84f), 0, 1.01f, td * 0.5f + 0.022f, 0.15f, tw * 0.7f, 0.06f, 0, 0, 90);
+                    o.Add(PartShape.Box, BodyGroup.Torso, White, 0.04f, 1.29f, td * 0.5f + 0.035f, 0.016f, 0.13f, 0.014f, 0, 0, 5);
+                    o.Add(PartShape.Box, BodyGroup.Torso, White, -0.04f, 1.29f, td * 0.5f + 0.035f, 0.016f, 0.13f, 0.014f, 0, 0, -5);
                     break;
             }
 
@@ -231,9 +247,9 @@ namespace Wildbond
                 var arm = r ? BodyGroup.ArmR : BodyGroup.ArmL; var fore = r ? BodyGroup.ForearmR : BodyGroup.ForearmL;
                 var leg = r ? BodyGroup.LegFR : BodyGroup.LegFL; var shin = r ? BodyGroup.ShinR : BodyGroup.ShinL;
                 float fx = s * (ax + 0.01f);
-                o.Add(PartShape.Capsule, arm, sleeves >= 1 ? sleeve : skin, s * ax, 1.2f, 0, at, 0.31f, at);
-                o.Add(PartShape.Capsule, fore, sleeves == 2 ? sleeve : skin, fx, 0.985f, 0, ft, 0.25f, ft);
-                if (sleeves == 2) o.Add(PartShape.Cylinder, fore, outfit == 6 ? B : Dark, fx, 0.9f, 0, ft + 0.015f, 0.04f, ft + 0.015f);
+                o.Add(PartShape.Capsule, arm, sleeves >= 1 ? sleeve : skin, s * ax, 1.2f, 0, at + bulk, 0.31f, at + bulk);
+                o.Add(PartShape.Capsule, fore, sleeves == 2 ? sleeve : skin, fx, 0.985f, 0, ft + bulk, 0.25f, ft + bulk);
+                if (sleeves == 2) o.Add(PartShape.Cylinder, fore, outfit == 6 ? Shade(A, 0.78f) : Dark, fx, 0.9f, 0, ft + bulk + 0.015f, outfit == 6 ? 0.06f : 0.04f, ft + bulk + 0.015f);
                 else if (outfit == 1 || outfit == 2) o.Add(PartShape.Cylinder, fore, C, fx, 0.93f, 0, ft + 0.02f, 0.08f, ft + 0.02f);   // bracers / wristbands
                 o.Add(PartShape.Sphere, fore, skin, fx, 0.85f, 0.01f, hand, hand * 1.08f, hand);
 
