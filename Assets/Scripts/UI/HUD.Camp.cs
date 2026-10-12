@@ -70,7 +70,8 @@ namespace Wildbond
                     if (used >= CampLabelMax) break;
                     if (b == null) continue;
                     bool station = b.IsStation && bm.HasOrderFor(b.Def.station);
-                    if (!b.IsProducer && !station) continue;
+                    bool pylon = b.Def.id == "volt_pylon";
+                    if (!b.IsProducer && !station && !pylon) continue;
                     Vector3 off = b.transform.position - pp; off.y = 0f;
                     float dist = off.magnitude;
                     if (dist > CampLabelRange) continue;
@@ -89,7 +90,15 @@ namespace Wildbond
                         l.refresh = 0.2f;
                         l.shown = b;
                         string text; float fill; Color col;
-                        if (b.IsProducer) ProducerLabel(bm, b, out text, out fill, out col);
+                        if (pylon)
+                        {
+                            // the camp's battery gauge: green while a kin charges it, amber running down, red flat
+                            fill = bm.Charge01;
+                            text = b.Powered ? (fill >= 0.995f ? "Fully charged" : $"Charging  ·  {Mathf.RoundToInt(fill * 100f)}%")
+                                : bm.Charge > 0f ? $"Stored charge  ·  {WorkStages.Clock(bm.Charge)} left" : bm.PowerAsleep ? "No charge  ·  kin asleep" : "No charge";
+                            col = b.Powered ? LabelRun : bm.Charge > 0f ? LabelWork : LabelStuck;
+                        }
+                        else if (b.IsProducer) ProducerLabel(bm, b, out text, out fill, out col);
                         else StationLabel(bm, b, out text, out fill, out col);
                         l.text.text = text;
                         l.fill.color = col;

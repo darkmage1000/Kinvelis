@@ -194,6 +194,7 @@ namespace Wildbond
             }
             if (Suitability(d) <= 0) return false;
             if (IsStation) return bm.HasOrderFor(Def.station);
+            if (Def.id == "volt_pylon") return bm.PylonWantsKin;   // charged up: its kin is free until it runs down (BaseManager.Power)
             return Def.workType == WorkType.Charging || Def.workType == WorkType.Chilling || Def.workType == WorkType.Irrigating;
         }
 
@@ -214,7 +215,11 @@ namespace Wildbond
                 if (Progress >= StageNeed) NextStage();
             }
             else if (IsStation) bm.AddCraftWork(Def.station, w);
-            else PoweredUntil = GameManager.WorldTime + 2.0;
+            else
+            {
+                PoweredUntil = GameManager.WorldTime + 2.0;
+                if (Def.id == "volt_pylon") bm.AddCharge(w);   // the surplus is stored (BaseManager.Power)
+            }
         }
 
         /// <summary>Time passing: hands-off stages run by themselves (near, far and while the game is closed).</summary>

@@ -45,11 +45,8 @@ namespace Wildbond
             }
         }
 
-        /// <summary>Any staffed Volt Pylon.</summary>
-        public bool CampPowered
-        {
-            get { foreach (var b in Buildings) if (b.Def.id == "volt_pylon" && b.Powered) return true; return false; }
-        }
+        /// <summary>A kin is at a Volt Pylon, or there is stored charge left (BaseManager.Power).</summary>
+        public bool CampPowered => PylonStaffed || (Charge > 0f && ChargeCapacity > 0f);
 
         /// <summary>Farm work (Cultivating / Foraging) x1.4 while a sprinkler runs.</summary>
         public float IrrigationMul(Building target)
@@ -90,6 +87,8 @@ namespace Wildbond
             }
         }
 
+        const string NoPowerNight = "No power until dawn - the charge ran out and the Volt Pylon's kin is asleep";
+
         /// <summary>Status text for the automation buildings (used by Status()).</summary>
         bool AutomationStatus(Building b, out BuildingHealth h, out string text)
         {
@@ -109,18 +108,27 @@ namespace Wildbond
                     return true;
                 case "volt_turret":
                     if (CampPowered) { h = BuildingHealth.Good; text = "Guarding the camp"; }
+                    else if (PowerAsleep) { h = BuildingHealth.Idle; text = NoPowerNight; }
                     else { h = BuildingHealth.Blocked; text = "No power - staff a Volt Pylon"; }
                     return true;
                 case "volt_pylon":
-                    if (b.Powered) { h = BuildingHealth.Good; text = "Powering the camp"; }
+                    if (b.Powered) { h = BuildingHealth.Good; text = Charge >= ChargeCapacity - 0.5f ? $"Powering the camp · fully charged ({WorkStages.Clock(Charge)} stored)" : $"Powering the camp · charging, {ChargeText}"; }
+                    else if (Charge > 0f) { h = BuildingHealth.Good; text = $"Running on stored charge · {WorkStages.Clock(Charge)} left ({Mathf.RoundToInt(Charge01 * 100f)}%)" + (NightNow ? "" : PylonWantsKin ? " · waiting for a Charging kin" : " · its kin is free until it is half empty"); }
+                    else if (PowerAsleep) { h = BuildingHealth.Idle; text = "Out of charge and its kin is asleep - no power until dawn (build a Volt Battery to store more)"; }
                     else { h = BuildingHealth.Blocked; text = "Needs a Charging kin"; }
+                    return true;
+                case "volt_battery":
+                    if (!Has("volt_pylon")) { h = BuildingHealth.Blocked; text = "Needs a Volt Pylon to charge it"; }
+                    else { h = Charge > 0f ? BuildingHealth.Good : BuildingHealth.Idle; text = $"Camp charge {ChargeText} (holds {WorkStages.Clock(ChargeCapacity)})"; }
                     return true;
                 case "conveyor_hub":
                     if (CampPowered) { h = BuildingHealth.Good; text = "Moving goods to storage"; }
+                    else if (PowerAsleep) { h = BuildingHealth.Idle; text = NoPowerNight; }
                     else { h = BuildingHealth.Blocked; text = "No power - staff a Volt Pylon"; }
                     return true;
                 case "auto_assembler":
-                    if (!CampPowered) { h = BuildingHealth.Blocked; text = "No power - staff a Volt Pylon"; }
+                    if (!CampPowered && PowerAsleep) { h = BuildingHealth.Idle; text = NoPowerNight; }
+                    else if (!CampPowered) { h = BuildingHealth.Blocked; text = "No power - staff a Volt Pylon"; }
                     else if (HasOrderFor(CraftStation.Workbench) || HasOrderFor(CraftStation.Campfire)) { h = BuildingHealth.Good; text = "Assembling orders"; }
                     else { h = BuildingHealth.Info; text = "Powered - no orders queued"; }
                     return true;

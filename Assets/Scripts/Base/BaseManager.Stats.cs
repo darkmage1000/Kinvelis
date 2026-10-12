@@ -138,8 +138,13 @@ namespace Wildbond
             if (b.IsStation)
             {
                 if (!HasOrderFor(b.Def.station)) { text = "No orders queued"; return BuildingHealth.Info; }
-                if (workers == 0) { text = "Orders waiting - no workers (you can help nearby)"; return BuildingHealth.Idle; }
-                text = "Crafting orders"; return BuildingHealth.Good;
+                bool machine = CampPowered && Has("auto_assembler") && (b.Def.station == CraftStation.Workbench || b.Def.station == CraftStation.Campfire);
+                if (HandsAt(b) > 0) { text = machine ? "Kin and the Auto-Assembler are crafting orders" : "Crafting orders"; return BuildingHealth.Good; }
+                if (machine) { text = "The Auto-Assembler is crafting orders"; return BuildingHealth.Good; }
+                if (!AnyoneSuits(b)) { text = $"Orders waiting - no {b.Def.workType} kin in camp (stand near it to help)"; return BuildingHealth.Idle; }
+                if (!AnyoneSuits(b, true)) { text = $"Orders waiting - your {b.Def.workType} kin are asleep until dawn"; return BuildingHealth.Idle; }
+                if (!actorsOut) { text = "Crafting orders"; return BuildingHealth.Good; }
+                text = $"Orders waiting - a {b.Def.workType} kin will come when it is free"; return BuildingHealth.Idle;
             }
             if (b.Def.boostPercent > 0f || b.Def.workType == WorkType.Chilling)
             {

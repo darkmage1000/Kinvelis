@@ -364,7 +364,7 @@ namespace Wildbond
             };
 
             // ---- automation tier 2 ----
-            var pylon = Bld(b, "volt_pylon", "Volt Pylon", "A Charging kin powers the whole camp: Conveyor Hub, Auto-Assembler and Sprinklers run with no other workers.", 7, 1.0f,
+            var pylon = Bld(b, "volt_pylon", "Volt Pylon", "Powers the whole camp (Conveyor Hub, Auto-Assembler, Sprinklers, Turrets). A Charging kin fills it like a battery, then is free for other work and comes back to top it up at half charge and before nightfall. Holds a fifth of a day; build Volt Batteries to store more.", 7, 1.0f,
                 ("ingot", 6), ("crystal", 2), ("stone", 10));
             pylon.workType = WorkType.Charging; pylon.workerSlots = 1;
             pylon.palette = Pal(Hex("#6c7288"), Hex("#3a3e4a"), Hex("#ffd84a"), Hex("#fff07a"));
@@ -375,6 +375,26 @@ namespace Wildbond
                 P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Accent, 0, 2.6f, 0, 0.9f, 0.12f, 0.9f),
                 P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Accent, 0, 3.1f, 0, 0.7f, 0.12f, 0.7f),
                 P(PartShape.Crystal, BodyGroup.Body, ColorSlot.Glow, 0, 3.4f, 0, 0.45f, 1.1f, 0.45f),
+            };
+            var batt = Bld(b, "volt_battery", "Volt Battery", "Stores charge from a Volt Pylon, so the camp's machines keep running while its kin sleeps. Each one holds about a third of a day: a pylon and one battery, filled by day, last the night.", 7, 0.9f,
+                ("ingot", 8), ("crystal", 3), ("stone", 6));
+            batt.palette = Pal(Hex("#5a6478"), Hex("#343a48"), Hex("#ffd84a"), Hex("#8af0ff"));
+            batt.parts = new[]
+            {
+                P(PartShape.Box, BodyGroup.Body, ColorSlot.Secondary, 0, 0.12f, 0, 1.6f, 0.24f, 1.1f),
+                P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Primary, -0.4f, 0.9f, 0, 0.62f, 1.32f, 0.62f),
+                P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Primary, 0.4f, 0.9f, 0, 0.62f, 1.32f, 0.62f),
+                P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Accent, -0.4f, 0.36f, 0, 0.7f, 0.1f, 0.7f),
+                P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Accent, 0.4f, 0.36f, 0, 0.7f, 0.1f, 0.7f),
+                P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Accent, -0.4f, 1.5f, 0, 0.7f, 0.1f, 0.7f),
+                P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Accent, 0.4f, 1.5f, 0, 0.7f, 0.1f, 0.7f),
+                P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Secondary, -0.4f, 1.66f, 0, 0.24f, 0.22f, 0.24f),
+                P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Secondary, 0.4f, 1.66f, 0, 0.24f, 0.22f, 0.24f),
+                P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Glow, -0.4f, 1.84f, 0, 0.26f, 0.26f, 0.26f),
+                P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Glow, 0.4f, 1.84f, 0, 0.26f, 0.26f, 0.26f),
+                P(PartShape.Box, BodyGroup.Body, ColorSlot.Glow, -0.4f, 0.92f, -0.31f, 0.1f, 0.8f, 0.04f),
+                P(PartShape.Box, BodyGroup.Body, ColorSlot.Glow, 0.4f, 0.92f, -0.31f, 0.1f, 0.8f, 0.04f),
+                P(PartShape.Box, BodyGroup.Body, ColorSlot.Secondary, 0, 1.2f, 0, 0.5f, 0.1f, 0.14f),
             };
             var hub = Bld(b, "conveyor_hub", "Conveyor Hub", "Powered: moves every producer's output into storage (no haulers needed).", 7, 1.3f,
                 ("ingot", 8), ("wood", 10), ("stone", 10));

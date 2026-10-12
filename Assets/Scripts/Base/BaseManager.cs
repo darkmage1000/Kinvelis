@@ -211,6 +211,9 @@ namespace Wildbond
         /// </summary>
         public Building PickTask(CreatureData d, Building home, CreatureActor self = null, Building current = null)
         {
+            // a kin given a post (Dynamo, Frost Larder, Sprinkler) holds it: the machine stops the moment it walks off.
+            // A Volt Pylon stores charge, so it only "can be worked" while it wants topping up - then its kin goes straight back.
+            if (IsPost(home) && home.CanWork(d) && (home == current || HandsAt(home, self) < home.Def.workerSlots)) return home;
             Building best = null; float bestScore = 0f;
             foreach (var b in Buildings)
             {
@@ -232,9 +235,33 @@ namespace Wildbond
             return (hauler || d.WorkLevel(WorkType.Hauling) > 0) && FindHaulSource() != null;
         }
 
+        /// <summary>A machine that only runs while a kin stays at it: its assigned kin never leaves for other work (anyone else only minds it when idle).</summary>
+        public static bool IsPost(Building b) =>
+            b != null && !b.IsProducer && !b.IsStation && !b.Def.isCore && b.Def.workType != WorkType.Hauling && b.Def.workerSlots > 0;
+
+        /// <summary>Night, the camp has no power, and the kin who could run the pylon are in bed.</summary>
+        public bool PowerAsleep
+        {
+            get
+            {
+                if (!NightNow || CampPowered || !HasBuilding("volt_pylon")) return false;
+                foreach (var d in GameManager.I.Party.In(KinLocation.Base))
+                    if (!d.Fainted && d.WorkLevel(WorkType.Charging) > 0 && Asleep(d)) return true;
+                return false;
+            }
+        }
+
+        /// <summary>Is anyone in camp (awake, if asked) able to work this station?</summary>
+        public bool AnyoneSuits(Building b, bool awakeOnly = false)
+        {
+            foreach (var d in GameManager.I.Party.In(KinLocation.Base))
+                if (!d.Fainted && b.Suitability(d) > 0 && !(awakeOnly && Asleep(d))) return true;
+            return false;
+        }
+
         /// <summary>A producer waiting on a step beats keeping a machine company; then whoever is best at it; its own structure first among equals.</summary>
         float TaskScore(CreatureData d, Building b, Building home) =>
-            WorkRate(d, b) * (b.IsProducer ? 1.5f : b.IsStation ? 1.2f : 0.6f) * (b == home ? 1.35f : 1f);
+            WorkRate(d, b) * (b.IsProducer ? 1.5f : b.IsStation ? 1.2f : b.Def.id == "volt_pylon" ? 2f : 0.6f) * (b == home ? 1.35f : 1f);   // a pylon asking for charge comes first: everything powered hangs on it
 
         /// <summary>How many camp kin are at (or on their way to) a structure right now.</summary>
         public int HandsAt(Building b, CreatureActor except = null)
@@ -550,6 +577,7 @@ namespace Wildbond
             TickFeed(dt);
             TickStages(dt);
             if (!near) SimulateAbstract(dt);
+            TickCharge(dt);
             TickDefense(dt, playerPos, near);
             TickTurrets(dt, near);
             TickAutomation(dt);
@@ -643,6 +671,7 @@ namespace Wildbond
                 // the same choice the actors make: wherever its hands count for most, its own structure first among equals
                 Building t = null;
                 float bestScore = 0f;
+                if (IsPost(home) && home.CanWork(d)) { t = home; bestScore = float.MaxValue; }   // a kin on a post stays on it
                 foreach (var b in Buildings)
                 {
                     if (b.Def.isCore || b.Def.workType == WorkType.Hauling || b.Def.workerSlots <= 0 || !b.CanWork(d)) continue;
@@ -694,19 +723,18 @@ namespace Wildbond
             {
                 clock = Mathf.Repeat(clock + step / dayLen, 1f);
                 nightOverride = clock < 0.23f || clock > 0.78f;
+                eveningOverride = clock >= 0.64f && clock <= 0.78f;
                 SimulateNeeds(step);
                 TickFeed(step);
                 TickStages(step);
+                // pylons, dynamos and larders run only while a kin that is awake is at them (SimulateAbstract keeps post kin on their posts)
+                foreach (var b in Buildings) if (IsPost(b)) b.PoweredUntil = 0;
                 SimulateAbstract(step, false);   // production only: kin never level up while the game is closed
+                TickCharge(step);
                 TickAutomation(step);
-                // workers keep powering dynamos/larders while offline
-                foreach (var d in GameManager.I.Party.In(KinLocation.Base))
-                {
-                    var b = FindBuilding(d.assignedBuilding);
-                    if (b != null && !b.IsProducer && !b.IsStation && b.CanWork(d)) b.PoweredUntil = GameManager.WorldTime + 2.0;
-                }
             }
             nightOverride = null;
+            eveningOverride = null;
             GameEvents.Say($"Your camp kept working while you were away ({seconds / 60f:0} min).", new Color(0.7f, 1f, 0.8f));
         }
 
@@ -717,6 +745,7 @@ namespace Wildbond
             Buildings.Clear();
             Core = null;
             CoreLevel = 1;
+            Charge = 0f;
             Orders.Clear();
             Storage.slots.Clear();
         }

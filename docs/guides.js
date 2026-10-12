@@ -334,6 +334,8 @@ html: `
 <div data-view="jobs"></div>
 <ul>
 <li><b>Assigning</b> a kin to a structure (CAMP &gt; Structures or Workers) makes that structure its first choice. It still helps elsewhere whenever its own structure has nothing for it.</li>
+<li><b>Queued crafting orders</b> are picked up by any free kin with the station's job (Crafting for the Workbench, Kindling for the Campfire and Alloy Forge), whether or not it is assigned there - for example a farmer with Crafting works the Workbench while its plot grows.</li>
+<li>A kin assigned to a Dynamo, Frost Larder or Sprinkler stays at it, because those only run while it is there.</li>
 <li>A kin with no structure of its own simply goes wherever it is useful.</li>
 <li>A structure takes as many hands at once as it has worker places.</li>
 <li>Kin with the <b>Hauling</b> job carry finished batches to storage when nothing needs tending. Kin assigned to the Hearthstone carry first and tend second.</li>
@@ -347,6 +349,7 @@ html: `
 <h2 id="night">Night</h2>
 <p>From dusk to dawn your camp kin <b>sleep</b>. They put down what they are doing, walk to a Kin Nest (or curl up round the Hearthstone if there are not enough beds) and stay there until morning. Anything already growing, smelting or seasoning carries on by itself.</p>
 <ul>
+<li>Machines do not sleep: the Conveyor Hub and Auto-Assembler keep going on stored charge until it runs out (see Volt Battery below).</li>
 <li>A kin with the <b>Night Owl</b> passive stays up and works all night. It is a trait some kin are born with, and eggs can inherit it.</li>
 <li>Kin that are only found at night in the wild are night kin by nature, and stay up too.</li>
 <li>A raid wakes everyone. A starving kin gets up to eat, then goes back to bed.</li>
@@ -405,7 +408,8 @@ html: `
 <h2 id="power">Power and automation</h2>
 <ul>
 <li><b>Spark Dynamo</b> with a Charging kin: +25% production for the whole camp.</li>
-<li><b>Volt Pylon</b> with a Charging kin: powers the camp, which runs the three machines below and the Volt Turrets.</li>
+<li><b>Volt Pylon</b>: powers the camp, which runs the machines below and the Volt Turrets. A Charging kin fills it like a battery (the gauge floats over it), then is free for its other jobs. It comes back by itself to top the pylon up at half charge and again in the evening, so the camp goes into the night full. Any Charging kin will do it; one assigned to the pylon goes first.</li>
+<li><b>Volt Battery</b>: stores more charge. A pylon holds a fifth of a day and each battery about a third, and night is a little under half a day - so <b>a pylon and one battery keep the machines running all night</b> while every kin sleeps. Stored charge only runs down while something is plugged in.</li>
 <li><b>Conveyor Hub</b>: moves every structure's output to storage, no haulers needed.</li>
 <li><b>Auto-Assembler</b>: works through queued Workbench and Campfire orders by itself.</li>
 <li><b>Sprinkler</b>: waters every Crop Plot by itself, and farms work 40% faster while it runs. It runs on camp power or with an Irrigating kin.</li>

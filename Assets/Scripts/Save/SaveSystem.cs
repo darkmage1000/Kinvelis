@@ -56,6 +56,7 @@ namespace Wildbond
         public string companionUid;
         public bool hasBase;
         public int coreLevel = 1;
+        public float campCharge;   // seconds of stored pylon / battery power
         public List<BuildingSave> buildings = new List<BuildingSave>();
         public Inventory storage = new Inventory();
         public List<CraftOrder> orders = new List<CraftOrder>();
@@ -212,6 +213,7 @@ namespace Wildbond
                 companionUid = gm.Party.Companion != null ? gm.Party.Companion.Data.uid : null,
                 hasBase = bm.HasBase,
                 coreLevel = bm.CoreLevel,
+                campCharge = bm.Charge,
                 goalsDone = new List<string>(gm.GoalsDone),
                 world = WorldRules.Current,
                 createdAtUnix = gm.CreatedAtUnix,

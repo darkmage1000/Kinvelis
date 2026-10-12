@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: volt_pylon
   displayName: Volt Pylon
-  description: 'A Charging kin powers the whole camp: Conveyor Hub, Auto-Assembler
-    and Sprinklers run with no other workers.'
+  description: Powers the whole camp (Conveyor Hub, Auto-Assembler, Sprinklers, Turrets).
+    A Charging kin fills it like a battery, then is free for other work and comes
+    back to top it up at half charge and before nightfall. Holds a fifth of a day;
+    build Volt Batteries to store more.
   cost:
   - itemId: ingot
     count: 6
@@ -26,6 +28,7 @@ MonoBehaviour:
   unlockLevel: 7
   footprint: 1
   isCore: 0
+  category: 0
   workType: 9
   secondaryWorkType: 0
   workerSlots: 1
