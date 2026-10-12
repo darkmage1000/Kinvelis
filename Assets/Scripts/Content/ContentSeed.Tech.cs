@@ -166,7 +166,7 @@ namespace Wildbond
                 P(PartShape.Box, BodyGroup.Body, ColorSlot.Primary, -1.1f, 0.3f, -0.5f, 0.9f, 0.6f, 0.5f),
             };
 
-            var green = Bld(b, "greenhouse", "Greenhouse", "A glass-roofed plot that grows by itself, kin or no kin. Cultivating and Irrigating kin make it faster. Tap CROP in Camp > Structures to choose what it grows.", 1, 1.8f,
+            var green = Bld(b, "greenhouse", "Greenhouse", "A glass-roofed plot that plants, waters and harvests itself, kin or no kin. Cultivating and Irrigating kin make it faster. Tap CROP in Camp > Structures to choose what it grows.", 1, 1.8f,
                 ("saltglass_bar", 8), ("wood", 20), ("ingot", 4));
             green.workType = WorkType.Cultivating; green.secondaryWorkType = WorkType.Irrigating; green.workerSlots = 1; green.outputItem = "berry"; green.outputCount = 2; green.workPerUnit = 12f;
             green.palette = Pal(Hex("#6b4a2e"), Hex("#4f9c3a"), Hex("#b8f4ec"), Hex("#d8fff8"));

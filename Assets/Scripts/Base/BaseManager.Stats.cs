@@ -31,9 +31,22 @@ namespace Wildbond
         public float OutputPerMinute(Building b)
         {
             if (!b.IsProducer) return 0f;
-            float work = 0f;
-            foreach (var d in WorkersAt(b)) if (b.CanWork(d)) work += WorkRate(d, b);
-            return work / Mathf.Max(0.01f, b.WorkPerUnit) * b.OutputCount * 60f;
+            // one batch = every step in turn: the hands-on ones at the pace of the best kin in camp for each, the hands-off ones by the clock
+            float seconds = 0f;
+            int was = b.Stage;
+            for (int i = 0; i < b.Stages.Length; i++)
+            {
+                if (b.Stages[i].handsOff) { seconds += b.StageNeedAt(i); continue; }
+                float best = 0f;
+                b.Stage = i;   // WorkRate reads the step the structure is on
+                foreach (var d in GameManager.I.Party.In(KinLocation.Base)) if (!d.Fainted && b.StageLevelAt(i, d) > 0f) best = Mathf.Max(best, WorkRate(d, b));
+                if (Crops.IsPlot(b) && i == WorkStages.CropWater && SprinklerRunning) best = Mathf.Max(best, SprinklerWater * WorldRules.Current.workSpeed);
+                if (b.Def.id == "greenhouse") best += GreenhouseRate * WorldRules.Current.workSpeed;
+                if (best <= 0f) { b.Stage = was; return 0f; }
+                seconds += b.StageNeedAt(i) / best;
+            }
+            b.Stage = was;
+            return seconds > 0f ? b.BatchOutput / seconds * 60f : 0f;
         }
 
         /// <summary>Total production per minute grouped by item id.</summary>
@@ -100,12 +113,19 @@ namespace Wildbond
             }
             if (b.IsProducer)
             {
-                if (workers == 0) { text = $"No workers - needs {b.Def.workType}"; return BuildingHealth.Blocked; }
-                if (b.BufferCount >= b.Def.bufferCap) { text = "Output full - collect it or add haulers"; return BuildingHealth.Blocked; }
-                if (!string.IsNullOrEmpty(b.Def.inputItem) && b.Progress <= 0.001f && Storage.Count(b.Def.inputItem) < b.Def.inputCount)
-                { text = $"Needs {b.Def.inputCount} {ContentDB.ItemName(b.Def.inputItem)} in storage"; return BuildingHealth.Blocked; }
-                if (anyCan) { text = $"Working · {OutputPerMinute(b):0.#}/min"; return BuildingHealth.Good; }
-                text = "Workers idle"; return BuildingHealth.Idle;
+                if (b.AtStart && b.StartBlock() != null) { text = b.StartBlock(); return BuildingHealth.Blocked; }
+                float rate = OutputPerMinute(b);
+                string pace = rate > 0f ? $" · about {rate:0.#}/min" : "";
+                if (b.Waiting) { text = b.StageText(false) + pace; return BuildingHealth.Good; }
+                if (!AnyoneCan(b, b.Stage))
+                {
+                    var st = b.Cur;
+                    text = $"{st.waiting} - no {st.job}{(st.alt != WorkType.None ? " or " + st.alt : "")} kin in camp (you can do it by hand)";
+                    return BuildingHealth.Blocked;
+                }
+                bool busy = HandsAt(b) > 0 || !actorsOut;
+                text = $"{b.StageText(busy)} {Mathf.RoundToInt(b.Stage01 * 100f)}%{pace}";
+                return BuildingHealth.Good;
             }
             if (b.IsStation)
             {

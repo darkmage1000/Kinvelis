@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: smelter
   displayName: Smelter
-  description: Kindling kin smelt 2 Rustore into 1 Ingot (pulls ore from base storage).
+  description: Kindling kin stoke it with 4 Rustore from camp storage, then it smelts
+    2 Ingots by itself.
   cost:
   - itemId: stone
     count: 20
@@ -23,6 +24,7 @@ MonoBehaviour:
   unlockLevel: 3
   footprint: 1.4
   isCore: 0
+  category: 0
   workType: 3
   secondaryWorkType: 0
   workerSlots: 1

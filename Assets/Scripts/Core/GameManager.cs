@@ -300,7 +300,8 @@ namespace Wildbond
         void RestoreBuilding(BuildingDef def, BuildingSave b)
         {
             var bld = baseMgr.Place(def, new Vector3(b.x, b.y, b.z), b.rotY, b.uid);
-            bld.Progress = b.progress;
+            bld.Stage = Mathf.Clamp(b.stage, 0, bld.Stages.Length - 1);
+            bld.Progress = Mathf.Min(b.progress, bld.StageNeed * 0.999f);   // (a save from before stages: its old progress, kept within the first step)
             bld.BufferItem = b.bufferItem;
             bld.BufferCount = b.bufferCount;
             bld.Crop = b.crop;
@@ -714,7 +715,8 @@ namespace Wildbond
             interactBuilding = b;
             if (b.BufferCount > 0) InteractPrompt = $"COLLECT {b.BufferCount}";
             else if (baseMgr.PlayerWorkTarget == b) InteractPrompt = $"STOP\n{Mathf.RoundToInt(b.Progress01 * 100f)}%";
-            else if (b.IsProducer) InteractPrompt = "WORK";
+            else if (b.IsProducer && b.Waiting) InteractPrompt = $"{b.Cur.doing.ToUpperInvariant()}\n{WorkStages.Clock(b.SecondsLeft)}";
+            else if (b.IsProducer) InteractPrompt = Crops.IsPlot(b) ? (b.Stage == 0 ? "PLANT" : b.Stage == WorkStages.CropWater ? "WATER" : "HARVEST") : "WORK";
             else if (b.Def.isCore || b.Def.storageSlots > 0) InteractPrompt = "CAMP";
             else if (b.IsStation) InteractPrompt = MenuUI.StationVerb(b.Def.station);
             else InteractPrompt = "INFO";

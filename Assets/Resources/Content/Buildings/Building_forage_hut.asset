@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: forage_hut
   displayName: Forage Hut
-  description: Foraging kin gather Fiber (and the odd berry).
+  description: Foraging kin bring in a batch of Fiber (and the odd berry), then it
+    sorts and dries by itself.
   cost:
   - itemId: wood
     count: 10
@@ -23,6 +24,7 @@ MonoBehaviour:
   unlockLevel: 1
   footprint: 1.4
   isCore: 0
+  category: 0
   workType: 10
   secondaryWorkType: 0
   workerSlots: 1

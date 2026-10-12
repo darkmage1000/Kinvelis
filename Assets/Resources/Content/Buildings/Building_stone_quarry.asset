@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: stone_quarry
   displayName: Stone Quarry
-  description: Quarrying kin chip out Stone.
+  description: Quarrying kin set the wedges, then the Stone splits by itself while
+    they do something else.
   cost:
   - itemId: wood
     count: 10
@@ -23,6 +24,7 @@ MonoBehaviour:
   unlockLevel: 1
   footprint: 1.8
   isCore: 0
+  category: 0
   workType: 2
   secondaryWorkType: 0
   workerSlots: 2

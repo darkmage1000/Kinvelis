@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: sprinkler
   displayName: Sprinkler
-  description: 'Farms (Berry Plot, Forage Hut) work 40% faster while it runs: camp
-    power or an Irrigating kin.'
+  description: 'Waters every Crop Plot by itself and makes farms (Crop Plot, Forage
+    Hut) work 40% faster while it runs: camp power or an Irrigating kin.'
   cost:
   - itemId: ingot
     count: 3
@@ -26,6 +26,7 @@ MonoBehaviour:
   unlockLevel: 6
   footprint: 0.8
   isCore: 0
+  category: 0
   workType: 4
   secondaryWorkType: 0
   workerSlots: 1

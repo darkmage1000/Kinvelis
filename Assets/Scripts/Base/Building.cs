@@ -29,16 +29,89 @@ namespace Wildbond
         public bool IsStation => Def.station != CraftStation.Hand;
         public bool IsProducer => !string.IsNullOrEmpty(Def.outputItem);
 
+        // ---- a producer makes a batch in stages (WorkStages): Progress is the work or the seconds put into the current one ----
+        /// <summary>Which step of the batch this producer is on (index into Stages).</summary>
+        public int Stage;
+        public StageDef[] Stages { get; private set; }
+        public StageDef Cur => Stages[Mathf.Clamp(Stage, 0, Stages.Length - 1)];
+        /// <summary>Hands-off right now: growing, smelting, seasoning. Nobody can hurry it.</summary>
+        public bool Waiting => IsProducer && Cur.handsOff;
+        public int Batch => WorkStages.Batch(WorkPerUnit);
+        public int BatchOutput => Batch * OutputCount;
+        public int BatchInput => Batch * Def.inputCount;
+        /// <summary>Work (hands-on) or seconds (hands-off) the current stage takes.</summary>
+        public float StageNeed => StageNeedAt(Stage);
+        public float StageNeedAt(int i)
+        {
+            var st = Stages[Mathf.Clamp(i, 0, Stages.Length - 1)];
+            float whole = Batch * WorkPerUnit * st.share;
+            return st.handsOff ? whole / Mathf.Max(0.25f, WorldRules.Current.workSpeed) : whole;
+        }
+        public float Stage01 => IsProducer ? Mathf.Clamp01(Progress / Mathf.Max(0.01f, StageNeed)) : 0f;
+        public float SecondsLeft => Waiting ? Mathf.Max(0f, StageNeed - Progress) : 0f;
+        /// <summary>A fresh batch has not been started (nothing sown, no ore loaded).</summary>
+        public bool AtStart => Stage == 0 && Progress <= 0.001f;
+
+        /// <summary>How good this kin is at a stage of this producer (0 = it can't do that step).</summary>
+        public float StageLevelAt(int i, CreatureData d)
+        {
+            var st = Stages[Mathf.Clamp(i, 0, Stages.Length - 1)];
+            if (st.handsOff) return 0f;
+            float a = st.job != WorkType.None ? d.WorkLevel(st.job) : 0f;
+            float b2 = st.alt != WorkType.None ? d.WorkLevel(st.alt) * st.altRate : 0f;
+            return Mathf.Max(a, b2);
+        }
+
+        /// <summary>Work level this kin brings to whatever needs doing here now.</summary>
+        public float WorkLevelFor(CreatureData d)
+        {
+            if (IsProducer) return StageLevelAt(Stage, d);
+            return Mathf.Max(d.WorkLevel(Def.workType), Def.secondaryWorkType != WorkType.None ? d.WorkLevel(Def.secondaryWorkType) * 0.75f : 0f);
+        }
+
+        /// <summary>Why a new batch can't start, or null. (Room for the output, and the inputs in storage.)</summary>
+        public string StartBlock()
+        {
+            if (BufferCount + BatchOutput > Def.bufferCap) return "Output full - collect it or add haulers";
+            if (!string.IsNullOrEmpty(Def.inputItem) && BaseManager.I.Storage.Count(Def.inputItem) < BatchInput)
+                return $"Needs {BatchInput} {ContentDB.ItemName(Def.inputItem)} in storage";
+            return null;
+        }
+
+        /// <summary>What it is doing, for labels: "Growing 0:14", "Watering", "Needs planting".</summary>
+        public string StageText(bool beingWorked)
+        {
+            if (!IsProducer) return "";
+            if (Waiting) return $"{Cur.doing} {WorkStages.Clock(SecondsLeft)}";
+            return beingWorked ? Cur.doing : Cur.waiting;
+        }
+
+        /// <summary>The top of the model, for a label floating over it.</summary>
+        public float TopY { get; private set; } = 2f;
+
         public void Setup(BuildingDef def, string uid, Vector3 pos, float rotY)
         {
             Def = def;
             Uid = uid;
             RotY = rotY;
             transform.SetPositionAndRotation(pos, Quaternion.Euler(0, rotY, 0));
+            Stages = WorkStages.For(def);
+            bool plot = def.id == Crops.PlotId || def.id == "greenhouse";
             if (!meshCache.TryGetValue(def.id, out var mesh))
             {
-                mesh = ModelBuilder.BuildStatic(def.parts, def.palette, "bld_" + def.id);
+                var parts = def.parts;
+                // a plot's bed starts empty: its bushes are drawn by CropVisual as the crop really grows
+                if (plot) parts = System.Array.FindAll(def.parts, p => p.shape != PartShape.Sphere);
+                mesh = ModelBuilder.BuildStatic(parts, def.palette, "bld_" + def.id);
                 meshCache[def.id] = mesh;
+            }
+            TopY = mesh.bounds.max.y;
+            if (plot)
+            {
+                float soil = 0.25f;
+                foreach (var p in def.parts) if (p.shape == PartShape.Box && p.pos.y < 0.3f && p.scale.x > 2f) soil = p.pos.y + p.scale.y * 0.5f;
+                gameObject.AddComponent<CropVisual>().Init(this, soil);
+                TopY = Mathf.Max(TopY, 1.1f);
             }
             var mf = gameObject.AddComponent<MeshFilter>();
             mf.sharedMesh = mesh;
@@ -101,67 +174,90 @@ namespace Wildbond
             return Mathf.Max(a * 4, b * 3);
         }
 
-        /// <summary>Is there something for this worker to do here right now?</summary>
+        /// <summary>Is there something for this worker to do here right now? (For a producer: the current step is hands-on and this kin can do it.)</summary>
         public bool CanWork(CreatureData d)
         {
-            if (Suitability(d) <= 0) return false;
             var bm = BaseManager.I;
             if (IsProducer)
             {
-                if (BufferCount >= Def.bufferCap) return false;
-                if (!string.IsNullOrEmpty(Def.inputItem) && Progress <= 0.001f && bm.Storage.Count(Def.inputItem) < Def.inputCount) return false;
+                if (WorkLevelFor(d) <= 0f) return false;
+                if (AtStart && StartBlock() != null) return false;
                 return true;
             }
+            if (Suitability(d) <= 0) return false;
             if (IsStation) return bm.HasOrderFor(Def.station);
-            return Def.workType == WorkType.Charging || Def.workType == WorkType.Chilling;
+            return Def.workType == WorkType.Charging || Def.workType == WorkType.Chilling || Def.workType == WorkType.Irrigating;
         }
 
+        /// <summary>Work put into the current hands-on stage (by a kin, the player or a machine). Nothing happens during a hands-off one.</summary>
         public void AddWork(float w)
         {
             var bm = BaseManager.I;
             if (IsProducer)
             {
-                if (!string.IsNullOrEmpty(Def.inputItem) && Progress <= 0.001f)
+                if (Cur.handsOff) return;
+                if (AtStart)
                 {
-                    if (bm.Storage.Count(Def.inputItem) < Def.inputCount) return;
-                    bm.Storage.Remove(Def.inputItem, Def.inputCount);  // consume up-front when a batch starts
+                    if (StartBlock() != null) return;
+                    if (!string.IsNullOrEmpty(Def.inputItem)) bm.Storage.Remove(Def.inputItem, BatchInput);  // the whole batch's inputs go in up front
                     Progress = 0.002f;
                 }
                 Progress += w;
-                if (Progress >= WorkPerUnit)
-                {
-                    Progress = 0f;
-                    BufferItem = OutputItem;
-                    BufferCount = Mathf.Min(Def.bufferCap, BufferCount + OutputCount);
-                    if (Def.id == "forage_hut" && Random.value < 0.25f) bm.Storage.Add("berry", 1);
-                    pulse = 1f;
-                }
+                if (Progress >= StageNeed) NextStage();
             }
             else if (IsStation) bm.AddCraftWork(Def.station, w);
             else PoweredUntil = GameManager.WorldTime + 2.0;
+        }
+
+        /// <summary>Time passing: hands-off stages run by themselves (near, far and while the game is closed).</summary>
+        public void TickStage(float dt)
+        {
+            if (!IsProducer || !Cur.handsOff) return;
+            Progress += dt;
+            if (Progress >= StageNeed) NextStage();
+        }
+
+        void NextStage()
+        {
+            Progress = 0f;
+            Stage++;
+            pulse = 1f;
+            if (Stage < Stages.Length) return;
+            // the batch is done
+            Stage = 0;
+            BufferItem = OutputItem;
+            BufferCount = Mathf.Min(Def.bufferCap, BufferCount + BatchOutput);
+            if (Def.id == "forage_hut")
+                for (int i = 0; i < Batch; i++) if (Random.value < 0.25f) BaseManager.I.Storage.Add("berry", 1);
         }
 
         /// <summary>The player working this producer by hand; inputs come from camp storage, then the bag. Returns why nothing happened (null = working).</summary>
         public string PlayerWork(float w, Inventory bag)
         {
             if (!IsProducer) return "INFO";
-            if (BufferCount >= Def.bufferCap) return "FULL";
+            if (Waiting) return "WAIT";                      // growing, smelting...: nothing for hands to do
             var bm = BaseManager.I;
-            if (!string.IsNullOrEmpty(Def.inputItem) && Progress <= 0.001f)
+            if (AtStart)
             {
-                int stored = bm.Storage.Count(Def.inputItem);
-                if (stored + bag.Count(Def.inputItem) < Def.inputCount) return "NEED " + ContentDB.ItemName(Def.inputItem).ToUpper();
-                int fromStore = Mathf.Min(stored, Def.inputCount);
-                if (fromStore > 0) bm.Storage.Remove(Def.inputItem, fromStore);
-                if (fromStore < Def.inputCount) bag.Remove(Def.inputItem, Def.inputCount - fromStore);
+                if (BufferCount + BatchOutput > Def.bufferCap) return "FULL";
+                if (!string.IsNullOrEmpty(Def.inputItem))
+                {
+                    int need = BatchInput, stored = bm.Storage.Count(Def.inputItem);
+                    if (stored + bag.Count(Def.inputItem) < need) return "NEED " + ContentDB.ItemName(Def.inputItem).ToUpper();
+                    int fromStore = Mathf.Min(stored, need);
+                    if (fromStore > 0) bm.Storage.Remove(Def.inputItem, fromStore);
+                    if (fromStore < need) bag.Remove(Def.inputItem, need - fromStore);
+                    GameEvents.RaiseInventoryChanged();
+                }
                 Progress = 0.002f;
-                GameEvents.RaiseInventoryChanged();
             }
-            AddWork(w);
+            if (w <= 0f) return null;
+            Progress += w;                                   // (not AddWork: the inputs are already paid for, from the bag if need be)
+            if (Progress >= StageNeed) NextStage();
             return null;
         }
 
-        public float Progress01 => WorkPerUnit > 0f ? Mathf.Clamp01(Progress / WorkPerUnit) : 0f;
+        public float Progress01 => Stage01;
 
         public int TakeFromBuffer(int max, out string item)
         {
@@ -242,6 +338,24 @@ namespace Wildbond
                 float s = 1f + Mathf.Sin(pulse * Mathf.PI) * 0.06f;
                 transform.localScale = new Vector3(s, 1f / s, s);
             }
+            // running by itself: a wisp of smoke, dust or steam now and then so you can see it is busy
+            if (Def != null && IsProducer && Cur.handsOff && Stages.Length == 2)
+            {
+                puff -= Time.deltaTime;
+                if (puff <= 0f)
+                {
+                    puff = Random.Range(0.9f, 1.6f);
+                    var cam = Camera.main;
+                    if (cam != null && (cam.transform.position - transform.position).sqrMagnitude < 45f * 45f)
+                    {
+                        Color c = Def.id == "smelter" ? new Color(0.5f, 0.42f, 0.4f) : Def.id == "fish_pond" ? new Color(0.6f, 0.85f, 1f)
+                                : Def.id == "forage_hut" ? new Color(0.6f, 0.8f, 0.45f) : new Color(0.78f, 0.74f, 0.66f);
+                        Fx.Puff(transform.position + new Vector3(Random.Range(-0.3f, 0.3f), TopY * 0.85f, Random.Range(-0.3f, 0.3f)), c, 0.3f, 1.1f);
+                    }
+                }
+            }
         }
+
+        float puff;
     }
 }

@@ -280,7 +280,7 @@ namespace Wildbond
                 P(PartShape.Box, BodyGroup.Body, ColorSlot.Accent, 0, 0.6f, 0.46f, 0.2f, 0.25f, 0.05f),
             };
 
-            var mill = Bld(b, "lumber_mill", "Lumber Mill", "Logging kin turn out Wood.", 1, 1.6f, ("wood", 15), ("stone", 5));
+            var mill = Bld(b, "lumber_mill", "Lumber Mill", "Logging kin saw a batch of Wood, then it seasons by itself while they do something else.", 1, 1.6f, ("wood", 15), ("stone", 5));
             mill.workType = WorkType.Logging; mill.workerSlots = 2; mill.outputItem = "wood"; mill.outputCount = 1; mill.workPerUnit = 8f; mill.palette = woodP;
             mill.parts = new[]
             {
@@ -290,7 +290,7 @@ namespace Wildbond
                 P(PartShape.Box, BodyGroup.Body, ColorSlot.Secondary, 0.9f, 0.9f, 0.5f, 0.15f, 0.9f, 0.15f),
             };
 
-            var quarry = Bld(b, "stone_quarry", "Stone Quarry", "Quarrying kin chip out Stone.", 1, 1.8f, ("wood", 10), ("stone", 10));
+            var quarry = Bld(b, "stone_quarry", "Stone Quarry", "Quarrying kin set the wedges, then the Stone splits by itself while they do something else.", 1, 1.8f, ("wood", 10), ("stone", 10));
             quarry.workType = WorkType.Quarrying; quarry.workerSlots = 2; quarry.outputItem = "stone"; quarry.outputCount = 1; quarry.workPerUnit = 8f; quarry.palette = stoneP;
             quarry.parts = new[]
             {
@@ -300,7 +300,7 @@ namespace Wildbond
                 P(PartShape.Box, BodyGroup.Body, ColorSlot.Accent, -1.3f, 1.2f, 0.9f, 0.9f, 0.1f, 0.1f),
             };
 
-            var plot = Bld(b, "berry_plot", "Crop Plot", "Cultivating kin grow Sunberries here, or any crop you plant (tap CROP in Camp > Structures). Irrigating kin help too.", 1, 1.8f, ("wood", 5), ("fiber", 5), ("berry", 3));
+            var plot = Bld(b, "berry_plot", "Crop Plot", "Grows Sunberries, or any crop you plant (CROP in Camp > Structures), a batch at a time: Cultivating kin plant it, Irrigating kin water it (a farmer can, slowly), it grows by itself, then Cultivating or Foraging kin harvest.", 1, 1.8f, ("wood", 5), ("fiber", 5), ("berry", 3));
             plot.workType = WorkType.Cultivating; plot.secondaryWorkType = WorkType.Irrigating; plot.workerSlots = 2; plot.outputItem = "berry"; plot.outputCount = 2; plot.workPerUnit = 12f;
             plot.palette = Pal(Hex("#6b4a2e"), Hex("#4f9c3a"), Hex("#ff5a7a"), Hex("#ffe070"));
             plot.parts = new[]
@@ -318,7 +318,7 @@ namespace Wildbond
                 P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Accent, -0.2f, 0.72f, 0.4f, 0.16f, 0.16f, 0.16f),
             };
 
-            var hut = Bld(b, "forage_hut", "Forage Hut", "Foraging kin gather Fiber (and the odd berry).", 1, 1.4f, ("wood", 10), ("fiber", 10));
+            var hut = Bld(b, "forage_hut", "Forage Hut", "Foraging kin bring in a batch of Fiber (and the odd berry), then it sorts and dries by itself.", 1, 1.4f, ("wood", 10), ("fiber", 10));
             hut.workType = WorkType.Foraging; hut.workerSlots = 1; hut.outputItem = "fiber"; hut.outputCount = 2; hut.workPerUnit = 8f;
             hut.palette = Pal(Hex("#c9a86a"), Hex("#8a6a40"), Hex("#6ab04c"), Hex("#ffd36a"));
             hut.parts = new[]
@@ -328,7 +328,7 @@ namespace Wildbond
                 P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Accent, 1.2f, 0.3f, 0.6f, 0.7f, 0.5f, 0.7f),
             };
 
-            var smelter = Bld(b, "smelter", "Smelter", "Kindling kin smelt 2 Rustore into 1 Ingot (pulls ore from base storage).", 3, 1.4f, ("stone", 20), ("wood", 5));
+            var smelter = Bld(b, "smelter", "Smelter", "Kindling kin stoke it with 4 Rustore from camp storage, then it smelts 2 Ingots by itself.", 3, 1.4f, ("stone", 20), ("wood", 5));
             smelter.workType = WorkType.Kindling; smelter.workerSlots = 1; smelter.outputItem = "ingot"; smelter.outputCount = 1; smelter.workPerUnit = 16f;
             smelter.inputItem = "ore"; smelter.inputCount = 2; smelter.palette = Pal(Hex("#7a6e6a"), Hex("#4d4442"), Hex("#b5a79a"), Hex("#ff7a2a"));
             smelter.parts = new[]
@@ -398,7 +398,7 @@ namespace Wildbond
                 P(PartShape.Box, BodyGroup.Body, ColorSlot.Secondary, 0, 0.75f, 0.68f, 1.2f, 0.5f, 0.06f),
                 P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Glow, 0.6f, 1.15f, 0.66f, 0.18f, 0.18f, 0.08f),
             };
-            var spr = Bld(b, "sprinkler", "Sprinkler", "Farms (Berry Plot, Forage Hut) work 40% faster while it runs: camp power or an Irrigating kin.", 6, 0.8f,
+            var spr = Bld(b, "sprinkler", "Sprinkler", "Waters every Crop Plot by itself and makes farms (Crop Plot, Forage Hut) work 40% faster while it runs: camp power or an Irrigating kin.", 6, 0.8f,
                 ("ingot", 3), ("gel", 6), ("wood", 6));
             spr.workType = WorkType.Irrigating; spr.workerSlots = 1;
             spr.palette = Pal(Hex("#6a8a9a"), Hex("#3a5060"), Hex("#58c8ff"), Hex("#bff0ff"));
@@ -453,7 +453,7 @@ namespace Wildbond
                 P(PartShape.Box, BodyGroup.Body, ColorSlot.Accent, 0, 1.2f, 0, 1.2f, 0.1f, 0.1f, 0, 45, 0),
             };
 
-            var drill = Bld(b, "deep_drill", "Deep Drill", "Quarrying kin extract Rustore from deep rock.", 6, 1.5f, ("ingot", 4), ("stone", 15));
+            var drill = Bld(b, "deep_drill", "Deep Drill", "Quarrying kin wind the drill, then it bores Rustore out of deep rock by itself.", 6, 1.5f, ("ingot", 4), ("stone", 15));
             drill.workType = WorkType.Quarrying; drill.workerSlots = 1; drill.outputItem = "ore"; drill.outputCount = 1; drill.workPerUnit = 14f;
             drill.palette = Pal(Hex("#6e6258"), Hex("#d8d8e6"), Hex("#c07a4a"), Hex("#ffd84a"));
             drill.parts = new[]

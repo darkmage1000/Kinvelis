@@ -36,7 +36,7 @@ namespace Wildbond
         }
     }
 
-    [Serializable] public class BuildingSave { public string uid, defId, bufferItem, crop; public float x, y, z, rotY, progress; public int bufferCount; }
+    [Serializable] public class BuildingSave { public string uid, defId, bufferItem, crop; public float x, y, z, rotY, progress; public int bufferCount, stage; }
     [Serializable] public class NodeSave { public long key; public double t; }
     [Serializable] public class AlphaSave { public string id; public double t; }
 
@@ -223,7 +223,7 @@ namespace Wildbond
             foreach (var b in bm.Buildings)
             {
                 var p = b.transform.position;
-                d.buildings.Add(new BuildingSave { uid = b.Uid, defId = b.Def.id, x = p.x, y = p.y, z = p.z, rotY = b.RotY, progress = b.Progress, bufferItem = b.BufferItem, bufferCount = b.BufferCount, crop = b.Crop });
+                d.buildings.Add(new BuildingSave { uid = b.Uid, defId = b.Def.id, x = p.x, y = p.y, z = p.z, rotY = b.RotY, progress = b.Progress, stage = b.Stage, bufferItem = b.BufferItem, bufferCount = b.BufferCount, crop = b.Crop });
             }
             d.storage.CopyFrom(bm.Storage);
             d.orders.AddRange(bm.Orders);

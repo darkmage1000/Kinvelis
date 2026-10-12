@@ -376,6 +376,7 @@ namespace Wildbond
             UpdateRunButton(pl);
             UpdateToasts(dt);
             UpdateDamageNumbers(dt, gm.CameraRig.Cam);
+            UpdateCampLabels(gm.CameraRig.Cam);
             UpdateAimLabel(pl, gm.CameraRig.Cam);
 
             if (ShowFps)

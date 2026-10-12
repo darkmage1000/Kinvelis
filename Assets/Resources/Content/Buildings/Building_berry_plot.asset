@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: berry_plot
   displayName: Crop Plot
-  description: Cultivating kin grow Sunberries here, or any crop you plant (tap CROP
-    in Camp > Structures). Irrigating kin help too.
+  description: 'Grows Sunberries, or any crop you plant (CROP in Camp > Structures),
+    a batch at a time: Cultivating kin plant it, Irrigating kin water it (a farmer
+    can, slowly), it grows by itself, then Cultivating or Foraging kin harvest.'
   cost:
   - itemId: wood
     count: 5
@@ -26,6 +27,7 @@ MonoBehaviour:
   unlockLevel: 1
   footprint: 1.8
   isCore: 0
+  category: 0
   workType: 5
   secondaryWorkType: 4
   workerSlots: 2

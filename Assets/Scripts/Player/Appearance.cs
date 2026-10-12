@@ -191,7 +191,12 @@ namespace Wildbond
                     o.Add(PartShape.Box, BodyGroup.Torso, C, 0, 1.1f, td * 0.5f + 0.02f, tw * 0.3f, 0.1f, 0.02f);
                     break;
                 case 5:   // travelling cloak: a mantle over the shoulders, a long cape to the knee, the hood down, a clasp at the throat
-                    o.Add(PartShape.Dome, BodyGroup.Torso, A, 0, 1.17f, -0.01f, tw + 0.3f, 0.52f, td + 0.26f);
+                    // the cloak sits on the shoulders and hangs behind: from the front you see the tunic, a shoulder piece each side
+                    // and the cord that holds it (a mantle over the whole chest read as far too much cloth)
+                    o.Add(PartShape.Sphere, BodyGroup.Torso, A, sx + 0.01f, 1.355f, -0.025f, sr + 0.1f, 0.12f, sr + 0.12f, 0, 0, -14);
+                    o.Add(PartShape.Sphere, BodyGroup.Torso, A, -(sx + 0.01f), 1.355f, -0.025f, sr + 0.1f, 0.12f, sr + 0.12f, 0, 0, 14);
+                    o.Add(PartShape.Sphere, BodyGroup.Torso, A, 0, 1.3f, -td * 0.5f - 0.015f, tw + 0.08f, 0.26f, 0.13f);
+                    o.Add(PartShape.Box, BodyGroup.Torso, C, 0, 1.34f, td * 0.5f - 0.012f, tw * 0.66f, 0.022f, 0.02f);
                     // the cape hangs in five folds that fan out toward the hem and wrap a little round the sides
                     for (int i = -2; i <= 2; i++)
                     {
@@ -202,8 +207,8 @@ namespace Wildbond
                     }
                     // the hood lies flat between the shoulders, a cowl stands round the neck
                     o.Add(PartShape.Sphere, BodyGroup.Torso, Shade(A, 0.9f), 0, 1.36f, -td * 0.5f - 0.07f, tw * 0.74f, 0.2f, 0.16f, -18);
-                    o.Add(PartShape.Cylinder, BodyGroup.Torso, A, 0, 1.415f, -0.005f, tw * 0.62f, 0.08f, td * 1.02f);
-                    o.Add(PartShape.Sphere, BodyGroup.Torso, C, 0, 1.345f, (td + 0.26f) * 0.36f, 0.07f, 0.07f, 0.05f);
+                    o.Add(PartShape.Cylinder, BodyGroup.Torso, A, 0, 1.41f, -0.03f, tw * 0.56f, 0.06f, td * 0.86f);
+                    o.Add(PartShape.Sphere, BodyGroup.Torso, C, 0, 1.34f, td * 0.5f + 0.005f, 0.06f, 0.06f, 0.04f);
                     break;
                 case 6:   // hoodie: a roomy body with a ribbed hem, the hood down, a raised collar, a pouch pocket and drawstrings
                     o.Add(PartShape.Capsule, BodyGroup.Torso, A, 0, 1.13f, 0, tw + 0.05f, 0.52f, td + 0.05f);

@@ -167,7 +167,7 @@ namespace Wildbond
         // ============================================================ WORK RATES
         public float WorkRate(CreatureData d, Building b)
         {
-            float lvl = Mathf.Max(d.WorkLevel(b.Def.workType), b.Def.secondaryWorkType != WorkType.None ? d.WorkLevel(b.Def.secondaryWorkType) * 0.75f : 0f);
+            float lvl = b.WorkLevelFor(d);   // for a producer: at the step it is on (planting, watering, harvesting...)
             float hungerMul = d.hunger > 0f ? 1f : 0.4f;
             float levelMul = (1f + 0.02f * (d.level - 1)) * WorldRules.Current.workSpeed;   // experienced workers are a bit faster
             return lvl * d.WorkMul * hungerMul * levelMul * (1f + DynamoBoost) * RestedMul * GameManager.I.Player.Stats.WorkBonus * HearthlinkMul * IrrigationMul(b);
@@ -192,6 +192,79 @@ namespace Wildbond
             {
                 d.workXpTimer -= gm.WorkXpInterval;
                 gm.GrantKinXp(d, gm.WorkXpAmount, true);
+            }
+        }
+
+        // ============================================================ TASKS
+        /// <summary>
+        /// What a camp kin should do next: the structure where its hands count for most right now. Its own structure
+        /// is favoured (and so is whatever it is already doing, so it doesn't dither), but a farmer who could only
+        /// water its own plot slowly will go and plant the empty one next door and leave the watering to a kin made
+        /// for it. While its structure is growing, smelting or has nothing for it, it helps wherever its jobs fit and
+        /// there is room (a structure takes as many hands at once as it has worker places). Null = nothing needs it.
+        /// </summary>
+        public Building PickTask(CreatureData d, Building home, CreatureActor self = null, Building current = null)
+        {
+            Building best = null; float bestScore = 0f;
+            foreach (var b in Buildings)
+            {
+                if (b == null || b.Def.isCore || b.Def.workType == WorkType.Hauling || b.Def.workerSlots <= 0) continue;
+                if (!b.CanWork(d)) continue;
+                if (b != current && HandsAt(b, self) >= b.Def.workerSlots) continue;
+                float score = TaskScore(d, b, home) * (b == current ? 1.3f : 1f);
+                if (self != null) score /= 1f + Vector3.Distance(self.transform.position, b.transform.position) * 0.03f;
+                if (score > bestScore) { bestScore = score; best = b; }
+            }
+            return best;
+        }
+
+        /// <summary>Is there anything at all for this camp kin to do: a step somewhere, or output to carry? (Ends a stroll, a nap or a game.)</summary>
+        public bool WantsHands(CreatureData d, Building home, CreatureActor self)
+        {
+            if (PickTask(d, home, self) != null) return true;
+            bool hauler = home != null && (home.Def.isCore || home.Def.workType == WorkType.Hauling);
+            return (hauler || d.WorkLevel(WorkType.Hauling) > 0) && FindHaulSource() != null;
+        }
+
+        /// <summary>A producer waiting on a step beats keeping a machine company; then whoever is best at it; its own structure first among equals.</summary>
+        float TaskScore(CreatureData d, Building b, Building home) =>
+            WorkRate(d, b) * (b.IsProducer ? 1.5f : b.IsStation ? 1.2f : 0.6f) * (b == home ? 1.35f : 1f);
+
+        /// <summary>How many camp kin are at (or on their way to) a structure right now.</summary>
+        public int HandsAt(Building b, CreatureActor except = null)
+        {
+            int n = 0;
+            foreach (var a in workerActors.Values) if (a != null && a != except && a.CampTask == b) n++;
+            return n;
+        }
+
+        /// <summary>Is anyone in camp able to do the step this producer is waiting on?</summary>
+        public bool AnyoneCan(Building b, int stage)
+        {
+            foreach (var d in GameManager.I.Party.In(KinLocation.Base)) if (!d.Fainted && b.StageLevelAt(stage, d) > 0f) return true;
+            return false;
+        }
+
+        const float SprinklerWater = 1.5f;   // work per second a running sprinkler puts into a plot that needs water
+
+        /// <summary>A Sprinkler is running (staffed by an Irrigating kin, or the camp is powered).</summary>
+        public bool SprinklerRunning
+        {
+            get { foreach (var b in Buildings) if (b.Def.id == "sprinkler" && (b.Powered || CampPowered)) return true; return false; }
+        }
+
+        /// <summary>Hands-off stages tick, sprinklers water, greenhouses tend themselves. Runs near, far and offline.</summary>
+        void TickStages(float dt)
+        {
+            bool sprinkler = SprinklerRunning;
+            float speed = WorldRules.Current.workSpeed;
+            foreach (var b in Buildings)
+            {
+                if (!b.IsProducer) continue;
+                b.TickStage(dt);
+                if (!Crops.IsPlot(b) || b.Waiting) continue;
+                if (b.Def.id == "greenhouse") b.AddWork(GreenhouseRate * speed * dt);
+                if (sprinkler && b.Stage == WorkStages.CropWater) b.AddWork(SprinklerWater * speed * dt);
             }
         }
 
@@ -457,6 +530,7 @@ namespace Wildbond
             else if (!near && actorsOut) DespawnWorkerActors();
 
             SimulateNeeds(dt);
+            TickStages(dt);
             if (!near) SimulateAbstract(dt);
             TickDefense(dt, playerPos, near);
             TickTurrets(dt, near);
@@ -483,15 +557,16 @@ namespace Wildbond
             if (PlayerWorkTarget == b) { StopPlayerWork("You stop working."); return; }
             var pl = GameManager.I.Player;
             string block = b.PlayerWork(0f, pl.Stats.Bag);   // starts the batch (takes the inputs) if it can
+            if (block == "WAIT") { GameEvents.Say($"{b.Cur.doing}: it needs no hands for another {WorkStages.Clock(b.SecondsLeft)}."); return; }
             if (block != null)
             {
                 GameEvents.Warn(block == "FULL" ? $"{b.Def.displayName} is full - collect it first."
-                    : $"{b.Def.displayName} needs {b.Def.inputCount}x {ContentDB.ItemName(b.Def.inputItem)} in camp storage or your bag.");
+                    : $"{b.Def.displayName} needs {b.BatchInput}x {ContentDB.ItemName(b.Def.inputItem)} in camp storage or your bag.");
                 return;
             }
             PlayerWorkTarget = b;
             PlayerWorkBlock = null;
-            GameEvents.Say($"Working the {b.Def.displayName} by hand - slower than a kin. Tap again or walk away to stop.", new Color(0.7f, 1f, 0.8f));
+            GameEvents.Say($"{b.Cur.doing} by hand - slower than a kin. Tap again or walk away to stop.", new Color(0.7f, 1f, 0.8f));
             SynthAudio.Play(Sfx.Craft, 1.1f, 0.5f);
         }
 
@@ -513,6 +588,7 @@ namespace Wildbond
             if (!near || !pl.IsAlive || Caves.InCave || d.magnitude - b.Def.footprint > PlayerWorkReach) { StopPlayerWork("You stop working."); return; }
             int before = b.BufferCount;
             PlayerWorkBlock = b.PlayerWork(playerWorkRate * WorldRules.Current.workSpeed * pl.Stats.CraftSpeedMul * dt, pl.Stats.Bag);
+            if (PlayerWorkBlock == "WAIT") { StopPlayerWork($"Done. {b.Cur.doing} now - it will be ready in {WorkStages.Clock(b.SecondsLeft)}."); return; }
             if (PlayerWorkBlock != null)
             {
                 if (PlayerWorkBlock != "FULL") StopPlayerWork($"Out of {ContentDB.ItemName(b.Def.inputItem)} - you stop working.");
@@ -535,14 +611,35 @@ namespace Wildbond
         /// <summary>Same production math as the actor path, without movement. Used far away and for offline progress.</summary>
         public void SimulateAbstract(float dt, bool xp = true)
         {
-            int haulers = 0;
+            float haulers = 0;
             var party = GameManager.I.Party;
+            abstractHands.Clear();
+            bool piles = FindHaulSource() != null;
             foreach (var d in party.In(KinLocation.Base))
             {
-                var b = FindBuilding(d.assignedBuilding);
-                if (b == null) continue;
-                if (b.Def.isCore || b.Def.workType == WorkType.Hauling) { haulers += 1 + d.WorkLevel(WorkType.Hauling); if (xp) AccrueWorkXp(d, dt); continue; }
-                if (b.CanWork(d)) { b.AddWork(WorkRate(d, b) * dt); if (xp) AccrueWorkXp(d, dt); }
+                if (d.Fainted) continue;
+                var home = FindBuilding(d.assignedBuilding);
+                // haulers carry while there is something to carry; with the piles cleared they turn a hand to whatever else they can do
+                if (piles && home != null && (home.Def.isCore || home.Def.workType == WorkType.Hauling)) { haulers += 1 + d.WorkLevel(WorkType.Hauling); if (xp) AccrueWorkXp(d, dt); continue; }
+                // the same choice the actors make: wherever its hands count for most, its own structure first among equals
+                Building t = null;
+                float bestScore = 0f;
+                foreach (var b in Buildings)
+                {
+                    if (b.Def.isCore || b.Def.workType == WorkType.Hauling || b.Def.workerSlots <= 0 || !b.CanWork(d)) continue;
+                    abstractHands.TryGetValue(b, out int there);
+                    if (there >= b.Def.workerSlots) continue;
+                    float score = TaskScore(d, b, home);
+                    if (score > bestScore) { bestScore = score; t = b; }
+                }
+                if (t != null)
+                {
+                    abstractHands.TryGetValue(t, out int n);
+                    abstractHands[t] = n + 1;
+                    t.AddWork(WorkRate(d, t) * dt);
+                    if (xp) AccrueWorkXp(d, dt);
+                }
+                else if (d.WorkLevel(WorkType.Hauling) > 0) haulers += 0.5f * d.WorkLevel(WorkType.Hauling);   // carries when nothing else needs it
             }
             if (haulers > 0)
             {
@@ -561,6 +658,7 @@ namespace Wildbond
         }
 
         float haulBudget;
+        readonly Dictionary<Building, int> abstractHands = new Dictionary<Building, int>();
 
         /// <summary>Catch-up simulation for time spent away from the game (capped).</summary>
         public void SimulateOffline(float seconds)
@@ -572,6 +670,7 @@ namespace Wildbond
             for (int i = 0; i < steps; i++)
             {
                 SimulateNeeds(step);
+                TickStages(step);
                 SimulateAbstract(step, false);   // production only: kin never level up while the game is closed
                 TickAutomation(step);
                 // workers keep powering dynamos/larders while offline

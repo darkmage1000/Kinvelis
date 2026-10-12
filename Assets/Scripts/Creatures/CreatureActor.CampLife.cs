@@ -14,6 +14,7 @@ namespace Wildbond
         CampMood mood;
         float moodTimer, moodFx, napFx, sulkFx;
         CreatureActor playMate;
+        float playCheck;
         bool playChaser;
         float greetedArrival = -99f;
         /// <summary>Face faceTarget whatever the state (greeting).</summary>
@@ -81,6 +82,13 @@ namespace Wildbond
 
                 case CampMood.Play:
                     moodTimer -= dt;
+                    // work before play: the game stops the moment either of them is wanted somewhere
+                    playCheck -= dt;
+                    if (playCheck <= 0f)
+                    {
+                        playCheck = 1f;
+                        if (bm.WantsHands(Data, workBuilding, this)) moodTimer = 0f;
+                    }
                     if (playMate == null || !playMate.gameObject.activeInHierarchy || playMate.mood != CampMood.Play || moodTimer <= 0f || State == AIState.Defend)
                     {
                         EndMood();
@@ -145,7 +153,7 @@ namespace Wildbond
                 {
                     if (a == null || a == this || !a.gameObject.activeInHierarchy || a.mood != CampMood.None) continue;
                     if (a.State != AIState.Idle && a.State != AIState.Wander) continue;
-                    if (a.Data == null || a.Data.hunger < 30f || a.workBuilding != null && a.workBuilding.CanWork(a.Data) && !a.workBuilding.Def.isCore) continue;
+                    if (a.Data == null || a.Data.hunger < 30f || bm.WantsHands(a.Data, a.workBuilding, a)) continue;   // it has something to do
                     float d = FlatDist(transform.position, a.transform.position);
                     if (d < best) { best = d; mate = a; }
                 }

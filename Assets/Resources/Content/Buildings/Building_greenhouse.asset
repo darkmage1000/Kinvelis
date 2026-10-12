@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: greenhouse
   displayName: Greenhouse
-  description: A glass-roofed plot that grows by itself, kin or no kin. Cultivating
-    and Irrigating kin make it faster. Tap CROP in Camp > Structures to choose what
-    it grows.
+  description: A glass-roofed plot that plants, waters and harvests itself, kin or
+    no kin. Cultivating and Irrigating kin make it faster. Tap CROP in Camp > Structures
+    to choose what it grows.
   cost:
   - itemId: saltglass_bar
     count: 8
@@ -27,6 +27,7 @@ MonoBehaviour:
   unlockLevel: 1
   footprint: 1.8
   isCore: 0
+  category: 0
   workType: 5
   secondaryWorkType: 4
   workerSlots: 1

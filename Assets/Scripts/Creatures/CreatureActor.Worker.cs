@@ -4,7 +4,11 @@ namespace Wildbond
 {
     public partial class CreatureActor
     {
-        Building workBuilding;
+        Building workBuilding;   // the structure it is assigned to (its first choice)
+        Building task;           // where it is working right now: that one, or wherever it is lending a hand
+        float taskCheck;
+        /// <summary>The structure this camp kin is at or heading to (BaseManager counts hands per structure).</summary>
+        public Building CampTask => Mode == CreatureMode.Worker && (State == AIState.ToWork || State == AIState.Working) ? task : null;
         Building haulSource;
         string haulItem;
         int haulCount;
@@ -105,40 +109,65 @@ namespace Wildbond
                     TickHaul(bm);
                     break;
                 case AIState.ToWork:
-                    if (workBuilding == null) { SetState(AIState.Idle, 1f); break; }
-                    MoveTo(workBuilding.WorkSpot(workBuilding.SlotOf(Data.uid)), WalkSpeed * 1.3f);
-                    if (FlatDist(transform.position, workBuilding.transform.position) < workBuilding.Def.footprint + 1.6f) SetState(AIState.Working);
+                    if (task == null || !task.CanWork(Data)) { task = null; SetState(AIState.Idle, 0.3f); break; }   // someone got there first, or it started growing
+                    MoveTo(task.WorkSpot(task == workBuilding ? task.SlotOf(Data.uid) : 2 + (Data.uid.GetHashCode() & 1)), WalkSpeed * 1.5f);
+                    if (FlatDist(transform.position, task.transform.position) < task.Def.footprint + 1.6f) SetState(AIState.Working);
                     break;
                 case AIState.Working:
-                    if (workBuilding == null) { SetState(AIState.Idle, 1f); break; }
-                    faceTarget = workBuilding.transform.position;
-                    if (!workBuilding.CanWork(Data)) { SetState(AIState.Idle, 2f); break; }
-                    workBuilding.AddWork(bm.WorkRate(Data, workBuilding) * dt);
+                    if (task == null) { SetState(AIState.Idle, 0.5f); break; }
+                    faceTarget = task.transform.position;
+                    // the step is done (it is growing now, or the batch can't start): off to find the next thing
+                    if (!task.CanWork(Data)) { task = null; SetState(AIState.Idle, 0.4f); break; }
+                    // now and then: is there somewhere its hands would count for more? (its own structure needs it again; a step it is better at has come up)
+                    taskCheck -= dt;
+                    if (taskCheck <= 0f)
+                    {
+                        taskCheck = 1.5f;
+                        var better = bm.PickTask(Data, workBuilding, this, task);
+                        if (better != null && better != task) { task = better; SetState(AIState.ToWork, 0f); break; }
+                    }
+                    task.AddWork(bm.WorkRate(Data, task) * dt);
                     bm.AccrueWorkXp(Data, dt);
                     emoteTimer -= dt;
                     if (emoteTimer <= 0f)
                     {
                         emoteTimer = Random.Range(1.2f, 2.2f);
-                        Fx.Debris(workBuilding.transform.position + Vector3.up * 0.8f, ElementInfo.Color(Data.Element1), 3);
+                        bool watering = task.IsProducer && task.Cur.job == WorkType.Irrigating;
+                        if (watering) Fx.Burst(task.transform.position + Vector3.up * 1.1f, new Color(0.5f, 0.8f, 1f), 5, 1.6f, 0.16f, 0.6f);
+                        else Fx.Debris(task.transform.position + Vector3.up * 0.8f, ElementInfo.Color(Data.Element1), 3);
                     }
                     break;
                 case AIState.Rest:
-                    if (stateTimer <= 0f) SetState(AIState.Idle, 0.5f);
+                    if (stateTimer <= 0f) { SetState(AIState.Idle, 0.5f); break; }
+                    // a daytime nap ends when there is something to do (a night's sleep, and a sulk, do not)
+                    taskCheck -= dt;
+                    if (taskCheck <= 0f)
+                    {
+                        taskCheck = 1f;
+                        bool night = EnvironmentSystem.I != null && EnvironmentSystem.I.IsNight;
+                        if (!night && CampMoodLabel == null && Data.hunger > 15f && bm.WantsHands(Data, workBuilding, this)) SetState(AIState.Idle, 0f);
+                    }
                     break;
                 case AIState.Wander:
+                    // strolling about, but a step somewhere may have come up (the plot finished growing, ore arrived)
+                    taskCheck -= dt;
+                    if (taskCheck <= 0f)
+                    {
+                        taskCheck = 1f;
+                        if (bm.WantsHands(Data, workBuilding, this)) { SetState(AIState.Idle, 0f); break; }
+                    }
                     MoveTo(moveTarget, WalkSpeed);
                     if (stateTimer <= 0f || FlatDist(transform.position, moveTarget) < 0.8f) SetState(AIState.Idle, Random.Range(1f, 3f));
                     break;
                 default: // Idle: decide what to do next
                     if (stateTimer > 0f) break;
-                    if (workBuilding != null)
-                    {
-                        if (workBuilding.Def.workType == WorkType.Hauling || workBuilding.Def.isCore)
-                        {
-                            if (StartHaul(bm)) break;
-                        }
-                        else if (workBuilding.CanWork(Data)) { SetState(AIState.ToWork, 0f); break; }
-                    }
+                    bool hauler = workBuilding != null && (workBuilding.Def.workType == WorkType.Hauling || workBuilding.Def.isCore);
+                    if (hauler && StartHaul(bm)) break;
+                    // its own structure if that has a step for it; otherwise wherever its jobs are wanted
+                    task = bm.PickTask(Data, workBuilding, this);
+                    if (task != null) { taskCheck = 1f; SetState(AIState.ToWork, 0f); break; }
+                    // nothing to tend: anyone who can carry clears the output piles
+                    if (!hauler && Data.WorkLevel(WorkType.Hauling) > 0 && StartHaul(bm)) break;
                     if (EnvironmentSystem.I != null && EnvironmentSystem.I.IsNight && Sp.spawnTime != SpawnTime.Night && bm.HasBeds && Random.value < 0.5f)
                     {
                         SetState(AIState.Rest, Random.Range(6f, 12f));
@@ -201,13 +230,13 @@ namespace Wildbond
                 if (CampMoodLabel != null) return CampMoodLabel;
                 switch (State)
                 {
-                    case AIState.Working: return "Working";
-                    case AIState.ToWork: return "Heading to work";
+                    case AIState.Working: return task == null ? "Working" : task.IsProducer ? $"{task.Cur.doing} ({task.Def.displayName})" : $"Working at the {task.Def.displayName}";
+                    case AIState.ToWork: return task != null ? $"Off to the {task.Def.displayName}" : "Heading to work";
                     case AIState.Haul: return haulCount > 0 ? $"Carrying {haulCount} {ContentDB.ItemName(haulItem)}" : "Hauling";
                     case AIState.ToEat: case AIState.Eating: return "Eating";
                     case AIState.Rest: return "Sleeping";
                     case AIState.Defend: case AIState.Recover: return "Defending the camp!";
-                    default: return Data.assignedBuilding == null ? "Idle (unassigned)" : "Idle";
+                    default: return "Nothing to do just now";
                 }
             }
         }

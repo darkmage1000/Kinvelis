@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: deep_drill
   displayName: Deep Drill
-  description: Quarrying kin extract Rustore from deep rock.
+  description: Quarrying kin wind the drill, then it bores Rustore out of deep rock
+    by itself.
   cost:
   - itemId: ingot
     count: 4
@@ -23,6 +24,7 @@ MonoBehaviour:
   unlockLevel: 6
   footprint: 1.5
   isCore: 0
+  category: 0
   workType: 2
   secondaryWorkType: 0
   workerSlots: 1

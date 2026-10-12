@@ -57,9 +57,7 @@ namespace Wildbond
             if (target == null) return 1f;
             var w = target.Def.workType;
             if (w != WorkType.Cultivating && w != WorkType.Foraging) return 1f;
-            foreach (var b in Buildings)
-                if (b.Def.id == "sprinkler" && (b.Powered || CampPowered)) return 1.4f;
-            return 1f;
+            return SprinklerRunning ? 1.4f : 1f;
         }
 
         /// <summary>Runs near and far (and during offline catch-up, via SimulateAbstract's caller).</summary>
@@ -69,9 +67,7 @@ namespace Wildbond
             if (automationTimer > 0f) return;
             float step = AutomationStep - automationTimer;
             automationTimer = AutomationStep;
-            // greenhouses grow on their own, powered or not
-            foreach (var b in Buildings)
-                if (b.Def.id == "greenhouse" && b.BufferCount < b.Def.bufferCap) b.AddWork(GreenhouseRate * WorldRules.Current.workSpeed * step);
+            // (greenhouses tending themselves and sprinklers watering are in TickStages, every frame)
             if (!CampPowered) return;
 
             if (Has("conveyor_hub"))
@@ -101,8 +97,8 @@ namespace Wildbond
             switch (b.Def.id)
             {
                 case "greenhouse":
-                    if (b.BufferCount >= b.Def.bufferCap) { h = BuildingHealth.Blocked; text = "Output full - collect it or add haulers"; }
-                    else { h = BuildingHealth.Good; text = $"Growing {ContentDB.ItemName(b.OutputItem)} on its own"; }
+                    if (b.AtStart && b.StartBlock() != null) { h = BuildingHealth.Blocked; text = b.StartBlock(); }
+                    else { h = BuildingHealth.Good; text = $"{b.StageText(true)} · {ContentDB.ItemName(b.OutputItem)}, tending itself"; }
                     return true;
                 case "kin_clinic": h = BuildingHealth.Good; text = "Fainted kin recover 3x sooner"; return true;
                 case "training_yard": h = BuildingHealth.Good; text = "Camp kin learn twice as fast"; return true;
@@ -129,7 +125,7 @@ namespace Wildbond
                     else { h = BuildingHealth.Info; text = "Powered - no orders queued"; }
                     return true;
                 case "sprinkler":
-                    if (b.Powered || CampPowered) { h = BuildingHealth.Good; text = "Farms +40%"; }
+                    if (b.Powered || CampPowered) { h = BuildingHealth.Good; text = "Watering the plots · farms +40%"; }
                     else { h = BuildingHealth.Blocked; text = "Needs power or an Irrigating kin"; }
                     return true;
             }

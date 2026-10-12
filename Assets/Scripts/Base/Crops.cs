@@ -56,6 +56,7 @@ namespace Wildbond
             ItemSources.Consume(cost);
             b.Crop = cropId;
             b.Progress = 0f;
+            b.Stage = 0;   // dig it over and start again
             GameEvents.Good($"Planted {ContentDB.ItemName(cropId)}.");
             SynthAudio.Play(Sfx.Craft, 1.1f, 0.6f);
             GameEvents.RaiseInventoryChanged();

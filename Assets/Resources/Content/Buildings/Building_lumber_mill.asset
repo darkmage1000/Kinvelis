@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: lumber_mill
   displayName: Lumber Mill
-  description: Logging kin turn out Wood.
+  description: Logging kin saw a batch of Wood, then it seasons by itself while they
+    do something else.
   cost:
   - itemId: wood
     count: 15
@@ -23,6 +24,7 @@ MonoBehaviour:
   unlockLevel: 1
   footprint: 1.6
   isCore: 0
+  category: 0
   workType: 1
   secondaryWorkType: 0
   workerSlots: 2
