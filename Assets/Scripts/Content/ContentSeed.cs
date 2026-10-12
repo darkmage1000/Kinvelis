@@ -454,7 +454,7 @@ namespace Wildbond
                 P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Accent, 0, 0.3f, 0, 1.0f, 0.2f, 1.0f),
             };
 
-            var larder = Bld(b, "frost_larder", "Frost Larder", "Chilling kin keep food fresh: workers get hungry 40% slower.", 4, 1.2f, ("stone", 12), ("wood", 6));
+            var larder = Bld(b, "frost_larder", "Frost Larder", "Keeps food fresh: workers get hungry 40% slower while it holds cold. A Chilling kin fills it with cold, then is free for other work and comes back to top it up at half and before nightfall. One larder stays cold all night.", 4, 1.2f, ("stone", 12), ("wood", 6));
             larder.workType = WorkType.Chilling; larder.workerSlots = 1; larder.palette = Pal(Hex("#cfe6f2"), Hex("#7fa6c0"), Hex("#ffffff"), Hex("#8fe8ff"));
             larder.parts = new[]
             {

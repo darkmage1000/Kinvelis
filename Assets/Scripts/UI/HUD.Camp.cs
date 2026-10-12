@@ -71,7 +71,8 @@ namespace Wildbond
                     if (b == null) continue;
                     bool station = b.IsStation && bm.HasOrderFor(b.Def.station);
                     bool pylon = b.Def.id == "volt_pylon";
-                    if (!b.IsProducer && !station && !pylon) continue;
+                    bool larder = BaseManager.IsLarder(b);
+                    if (!b.IsProducer && !station && !pylon && !larder) continue;
                     Vector3 off = b.transform.position - pp; off.y = 0f;
                     float dist = off.magnitude;
                     if (dist > CampLabelRange) continue;
@@ -97,6 +98,14 @@ namespace Wildbond
                             text = b.Powered ? (fill >= 0.995f ? "Fully charged" : $"Charging  ·  {Mathf.RoundToInt(fill * 100f)}%")
                                 : bm.Charge > 0f ? $"Stored charge  ·  {WorkStages.Clock(bm.Charge)} left" : bm.PowerAsleep ? "No charge  ·  kin asleep" : "No charge";
                             col = b.Powered ? LabelRun : bm.Charge > 0f ? LabelWork : LabelStuck;
+                        }
+                        else if (larder)
+                        {
+                            // the same gauge for stored cold
+                            fill = bm.Cold01;
+                            text = b.Powered ? (fill >= 0.995f ? "Full of cold" : $"Chilling  ·  {Mathf.RoundToInt(fill * 100f)}%")
+                                : bm.Cold > 0f ? $"Stored cold  ·  {WorkStages.Clock(bm.Cold)} left" : bm.ColdAsleep ? "No cold  ·  kin asleep" : "No cold";
+                            col = b.Powered ? LabelRun : bm.Cold > 0f ? LabelWork : LabelStuck;
                         }
                         else if (b.IsProducer) ProducerLabel(bm, b, out text, out fill, out col);
                         else StationLabel(bm, b, out text, out fill, out col);

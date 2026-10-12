@@ -264,6 +264,7 @@ namespace Wildbond
             {
                 baseMgr.CoreLevel = Mathf.Max(1, s.coreLevel);
                 baseMgr.Charge = Mathf.Max(0f, s.campCharge);
+                baseMgr.Cold = Mathf.Max(0f, s.campCold);
                 // core first so others validate
                 foreach (var b in s.buildings)
                 {

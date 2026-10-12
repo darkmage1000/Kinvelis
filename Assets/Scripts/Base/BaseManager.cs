@@ -116,10 +116,8 @@ namespace Wildbond
             }
         }
 
-        public bool LarderActive
-        {
-            get { foreach (var x in Buildings) if (x.Def.workType == WorkType.Chilling && x.Powered) return true; return false; }
-        }
+        /// <summary>A kin is chilling a Frost Larder, or there is stored cold left (BaseManager.Power).</summary>
+        public bool LarderActive => LarderStaffed || (Cold > 0f && ColdCapacity > 0f);
 
         public bool HasStation(CraftStation s)
         {
@@ -261,7 +259,7 @@ namespace Wildbond
 
         /// <summary>A producer waiting on a step beats keeping a machine company; then whoever is best at it; its own structure first among equals.</summary>
         float TaskScore(CreatureData d, Building b, Building home) =>
-            WorkRate(d, b) * (b.IsProducer ? 1.5f : b.IsStation ? 1.2f : b.Def.id == "volt_pylon" ? 2f : 0.6f) * (b == home ? 1.35f : 1f);   // a pylon asking for charge comes first: everything powered hangs on it
+            WorkRate(d, b) * (b.IsProducer ? 1.5f : b.IsStation ? 1.2f : b.Def.id == "volt_pylon" ? 2f : IsLarder(b) ? 1.6f : 0.6f) * (b == home ? 1.35f : 1f);   // a pylon asking for charge comes first: everything powered hangs on it
 
         /// <summary>How many camp kin are at (or on their way to) a structure right now.</summary>
         public int HandsAt(Building b, CreatureActor except = null)
@@ -746,6 +744,7 @@ namespace Wildbond
             Core = null;
             CoreLevel = 1;
             Charge = 0f;
+            Cold = 0f;
             Orders.Clear();
             Storage.slots.Clear();
         }

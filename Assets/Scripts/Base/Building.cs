@@ -195,6 +195,7 @@ namespace Wildbond
             if (Suitability(d) <= 0) return false;
             if (IsStation) return bm.HasOrderFor(Def.station);
             if (Def.id == "volt_pylon") return bm.PylonWantsKin;   // charged up: its kin is free until it runs down (BaseManager.Power)
+            if (Def.workType == WorkType.Chilling) return bm.LarderWantsKin;   // the same for a larder full of cold
             return Def.workType == WorkType.Charging || Def.workType == WorkType.Chilling || Def.workType == WorkType.Irrigating;
         }
 
@@ -219,6 +220,7 @@ namespace Wildbond
             {
                 PoweredUntil = GameManager.WorldTime + 2.0;
                 if (Def.id == "volt_pylon") bm.AddCharge(w);   // the surplus is stored (BaseManager.Power)
+                else if (Def.workType == WorkType.Chilling) bm.AddCold(w);
             }
         }
 

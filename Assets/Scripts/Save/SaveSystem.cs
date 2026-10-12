@@ -57,6 +57,7 @@ namespace Wildbond
         public bool hasBase;
         public int coreLevel = 1;
         public float campCharge;   // seconds of stored pylon / battery power
+        public float campCold;     // seconds of stored larder cold
         public List<BuildingSave> buildings = new List<BuildingSave>();
         public Inventory storage = new Inventory();
         public List<CraftOrder> orders = new List<CraftOrder>();
@@ -214,6 +215,7 @@ namespace Wildbond
                 hasBase = bm.HasBase,
                 coreLevel = bm.CoreLevel,
                 campCharge = bm.Charge,
+                campCold = bm.Cold,
                 goalsDone = new List<string>(gm.GoalsDone),
                 world = WorldRules.Current,
                 createdAtUnix = gm.CreatedAtUnix,

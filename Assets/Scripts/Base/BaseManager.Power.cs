@@ -74,8 +74,64 @@ namespace Wildbond
         /// <summary>Work done at a pylon (Building.AddWork), near, far or offline.</summary>
         public void AddCharge(float work) => Charge = Mathf.Min(ChargeCapacity, Charge + work * ChargeGain);
 
+        // ============================================================ COLD
+        // The Frost Larder keeps its chill the same way: a Chilling kin fills it with cold, then is free; the food stays
+        // fresh (workers get hungry 40% slower) for as long as any cold is left. One larder holds enough for the night.
+
+        /// <summary>How much cold one Frost Larder holds, as a share of one day (night is 0.45).</summary>
+        public const float LarderHolds = 0.6f;
+        const float ColdGain = 1.5f;
+
+        /// <summary>Stored cold, in seconds the larder keeps food fresh with nobody at it.</summary>
+        public float Cold;
+        bool coldTopUp = true;
+
+        public static bool IsLarder(Building b) => b != null && b.Def.workType == WorkType.Chilling;
+
+        public float ColdCapacity
+        {
+            get { int n = 0; foreach (var b in Buildings) if (IsLarder(b)) n++; return n * LarderHolds * DaySeconds; }
+        }
+
+        public float Cold01 { get { float c = ColdCapacity; return c > 0f ? Mathf.Clamp01(Cold / c) : 0f; } }
+
+        public bool LarderStaffed
+        {
+            get { foreach (var b in Buildings) if (IsLarder(b) && b.Powered) return true; return false; }
+        }
+
+        /// <summary>Does a larder need a kin at it right now? (Otherwise its Chilling kin is free to do other work.)</summary>
+        public bool LarderWantsKin => coldTopUp;
+
+        /// <summary>Night, the cold has run out, and the kin who could chill the larder are in bed.</summary>
+        public bool ColdAsleep
+        {
+            get
+            {
+                if (!NightNow || LarderActive || ColdCapacity <= 0f) return false;
+                foreach (var d in GameManager.I.Party.In(KinLocation.Base))
+                    if (!d.Fainted && d.WorkLevel(WorkType.Chilling) > 0 && Asleep(d)) return true;
+                return false;
+            }
+        }
+
+        /// <summary>Work done at a larder (Building.AddWork), near, far or offline.</summary>
+        public void AddCold(float work) => Cold = Mathf.Min(ColdCapacity, Cold + work * ColdGain);
+
+        void TickCold(float dt)
+        {
+            float cap = ColdCapacity;
+            if (cap <= 0f) { Cold = 0f; return; }
+            if (!LarderStaffed) Cold = Mathf.Max(0f, Cold - dt);
+            if (Cold > cap) Cold = cap;
+            bool evening = Evening;
+            if (Cold <= cap * RefillBelow || (evening && Cold < cap * 0.97f)) coldTopUp = true;
+            else if (Cold >= cap - 0.5f && !evening) coldTopUp = false;
+        }
+
         void TickCharge(float dt)
         {
+            TickCold(dt);
             float cap = ChargeCapacity;
             if (cap <= 0f) { Charge = 0f; return; }
             if (!PylonStaffed && DrawsPower) Charge = Mathf.Max(0f, Charge - dt);

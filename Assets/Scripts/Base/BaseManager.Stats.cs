@@ -146,7 +146,15 @@ namespace Wildbond
                 if (!actorsOut) { text = "Crafting orders"; return BuildingHealth.Good; }
                 text = $"Orders waiting - a {b.Def.workType} kin will come when it is free"; return BuildingHealth.Idle;
             }
-            if (b.Def.boostPercent > 0f || b.Def.workType == WorkType.Chilling)
+            if (IsLarder(b))
+            {
+                const string effect = "workers get hungry 40% slower";
+                if (b.Powered) { text = Cold >= ColdCapacity - 0.5f ? $"Full of cold ({WorkStages.Clock(Cold)} stored) · {effect}" : $"Chilling · {Mathf.RoundToInt(Cold01 * 100f)}% cold · {effect}"; return BuildingHealth.Good; }
+                if (Cold > 0f) { text = $"Stored cold · {WorkStages.Clock(Cold)} left ({Mathf.RoundToInt(Cold01 * 100f)}%) · {effect}" + (NightNow ? "" : LarderWantsKin ? " · waiting for a Chilling kin" : " · its kin is free until it is half empty"); return BuildingHealth.Good; }
+                if (ColdAsleep) { text = "Out of cold and its kin is asleep - food is not kept fresh until dawn"; return BuildingHealth.Idle; }
+                text = "No cold - needs a Chilling kin"; return BuildingHealth.Blocked;
+            }
+            if (b.Def.boostPercent > 0f)
             {
                 if (b.Powered) { text = b.Def.boostPercent > 0 ? $"Active · +{b.Def.boostPercent:0}% production" : "Active · workers get hungry slower"; return BuildingHealth.Good; }
                 text = $"Inactive - needs a {b.Def.workType} worker"; return BuildingHealth.Blocked;
