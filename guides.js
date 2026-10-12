@@ -335,7 +335,7 @@ html: `
 <ul>
 <li><b>Assigning</b> a kin to a structure (CAMP &gt; Structures or Workers) makes that structure its first choice. It still helps elsewhere whenever its own structure has nothing for it.</li>
 <li><b>Queued crafting orders</b> are picked up by any free kin with the station's job (Crafting for the Workbench, Kindling for the Campfire and Alloy Forge), whether or not it is assigned there - for example a farmer with Crafting works the Workbench while its plot grows.</li>
-<li>A kin assigned to a <b>Spark Dynamo</b> stays at it, because it only runs while the kin is there (+25% work speed for the whole camp). A Volt Pylon and a Frost Larder store what their kin gives them, so those kin are free most of the time.</li>
+<li>No structure ties a kin down any more. A Volt Pylon and a Frost Larder store what their kin gives them, and the Sprinkler and Spark Dynamo are machines that run on the pylon's power.</li>
 <li>A kin with no structure of its own simply goes wherever it is useful.</li>
 <li>A structure takes as many hands at once as it has worker places.</li>
 <li>Kin with the <b>Hauling</b> job carry finished batches to storage when nothing needs tending. Kin assigned to the Hearthstone carry first and tend second.</li>
@@ -408,7 +408,7 @@ html: `
 
 <h2 id="power">Power and automation</h2>
 <ul>
-<li><b>Spark Dynamo</b> with a Charging kin: +25% production for the whole camp.</li>
+<li><b>Spark Dynamo</b>: a machine. While the camp has power, everyone in camp works 25% faster. No kin stands at it.</li>
 <li><b>Volt Pylon</b>: powers the camp, which runs the machines below and the Volt Turrets. A Charging kin fills it like a battery (the gauge floats over it), then is free for its other jobs. It comes back by itself to top the pylon up at half charge and again in the evening, so the camp goes into the night full. Any Charging kin will do it; one assigned to the pylon goes first.</li>
 <li><b>Volt Battery</b>: stores more charge. A pylon holds a fifth of a day and each battery about a third, and night is a little under half a day - so <b>a pylon and one battery keep the machines running all night</b> while every kin sleeps. Stored charge only runs down while something is plugged in.</li>
 <li><b>Conveyor Hub</b>: moves every structure's output to storage, no haulers needed.</li>
