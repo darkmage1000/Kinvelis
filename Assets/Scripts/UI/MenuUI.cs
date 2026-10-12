@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Wildbond
 {
-    public enum MenuTab { Bag, Gear, Craft, Kin, Dex, Camp, Build, Skills, Map, Settings, Journey, Trader, Station, KinShop, Requests, Tamer, Warden, Outpost, Hunt, Explore, Quests, Stickers }
+    public enum MenuTab { Bag, Gear, Craft, Kin, Dex, Camp, Build, Skills, Map, Settings, Journey, Trader, Station, KinShop, Requests, Tamer, Warden, Outpost, Hunt, Explore, Quests, Stickers, Box }
 
     /// <summary>Full-screen tabbed menu (pauses the world). Content is rebuilt from data on open/change.</summary>
     public partial class MenuUI : MonoBehaviour
@@ -51,6 +51,7 @@ namespace Wildbond
             tabButtons[MenuTab.Tamer].gameObject.SetActive(false);    // a rival tamer's challenge
             tabButtons[MenuTab.KinShop].gameObject.SetActive(false);  // opened by talking to a settlement's Kinkeeper
             tabButtons[MenuTab.Station].gameObject.SetActive(false);  // opened at a station (COOK / CRAFT) or from the Craft tab
+            tabButtons[MenuTab.Box].gameObject.SetActive(false);      // opened at a chest or a feed box (OPEN), or from Camp > Storage
             tabButtons[MenuTab.Stickers].transform.SetSiblingIndex(tabButtons[MenuTab.Kin].transform.GetSiblingIndex() + 1);   // sticker book sits under KIN
             tabButtons[MenuTab.Quests].transform.SetAsFirstSibling(); // the quest log leads the sidebar (new tabs go at the end of the enum)
             var close = UIFactory.Button(tabs, "CLOSE", Close, new Color(0.55f, 0.25f, 0.25f, 0.95f), 30);
@@ -163,6 +164,7 @@ namespace Wildbond
                 case MenuTab.Explore: BuildExplore(); break;
                 case MenuTab.Quests: BuildQuests(); break;
                 case MenuTab.Stickers: BuildStickers(); break;
+                case MenuTab.Box: BuildBox(); break;
                 case MenuTab.Craft: BuildCraft(); break;
                 case MenuTab.Kin: BuildKin(); break;
                 case MenuTab.Camp: BuildCamp(); break;

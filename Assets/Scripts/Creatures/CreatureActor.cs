@@ -224,7 +224,7 @@ namespace Wildbond
             deathTimer = 0f;
             for (int i = 0; i < cooldowns.Length; i++) cooldowns[i] = Random.Range(0.5f, 2f);
             RefreshAbilities();
-            EndMood(); greetedArrival = Time.time;   // camp life starts clean (a kin that has only just appeared doesn't re-greet)
+            EndMood(); greetedArrival = Time.time; sleeping = false; bedSet = false;   // camp life starts clean (a kin that has only just appeared doesn't re-greet)
             ModelBuilder.ApplyLook(Rig, d, RenderAssets.Creature);   // a pooled model is this kin's now
             ApplyWorldSize();
             Home = pos;

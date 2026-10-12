@@ -277,8 +277,7 @@ namespace Wildbond
                     RestoreBuilding(def, b);
                 }
                 baseMgr.Storage.CopyFrom(s.storage);
-                int slots = 0; foreach (var b in baseMgr.Buildings) slots += b.Def.storageSlots;
-                baseMgr.Storage.Resize(slots);
+                baseMgr.LayoutStorage();   // each structure's box is where the save left it
                 baseMgr.Orders.AddRange(s.orders);
             }
 
@@ -305,6 +304,11 @@ namespace Wildbond
             bld.BufferItem = b.bufferItem;
             bld.BufferCount = b.bufferCount;
             bld.Crop = b.crop;
+            if (bld.Feed != null)
+            {
+                bld.FeedAuto = !b.feedByHand;
+                if (b.feed != null) for (int i = 0; i < b.feed.Count && i < bld.Feed.slots.Count; i++) { bld.Feed.slots[i].id = b.feed[i].id ?? ""; bld.Feed.slots[i].count = b.feed[i].count; }
+            }
         }
 
         /// <summary>Save and go back to the main menu (new worlds are created there).</summary>
@@ -717,7 +721,9 @@ namespace Wildbond
             else if (baseMgr.PlayerWorkTarget == b) InteractPrompt = $"STOP\n{Mathf.RoundToInt(b.Progress01 * 100f)}%";
             else if (b.IsProducer && b.Waiting) InteractPrompt = $"{b.Cur.doing.ToUpperInvariant()}\n{WorkStages.Clock(b.SecondsLeft)}";
             else if (b.IsProducer) InteractPrompt = Crops.IsPlot(b) ? (b.Stage == 0 ? "PLANT" : b.Stage == WorkStages.CropWater ? "WATER" : "HARVEST") : "WORK";
-            else if (b.Def.isCore || b.Def.storageSlots > 0) InteractPrompt = "CAMP";
+            else if (b.Def.isCore) InteractPrompt = "CAMP";
+            else if (b.Def.storageSlots > 0) InteractPrompt = "OPEN";
+            else if (b.Def.feeds) InteractPrompt = "FEED BOX";
             else if (b.IsStation) InteractPrompt = MenuUI.StationVerb(b.Def.station);
             else InteractPrompt = "INFO";
         }
@@ -727,6 +733,7 @@ namespace Wildbond
             if (b.BufferCount > 0) { CollectBuffer(b); return; }
             if (b.IsProducer) { baseMgr.TogglePlayerWork(b); return; }
             if (b.IsStation) { menu.OpenStation(b.Def.station); return; }
+            if (b.Def.feeds || (b.BoxLen > 0 && !b.Def.isCore)) { menu.OpenBox(b); return; }   // a chest or a feed box: its own contents
             menu.Open(MenuTab.Camp);
         }
 

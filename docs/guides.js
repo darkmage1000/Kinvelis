@@ -337,12 +337,23 @@ html: `
 <li>A kin with no structure of its own simply goes wherever it is useful.</li>
 <li>A structure takes as many hands at once as it has worker places.</li>
 <li>Kin with the <b>Hauling</b> job carry finished batches to storage when nothing needs tending. Kin assigned to the Hearthstone carry first and tend second.</li>
-<li>Workers need <b>food</b>: a Feed Box lets them eat berries, crops, tarts or Silverfin out of camp storage. A <b>Kin Nest</b> gives two workers a bed, and rested kin work 15% faster.</li>
+<li>Workers need <b>food</b> from a Feed Box (see <a href="#/guide/camp/feed">below</a>). A <b>Kin Nest</b> gives two workers a bed, and a camp with a bed for every worker works 15% faster.</li>
 <li>Work speed also depends on the kin's Work grade, its evolution stage and its traits. A shimmer kin is +1 level in every job.</li>
 <li>Workers earn a little XP while you play. They earn none while the game is closed.</li>
 <li>You can do any hands-on step yourself: stand at the structure and tap <b>PLANT</b>, <b>WATER</b>, <b>HARVEST</b> or <b>WORK</b>. You are about half as fast as a level-1 kin.</li>
 <li>Your companion pitches in by itself while you are inside the camp ring. You can switch that off on Camp &gt; Workers.</li>
 </ul>
+
+<h2 id="night">Night</h2>
+<p>From dusk to dawn your camp kin <b>sleep</b>. They put down what they are doing, walk to a Kin Nest (or curl up round the Hearthstone if there are not enough beds) and stay there until morning. Anything already growing, smelting or seasoning carries on by itself.</p>
+<ul>
+<li>A kin with the <b>Night Owl</b> passive stays up and works all night. It is a trait some kin are born with, and eggs can inherit it.</li>
+<li>Kin that are only found at night in the wild are night kin by nature, and stay up too.</li>
+<li>A raid wakes everyone. A starving kin gets up to eat, then goes back to bed.</li>
+<li>Sleeping kin get hungry half as fast.</li>
+<li>The Kin tab says which each kin is: "Sleeps at camp from dusk to dawn" or "Up all night".</li>
+</ul>
+<p>Night is a little under half the day, so a night shift of two or three Night Owls is worth having.</p>
 
 <h2 id="life">Life at camp</h2>
 <p>Kin with nothing to do no longer just wander:</p>
@@ -370,8 +381,23 @@ html: `
 <p>A Greenhouse does all four steps by itself, and faster with kin helping.</p>
 <div data-view="crops"></div>
 
-<h2 id="storage">Storage</h2>
-<p>Chests hold what the camp makes, and crafting at camp takes ingredients straight from storage. Bigger storage comes from <a href="#/research">research</a>: Large Chest, Bulk Silo, Ironbound Vault and Grand Vault. A Frost Larder with a Chilling kin makes workers get hungry 40% slower.</p>
+<h2 id="storage">Storage boxes</h2>
+<p>Everything the camp makes and crafts with is one shared pool, but each storage structure has <b>contents of its own</b>. Walk up to a Storage Chest or vault and tap <b>OPEN</b> for that box's screen:</p>
+<ul>
+<li>The box's slots are on the left. Tap something to take 1, 10 or all of it.</li>
+<li>Your bag is on the right, with +1, +10 and ALL buttons to put things into this box.</li>
+<li>EMPTY THE BOX and STORE ALL MATERIALS do the lot at once.</li>
+<li>The arrows step through every box in camp, so you can sort them all from one place. Camp &gt; Storage lists the boxes too.</li>
+</ul>
+<p>Kin put what they haul into the box they walk to, and crafting takes ingredients from any box. Pull a chest down and what was in it moves to the other boxes. Bigger boxes come from <a href="#/research">research</a>: Large Chest, Bulk Silo, Ironbound Vault and Grand Vault. A Frost Larder with a Chilling kin makes workers get hungry 40% slower.</p>
+
+<h2 id="feed">The Feed Box</h2>
+<p>Camp kin eat from the <b>Feed Box</b>, which has six slots of its own. Tap <b>FEED BOX</b> at it to see what is inside, put food in from your bag or from camp storage, or take it back out.</p>
+<ul>
+<li>It takes kin food only: berries and other crops, Silverfin, and Berry Tarts.</li>
+<li><b>KEEP STOCKED FROM STORAGE</b> is on by default: the box tops itself up to about 20 pieces from camp storage, cheapest food first, so you can ignore it.</li>
+<li>Switch that off and your kin eat only what you put in. Use it to keep the melons for cooking, or to feed them something better.</li>
+</ul>
 
 <h2 id="defense">Intruders and raids</h2>
 <p>Hostile wild kin that wander into the ring are intruders: your workers drop what they are doing, fight, and go back to work. Now and then a <b>raid</b> of two to five local kin comes for the camp, but only while you are nearby. A fainted worker rests and comes back by itself. Volt Turrets help once the camp has power.</p>

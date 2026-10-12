@@ -144,7 +144,7 @@ namespace Wildbond
             MoveTo(dpos, RunSpeed * 0.75f);
             if (FlatDist(transform.position, dpos) < fp + 1.6f)
             {
-                int left = bm.Storage.Add(haulItem, haulCount);
+                int left = bm.Deposit(bm.NearestStorage(transform.position), haulItem, haulCount);
                 if (left > 0 && haulSource != null) haulSource.ReturnToBuffer(haulItem, left);
                 haulCount = 0;
                 helpPick = 0f;   // something to make may have come up meanwhile

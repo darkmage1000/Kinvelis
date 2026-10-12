@@ -532,6 +532,18 @@ namespace Wildbond
             var v = right.gameObject.AddComponent<VerticalLayoutGroup>();
             v.spacing = 12; v.childControlHeight = true; v.childControlWidth = true; v.childForceExpandHeight = false;
             if (!inCamp) Para(right, UIFactory.Col("Stand inside your camp to take or deposit items.", Idle), 22);
+            // each box has contents of its own: open one to fill or empty that box
+            Header(right, "Boxes", 28);
+            foreach (var box in bm.Boxes())
+            {
+                var bx = box;
+                ActionBtn(right, $"{bm.BoxName(bx)}   {bm.BoxUsed(bx)}/{bm.BoxCapacity(bx)}", () => OpenBox(bx), new Color(0.3f, 0.36f, 0.5f));
+            }
+            foreach (var fb in bm.FeedBoxes())
+            {
+                var bx = fb;
+                ActionBtn(right, $"{bm.BoxName(bx)}   {bm.FeedCount(bx)} food", () => OpenBox(bx), new Color(0.5f, 0.36f, 0.3f));
+            }
             if (storageSel != null && totals.ContainsKey(storageSel))
             {
                 var d = ContentDB.Item(storageSel);

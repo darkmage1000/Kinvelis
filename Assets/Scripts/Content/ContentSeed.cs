@@ -204,6 +204,7 @@ namespace Wildbond
             Tr(b, "hearty", "Hearty", "+15% max HP.", true, 1f).hpMul = 1.15f;
             Tr(b, "diligent", "Diligent", "+25% work speed.", true, 0.8f).workMul = 1.25f;
             Tr(b, "tireless", "Tireless", "Gets hungry 30% slower.", true, 0.8f).hungerMul = 0.7f;
+            Tr(b, CreatureData.NightOwl, "Night Owl", "Stays awake at camp and works through the night.", true, 0.7f);
             Tr(b, "lazy", "Lazy", "-20% work speed.", false, 0.9f).workMul = 0.8f;
             Tr(b, "frail", "Frail", "-15% max HP.", false, 0.9f).hpMul = 0.85f;
             Tr(b, "glutton", "Glutton", "Gets hungry 50% faster.", false, 0.9f).hungerMul = 1.5f;
@@ -271,7 +272,7 @@ namespace Wildbond
                 P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Secondary, -0.5f, 1.1f, 0.0f, 0.12f, 0.3f, 0.12f),
             };
 
-            var chest = Bld(b, "storage_chest", "Storage Chest", "+20 base storage slots. Haulers deliver here.", 1, 1.0f, ("wood", 12));
+            var chest = Bld(b, "storage_chest", "Storage Chest", "+20 storage slots with contents of their own: tap OPEN to put things in or take them out. Haulers deliver here.", 1, 1.0f, ("wood", 12));
             chest.storageSlots = 20; chest.palette = woodP;
             chest.parts = new[]
             {
@@ -353,7 +354,7 @@ namespace Wildbond
                 P(PartShape.Cone, BodyGroup.Body, ColorSlot.Accent, 0, 0.45f, 0, 0.3f, 0.9f, 0.3f),
             };
 
-            var feed = Bld(b, "feed_box", "Feed Box", "Hungry workers eat berries/tarts from base storage here.", 1, 0.9f, ("wood", 6));
+            var feed = Bld(b, "feed_box", "Feed Box", "Camp kin eat from this box. Six slots of its own for kin food (tap FEED BOX); it keeps itself stocked from camp storage unless you switch that off.", 1, 0.9f, ("wood", 6));
             feed.feeds = true; feed.palette = Pal(Hex("#a8743f"), Hex("#7a5230"), Hex("#ff5a7a"), Hex("#ffd36a"));
             feed.parts = new[]
             {
@@ -424,7 +425,7 @@ namespace Wildbond
                 P(PartShape.Crystal, BodyGroup.Body, ColorSlot.Glow, 0.8f, 0.3f, -0.55f, 0.3f, 1.1f, 0.3f, 0, 0, -12),
             };
 
-            var nest = Bld(b, "kin_nest", "Kin Nest", "Beds for 2 workers. Rested kin work 15% faster.", 1, 1.0f, ("fiber", 10), ("wood", 4));
+            var nest = Bld(b, "kin_nest", "Kin Nest", "Beds for 2 workers, who sleep here from dusk to dawn. With a bed for every worker the camp works 15% faster.", 1, 1.0f, ("fiber", 10), ("wood", 4));
             nest.beds = 2; nest.palette = Pal(Hex("#d9c08f"), Hex("#8a6a40"), Hex("#f2e6c9"), Hex("#ffd36a"));
             nest.parts = new[]
             {

@@ -116,8 +116,10 @@ namespace Wildbond
             fill = b.Stage01;
             if (b.Waiting) { text = b.StageText(false) + ready; col = LabelRun; return; }
             bool hands = bm.HandsAt(b) > 0 || bm.PlayerWorkTarget == b;
-            text = b.StageText(hands) + ready;
-            col = hands || bm.AnyoneCan(b, b.Stage) ? LabelWork : LabelStuck;
+            // at night the kin who would do this may all be in bed: it waits for morning (or for you)
+            bool abed = !hands && bm.NightNow && bm.AnyoneCan(b, b.Stage) && !bm.AnyoneCan(b, b.Stage, true);
+            text = b.StageText(hands) + (abed ? "  ·  kin asleep" : "") + ready;
+            col = abed ? new Color(0.62f, 0.68f, 0.9f) : hands || bm.AnyoneCan(b, b.Stage) ? LabelWork : LabelStuck;
         }
 
         static void StationLabel(BaseManager bm, Building b, out string text, out float fill, out Color col)

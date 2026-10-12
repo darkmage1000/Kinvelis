@@ -79,6 +79,7 @@ namespace Wildbond
                 }
             }
 
+            if (TickNight(bm, dt)) return;      // in bed, or on the way there
             if (TickCampLife(bm, dt)) return;   // greeting you, or in the middle of a game
 
             // eat when hungry and food exists
@@ -91,14 +92,14 @@ namespace Wildbond
             {
                 case AIState.ToEat:
                 {
-                    var feed = bm.FeedBox;
+                    var feed = bm.FeedBoxFor(transform.position);
                     if (feed == null || stateTimer <= 0f) { SetState(AIState.Idle, 1f); break; }
                     MoveTo(feed.WorkSpot(0), WalkSpeed * 1.2f);
                     if (FlatDist(transform.position, feed.transform.position) < feed.Def.footprint + 1.4f) SetState(AIState.Eating, 2.5f);
                     break;
                 }
                 case AIState.Eating:
-                    faceTarget = bm.FeedBox != null ? bm.FeedBox.transform.position : transform.position;
+                    faceTarget = bm.FeedBoxFor(transform.position) != null ? bm.FeedBoxFor(transform.position).transform.position : transform.position;
                     if (stateTimer <= 0f)
                     {
                         if (bm.EatFood(Data)) Fx.Sparkle(transform.position + Vector3.up, new Color(1f, 0.6f, 0.7f), 6, 0.3f);
@@ -168,16 +169,58 @@ namespace Wildbond
                     if (task != null) { taskCheck = 1f; SetState(AIState.ToWork, 0f); break; }
                     // nothing to tend: anyone who can carry clears the output piles
                     if (!hauler && Data.WorkLevel(WorkType.Hauling) > 0 && StartHaul(bm)) break;
-                    if (EnvironmentSystem.I != null && EnvironmentSystem.I.IsNight && Sp.spawnTime != SpawnTime.Night && bm.HasBeds && Random.value < 0.5f)
-                    {
-                        SetState(AIState.Rest, Random.Range(6f, 12f));
-                        break;
-                    }
                     if (CampIdleChoice(bm)) break;   // a nap, a game of tag, or a sulk
                     moveTarget = RandomPointNear(bm.CorePosition, 7f);
                     SetState(AIState.Wander, Random.Range(3f, 6f));
                     break;
             }
+        }
+
+        bool sleeping, bedSet;
+        Vector3 bedPos;
+        float bedFx;
+
+        /// <summary>
+        /// Night at camp: every kin that is not nocturnal puts down what it is doing, walks to its bed (a place by a
+        /// Kin Nest, or a spot round the hearth) and sleeps until dawn. A raid still wakes it (the defence check runs
+        /// first), and one that is starving gets up to eat. True = it is in bed or on its way.
+        /// </summary>
+        bool TickNight(BaseManager bm, float dt)
+        {
+            if (!bm.Asleep(Data))
+            {
+                if (sleeping)
+                {
+                    sleeping = false; bedSet = false;
+                    Rig.Squash();   // a stretch
+                    SetState(AIState.Idle, Random.Range(0.2f, 1.6f));
+                }
+                return false;
+            }
+            if (State == AIState.ToEat || State == AIState.Eating) return false;                       // let it finish its supper
+            if (Data.hunger < 15f && bm.HasFeedBox && bm.HasFood) { if (State == AIState.Rest) SetState(AIState.Idle, 0f); bedSet = false; return false; }
+            if (!sleeping)
+            {
+                sleeping = true; bedSet = false;
+                if (haulCount > 0 && haulSource != null) { haulSource.ReturnToBuffer(haulItem, haulCount); haulCount = 0; }
+                task = null;
+                EndMood();
+            }
+            if (!bedSet) { bedSet = true; bedPos = bm.BedSpot(this); SetState(AIState.Wander, 25f); }
+            if (State != AIState.Rest)
+            {
+                if (State != AIState.Wander) SetState(AIState.Wander, 25f);   // back to bed after a fight or a meal
+                MoveTo(bedPos, WalkSpeed * 1.25f);
+                if (FlatDist(transform.position, bedPos) < 0.8f || stateTimer <= 0f) SetState(AIState.Rest, 99999f);
+                return true;
+            }
+            bedFx -= dt;
+            if (bedFx <= 0f)
+            {
+                bedFx = 1.4f;
+                Fx.Mote(transform.position + Vector3.up * (BodyRadius * 2f + 0.3f), new Vector3(Random.Range(-0.15f, 0.15f), 0.5f, Random.Range(-0.15f, 0.15f)), new Color(0.75f, 0.85f, 1f), 0.17f, 1.5f, false);
+            }
+            return true;
         }
 
         bool StartHaul(BaseManager bm)
@@ -213,7 +256,7 @@ namespace Wildbond
                 MoveTo(dpos, RunSpeed * 0.75f);
                 if (FlatDist(transform.position, dpos) < fp + 1.6f)
                 {
-                    int left = bm.Storage.Add(haulItem, haulCount);
+                    int left = bm.Deposit(dest, haulItem, haulCount);
                     if (left > 0 && haulSource != null) haulSource.ReturnToBuffer(haulItem, left);
                     haulCount = 0;
                     GameEvents.RaiseInventoryChanged();
@@ -227,6 +270,7 @@ namespace Wildbond
         {
             get
             {
+                if (sleeping) return State == AIState.Rest ? "Asleep until dawn" : "Off to bed";
                 if (CampMoodLabel != null) return CampMoodLabel;
                 switch (State)
                 {

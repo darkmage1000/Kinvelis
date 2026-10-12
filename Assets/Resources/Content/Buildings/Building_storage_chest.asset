@@ -14,13 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: storage_chest
   displayName: Storage Chest
-  description: +20 base storage slots. Haulers deliver here.
+  description: '+20 storage slots with contents of their own: tap OPEN to put things
+    in or take them out. Haulers deliver here.'
   cost:
   - itemId: wood
     count: 12
   unlockLevel: 1
   footprint: 1
   isCore: 0
+  category: 0
   workType: 0
   secondaryWorkType: 0
   workerSlots: 0

@@ -14,13 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: feed_box
   displayName: Feed Box
-  description: Hungry workers eat berries/tarts from base storage here.
+  description: Camp kin eat from this box. Six slots of its own for kin food (tap
+    FEED BOX); it keeps itself stocked from camp storage unless you switch that off.
   cost:
   - itemId: wood
     count: 6
   unlockLevel: 1
   footprint: 0.9
   isCore: 0
+  category: 0
   workType: 0
   secondaryWorkType: 0
   workerSlots: 0

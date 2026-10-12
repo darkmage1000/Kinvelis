@@ -20,6 +20,13 @@ namespace Wildbond
         Transform spin;
         float pulse;
 
+        /// <summary>Where this structure's storage slots sit in the camp's pool (BaseManager.Boxes). BoxLen 0 = it holds none.</summary>
+        public int BoxStart, BoxLen;
+        /// <summary>A Feed Box's own contents (null on anything else).</summary>
+        public Inventory Feed;
+        /// <summary>A Feed Box keeps itself stocked from camp storage unless the player switches that off.</summary>
+        public bool FeedAuto = true;
+
         /// <summary>Crop Plots: what was planted (empty = the building's own output).</summary>
         public string Crop;
         public string OutputItem => !string.IsNullOrEmpty(Crop) ? Crop : Def.outputItem;
@@ -96,6 +103,7 @@ namespace Wildbond
             RotY = rotY;
             transform.SetPositionAndRotation(pos, Quaternion.Euler(0, rotY, 0));
             Stages = WorkStages.For(def);
+            if (def.feeds) Feed = new Inventory(BaseManager.FeedSlots);
             bool plot = def.id == Crops.PlotId || def.id == "greenhouse";
             if (!meshCache.TryGetValue(def.id, out var mesh))
             {

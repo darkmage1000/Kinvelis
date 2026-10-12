@@ -69,7 +69,14 @@ namespace Wildbond
             get
             {
                 float pts = 0f;
-                foreach (var id in Crops.KinFoods) { var d = ContentDB.Item(id); if (d != null) pts += Storage.Count(id) * d.foodValue * 2.5f; }
+                bool any = false, auto = false;
+                foreach (var fb in FeedBoxes())
+                {
+                    any = true; auto |= fb.FeedAuto;
+                    foreach (var s in fb.Feed.slots) { var d = s.Empty ? null : ContentDB.Item(s.id); if (d != null) pts += s.count * d.foodValue * 2.5f; }
+                }
+                // storage only counts if a box draws on it by itself (or there is no box and you feed them by hand)
+                if (auto || !any) foreach (var id in Crops.KinFoods) { var d = ContentDB.Item(id); if (d != null) pts += Storage.Count(id) * d.foodValue * 2.5f; }
                 return pts;
             }
         }
@@ -124,6 +131,7 @@ namespace Wildbond
                     return BuildingHealth.Blocked;
                 }
                 bool busy = HandsAt(b) > 0 || !actorsOut;
+                if (NightNow && !AnyoneCan(b, b.Stage, true)) { text = $"{b.StageText(false)} - the kin who do this are asleep until dawn{pace}"; return BuildingHealth.Idle; }
                 text = $"{b.StageText(busy)} {Mathf.RoundToInt(b.Stage01 * 100f)}%{pace}";
                 return BuildingHealth.Good;
             }
@@ -139,7 +147,13 @@ namespace Wildbond
                 text = $"Inactive - needs a {b.Def.workType} worker"; return BuildingHealth.Blocked;
             }
             if (b.Def.storageSlots > 0) { text = $"+{b.Def.storageSlots} storage slots"; return BuildingHealth.Info; }
-            if (b.Def.feeds) { text = HasFood ? "Stocked" : "Empty - store berries or tarts"; return HasFood ? BuildingHealth.Good : BuildingHealth.Blocked; }
+            if (b.Def.feeds)
+            {
+                int n = FeedCount(b);
+                bool can = n > 0 || (b.FeedAuto && StorageHasFood);
+                text = n > 0 ? $"{n} food in it{(b.FeedAuto ? " · keeps itself stocked" : " · stocked by hand")}" : can ? "Stocking itself from storage" : b.FeedAuto ? "Empty - no food in camp storage" : "Empty - put food in it (OPEN)";
+                return can ? BuildingHealth.Good : BuildingHealth.Blocked;
+            }
             if (b.Def.beds > 0) { text = $"{b.Def.beds} beds"; return BuildingHealth.Info; }
             text = ""; return BuildingHealth.Info;
         }
@@ -153,7 +167,7 @@ namespace Wildbond
             int workers = party.CountIn(KinLocation.Base);
             if (StorageFull) list.Add(new Alert { text = "Storage is full - build a Storage Chest or take items", severe = true });
             if (workers > 0 && !HasFeedBox) list.Add(new Alert { text = "No Feed Box - hungry workers can't eat", severe = true });
-            else if (workers > 0 && !HasFood) list.Add(new Alert { text = "No food in storage - add berries or tarts", severe = true });
+            else if (workers > 0 && !HasFood) list.Add(new Alert { text = "The Feed Box is empty - put berries, crops or fish in it", severe = true });
             else if (workers > 0 && FoodMinutes < 10f) list.Add(new Alert { text = $"Food runs out in ~{FoodMinutes:0} min", severe = false });
             int idle = 0;
             foreach (var d in party.In(KinLocation.Base)) if (FindBuilding(d.assignedBuilding) == null) idle++;
@@ -165,6 +179,8 @@ namespace Wildbond
             }
             if (workers > 0 && BedCount < workers && BedCount > 0) list.Add(new Alert { text = $"Only {BedCount} beds for {workers} workers (no rested bonus)", severe = false });
             if (workers == 0) list.Add(new Alert { text = "No workers yet - send kin TO CAMP from the Kin tab", severe = false });
+            int asleep = SleeperCount;
+            if (asleep > 0) list.Add(new Alert { text = $"Night: {asleep} kin asleep until dawn (night kin and Night Owls keep working)", severe = false });
             return list;
         }
     }

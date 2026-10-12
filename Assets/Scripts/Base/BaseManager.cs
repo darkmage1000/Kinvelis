@@ -80,9 +80,15 @@ namespace Wildbond
         }
 
         public bool HasFeedBox => FeedBox != null;
+        /// <summary>Is there anything for camp kin to eat: food in a Feed Box, or in storage for a box that stocks itself (or, with no box at all, for hand-feeding)?</summary>
         public bool HasFood
         {
-            get { foreach (var id in Crops.KinFoods) if (Storage.Count(id) > 0) return true; return false; }
+            get
+            {
+                bool any = false, auto = false;
+                foreach (var fb in FeedBoxes()) { any = true; if (!fb.Feed.IsEmpty) return true; auto |= fb.FeedAuto; }
+                return (auto || !any) && StorageHasFood;
+            }
         }
 
         public bool HasBeds
@@ -239,9 +245,10 @@ namespace Wildbond
         }
 
         /// <summary>Is anyone in camp able to do the step this producer is waiting on?</summary>
-        public bool AnyoneCan(Building b, int stage)
+        public bool AnyoneCan(Building b, int stage, bool awakeOnly = false)
         {
-            foreach (var d in GameManager.I.Party.In(KinLocation.Base)) if (!d.Fainted && b.StageLevelAt(stage, d) > 0f) return true;
+            foreach (var d in GameManager.I.Party.In(KinLocation.Base))
+                if (!d.Fainted && b.StageLevelAt(stage, d) > 0f && !(awakeOnly && Asleep(d))) return true;
             return false;
         }
 
@@ -329,21 +336,17 @@ namespace Wildbond
         {
             if (b.Def.isCore) { GameEvents.Warn("The Hearthstone can't be demolished."); return; }
             foreach (var d in GameManager.I.Party.In(KinLocation.Base)) if (d.assignedBuilding == b.Uid) d.assignedBuilding = null;
-            // refund half the cost into storage
-            foreach (var c in b.Def.cost) Storage.Add(c.itemId, c.count / 2);
-            if (b.BufferCount > 0) Storage.Add(b.BufferItem, b.BufferCount);
+            // what it held (a chest's slots, a feed box's food) and half its cost go back into the camp
+            var spill = new List<ItemStack>();
+            RemoveBox(b, spill);
+            foreach (var c in b.Def.cost) if (c.count / 2 > 0) spill.Add(new ItemStack { id = c.itemId, count = c.count / 2 });
+            if (b.BufferCount > 0) spill.Add(new ItemStack { id = b.BufferItem, count = b.BufferCount });
             Buildings.Remove(b);
             b.Remove();
             RecalcStorage();
+            Respill(spill);
             GameEvents.RaiseBaseChanged();
             GameEvents.RaiseInventoryChanged();
-        }
-
-        void RecalcStorage()
-        {
-            int slots = HasBase ? (CoreLevel - 1) * StoragePerCoreLevel : 0;
-            foreach (var b in Buildings) slots += b.Def.storageSlots;
-            Storage.Resize(slots);
         }
 
         /// <summary>Levels 2-3 use island materials; 4-6 need outer-land bars and Warden Hearts.</summary>
@@ -433,13 +436,27 @@ namespace Wildbond
 
         public bool EatFood(CreatureData d)
         {
-            // any plain crop will do, cheapest first (tarts last)
-            string food = null;
-            foreach (var id in Crops.KinFoods) if (Storage.Count(id) > 0) { food = id; break; }
-            if (food == null) return false;
-            Storage.Remove(food, 1);
-            d.hunger = Mathf.Min(100f, d.hunger + ContentDB.Item(food).foodValue * 2.5f);
-            return true;
+            // from a Feed Box: any plain crop will do, cheapest first (tarts last). A box that stocks itself is topped up first.
+            bool anyBox = false;
+            foreach (var fb in FeedBoxes()) { anyBox = true; if (fb.Feed.IsEmpty) Restock(fb); }
+            foreach (var id in Crops.KinFoods)
+                foreach (var fb in FeedBoxes())
+                {
+                    if (fb.Feed.Count(id) <= 0) continue;
+                    fb.Feed.Remove(id, 1);
+                    d.hunger = Mathf.Min(100f, d.hunger + ContentDB.Item(id).foodValue * 2.5f);
+                    return true;
+                }
+            if (anyBox) return false;
+            // no Feed Box yet (the player hand-feeding in camp): straight from storage
+            foreach (var id in Crops.KinFoods)
+            {
+                if (Storage.Count(id) <= 0) continue;
+                Storage.Remove(id, 1);
+                d.hunger = Mathf.Min(100f, d.hunger + ContentDB.Item(id).foodValue * 2.5f);
+                return true;
+            }
+            return false;
         }
 
         void SpawnWorkerActor(CreatureData d)
@@ -530,6 +547,7 @@ namespace Wildbond
             else if (!near && actorsOut) DespawnWorkerActors();
 
             SimulateNeeds(dt);
+            TickFeed(dt);
             TickStages(dt);
             if (!near) SimulateAbstract(dt);
             TickDefense(dt, playerPos, near);
@@ -603,7 +621,8 @@ namespace Wildbond
             float larder = LarderActive ? 0.6f : 1f;
             foreach (var d in GameManager.I.Party.In(KinLocation.Base))
             {
-                d.hunger = Mathf.Max(0f, d.hunger - hungerPerSecond * d.HungerMul * larder * WorldRules.Current.hungerRate * GameManager.I.Player.Stats.KinHungerMul * dt);
+                float asleep = Asleep(d) ? 0.5f : 1f;   // a sleeping kin burns half as much
+                d.hunger = Mathf.Max(0f, d.hunger - hungerPerSecond * d.HungerMul * larder * asleep * WorldRules.Current.hungerRate * GameManager.I.Player.Stats.KinHungerMul * dt);
                 if (!actorsOut && d.hunger < 30f && HasFeedBox) EatFood(d);
             }
         }
@@ -617,7 +636,7 @@ namespace Wildbond
             bool piles = FindHaulSource() != null;
             foreach (var d in party.In(KinLocation.Base))
             {
-                if (d.Fainted) continue;
+                if (d.Fainted || Asleep(d)) continue;   // at night only the nocturnal ones are up
                 var home = FindBuilding(d.assignedBuilding);
                 // haulers carry while there is something to carry; with the piles cleared they turn a hand to whatever else they can do
                 if (piles && home != null && (home.Def.isCore || home.Def.workType == WorkType.Hauling)) { haulers += 1 + d.WorkLevel(WorkType.Hauling); if (xp) AccrueWorkXp(d, dt); continue; }
@@ -667,9 +686,16 @@ namespace Wildbond
             seconds = Mathf.Min(seconds, 2f * 3600f);
             const float step = 5f;
             int steps = Mathf.CeilToInt(seconds / step);
+            // the camp's nights went by too: a clock of its own, started where the world's is now and run backwards over the time away
+            var env = EnvironmentSystem.I;
+            float dayLen = env != null ? Mathf.Max(60f, env.DayLength) : 1200f;
+            float clock = Mathf.Repeat((env != null ? env.timeOfDay : 0.4f) - seconds / dayLen, 1f);
             for (int i = 0; i < steps; i++)
             {
+                clock = Mathf.Repeat(clock + step / dayLen, 1f);
+                nightOverride = clock < 0.23f || clock > 0.78f;
                 SimulateNeeds(step);
+                TickFeed(step);
                 TickStages(step);
                 SimulateAbstract(step, false);   // production only: kin never level up while the game is closed
                 TickAutomation(step);
@@ -680,6 +706,7 @@ namespace Wildbond
                     if (b != null && !b.IsProducer && !b.IsStation && b.CanWork(d)) b.PoweredUntil = GameManager.WorldTime + 2.0;
                 }
             }
+            nightOverride = null;
             GameEvents.Say($"Your camp kept working while you were away ({seconds / 60f:0} min).", new Color(0.7f, 1f, 0.8f));
         }
 

@@ -83,6 +83,10 @@ namespace Wildbond
             get { if (look == null || !look.rolled) look = KinLook.FromUid(uid); return look; }
         }
 
+        /// <summary>Up at night: a night species, or one with the Night Owl passive. Every other camp kin sleeps from dusk to dawn.</summary>
+        public bool Nocturnal => (Species != null && Species.spawnTime == SpawnTime.Night) || (traits != null && traits.Contains(NightOwl));
+        public const string NightOwl = "night_owl";
+
         public float SizeScale => (alpha ? 1.55f : 1f) * (mutation == Mutation.Giant ? 1.3f : 1f) * (1f + 0.12f * stage);
 
         public string ModelKey => $"{speciesId}|{(shimmer ? 1 + shimmerVariant : 0)}{(regional ? 1 : 0)}{(alpha ? 1 : 0)}{(int)mutation}{stage}";
