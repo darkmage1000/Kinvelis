@@ -314,15 +314,33 @@ html: `
 <li>It is where you return when you are knocked out, and a fast-travel target.</li>
 </ul>
 
+<h2 id="stages">How structures work</h2>
+<p>Everything that makes something does it a <b>batch</b> at a time, in steps. Some steps need hands; others simply take time. A label floats over each structure when you are near, with the step it is on and a bar: amber needs hands, green is running by itself, red is stuck.</p>
+<div class="scroll"><table>
+<thead><tr><th>Structure</th><th>Hands-on</th><th>Then by itself</th></tr></thead>
+<tbody>
+<tr><td>Crop Plot</td><td>Planting, watering, and later harvesting</td><td>Growing</td></tr>
+<tr><td>Lumber Mill</td><td>Sawing</td><td>Seasoning the planks</td></tr>
+<tr><td>Stone Quarry</td><td>Setting wedges</td><td>Splitting stone</td></tr>
+<tr><td>Forage Hut</td><td>Foraging</td><td>Sorting and drying</td></tr>
+<tr><td>Smelter</td><td>Stoking the fire (takes the ore)</td><td>Smelting</td></tr>
+<tr><td>Fishing Pond</td><td>Baiting the lines</td><td>Waiting for a bite</td></tr>
+<tr><td>Deep Drill</td><td>Winding the drill</td><td>Drilling</td></tr>
+</tbody></table></div>
+<p>The hands-off step is the point. While a plot grows or a smelter burns, the kin that tended it walks off and does something else, so one good worker can keep two or three structures going. A single structure with one kin standing by it is the slowest way to run a camp.</p>
+
 <h2 id="workers">Putting kin to work</h2>
-<p>Open <b>CAMP &gt; Structures</b> or <b>Workers</b> and assign a kin to a structure. A kin can only work a structure if it has the right <b>job</b>, and its job level (1 to 4) sets how fast it works. The worker picker tells you where to find kin with a job you are short of.</p>
+<p>Send kin to camp from the Kin tab. Each kin can do the <b>jobs</b> its kind has, at a level from 1 to 4 that sets how fast it works. Kin choose their own tasks: every few seconds a kin looks for the step, anywhere in camp, where its hands count for most.</p>
 <div data-view="jobs"></div>
 <ul>
+<li><b>Assigning</b> a kin to a structure (CAMP &gt; Structures or Workers) makes that structure its first choice. It still helps elsewhere whenever its own structure has nothing for it.</li>
+<li>A kin with no structure of its own simply goes wherever it is useful.</li>
+<li>A structure takes as many hands at once as it has worker places.</li>
+<li>Kin with the <b>Hauling</b> job carry finished batches to storage when nothing needs tending. Kin assigned to the Hearthstone carry first and tend second.</li>
 <li>Workers need <b>food</b>: a Feed Box lets them eat berries, crops, tarts or Silverfin out of camp storage. A <b>Kin Nest</b> gives two workers a bed, and rested kin work 15% faster.</li>
 <li>Work speed also depends on the kin's Work grade, its evolution stage and its traits. A shimmer kin is +1 level in every job.</li>
-<li>Haulers carry finished goods to storage. Without one, things pile up at the structure.</li>
 <li>Workers earn a little XP while you play. They earn none while the game is closed.</li>
-<li>You can work a structure yourself: stand at it and tap <b>WORK</b>. You are about half as fast as a level-1 kin.</li>
+<li>You can do any hands-on step yourself: stand at the structure and tap <b>PLANT</b>, <b>WATER</b>, <b>HARVEST</b> or <b>WORK</b>. You are about half as fast as a level-1 kin.</li>
 <li>Your companion pitches in by itself while you are inside the camp ring. You can switch that off on Camp &gt; Workers.</li>
 </ul>
 
@@ -341,7 +359,15 @@ html: `
 <p>All recipes: <a href="#/items">Items</a>. All structures: <a href="#/structures">Structures</a>.</p>
 
 <h2 id="farm">Crops</h2>
-<p>A Crop Plot grows one crop at a time; pick which on its CROP button. Planting a new crop costs three of it, so you have to find it in the wild first.</p>
+<p>A Crop Plot grows one crop at a time; pick which on its CROP button. Changing to a new crop costs three of it, so you have to find it in the wild first.</p>
+<p>You can watch a batch go through the bed:</p>
+<ol>
+<li><b>Planting</b>: seed mounds appear, a row at a time. Needs a Cultivating kin.</li>
+<li><b>Watering</b>: the soil darkens from one end. An Irrigating kin is quickest; a Cultivating kin can do it at half speed; a running Sprinkler does it with nobody there.</li>
+<li><b>Growing</b>: sprouts come up over about twenty seconds. Nobody is needed.</li>
+<li><b>Harvesting</b>: the ripe crop is picked by a Cultivating or Foraging kin, and the bed is bare again.</li>
+</ol>
+<p>A Greenhouse does all four steps by itself, and faster with kin helping.</p>
 <div data-view="crops"></div>
 
 <h2 id="storage">Storage</h2>
@@ -356,7 +382,7 @@ html: `
 <li><b>Volt Pylon</b> with a Charging kin: powers the camp, which runs the three machines below and the Volt Turrets.</li>
 <li><b>Conveyor Hub</b>: moves every structure's output to storage, no haulers needed.</li>
 <li><b>Auto-Assembler</b>: works through queued Workbench and Campfire orders by itself.</li>
-<li><b>Sprinkler</b>: farms work 40% faster while it runs.</li>
+<li><b>Sprinkler</b>: waters every Crop Plot by itself, and farms work 40% faster while it runs. It runs on camp power or with an Irrigating kin.</li>
 </ul>
 
 <h2 id="away">While you are away</h2>
