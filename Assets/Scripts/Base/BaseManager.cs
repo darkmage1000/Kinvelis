@@ -210,7 +210,9 @@ namespace Wildbond
         /// </summary>
         public Building PickTask(CreatureData d, Building home, CreatureActor self = null, Building current = null)
         {
-            // a kin given a post (the Spark Dynamo) holds it: the machine stops the moment it walks off.
+            // a pylon or larder asking for a top-up comes before anything else this kin could do: everything powered hangs on it
+            var call = StoreCalling(d, self, current);
+            if (call != null) return call;
             // A Volt Pylon stores charge, so it only "can be worked" while it wants topping up - then its kin goes straight back.
             if (IsPost(home) && home.CanWork(d) && (home == current || HandsAt(home, self) < home.Def.workerSlots)) return home;
             Building best = null; float bestScore = 0f;
@@ -232,6 +234,27 @@ namespace Wildbond
             if (PickTask(d, home, self) != null) return true;
             bool hauler = home != null && (home.Def.isCore || home.Def.workType == WorkType.Hauling);
             return (hauler || d.WorkLevel(WorkType.Hauling) > 0) && FindHaulSource() != null;
+        }
+
+        /// <summary>
+        /// A Volt Pylon (first) or Frost Larder that wants topping up, has a free place and that this kin can work.
+        /// Asked before hauling and before any other task, so a camp whose only Charging kin is a hauler or is better
+        /// at something else still gets charged. One kin answers (the place is then taken); the rest carry on.
+        /// </summary>
+        public Building StoreCalling(CreatureData d, CreatureActor self = null, Building current = null)
+        {
+            Building best = null;
+            foreach (var b in Buildings)
+            {
+                if (b == null) continue;
+                bool pylon = b.Def.id == "volt_pylon";
+                if (!pylon && !IsLarder(b)) continue;
+                if (!b.CanWork(d)) continue;
+                if (b != current && HandsAt(b, self) >= b.Def.workerSlots) continue;
+                if (pylon) return b;
+                best = b;
+            }
+            return best;
         }
 
         /// <summary>A machine that only runs while a kin stays at it: its assigned kin never leaves for other work (anyone else only minds it when idle).</summary>
@@ -686,6 +709,25 @@ namespace Wildbond
             {
                 if (d.Fainted || Asleep(d)) continue;   // at night only the nocturnal ones are up
                 var home = FindBuilding(d.assignedBuilding);
+                // a pylon or larder asking for a top-up comes first, as it does for the actors
+                Building call = null;
+                foreach (var b in Buildings)
+                {
+                    bool pylon = b.Def.id == "volt_pylon";
+                    if ((!pylon && !IsLarder(b)) || !b.CanWork(d)) continue;
+                    abstractHands.TryGetValue(b, out int at);
+                    if (at >= b.Def.workerSlots) continue;
+                    call = b;
+                    if (pylon) break;
+                }
+                if (call != null)
+                {
+                    abstractHands.TryGetValue(call, out int cn);
+                    abstractHands[call] = cn + 1;
+                    call.AddWork(WorkRate(d, call) * dt);
+                    if (xp) AccrueWorkXp(d, dt);
+                    continue;
+                }
                 // haulers carry while there is something to carry; with the piles cleared they turn a hand to whatever else they can do
                 if (piles && home != null && (home.Def.isCore || home.Def.workType == WorkType.Hauling)) { haulers += 1 + d.WorkLevel(WorkType.Hauling); if (xp) AccrueWorkXp(d, dt); continue; }
                 // the same choice the actors make: wherever its hands count for most, its own structure first among equals

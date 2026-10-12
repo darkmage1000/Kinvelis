@@ -81,6 +81,7 @@ namespace Wildbond.EditorTools
         {
             var l = L();
             var all = new List<SpeciesDef>(ContentDB.SpeciesList);
+            all.RemoveAll(x => x.custom);   // a player's own dreamed-up kin belong to their save, never to the public wiki
             all.Sort((a, b) => a.dexNumber.CompareTo(b.dexNumber));
             foreach (var sp in all)
             {
@@ -181,14 +182,14 @@ namespace Wildbond.EditorTools
         static object Research()
         {
             var l = L();
-            foreach (var t in Tech.All)
+            foreach (var t in Tech.ByLevel)
             {
                 var w = string.IsNullOrEmpty(t.sigil) ? null : Wardens.Get(t.sigil);
                 TechDef pre = null;
                 foreach (var x in Tech.All) if (x.id == t.prereq) pre = x;
                 l.Add(new Dictionary<string, object>
                 {
-                    ["name"] = t.name, ["about"] = t.desc, ["cost"] = Cost(t.cost), ["sigil"] = w != null ? w.land : null, ["after"] = pre != null ? pre.name : null,
+                    ["name"] = t.name, ["about"] = t.desc, ["level"] = t.level, ["cost"] = Cost(t.cost), ["sigil"] = w != null ? w.land : null, ["after"] = pre != null ? pre.name : null,
                     ["recipes"] = new List<object>(t.recipes), ["structures"] = new List<object>(t.buildings), ["metal"] = t.group == 1,
                 });
             }
@@ -289,7 +290,7 @@ namespace Wildbond.EditorTools
         static int Pictures(string root)
         {
             int n = 0;
-            foreach (var sp in ContentDB.SpeciesList) n += Save(ItemIcons.Get("kin_" + sp.id), Path.Combine(root, "img", "kin", sp.id + ".png"));
+            foreach (var sp in ContentDB.SpeciesList) if (!sp.custom) n += Save(ItemIcons.Get("kin_" + sp.id), Path.Combine(root, "img", "kin", sp.id + ".png"));
             foreach (var d in ContentDB.Items.Values) n += Save(ItemIcons.Get(d.id), Path.Combine(root, "img", "item", d.id + ".png"));
             foreach (var d in ContentDB.BuildingList) n += Save(ItemIcons.Get("bld_" + d.id), Path.Combine(root, "img", "bld", d.id + ".png"));
             return n;

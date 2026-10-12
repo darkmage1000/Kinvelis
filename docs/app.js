@@ -426,7 +426,7 @@
     function rows(list) {
       return table(["Project", "Cost", "Needs", "Unlocks"], list.map(function (t) {
         var un = t.structures.map(structChip).concat(t.recipes.map(function (r) { return itemChip(r); }));
-        var need = [t.sigil ? "Sigil of " + esc(t.sigil) : "", t.after ? "After " + esc(t.after) : ""].filter(Boolean).join("<br>") || "&mdash;";
+        var need = [t.level > 1 ? "Explorer level " + t.level : "", t.sigil ? "Sigil of " + esc(t.sigil) : "", t.after ? "After " + esc(t.after) : ""].filter(Boolean).join("<br>") || "&mdash;";
         return ["<b>" + esc(t.name) + '</b><span class="sub">' + esc(t.about) + "</span>", cost(t.cost), need, '<span class="chips">' + un.join("") + "</span>"];
       }));
     }

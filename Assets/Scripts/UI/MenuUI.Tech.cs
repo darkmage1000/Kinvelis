@@ -21,7 +21,7 @@ namespace Wildbond
             Para(list, !built ? "You haven't built a Research Bench yet (Build tab, level 3). This is what it can teach you."
                      : !inCamp ? "You're away from camp, so this is view-only. Go to your Research Bench to start something."
                      : "Pick one thing to study. Materials are taken when you start; then a Crafting kin on the bench works on it, or you can stand at the bench yourself. " +
-                       "A land's Sigil comes from beating its Warden (see JOURNEY).", 21);
+                       "Each project opens at an explorer level; a land's Sigil comes from beating its Warden (see JOURNEY).", 21);
 
             var active = Tech.Active;
             if (active != null)
@@ -43,7 +43,7 @@ namespace Wildbond
             for (int g = 0; g < 2; g++)
             {
                 Header(list, g == 0 ? "Camp know-how" : "Metals of the outer lands", 28);
-                foreach (var t in Tech.All)
+                foreach (var t in Tech.ByLevel)
                 {
                     if (t.group != g) continue;
                     string why = Tech.Blocker(t);
@@ -55,6 +55,7 @@ namespace Wildbond
                     if (!done)
                     {
                         var req = new List<string>();
+                        if (t.level > 1) req.Add(UIFactory.Col($"Explorer Lv {t.level}", stats.level >= t.level ? new Color(0.6f, 1f, 0.6f) : new Color(1f, 0.55f, 0.5f)));
                         if (t.sigil != null)
                         {
                             var w = Wardens.Get(t.sigil);

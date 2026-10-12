@@ -15,6 +15,8 @@ namespace Wildbond
         public string[] recipes = new string[0], buildings = new string[0];
         /// <summary>0 = camp know-how, 1 = metals of the outer lands.</summary>
         public int group;
+        /// <summary>Explorer (player) level needed to start it: about where a player is when they reach the land it belongs to.</summary>
+        public int level = 1;
     }
 
     /// <summary>
@@ -27,9 +29,9 @@ namespace Wildbond
     {
         const string Heart = Wardens.HeartItem;
 
-        static TechDef T(string id, string name, int group, string sigil, string prereq, float work, string desc, Ingredient[] cost, string[] recipes, string[] buildings = null)
+        static TechDef T(string id, string name, int group, int level, string sigil, string prereq, float work, string desc, Ingredient[] cost, string[] recipes, string[] buildings = null)
         {
-            return new TechDef { id = id, name = name, group = group, sigil = sigil, prereq = prereq, work = work, desc = desc, cost = cost, recipes = recipes ?? new string[0], buildings = buildings ?? new string[0] };
+            return new TechDef { id = id, name = name, group = group, level = level, sigil = sigil, prereq = prereq, work = work, desc = desc, cost = cost, recipes = recipes ?? new string[0], buildings = buildings ?? new string[0] };
         }
 
         static Ingredient[] C(params (string, int)[] c)
@@ -44,38 +46,53 @@ namespace Wildbond
         public static readonly TechDef[] All =
         {
             // ---------------- camp know-how ----------------
-            T("forge", "Alloy Forging", 0, null, null, 60f, "A hotter furnace for metals the Smelter can't melt. Every outer-land metal starts here.",
+            T("forge", "Alloy Forging", 0, 12, null, null, 60f, "A hotter furnace for metals the Smelter can't melt. Every outer-land metal starts here.",
                 C(("ingot", 8), ("stone", 30), ("cinder", 4)), null, R("alloy_forge")),
-            T("chests", "Joinery", 0, null, null, 30f, "Banded trunks: a Large Chest holds twice what a Storage Chest does.",
+            T("chests", "Joinery", 0, 4, null, null, 30f, "Banded trunks: a Large Chest holds twice what a Storage Chest does.",
                 C(("wood", 30), ("fiber", 15)), null, R("large_chest")),
-            T("storage", "Bulk Storage", 0, null, null, 50f, "A tall silo that holds as much as three chests.",
+            T("storage", "Bulk Storage", 0, 7, null, null, 50f, "A tall silo that holds as much as three chests.",
                 C(("wood", 40), ("stone", 20), ("ingot", 4)), null, R("bulk_silo")),
-            T("vaults", "Ironbound Vaults", 0, null, "chests", 70f, "An iron-doored vault that holds as much as five chests.",
+            T("vaults", "Ironbound Vaults", 0, 10, null, "chests", 70f, "An iron-doored vault that holds as much as five chests.",
                 C(("ingot", 10), ("stone", 30), ("wood", 20)), null, R("iron_vault")),
-            T("grandvault", "Grand Vault", 0, "badlands", "vaults", 120f, "A stone treasury: nine chests' worth under one roof.",
+            T("grandvault", "Grand Vault", 0, 21, "badlands", "vaults", 120f, "A stone treasury: nine chests' worth under one roof.",
                 C(("ingot", 20), ("crystal", 8), ("stone", 40), (Heart, 1)), null, R("grand_vault")),
-            T("medicine", "Kin Medicine", 0, "meadow", null, 80f, "A clinic where fainted kin are back on their feet three times sooner.",
+            T("medicine", "Kin Medicine", 0, 12, "meadow", null, 80f, "A clinic where fainted kin are back on their feet three times sooner.",
                 C(("berry", 20), ("gel", 6), (Heart, 1)), null, R("kin_clinic")),
-            T("training", "Training Methods", 0, "badlands", null, 100f, "A yard where camp kin learn from their work twice as fast.",
+            T("training", "Training Methods", 0, 19, "badlands", null, 100f, "A yard where camp kin learn from their work twice as fast.",
                 C(("ingot", 10), ("pelt", 10), (Heart, 1)), null, R("training_yard")),
-            T("defenses", "Volt Defenses", 0, "peaks", null, 120f, "Turrets that shock raiders while a Volt Pylon is running.",
+            T("defenses", "Volt Defenses", 0, 26, "peaks", null, 120f, "Turrets that shock raiders while a Volt Pylon is running.",
                 C(("ingot", 12), ("crystal", 8), (Heart, 2)), null, R("volt_turret")),
-            T("outposts", "Outpost Logistics", 0, "isles", null, 100f, "Outpost Kits: found a small camp on an outer land, station kin there, and a caravan brings what they gather home.",
+            T("outposts", "Outpost Logistics", 0, 14, "isles", null, 100f, "Outpost Kits: found a small camp on an outer land, station kin there, and a caravan brings what they gather home.",
                 C(("wood", 30), ("fiber", 30), ("ingot", 6), (Heart, 1)), R("outpost_kit")),
             // ---------------- metals of the outer lands ----------------
-            T("saltglass", "Saltglass Working", 1, "isles", "forge", 100f, "Driftkey saltglass: a clear, hard blade and the panes for a Greenhouse.",
+            T("saltglass", "Saltglass Working", 1, 15, "isles", "forge", 100f, "Driftkey saltglass: a clear, hard blade and the panes for a Greenhouse.",
                 C(("saltglass", 15), (Heart, 1)), R("saltglass_bar", "saltglass_saber"), R("greenhouse")),
-            T("bogsteel", "Bogsteel Smelting", 1, "swamp", "forge", 130f, "Mirefen bog iron makes the first tools that bite into sunsteel and blight ore.",
+            T("bogsteel", "Bogsteel Smelting", 1, 20, "swamp", "forge", 130f, "Mirefen bog iron makes the first tools that bite into sunsteel and blight ore.",
                 C(("bog_iron", 20), (Heart, 2)), R("bogsteel_bar", "bogsteel_pick", "bogsteel_axe", "bogsteel_glaive", "bogsteel_crossbow")),
-            T("sunsteel", "Sunsteel Tempering", 1, "desert", "bogsteel", 160f, "Golden Sunscour steel: a blade, a full suit of armor, and the Waypad that links your outposts.",
+            T("sunsteel", "Sunsteel Tempering", 1, 28, "desert", "bogsteel", 160f, "Golden Sunscour steel: a blade, a full suit of armor, and the Waypad that links your outposts.",
                 C(("sunsteel_ore", 20), (Heart, 2)), R("sunsteel_bar", "sunsteel_blade", "sunsteel_longbow", "sunsteel_helm", "sunsteel_plate", "sunsteel_greaves"), R("waypad")),
-            T("blightsteel", "Blightsteel Quenching", 1, "blight", "bogsteel", 200f, "Dark Blightmoor steel quenched in its own pools: the best pick and axe, a fang of a sword, and thorned armor.",
+            T("blightsteel", "Blightsteel Quenching", 1, 35, "blight", "bogsteel", 200f, "Dark Blightmoor steel quenched in its own pools: the best pick and axe, a fang of a sword, and thorned armor.",
                 C(("blight_ore", 25), (Heart, 3)), R("blightsteel_bar", "blightsteel_pick", "blightsteel_axe", "blightsteel_fang", "blightsteel_hood", "blightsteel_mail", "blightsteel_boots")),
-            T("starsteel", "Starsteel Casting", 1, "glow", "blightsteel", 240f, "Glowdeep starcrystal cast into steel: the finest edge and armor there is.",
+            T("starsteel", "Starsteel Casting", 1, 41, "glow", "blightsteel", 240f, "Glowdeep starcrystal cast into steel: the finest edge and armor there is.",
                 C(("starcrystal", 25), (Heart, 3)), R("starsteel_bar", "starsteel_edge", "starsteel_greatbow", "starsteel_crown", "starsteel_raiment", "starsteel_treads")),
         };
 
         static Dictionary<string, TechDef> byId, byRecipe, byBuilding;
+        static List<TechDef> byLevel;
+
+        /// <summary>Every project, lowest level first (the order menus and the wiki list them in).</summary>
+        public static List<TechDef> ByLevel
+        {
+            get
+            {
+                if (byLevel == null)
+                {
+                    byLevel = new List<TechDef>(All);
+                    byLevel.Sort((a, b) => a.level != b.level ? a.level.CompareTo(b.level) : System.Array.IndexOf(All, a).CompareTo(System.Array.IndexOf(All, b)));
+                }
+                return byLevel;
+            }
+        }
 
         static void Index()
         {
@@ -108,6 +125,7 @@ namespace Wildbond
         {
             if (Has(t.id)) return "Done";
             if (S.researchId == t.id) return "Researching";
+            if (S.level < t.level) return $"Reach Lv {t.level}";
             if (t.prereq != null && !Has(t.prereq)) return $"Needs {Get(t.prereq).name}";
             if (t.sigil != null && !Wardens.Beaten(t.sigil))
             {

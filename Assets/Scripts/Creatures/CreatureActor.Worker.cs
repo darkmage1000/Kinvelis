@@ -163,6 +163,9 @@ namespace Wildbond
                 default: // Idle: decide what to do next
                     if (stateTimer > 0f) break;
                     bool hauler = workBuilding != null && (workBuilding.Def.workType == WorkType.Hauling || workBuilding.Def.isCore);
+                    // a pylon or larder asking for a top-up outranks carrying (a camp's only Charging kin is often its hauler)
+                    var call = bm.StoreCalling(Data, this);
+                    if (call != null) { task = call; taskCheck = 1f; SetState(AIState.ToWork, 0f); break; }
                     if (hauler && StartHaul(bm)) break;
                     // its own structure if that has a step for it; otherwise wherever its jobs are wanted
                     task = bm.PickTask(Data, workBuilding, this);

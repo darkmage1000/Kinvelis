@@ -423,7 +423,8 @@ html: `
 { id: "research", group: "Camp", title: "Research and metals", blurb: "The Research Bench, the five outer metals and what the Warden Sigils unlock.",
 html: `
 <p class="lead">Research is how the camp grows past ingots. It is done at a <b>Research Bench</b>: pick a project, pay its cost, and a worker (or you) puts in the time.</p>
-<p>Some projects need the <b>Sigil</b> of a land's <a href="#/wardens">Warden</a>. Wardens gate technology, never travel: you can walk into any land at any time, but you need its Warden's Sigil to work its metal.</p>
+<p>Every project opens at an <b>explorer level</b> (your own level, not your kin's), set to about where you are when you reach the land it belongs to: Joinery at 4, Bulk Storage at 7, Alloy Forging at 12, and so on up to Starsteel at 41. The <a href="#/research">Research</a> page lists them all in order.</p>
+<p>Some projects also need the <b>Sigil</b> of a land's <a href="#/wardens">Warden</a>. Wardens gate technology, never travel: you can walk into any land at any time, but you need its Warden's Sigil to work its metal.</p>
 <h2 id="metals">The five metals</h2>
 <p>Each outer land has its own ore vein. Ore is smelted into bars at the <b>Alloy Forge</b>, and each metal gives a weapon, and usually armour or better tools.</p>
 <div class="scroll"><table>
