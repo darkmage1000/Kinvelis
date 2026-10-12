@@ -419,9 +419,9 @@ namespace Wildbond
                 P(PartShape.Box, BodyGroup.Body, ColorSlot.Secondary, 0, 0.75f, 0.68f, 1.2f, 0.5f, 0.06f),
                 P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Glow, 0.6f, 1.15f, 0.66f, 0.18f, 0.18f, 0.08f),
             };
-            var spr = Bld(b, "sprinkler", "Sprinkler", "Waters every Crop Plot by itself and makes farms (Crop Plot, Forage Hut) work 40% faster while it runs: camp power or an Irrigating kin.", 6, 0.8f,
+            var spr = Bld(b, "sprinkler", "Sprinkler", "A machine: while the camp has power it waters every Crop Plot by itself and makes farms (Crop Plot, Forage Hut) work 40% faster. Needs a Volt Pylon; no kin stands at it.", 7, 0.8f,
                 ("ingot", 3), ("gel", 6), ("wood", 6));
-            spr.workType = WorkType.Irrigating; spr.workerSlots = 1;
+            // no worker: it runs on camp power alone (it was kin-or-power before 2026-10-12)
             spr.palette = Pal(Hex("#6a8a9a"), Hex("#3a5060"), Hex("#58c8ff"), Hex("#bff0ff"));
             spr.parts = new[]
             {

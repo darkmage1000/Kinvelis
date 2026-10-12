@@ -209,7 +209,7 @@ namespace Wildbond
         /// </summary>
         public Building PickTask(CreatureData d, Building home, CreatureActor self = null, Building current = null)
         {
-            // a kin given a post (Dynamo, Frost Larder, Sprinkler) holds it: the machine stops the moment it walks off.
+            // a kin given a post (the Spark Dynamo) holds it: the machine stops the moment it walks off.
             // A Volt Pylon stores charge, so it only "can be worked" while it wants topping up - then its kin goes straight back.
             if (IsPost(home) && home.CanWork(d) && (home == current || HandsAt(home, self) < home.Def.workerSlots)) return home;
             Building best = null; float bestScore = 0f;
@@ -279,10 +279,18 @@ namespace Wildbond
 
         const float SprinklerWater = 1.5f;   // work per second a running sprinkler puts into a plot that needs water
 
-        /// <summary>A Sprinkler is running (staffed by an Irrigating kin, or the camp is powered).</summary>
-        public bool SprinklerRunning
+        /// <summary>A Sprinkler is running: there is one and the camp has power (a staffed pylon or stored charge).</summary>
+        public bool SprinklerRunning => CampPowered && Has("sprinkler");
+
+        bool assignmentsTidied;
+        /// <summary>Kin assigned to a structure that no longer takes workers (the Sprinkler became a machine) are simply free.</summary>
+        void TidyAssignments()
         {
-            get { foreach (var b in Buildings) if (b.Def.id == "sprinkler" && (b.Powered || CampPowered)) return true; return false; }
+            foreach (var d in GameManager.I.Party.In(KinLocation.Base))
+            {
+                var b = FindBuilding(d.assignedBuilding);
+                if (b != null && b.Def.workerSlots <= 0) d.assignedBuilding = null;
+            }
         }
 
         /// <summary>Hands-off stages tick, sprinklers water, greenhouses tend themselves. Runs near, far and offline.</summary>
@@ -551,6 +559,7 @@ namespace Wildbond
         public void Tick(float dt, Vector3 playerPos)
         {
             if (!HasBase) return;
+            if (!assignmentsTidied) { assignmentsTidied = true; TidyAssignments(); }
             float dist = Vector3.Distance(playerPos, CorePosition);
             bool near = dist < actorRange;
             // coming home: after 40 s or more away, the kin at camp welcome you (CreatureActor.CampLife)
@@ -745,6 +754,7 @@ namespace Wildbond
             CoreLevel = 1;
             Charge = 0f;
             Cold = 0f;
+            assignmentsTidied = false;
             Orders.Clear();
             Storage.slots.Clear();
         }

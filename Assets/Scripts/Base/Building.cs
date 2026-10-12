@@ -196,7 +196,7 @@ namespace Wildbond
             if (IsStation) return bm.HasOrderFor(Def.station);
             if (Def.id == "volt_pylon") return bm.PylonWantsKin;   // charged up: its kin is free until it runs down (BaseManager.Power)
             if (Def.workType == WorkType.Chilling) return bm.LarderWantsKin;   // the same for a larder full of cold
-            return Def.workType == WorkType.Charging || Def.workType == WorkType.Chilling || Def.workType == WorkType.Irrigating;
+            return Def.workType == WorkType.Charging || Def.workType == WorkType.Chilling;
         }
 
         /// <summary>Work put into the current hands-on stage (by a kin, the player or a machine). Nothing happens during a hands-off one.</summary>

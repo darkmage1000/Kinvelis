@@ -530,7 +530,7 @@ namespace Wildbond
                 .Pay(350, 200, ("kin_treat", 5));
             Q(CA, "c_power", "Sparks",
                 "Some of your kin crackle when they are bored. Put that to use.",
-                "A Volt Pylon run by a Charging kin powers the camp: sprinklers, turrets and the machines that come after.",
+                "A Volt Pylon charged by a Charging kin powers the camp: sprinklers, turrets and the machines that come after.",
                 O("Build a Volt Pylon", () => Built("volt_pylon")),
                 O("Have the camp powered", () => BaseManager.I != null && BaseManager.I.HasBase && BaseManager.I.CampPowered))
                 .Pay(400, 220, ("starbloom_seed", 3));

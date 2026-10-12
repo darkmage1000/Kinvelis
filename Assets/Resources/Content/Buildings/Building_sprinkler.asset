@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: sprinkler
   displayName: Sprinkler
-  description: 'Waters every Crop Plot by itself and makes farms (Crop Plot, Forage
-    Hut) work 40% faster while it runs: camp power or an Irrigating kin.'
+  description: 'A machine: while the camp has power it waters every Crop Plot by
+    itself and makes farms (Crop Plot, Forage Hut) work 40% faster. Needs a Volt
+    Pylon; no kin stands at it.'
   cost:
   - itemId: ingot
     count: 3
@@ -23,13 +24,13 @@ MonoBehaviour:
     count: 6
   - itemId: wood
     count: 6
-  unlockLevel: 6
+  unlockLevel: 7
   footprint: 0.8
   isCore: 0
   category: 0
-  workType: 4
+  workType: 0
   secondaryWorkType: 0
-  workerSlots: 1
+  workerSlots: 0
   outputItem: 
   outputCount: 1
   workPerUnit: 10

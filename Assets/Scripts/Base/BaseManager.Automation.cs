@@ -5,7 +5,7 @@ namespace Wildbond
     /// <summary>
     /// Camp automation tier 2. A Volt Pylon staffed by a Charging kin powers the camp; powered machines then run
     /// with no workers: the Conveyor Hub moves every producer's output into storage, the Auto-Assembler works
-    /// Workbench and Campfire orders, and a Sprinkler (powered, or staffed by an Irrigating kin) boosts farms +40%.
+    /// Workbench and Campfire orders, and a Sprinkler waters the plots and boosts farms +40%.
     /// </summary>
     public partial class BaseManager
     {
@@ -133,8 +133,9 @@ namespace Wildbond
                     else { h = BuildingHealth.Info; text = "Powered - no orders queued"; }
                     return true;
                 case "sprinkler":
-                    if (b.Powered || CampPowered) { h = BuildingHealth.Good; text = "Watering the plots · farms +40%"; }
-                    else { h = BuildingHealth.Blocked; text = "Needs power or an Irrigating kin"; }
+                    if (CampPowered) { h = BuildingHealth.Good; text = "Watering the plots · farms +40%"; }
+                    else if (PowerAsleep) { h = BuildingHealth.Idle; text = NoPowerNight; }
+                    else { h = BuildingHealth.Blocked; text = Has("volt_pylon") ? "No power - the Volt Pylon needs charging" : "No power - build a Volt Pylon"; }
                     return true;
             }
             return false;

@@ -167,7 +167,8 @@ namespace Wildbond
                     if (w.type == WorkType.None || w.level <= 0) continue;
                     var where = new List<string>();
                     foreach (var bd in ContentDB.BuildingList)
-                        if (bd.workType == w.type || bd.secondaryWorkType == w.type || (w.type == WorkType.Hauling && bd.isCore)) where.Add(bd.displayName);
+                        if (bd.workType == w.type || bd.secondaryWorkType == w.type || (w.type == WorkType.Hauling && bd.isCore)
+                            || (w.type == WorkType.Irrigating && (bd.id == "berry_plot" || bd.id == "greenhouse"))) where.Add(bd.displayName);   // watering is a step at the plots
                     Color jc = w.level >= 3 ? new Color(1f, 0.8f, 0.35f) : w.level == 2 ? new Color(0.6f, 0.9f, 1f) : new Color(0.8f, 0.85f, 0.8f);
                     string rank = w.level >= 4 ? "Master" : w.level == 3 ? "Expert" : w.level == 2 ? "Skilled" : "Basic";
                     Para(right, $"<b>{UIFactory.Col($"{w.type}  Lv {w.level}", jc)}</b>  <size=19>{rank} · x{w.level} work speed</size>" +
