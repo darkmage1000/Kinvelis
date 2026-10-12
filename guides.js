@@ -335,7 +335,7 @@ html: `
 <ul>
 <li><b>Assigning</b> a kin to a structure (CAMP &gt; Structures or Workers) makes that structure its first choice. It still helps elsewhere whenever its own structure has nothing for it.</li>
 <li><b>Queued crafting orders</b> are picked up by any free kin with the station's job (Crafting for the Workbench, Kindling for the Campfire and Alloy Forge), whether or not it is assigned there - for example a farmer with Crafting works the Workbench while its plot grows.</li>
-<li>A kin assigned to a Dynamo, Frost Larder or Sprinkler stays at it, because those only run while it is there.</li>
+<li>A kin assigned to a Dynamo or Sprinkler stays at it, because those only run while it is there. A Volt Pylon and a Frost Larder store what their kin gives them, so those kin are free most of the time.</li>
 <li>A kin with no structure of its own simply goes wherever it is useful.</li>
 <li>A structure takes as many hands at once as it has worker places.</li>
 <li>Kin with the <b>Hauling</b> job carry finished batches to storage when nothing needs tending. Kin assigned to the Hearthstone carry first and tend second.</li>
@@ -392,7 +392,8 @@ html: `
 <li>EMPTY THE BOX and STORE ALL MATERIALS do the lot at once.</li>
 <li>The arrows step through every box in camp, so you can sort them all from one place. Camp &gt; Storage lists the boxes too.</li>
 </ul>
-<p>Kin put what they haul into the box they walk to, and crafting takes ingredients from any box. Pull a chest down and what was in it moves to the other boxes. Bigger boxes come from <a href="#/research">research</a>: Large Chest, Bulk Silo, Ironbound Vault and Grand Vault. A Frost Larder with a Chilling kin makes workers get hungry 40% slower.</p>
+<p>Kin put what they haul into the box they walk to, and crafting takes ingredients from any box. Pull a chest down and what was in it moves to the other boxes. Bigger boxes come from <a href="#/research">research</a>: Large Chest, Bulk Silo, Ironbound Vault and Grand Vault. </p>
+<p>A <b>Frost Larder</b> makes workers get hungry 40% slower for as long as it holds cold. A Chilling kin fills it (the gauge floats over it), then is free for its other jobs, and comes back by itself to top it up at half and again in the evening. One larder holds a little over half a day of cold, so it stays cold all night while the kin sleeps.</p>
 
 <h2 id="feed">The Feed Box</h2>
 <p>Camp kin eat from the <b>Feed Box</b>, which has six slots of its own. Tap <b>FEED BOX</b> at it to see what is inside, put food in from your bag or from camp storage, or take it back out.</p>
