@@ -364,7 +364,7 @@ namespace Wildbond
             };
 
             // ---- automation tier 2 ----
-            var pylon = Bld(b, "volt_pylon", "Volt Pylon", "Powers the whole camp (Conveyor Hub, Auto-Assembler, Sprinklers, Turrets). A Charging kin fills it like a battery, then is free for other work and comes back to top it up at half charge and before nightfall. Holds a fifth of a day; build Volt Batteries to store more.", 7, 1.0f,
+            var pylon = Bld(b, "volt_pylon", "Volt Pylon", "Powers the whole camp (Conveyor Hub, Auto-Assembler, Sprinklers, Turrets). A Charging kin fills it like a battery, then is free for other work and comes back to top it up at half charge and before nightfall. Holds a fifth of a day; build Volt Batteries to store more.", 12, 1.0f,
                 ("ingot", 6), ("crystal", 2), ("stone", 10));
             pylon.workType = WorkType.Charging; pylon.workerSlots = 1;
             pylon.palette = Pal(Hex("#6c7288"), Hex("#3a3e4a"), Hex("#ffd84a"), Hex("#fff07a"));
@@ -376,7 +376,7 @@ namespace Wildbond
                 P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Accent, 0, 3.1f, 0, 0.7f, 0.12f, 0.7f),
                 P(PartShape.Crystal, BodyGroup.Body, ColorSlot.Glow, 0, 3.4f, 0, 0.45f, 1.1f, 0.45f),
             };
-            var batt = Bld(b, "volt_battery", "Volt Battery", "Stores charge from a Volt Pylon, so the camp's machines keep running while its kin sleeps. Each one holds about a third of a day: a pylon and one battery, filled by day, last the night.", 7, 0.9f,
+            var batt = Bld(b, "volt_battery", "Volt Battery", "Stores charge from a Volt Pylon, so the camp's machines keep running while its kin sleeps. Each one holds about a third of a day: a pylon and one battery, filled by day, last the night.", 12, 0.9f,
                 ("ingot", 8), ("crystal", 3), ("stone", 6));
             batt.palette = Pal(Hex("#5a6478"), Hex("#343a48"), Hex("#ffd84a"), Hex("#8af0ff"));
             batt.parts = new[]
@@ -396,7 +396,7 @@ namespace Wildbond
                 P(PartShape.Box, BodyGroup.Body, ColorSlot.Glow, 0.4f, 0.92f, -0.31f, 0.1f, 0.8f, 0.04f),
                 P(PartShape.Box, BodyGroup.Body, ColorSlot.Secondary, 0, 1.2f, 0, 0.5f, 0.1f, 0.14f),
             };
-            var hub = Bld(b, "conveyor_hub", "Conveyor Hub", "Powered: moves every producer's output into storage (no haulers needed).", 7, 1.3f,
+            var hub = Bld(b, "conveyor_hub", "Conveyor Hub", "Powered: moves every producer's output into storage (no haulers needed).", 12, 1.3f,
                 ("ingot", 8), ("wood", 10), ("stone", 10));
             hub.palette = Pal(Hex("#7a6a5a"), Hex("#3e3a36"), Hex("#d0a050"), Hex("#ffd36a"));
             hub.parts = new[]
@@ -408,7 +408,7 @@ namespace Wildbond
                 P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Accent, 0, 1.2f, 0, 0.8f, 0.3f, 0.8f),
                 P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Glow, 0, 1.45f, 0, 0.35f, 0.35f, 0.35f),
             };
-            var asm = Bld(b, "auto_assembler", "Auto-Assembler", "Powered: works queued Workbench and Campfire orders on its own.", 8, 1.3f,
+            var asm = Bld(b, "auto_assembler", "Auto-Assembler", "Powered: works queued Workbench and Campfire orders on its own.", 13, 1.3f,
                 ("ingot", 10), ("crystal", 3), ("wood", 8));
             asm.palette = Pal(Hex("#8a8e9e"), Hex("#4a4e5a"), Hex("#c0c4d0"), Hex("#7df2ff"));
             asm.parts = new[]
@@ -419,7 +419,7 @@ namespace Wildbond
                 P(PartShape.Box, BodyGroup.Body, ColorSlot.Secondary, 0, 0.75f, 0.68f, 1.2f, 0.5f, 0.06f),
                 P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Glow, 0.6f, 1.15f, 0.66f, 0.18f, 0.18f, 0.08f),
             };
-            var spr = Bld(b, "sprinkler", "Sprinkler", "A machine: while the camp has power it waters every Crop Plot by itself and makes farms (Crop Plot, Forage Hut) work 40% faster. Needs a Volt Pylon; no kin stands at it.", 7, 0.8f,
+            var spr = Bld(b, "sprinkler", "Sprinkler", "A machine: while the camp has power it waters every Crop Plot by itself and makes farms (Crop Plot, Forage Hut) work 40% faster. Needs a Volt Pylon; no kin stands at it.", 12, 0.8f,
                 ("ingot", 3), ("gel", 6), ("wood", 6));
             // no worker: it runs on camp power alone (it was kin-or-power before 2026-10-12)
             spr.palette = Pal(Hex("#6a8a9a"), Hex("#3a5060"), Hex("#58c8ff"), Hex("#bff0ff"));
@@ -463,8 +463,8 @@ namespace Wildbond
                 P(PartShape.Crystal, BodyGroup.Body, ColorSlot.Glow, 0.4f, 1.3f, 0.2f, 0.3f, 0.6f, 0.3f),
             };
 
-            var dyn = Bld(b, "dynamo", "Spark Dynamo", "Charging kin power it: +25% production for the whole base.", 5, 1.2f, ("ingot", 4), ("stone", 10));
-            dyn.workType = WorkType.Charging; dyn.workerSlots = 1; dyn.boostPercent = 25f;
+            var dyn = Bld(b, "dynamo", "Spark Dynamo", "A machine: while the camp has power, everyone in camp works 25% faster. Needs a Volt Pylon; no kin stands at it.", 12, 1.2f, ("ingot", 4), ("stone", 10));
+            dyn.boostPercent = 25f;   // no worker: it runs on camp power alone (BaseManager.DynamoBoost)
             dyn.palette = Pal(Hex("#5a5f6e"), Hex("#d8d8e6"), Hex("#ffd84a"), Hex("#7af0ff"));
             dyn.parts = new[]
             {

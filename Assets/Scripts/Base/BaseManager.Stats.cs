@@ -156,8 +156,9 @@ namespace Wildbond
             }
             if (b.Def.boostPercent > 0f)
             {
-                if (b.Powered) { text = b.Def.boostPercent > 0 ? $"Active · +{b.Def.boostPercent:0}% production" : "Active · workers get hungry slower"; return BuildingHealth.Good; }
-                text = $"Inactive - needs a {b.Def.workType} worker"; return BuildingHealth.Blocked;
+                if (CampPowered) { text = $"Running · everyone works {b.Def.boostPercent:0}% faster"; return BuildingHealth.Good; }
+                if (PowerAsleep) { text = "No power until dawn - the charge ran out and the Volt Pylon's kin is asleep"; return BuildingHealth.Idle; }
+                text = Has("volt_pylon") ? "No power - the Volt Pylon needs charging" : "No power - build a Volt Pylon"; return BuildingHealth.Blocked;
             }
             if (b.Def.storageSlots > 0) { text = $"+{b.Def.storageSlots} storage slots"; return BuildingHealth.Info; }
             if (b.Def.feeds)

@@ -23,9 +23,10 @@ MonoBehaviour:
     count: 10
   - itemId: stone
     count: 10
-  unlockLevel: 7
+  unlockLevel: 12
   footprint: 1.3
   isCore: 0
+  category: 0
   workType: 0
   secondaryWorkType: 0
   workerSlots: 0

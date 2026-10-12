@@ -69,7 +69,7 @@ namespace Wildbond
         {
             if (!Tech.BuildingUnlocked(d.id)) return "Research";
             if (WorldRules.Current.freeBuild) return null;   // free-building worlds: no level, no cost
-            if (d.unlockLevel > level) return $"Lv {d.unlockLevel}";
+            if (BaseManager.I != null ? !BaseManager.I.LevelOk(d) : d.unlockLevel > level) return $"Lv {d.unlockLevel}";
             return ItemSources.Has(d.cost) ? null : "Missing";
         }
 

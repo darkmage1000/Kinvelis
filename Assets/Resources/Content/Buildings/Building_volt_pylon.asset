@@ -25,7 +25,7 @@ MonoBehaviour:
     count: 2
   - itemId: stone
     count: 10
-  unlockLevel: 7
+  unlockLevel: 12
   footprint: 1
   isCore: 0
   category: 0

@@ -14,18 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: dynamo
   displayName: Spark Dynamo
-  description: 'Charging kin power it: +25% production for the whole base.'
+  description: 'A machine: while the camp has power, everyone in camp works 25% faster.
+    Needs a Volt Pylon; no kin stands at it.'
   cost:
   - itemId: ingot
     count: 4
   - itemId: stone
     count: 10
-  unlockLevel: 5
+  unlockLevel: 12
   footprint: 1.2
   isCore: 0
-  workType: 9
+  category: 0
+  workType: 0
   secondaryWorkType: 0
-  workerSlots: 1
+  workerSlots: 0
   outputItem: 
   outputCount: 1
   workPerUnit: 10

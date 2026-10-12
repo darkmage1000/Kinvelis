@@ -173,7 +173,7 @@ namespace Wildbond
             Header(list, "Boosts", 28);
             var rules = WorldRules.Current;
             var chips = new List<string>();
-            chips.Add(bm.DynamoBoost > 0 ? UIFactory.Col($"Dynamo +{bm.DynamoBoost * 100:0}%", Good) : UIFactory.Col("Dynamo off", Info));
+            chips.Add(bm.DynamoBoost > 0 ? UIFactory.Col($"Dynamo +{bm.DynamoBoost * 100:0}%", Good) : UIFactory.Col(bm.HasBuilding("dynamo") ? "Dynamo: no power" : "No dynamo", Info));
             chips.Add(bm.RestedMul > 1f ? UIFactory.Col("Rested +15%", Good) : UIFactory.Col("Not rested (need beds)", Info));
             chips.Add(bm.LarderActive ? UIFactory.Col(bm.LarderStaffed ? "Frost Larder: -40% hunger" : $"Frost Larder: -40% hunger · cold for {WorkStages.Clock(bm.Cold)}", Good) : UIFactory.Col("No larder", Info));
             chips.Add(bm.CampPowered ? UIFactory.Col(bm.PylonStaffed ? $"Camp powered · charge {bm.ChargeText}" : $"On stored charge · {WorkStages.Clock(bm.Charge)} left", Good) : UIFactory.Col("No power", Info));

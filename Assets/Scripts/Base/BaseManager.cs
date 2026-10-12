@@ -111,7 +111,8 @@ namespace Wildbond
             get
             {
                 float b = 0f;
-                foreach (var x in Buildings) if (x.Def.boostPercent > 0f && x.Powered) b += x.Def.boostPercent / 100f;
+                if (!CampPowered) return 0f;   // dynamos are machines: they run on the pylon's power or stored charge
+                foreach (var x in Buildings) if (x.Def.boostPercent > 0f) b += x.Def.boostPercent / 100f;
                 return b;
             }
         }
@@ -309,6 +310,18 @@ namespace Wildbond
         }
 
         // ============================================================ BUILD
+        /// <summary>
+        /// The level gate for a structure. A camp that already has something unlocked at least as late keeps the right
+        /// to build it: unlock levels have moved (the power machines went from 5-8 to 12-13), and nobody loses a
+        /// blueprint they were already using.
+        /// </summary>
+        public bool LevelOk(BuildingDef d)
+        {
+            if (d == null || WorldRules.Current.freeBuild || d.unlockLevel <= GameManager.I.Player.Stats.level) return true;
+            foreach (var b in Buildings) if (b != null && b.Def.unlockLevel >= d.unlockLevel) return true;
+            return false;
+        }
+
         public bool CanPlace(BuildingDef def, Vector3 pos, out string reason)
         {
             reason = null;
@@ -331,7 +344,7 @@ namespace Wildbond
             if (spread > 1.2f + f * 0.25f) { reason = "Ground too steep"; return false; }
             if (WorldCollision.Overlaps(pos, f * 0.9f, false)) { reason = "Blocked by another structure"; return false; }
             if (Landmarks.NearLandmark(pos, 18f)) { reason = "Too close to a landmark"; return false; }
-            if (!WorldRules.Current.freeBuild && ContentDB.Building(def.id).unlockLevel > GameManager.I.Player.Stats.level) { reason = $"Requires level {def.unlockLevel}"; return false; }
+            if (!LevelOk(ContentDB.Building(def.id))) { reason = $"Requires level {def.unlockLevel}"; return false; }
             if (!Tech.BuildingUnlocked(def.id)) { reason = $"Research {Tech.ForBuilding(def.id).name} first"; return false; }
             return true;
         }

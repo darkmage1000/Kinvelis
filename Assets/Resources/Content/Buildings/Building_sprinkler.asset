@@ -24,7 +24,7 @@ MonoBehaviour:
     count: 6
   - itemId: wood
     count: 6
-  unlockLevel: 7
+  unlockLevel: 12
   footprint: 0.8
   isCore: 0
   category: 0

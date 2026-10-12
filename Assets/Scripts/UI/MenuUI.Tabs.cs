@@ -445,7 +445,7 @@ namespace Wildbond
                 tx.supportRichText = true;
                 UIFactory.Size(tx, 104, 990);
                 var tech = Tech.BuildingUnlocked(d.id) ? null : Tech.ForBuilding(d.id);
-                string reason = tech != null ? "Research" : d.unlockLevel > lvl ? $"Lv {d.unlockLevel}" : (!ItemSources.Has(d.cost) ? "Missing" : null);
+                string reason = tech != null ? "Research" : (BaseManager.I != null ? !BaseManager.I.LevelOk(d) : d.unlockLevel > lvl) ? $"Lv {d.unlockLevel}" : (!ItemSources.Has(d.cost) ? "Missing" : null);
                 var dd = d;
                 var btn = UIFactory.Button(row.transform, reason ?? "BUILD", reason == null ? () => { Close(); BuildPlacement.I.Begin(dd); } : (System.Action)null,
                     reason == null ? new Color(0.5f, 0.4f, 0.2f) : new Color(0.3f, 0.3f, 0.32f), 28);

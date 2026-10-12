@@ -69,7 +69,7 @@ namespace Wildbond
         }
 
         /// <summary>Stored charge only runs down while something is plugged in.</summary>
-        bool DrawsPower => Has("conveyor_hub") || Has("auto_assembler") || Has("sprinkler") || Has("volt_turret");
+        bool DrawsPower => Has("conveyor_hub") || Has("auto_assembler") || Has("sprinkler") || Has("volt_turret") || Has("dynamo");
 
         /// <summary>Work done at a pylon (Building.AddWork), near, far or offline.</summary>
         public void AddCharge(float work) => Charge = Mathf.Min(ChargeCapacity, Charge + work * ChargeGain);
