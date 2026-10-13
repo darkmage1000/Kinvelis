@@ -168,7 +168,7 @@ namespace Wildbond
         // ============================================================ FEED BOXES
         public const int FeedSlots = 6;
         /// <summary>How many pieces of food a self-stocking Feed Box keeps in it.</summary>
-        public const int FeedKeep = 20;
+        public const int FeedKeep = 80;   // a meal is a dozen berries now, so a box holds a few meals for everyone
         float feedTimer;
 
         public static bool IsKinFood(string id) => System.Array.IndexOf(Crops.KinFoods, id) >= 0;

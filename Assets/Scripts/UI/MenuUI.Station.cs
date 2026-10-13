@@ -109,7 +109,7 @@ namespace Wildbond
         {
             if (d == null) return "";
             var parts = new List<string>();
-            if (d.foodValue > 0) parts.Add($"Food +{d.foodValue:0}");
+            if (d.foodValue > 0) { parts.Add($"Food +{d.foodValue:0}"); parts.Add(BaseManager.KeepText(d)); }
             if (d.healValue > 0) parts.Add($"Heal +{d.healValue:0}");
             if (d.kinHealValue > 0) parts.Add(d.kinHealValue >= 999f ? "Full heal for party kin" : $"Kin heal +{d.kinHealValue:0}");
             if (d.mealMods != null && d.mealMods.Length > 0)

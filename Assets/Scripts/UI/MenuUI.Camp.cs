@@ -142,7 +142,10 @@ namespace Wildbond
             var fc = Card(list, 96);
             float mins = bm.FoodMinutes;
             string runway = float.IsPositiveInfinity(mins) ? "no one is eating" : (mins > 600 ? "10+ hours" : $"~{mins:0} min");
-            var ft = UIFactory.Label(fc.transform, $"Sunberries {bm.Storage.Count("berry")}  ·  Berry Tarts {bm.Storage.Count("berry_tart")}  ·  lasts {runway}", 24, Color.white);
+            float spoil = bm.SpoilPerMinute;
+            string going = spoil >= 0.05f ? $"  ·  {UIFactory.Col($"about {spoil:0.#} going off a minute{(bm.LarderActive ? " (larder cold)" : "")}", spoil > 3f ? Idle : Info)}" : "";
+            var ft = UIFactory.Label(fc.transform, $"Sunberries {bm.Storage.Count("berry")}  ·  Berry Tarts {bm.Storage.Count("berry_tart")}  ·  lasts {runway}{going}", 24, Color.white);
+            ft.supportRichText = true;
             ft.rectTransform.Stretch(16, 44, 16, 6);
             var fb = UIFactory.Bar(fc.transform, mins < 10 ? Bad : (mins < 30 ? Idle : Good), out var ff);
             fb.rectTransform.Anchors(new Vector2(0, 0), new Vector2(1, 0), new Vector2(16, 12), new Vector2(-16, 36));

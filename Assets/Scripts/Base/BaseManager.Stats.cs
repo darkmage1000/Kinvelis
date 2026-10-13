@@ -73,10 +73,10 @@ namespace Wildbond
                 foreach (var fb in FeedBoxes())
                 {
                     any = true; auto |= fb.FeedAuto;
-                    foreach (var s in fb.Feed.slots) { var d = s.Empty ? null : ContentDB.Item(s.id); if (d != null) pts += s.count * d.foodValue * 2.5f; }
+                    foreach (var s in fb.Feed.slots) { var d = s.Empty ? null : ContentDB.Item(s.id); if (d != null) pts += s.count * KinFood(d); }
                 }
                 // storage only counts if a box draws on it by itself (or there is no box and you feed them by hand)
-                if (auto || !any) foreach (var id in Crops.KinFoods) { var d = ContentDB.Item(id); if (d != null) pts += Storage.Count(id) * d.foodValue * 2.5f; }
+                if (auto || !any) foreach (var id in Crops.KinFoods) { var d = ContentDB.Item(id); if (d != null) pts += Storage.Count(id) * KinFood(d); }
                 return pts;
             }
         }
@@ -86,8 +86,8 @@ namespace Wildbond
         {
             get
             {
-                float larder = LarderActive ? 0.6f : 1f, sum = 0f;
-                foreach (var d in GameManager.I.Party.In(KinLocation.Base)) sum += hungerPerSecond * d.HungerMul * larder * WorldRules.Current.hungerRate * GameManager.I.Player.Stats.KinHungerMul * 60f;
+                float sum = 0f;
+                foreach (var d in GameManager.I.Party.In(KinLocation.Base)) sum += HungerRate(d) * 60f;
                 return sum;
             }
         }
@@ -148,7 +148,7 @@ namespace Wildbond
             }
             if (IsLarder(b))
             {
-                const string effect = "workers get hungry 40% slower";
+                const string effect = "workers get hungry 40% slower, food keeps 3x longer";
                 if (b.Powered) { text = Cold >= ColdCapacity - 0.5f ? $"Full of cold ({WorkStages.Clock(Cold)} stored) · {effect}" : $"Chilling · {Mathf.RoundToInt(Cold01 * 100f)}% cold · {effect}"; return BuildingHealth.Good; }
                 if (Cold > 0f) { text = $"Stored cold · {WorkStages.Clock(Cold)} left ({Mathf.RoundToInt(Cold01 * 100f)}%) · {effect}" + (NightNow ? "" : LarderWantsKin ? " · waiting for a Chilling kin" : " · its kin is free until it is half empty"); return BuildingHealth.Good; }
                 if (ColdAsleep) { text = "Out of cold and its kin is asleep - food is not kept fresh until dawn"; return BuildingHealth.Idle; }

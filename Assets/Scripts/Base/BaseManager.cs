@@ -506,23 +506,35 @@ namespace Wildbond
         public bool EatFood(CreatureData d)
         {
             // from a Feed Box: any plain crop will do, cheapest first (tarts last). A box that stocks itself is topped up first.
+            // It eats until it is full: a dozen berries, or a couple of melons or fish.
             bool anyBox = false;
-            foreach (var fb in FeedBoxes()) { anyBox = true; if (fb.Feed.IsEmpty) Restock(fb); }
-            foreach (var id in Crops.KinFoods)
-                foreach (var fb in FeedBoxes())
-                {
-                    if (fb.Feed.Count(id) <= 0) continue;
-                    fb.Feed.Remove(id, 1);
-                    d.hunger = Mathf.Min(100f, d.hunger + ContentDB.Item(id).foodValue * 2.5f);
-                    return true;
-                }
-            if (anyBox) return false;
+            foreach (var fb in FeedBoxes()) { anyBox = true; break; }
+            int bites = 0;
+            while (d.hunger < EatUntil && bites < MaxBites && Bite(d, anyBox)) bites++;
+            return bites > 0;
+        }
+
+        bool Bite(CreatureData d, bool anyBox)
+        {
+            if (anyBox)
+            {
+                foreach (var fb in FeedBoxes()) if (fb.Feed.IsEmpty) Restock(fb);
+                foreach (var id in Crops.KinFoods)
+                    foreach (var fb in FeedBoxes())
+                    {
+                        if (fb.Feed.Count(id) <= 0) continue;
+                        fb.Feed.Remove(id, 1);
+                        d.hunger = Mathf.Min(100f, d.hunger + KinFood(ContentDB.Item(id)));
+                        return true;
+                    }
+                return false;
+            }
             // no Feed Box yet (the player hand-feeding in camp): straight from storage
             foreach (var id in Crops.KinFoods)
             {
                 if (Storage.Count(id) <= 0) continue;
                 Storage.Remove(id, 1);
-                d.hunger = Mathf.Min(100f, d.hunger + ContentDB.Item(id).foodValue * 2.5f);
+                d.hunger = Mathf.Min(100f, d.hunger + KinFood(ContentDB.Item(id)));
                 return true;
             }
             return false;
@@ -618,6 +630,8 @@ namespace Wildbond
 
             SimulateNeeds(dt);
             TickFeed(dt);
+            TickSpoil(dt);
+            TickSpoilNote(near);
             TickStages(dt);
             if (!near) SimulateAbstract(dt);
             TickCharge(dt);
@@ -689,11 +703,9 @@ namespace Wildbond
 
         void SimulateNeeds(float dt)
         {
-            float larder = LarderActive ? 0.6f : 1f;
             foreach (var d in GameManager.I.Party.In(KinLocation.Base))
             {
-                float asleep = Asleep(d) ? 0.5f : 1f;   // a sleeping kin burns half as much
-                d.hunger = Mathf.Max(0f, d.hunger - hungerPerSecond * d.HungerMul * larder * asleep * WorldRules.Current.hungerRate * GameManager.I.Player.Stats.KinHungerMul * dt);
+                d.hunger = Mathf.Max(0f, d.hunger - HungerRate(d) * dt);   // better workers eat more; sleepers and a cold larder less (BaseManager.Food)
                 if (!actorsOut && d.hunger < 30f && HasFeedBox) EatFood(d);
             }
         }
@@ -781,6 +793,7 @@ namespace Wildbond
             var env = EnvironmentSystem.I;
             float dayLen = env != null ? Mathf.Max(60f, env.DayLength) : 1200f;
             float clock = Mathf.Repeat((env != null ? env.timeOfDay : 0.4f) - seconds / dayLen, 1f);
+            int spoiledBefore = SpoiledToday;
             for (int i = 0; i < steps; i++)
             {
                 clock = Mathf.Repeat(clock + step / dayLen, 1f);
@@ -788,6 +801,7 @@ namespace Wildbond
                 eveningOverride = clock >= 0.64f && clock <= 0.78f;
                 SimulateNeeds(step);
                 TickFeed(step);
+                TickSpoil(step);
                 TickStages(step);
                 // pylons, dynamos and larders run only while a kin that is awake is at them (SimulateAbstract keeps post kin on their posts)
                 foreach (var b in Buildings) if (IsPost(b)) b.PoweredUntil = 0;
@@ -797,7 +811,9 @@ namespace Wildbond
             }
             nightOverride = null;
             eveningOverride = null;
-            GameEvents.Say($"Your camp kept working while you were away ({seconds / 60f:0} min).", new Color(0.7f, 1f, 0.8f));
+            int spoiled = SpoiledToday - spoiledBefore;
+            SpoiledToday = 0;
+            GameEvents.Say($"Your camp kept working while you were away ({seconds / 60f:0} min)." + (spoiled >= 5 ? $" {spoiled} pieces of food went off." : ""), new Color(0.7f, 1f, 0.8f));
         }
 
         public void ClearAll()

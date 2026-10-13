@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: frost_larder
   displayName: Frost Larder
-  description: 'Keeps food fresh: workers get hungry 40% slower while it holds cold.
-    A Chilling kin fills it with cold, then is free for other work and comes back
-    to top it up at half and before nightfall. One larder stays cold all night.'
+  description: 'Keeps food fresh: while it holds cold, food in camp keeps three times
+    as long and workers get hungry 40% slower. A Chilling kin fills it with cold,
+    then is free for other work and comes back to top it up at half and before nightfall.
+    One larder stays cold all night.'
   cost:
   - itemId: stone
     count: 12

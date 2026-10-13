@@ -557,7 +557,7 @@ namespace Wildbond
                         string food = s.Bag.Count("berry") > 0 ? "berry" : (s.Bag.Count("berry_tart") > 0 ? "berry_tart" : null);
                         if (food == null) break;
                         s.Bag.Remove(food, 1);
-                        k.hunger = Mathf.Min(100f, k.hunger + ContentDB.Item(food).foodValue * 2.5f);
+                        k.hunger = Mathf.Min(100f, k.hunger + BaseManager.KinFood(ContentDB.Item(food)));
                         hud.Feed($"Pouch: fed {k.DisplayName}", new Color(1f, 0.7f, 0.85f));
                         GameEvents.RaiseInventoryChanged();
                     }

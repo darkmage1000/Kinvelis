@@ -85,8 +85,8 @@ namespace Wildbond
             Item(b, "pelt", "Kin Fluff", ItemCategory.Resource, "Fl", Hex("#f2e6c9"), "Soft fluff shed by kin.");
             Item(b, "gel", "Dew Gel", ItemCategory.Resource, "Gl", Hex("#6fd0ff"), "Cool, springy gel.");
 
-            var berry = Item(b, "berry", "Sunberry", ItemCategory.Food, "Be", Hex("#ff5a7a"), "Sweet berry. Restores a little hunger.");
-            berry.foodValue = 12f; berry.healValue = 2f;
+            var berry = Item(b, "berry", "Sunberry", ItemCategory.Food, "Be", Hex("#ff5a7a"), "Sweet berry. A mouthful: it takes a lot of them to fill anyone up, and they only keep a day. Better cooked.");
+            berry.foodValue = 3f; berry.healValue = 2f;   // weak on purpose: a kin eats a dozen a meal, and cooking five into a tart is worth 40
             var tart = Item(b, "berry_tart", "Berry Tart", ItemCategory.Food, "Ta", Hex("#ff9a5a"), "Baked treat. Big hunger + heal.", 30);
             tart.foodValue = 40f; tart.healValue = 20f;
 
@@ -454,7 +454,7 @@ namespace Wildbond
                 P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Accent, 0, 0.3f, 0, 1.0f, 0.2f, 1.0f),
             };
 
-            var larder = Bld(b, "frost_larder", "Frost Larder", "Keeps food fresh: workers get hungry 40% slower while it holds cold. A Chilling kin fills it with cold, then is free for other work and comes back to top it up at half and before nightfall. One larder stays cold all night.", 4, 1.2f, ("stone", 12), ("wood", 6));
+            var larder = Bld(b, "frost_larder", "Frost Larder", "Keeps food fresh: while it holds cold, food in camp keeps three times as long and workers get hungry 40% slower. A Chilling kin fills it with cold, then is free for other work and comes back to top it up at half and before nightfall. One larder stays cold all night.", 4, 1.2f, ("stone", 12), ("wood", 6));
             larder.workType = WorkType.Chilling; larder.workerSlots = 1; larder.palette = Pal(Hex("#cfe6f2"), Hex("#7fa6c0"), Hex("#ffffff"), Hex("#8fe8ff"));
             larder.parts = new[]
             {

@@ -393,14 +393,32 @@ html: `
 <li>The arrows step through every box in camp, so you can sort them all from one place. Camp &gt; Storage lists the boxes too.</li>
 </ul>
 <p>Kin put what they haul into the box they walk to, and crafting takes ingredients from any box. Pull a chest down and what was in it moves to the other boxes. Bigger boxes come from <a href="#/research">research</a>: Large Chest, Bulk Silo, Ironbound Vault and Grand Vault. </p>
-<p>A <b>Frost Larder</b> makes workers get hungry 40% slower for as long as it holds cold. A Chilling kin fills it (the gauge floats over it), then is free for its other jobs, and comes back by itself to top it up at half and again in the evening. One larder holds a little over half a day of cold, so it stays cold all night while the kin sleeps.</p>
+<p>A <b>Frost Larder</b> makes food keep three times as long and workers get hungry 40% slower, for as long as it holds cold. A Chilling kin fills it (the gauge floats over it), then is free for its other jobs, and comes back by itself to top it up at half and again in the evening. One larder holds a little over half a day of cold, so it stays cold all night while the kin sleeps.</p>
 
 <h2 id="feed">The Feed Box</h2>
 <p>Camp kin eat from the <b>Feed Box</b>, which has six slots of its own. Tap <b>FEED BOX</b> at it to see what is inside, put food in from your bag or from camp storage, or take it back out.</p>
 <ul>
 <li>It takes kin food only: berries and other crops, Silverfin, and Berry Tarts.</li>
-<li><b>KEEP STOCKED FROM STORAGE</b> is on by default: the box tops itself up to about 20 pieces from camp storage, cheapest food first, so you can ignore it.</li>
+<li>Kin eat <b>until they are full</b>. Sunberries are a mouthful each, so a meal is about a dozen of them; a couple of melons, fish or tarts do the same job.</li>
+<li><b>Better workers eat more.</b> A kin with a level-4 job gets hungry about twice as fast as one with level-1 jobs.</li>
+<li><b>KEEP STOCKED FROM STORAGE</b> is on by default: the box tops itself up to about 80 pieces from camp storage, cheapest food first, so you can ignore it.</li>
 <li>Switch that off and your kin eat only what you put in. Use it to keep the melons for cooking, or to feed them something better.</li>
+</ul>
+
+<h2 id="spoil">Food goes off</h2>
+<p>Food kept in camp storage or a Feed Box <b>spoils</b>. Each kind keeps for a while, and a pile left alone is mostly gone after that long:</p>
+<div class="scroll"><table>
+<thead><tr><th>Food</th><th>Keeps</th><th>With a cold larder</th></tr></thead>
+<tbody>
+<tr><td>Sunberries, raw fish</td><td>1 day</td><td>3 days</td></tr>
+<tr><td>Other crops and wild plants</td><td>2 days</td><td>6 days</td></tr>
+<tr><td>Cooked food (tarts, meals)</td><td>4 days</td><td>12 days</td></tr>
+</tbody></table></div>
+<ul>
+<li>A <b>Frost Larder</b> that holds cold makes everything keep three times as long.</li>
+<li>Food in <b>your bag</b> does not spoil. Neither does output still sitting at a structure, or an outpost's stock.</li>
+<li>So a camp can only ever hold about a day or two of what its plots grow. Grow what your kin eat, cook the surplus, and chill the rest.</li>
+<li>The Camp overview shows how much is going off each minute, and a note at dawn says what was lost.</li>
 </ul>
 
 <h2 id="defense">Intruders and raids</h2>

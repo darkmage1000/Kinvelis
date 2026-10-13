@@ -98,6 +98,8 @@ namespace Wildbond
                 Para(rlist, b.FeedAuto
                     ? $"This box tops itself up to about {BaseManager.FeedKeep} pieces of food from camp storage, cheapest first. Switch it off to choose exactly what your kin eat."
                     : "Your kin eat only what you put in here. Nothing is taken from camp storage.", 20);
+                Para(rlist, "Kin eat until they are full: a dozen berries a meal, or a couple of melons, fish or tarts. Food left here goes off like food in storage" +
+                            (bm.LarderActive ? " (three times slower while the Frost Larder is cold)." : "; a cold Frost Larder slows that three times."), 20);
                 float mins = bm.FoodMinutes;
                 Para(rlist, $"{gm.Party.CountIn(KinLocation.Base)} kin at camp  ·  food for " + (float.IsInfinity(mins) ? "as long as you like" : mins > 90f ? $"about {mins / 60f:0.#} h" : $"about {mins:0} min"), 20, Color.white);
             }
