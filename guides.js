@@ -530,8 +530,28 @@ html: `
 </ul>
 ` },
 
-{ id: "exploring", group: "The world", title: "Exploring", blurb: "Caves, burrows and ruins, relics, lookouts, finds, alphas and the Explorer's Log.",
+{ id: "exploring", group: "The world", title: "Exploring", blurb: "Treasure chests and blueprints, caves, burrows and ruins, relics, lookouts, finds, alphas and the Explorer's Log.",
 html: `
+<h2 id="chests">Treasure chests</h2>
+<p>Chests stand all over every land, about one to every couple of hundred paces. Each has a <b>beam of light</b> over it, and a chest icon appears on the minimap as you get near. Walk up and tap <b>OPEN</b>.</p>
+<div class="scroll"><table>
+<thead><tr><th>Chest</th><th>Beam</th><th>Opens with</th><th>Usually holds</th></tr></thead>
+<tbody>
+<tr><td>Wooden</td><td>Amber</td><td>Nothing</td><td>A few seeds, a little of the land's ore, some Glimmer</td></tr>
+<tr><td>Iron</td><td>Pale blue</td><td>Nothing</td><td>Better seeds, more ore and a few ingots, sometimes Prism Shards</td></tr>
+<tr><td>Gilded</td><td>Gold</td><td>A <b>Chest Key</b></td><td>Starbloom Seeds, a lot of ore, Prism Shards, and most likely a blueprint</td></tr>
+</tbody></table></div>
+<ul>
+<li><b>What is inside follows the land.</b> The ore is that land's own (Rustore in the Sunmeadow, Cinder Shards in the Badlands, Rime Crystal in the Peaks, and each outer land's metal), and the seeds get better the further out you are.</li>
+<li><b>Chests move.</b> A few minutes after you open one, another turns up somewhere else nearby - never in the same spot. There is always something to find.</li>
+<li><b>Chest Keys</b> turn up in Wooden and Iron chests, on alphas and on rival tamers you beat. From level 12 you can make them at a Workbench (4 ingots, 2 Rime Crystal). A key is used up when it opens a chest.</li>
+<li>Around the start only Wooden and the odd Iron chest appear.</li>
+</ul>
+<h3>Blueprints</h3>
+<p>Each land has <b>two accessories that can only be made from a blueprint</b> found in that land's chests. They show in the Workbench list from the start, marked "Blueprint" with the land to look in. Finding one teaches it for good. Gilded chests hold one about two times in three, Iron chests now and then, Wooden ones rarely; a land whose blueprints you have both found gives extra Prism Shards instead.</p>
+<p>Blueprint items are made from the land's <b>raw ore</b>, so they need no research and no Sigil - only the blueprint.</p>
+<div data-items="Sunmeadow Charm, Forager's Band, Tidecaller Bangle, Coral Ring, Cinder Signet, Ashwalker Amulet, Rimeglass Ring, Aurora Pendant, Mire Bracer, Lantern Ring, Sunscour Band, Oasis Amulet, Blightfang Ring, Miasma Ward, Starlight Bracelet, Nebula Ring"></div>
+
 <h2 id="under">Going underground</h2>
 <p>There are 19 underground places, of three kinds. You can't build or fast travel while inside, and they refill about twenty minutes after you clear them.</p>
 <ul>
