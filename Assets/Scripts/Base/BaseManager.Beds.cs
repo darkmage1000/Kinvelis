@@ -9,6 +9,9 @@ namespace Wildbond
     /// biggest kin first, each into the smallest free bed that fits it; those left over curl up on the ground round
     /// the hearth. A kin with a bed walks onto the pad (no pushing out of the nest while it does) and lies on it.
     /// The rested bonus (+15% work) needs a bed that fits for every kin that sleeps.
+    ///
+    /// The best nest also makes its sleepers work faster (`BuildingDef.bedBonus`, Grand Nest +10%, `BedBonusMul`).
+    /// Big kin get those places because they need them; any left over go to the best workers in camp.
     /// </summary>
     public partial class BaseManager
     {
@@ -23,7 +26,7 @@ namespace Wildbond
         public static string BedNeeded(CreatureData d) { float s = SleepSize(d); return s <= SmallBed ? "Kin Nest" : s <= LargeBed ? "Large Nest" : "Grand Nest"; }
         static string BedTakes(BuildingDef d) { float s = BedSize(d); return s <= SmallBed ? "small kin" : s <= LargeBed ? "small and medium kin" : "kin of any size"; }
 
-        struct BedSlot { public Building nest; public int place; public float size; }
+        struct BedSlot { public Building nest; public int place; public float size, bonus; }
         readonly Dictionary<string, BedSlot> bedOf = new Dictionary<string, BedSlot>();
         readonly List<CreatureData> bedless = new List<CreatureData>();
         readonly List<CreatureData> planKin = new List<CreatureData>();
@@ -42,7 +45,7 @@ namespace Wildbond
             foreach (var b in Buildings)
             {
                 if (b == null || b.Def.beds <= 0) continue;
-                for (int i = 0; i < b.Def.beds; i++) { planSlots.Add(new BedSlot { nest = b, place = i, size = BedSize(b.Def) }); planTaken.Add(false); }
+                for (int i = 0; i < b.Def.beds; i++) { planSlots.Add(new BedSlot { nest = b, place = i, size = BedSize(b.Def), bonus = b.Def.bedBonus }); planTaken.Add(false); }
             }
             // biggest kin first, each into the smallest free bed that fits (both sorts are stable enough: ties keep roster / build order)
             for (int i = 1; i < planKin.Count; i++)
@@ -63,6 +66,40 @@ namespace Wildbond
                 planTaken[best] = true;
                 bedOf[d.uid] = planSlots[best];
             }
+            // spare places in a nest that gives a bonus go to the best workers who are not already in one as good
+            for (int i = 0; i < planSlots.Count; i++)
+            {
+                if (planTaken[i] || planSlots[i].bonus <= 0f) continue;
+                CreatureData pick = null; int pickWork = -1;
+                foreach (var d in planKin)
+                {
+                    if (SleepSize(d) > planSlots[i].size) continue;
+                    if (bedOf.TryGetValue(d.uid, out var cur) && cur.bonus >= planSlots[i].bonus) continue;
+                    int w = BestWork(d) * 1000 + d.level;
+                    if (w > pickWork) { pickWork = w; pick = d; }
+                }
+                if (pick == null) continue;
+                if (bedOf.TryGetValue(pick.uid, out var old))
+                {
+                    for (int j = 0; j < planSlots.Count; j++) if (planSlots[j].nest == old.nest && planSlots[j].place == old.place) planTaken[j] = false;
+                }
+                else bedless.Remove(pick);
+                planTaken[i] = true;
+                bedOf[pick.uid] = planSlots[i];
+            }
+        }
+
+        /// <summary>A kin that sleeps in the best nest works faster (x1.10 for a Grand Nest). Night kin never sleep, so never get it.</summary>
+        public float BedBonusMul(CreatureData d)
+        {
+            PlanBeds();
+            return bedOf.TryGetValue(d.uid, out var s) && s.nest != null ? 1f + s.bonus / 100f : 1f;
+        }
+
+        /// <summary>How many kin are getting a nest's work bonus right now.</summary>
+        public int WellBedded
+        {
+            get { PlanBeds(); int n = 0; foreach (var s in bedOf.Values) if (s.bonus > 0f && s.nest != null) n++; return n; }
         }
 
         /// <summary>Call when nests or the kin at camp change, so the next read plans afresh.</summary>
@@ -90,7 +127,7 @@ namespace Wildbond
             SleepersIn(nest, l);
             var names = new List<string>();
             foreach (var d in l) names.Add(d.DisplayName);
-            return $"{nest.Def.beds} beds for {BedTakes(nest.Def)}" + (names.Count > 0 ? "  ·  " + string.Join(", ", names) : "  ·  empty");
+            return $"{nest.Def.beds} beds for {BedTakes(nest.Def)}" + (nest.Def.bedBonus > 0f ? $"  ·  sleepers work {nest.Def.bedBonus:0}% faster" : "") + (names.Count > 0 ? "  ·  " + string.Join(", ", names) : "  ·  empty");
         }
 
         /// <summary>

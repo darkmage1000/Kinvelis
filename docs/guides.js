@@ -362,9 +362,10 @@ html: `
 <tbody>
 <tr><td>Kin Nest</td><td>1</td><td>2 small kin</td></tr>
 <tr><td>Large Nest</td><td>3</td><td>2 small or medium kin</td></tr>
-<tr><td>Grand Nest</td><td>10</td><td>2 kin of any size</td></tr>
+<tr><td>Grand Nest</td><td>10</td><td>2 kin of any size, and they work 10% faster</td></tr>
 </tbody></table></div>
 <p>About two kin in three are small. A kin that is an alpha, a giant or has evolved is bigger than its kind, so it can outgrow its bed. Each night the biggest kin are bedded first, each in the smallest free nest that fits; the Kin tab says which nest a kin needs, and a nest's line in Camp &gt; Structures says who sleeps in it. <b>When every kin that sleeps has a bed that fits, the whole camp works 15% faster.</b></p>
+<p>The <b>Grand Nest</b> is the best bed: a kin that sleeps in one works <b>10% faster</b> on top of that. Big kin take its places first because nothing else fits them; any places left over go to your best workers, so each extra Grand Nest speeds up two more kin. Night kin and Night Owls never sleep, so they never get it.</p>
 <p>Night is a little under half the day, so a night shift of two or three Night Owls is worth having.</p>
 
 <h2 id="life">Life at camp</h2>

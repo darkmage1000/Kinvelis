@@ -167,7 +167,7 @@ namespace Wildbond
             float lvl = b.WorkLevelFor(d);   // for a producer: at the step it is on (planting, watering, harvesting...)
             float hungerMul = d.hunger > 0f ? 1f : 0.4f;
             float levelMul = (1f + 0.02f * (d.level - 1)) * WorldRules.Current.workSpeed;   // experienced workers are a bit faster
-            return lvl * d.WorkMul * hungerMul * levelMul * (1f + DynamoBoost) * RestedMul * GameManager.I.Player.Stats.WorkBonus * HearthlinkMul * IrrigationMul(b);
+            return lvl * d.WorkMul * hungerMul * levelMul * (1f + DynamoBoost) * RestedMul * BedBonusMul(d) * GameManager.I.Player.Stats.WorkBonus * HearthlinkMul * IrrigationMul(b);
         }
 
         /// <summary>Hearthlink Pendant: +20% work speed while the player is away from camp.</summary>

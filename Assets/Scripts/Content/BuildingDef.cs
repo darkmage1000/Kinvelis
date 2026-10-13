@@ -39,6 +39,8 @@ namespace Wildbond
         public float bedSize;
         [Tooltip("Nests: height of the top of the pad, where a sleeper lies. 0 = 0.4.")]
         public float bedTop;
+        [Tooltip("Nests: percent faster a kin works if it sleeps here (the Grand Nest).")]
+        public float bedBonus;
 
         [Header("Look")]
         public Palette palette;

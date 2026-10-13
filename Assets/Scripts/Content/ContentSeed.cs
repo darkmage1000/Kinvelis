@@ -466,8 +466,8 @@ namespace Wildbond
                 P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Glow, 1.02f, 0.4f, -1.02f, 0.34f, 0.3f, 0.34f),
                 P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Glow, -1.02f, 0.4f, -1.02f, 0.34f, 0.3f, 0.34f),
             };
-            var grandNest = Bld(b, "grand_nest", "Grand Nest", "Beds for 2 kin of any size, giants and evolved kin included.", 10, 2.2f, ("fiber", 50), ("wood", 40), ("pelt", 15), ("ingot", 6));
-            grandNest.beds = 2; grandNest.bedSize = 99f; grandNest.bedTop = 0.48f; grandNest.palette = Pal(Hex("#e2cfa0"), Hex("#6a4a2c"), Hex("#f7efd8"), Hex("#ffd36a"));
+            var grandNest = Bld(b, "grand_nest", "Grand Nest", "The best bed: 2 kin of any size, giants and evolved kin included, and whoever sleeps here works 10% faster. Places the big kin do not need go to your best workers.", 10, 2.2f, ("fiber", 50), ("wood", 40), ("pelt", 15), ("ingot", 6));
+            grandNest.beds = 2; grandNest.bedSize = 99f; grandNest.bedTop = 0.48f; grandNest.bedBonus = 10f; grandNest.palette = Pal(Hex("#e2cfa0"), Hex("#6a4a2c"), Hex("#f7efd8"), Hex("#ffd36a"));
             grandNest.parts = new[]
             {
                 P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Secondary, 0, 0.2f, 0, 4.2f, 0.4f, 4.2f),

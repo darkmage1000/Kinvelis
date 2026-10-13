@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: grand_nest
   displayName: Grand Nest
-  description: Beds for 2 kin of any size, giants and evolved kin included.
+  description: 'The best bed: 2 kin of any size, giants and evolved kin included,
+    and whoever sleeps here works 10% faster. Places the big kin do not need go to
+    your best workers.'
   cost:
   - itemId: fiber
     count: 50
@@ -44,6 +46,7 @@ MonoBehaviour:
   beds: 2
   bedSize: 99
   bedTop: 0.48
+  bedBonus: 10
   palette:
     primary: {r: 0.8862745, g: 0.8117647, b: 0.627451, a: 1}
     secondary: {r: 0.41568628, g: 0.2901961, b: 0.17254902, a: 1}

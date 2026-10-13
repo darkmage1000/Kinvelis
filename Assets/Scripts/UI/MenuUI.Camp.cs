@@ -178,6 +178,7 @@ namespace Wildbond
             var chips = new List<string>();
             chips.Add(bm.DynamoBoost > 0 ? UIFactory.Col($"Dynamo +{bm.DynamoBoost * 100:0}%", Good) : UIFactory.Col(bm.HasBuilding("dynamo") ? "Dynamo: no power" : "No dynamo", Info));
             chips.Add(bm.RestedMul > 1f ? UIFactory.Col("Rested +15%", Good) : UIFactory.Col("Not rested (every kin needs a bed that fits)", Info));
+            if (bm.WellBedded > 0) chips.Add(UIFactory.Col($"Grand Nest +10%: {bm.WellBedded} kin", Good));
             chips.Add(bm.LarderActive ? UIFactory.Col(bm.LarderStaffed ? "Frost Larder: -40% hunger" : $"Frost Larder: -40% hunger · cold for {WorkStages.Clock(bm.Cold)}", Good) : UIFactory.Col("No larder", Info));
             chips.Add(bm.CampPowered ? UIFactory.Col(bm.PylonStaffed ? $"Camp powered · charge {bm.ChargeText}" : $"On stored charge · {WorkStages.Clock(bm.Charge)} left", Good) : UIFactory.Col("No power", Info));
             if (Mathf.Abs(rules.workSpeed - 1f) > 0.01f) chips.Add(UIFactory.Col($"World work speed x{rules.workSpeed:0.##}", Idle));
