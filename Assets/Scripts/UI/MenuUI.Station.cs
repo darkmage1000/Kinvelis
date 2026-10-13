@@ -218,7 +218,7 @@ namespace Wildbond
                 string reason = null;
                 if (tech != null) reason = "Research";
                 else if (noPlan) reason = "Blueprint";
-                else if (r.unlockLevel > stats.level) reason = $"Lv {r.unlockLevel}";
+                else if (r.unlockLevel > stats.level && !Dev.FreeAll) reason = $"Lv {r.unlockLevel}";
                 else if (st != CraftStation.Hand && !bm.HasStation(st)) reason = "Not built";
                 else if (st != CraftStation.Hand && !inCamp) reason = "Go to camp";
                 else if (!ItemSources.Has(r.inputs)) reason = "Missing";

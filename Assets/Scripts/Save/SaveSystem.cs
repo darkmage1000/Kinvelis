@@ -15,6 +15,7 @@ namespace Wildbond
         public float sfxVolume = 0.8f;
         public bool invertY;
         public bool showFps;
+        public bool devMode;   // the tester's menu (Core/Dev.cs)
 
         const string Key = "wildbond_settings";
 

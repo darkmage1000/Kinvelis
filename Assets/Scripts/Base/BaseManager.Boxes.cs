@@ -225,7 +225,7 @@ namespace Wildbond
         bool? nightOverride;
         public bool NightNow => nightOverride ?? (EnvironmentSystem.I != null && EnvironmentSystem.I.IsNight);
         /// <summary>Is this camp kin in bed (so not working, and less hungry)?</summary>
-        public bool Asleep(CreatureData d) => NightNow && !d.Nocturnal;
+        public bool Asleep(CreatureData d) => NightNow && !d.Nocturnal && !Dev.NoSleep;
 
         public int SleeperCount
         {

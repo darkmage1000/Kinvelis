@@ -169,7 +169,7 @@ namespace Wildbond
             float lvl = b.WorkLevelFor(d);   // for a producer: at the step it is on (planting, watering, harvesting...)
             float hungerMul = d.hunger > 0f ? 1f : 0.4f;
             float levelMul = (1f + 0.02f * (d.level - 1)) * WorldRules.Current.workSpeed;   // experienced workers are a bit faster
-            return lvl * d.WorkMul * hungerMul * levelMul * (1f + DynamoBoost) * RestedMul * BedBonusMul(d) * GameManager.I.Player.Stats.WorkBonus * HearthlinkMul * IrrigationMul(b);
+            return lvl * d.WorkMul * hungerMul * levelMul * (1f + DynamoBoost) * RestedMul * BedBonusMul(d) * Dev.WorkMul * GameManager.I.Player.Stats.WorkBonus * HearthlinkMul * IrrigationMul(b);
         }
 
         /// <summary>Hearthlink Pendant: +20% work speed while the player is away from camp.</summary>
@@ -319,7 +319,7 @@ namespace Wildbond
             foreach (var b in Buildings)
             {
                 if (!b.IsProducer) continue;
-                b.TickStage(dt);
+                b.TickStage(dt * Dev.WorkMul);
                 if (!Crops.IsPlot(b) || b.Waiting) continue;
                 if (b.Def.id == "greenhouse") b.AddWork(GreenhouseRate * speed * dt);
                 if (sprinkler && b.Stage == WorkStages.CropWater) b.AddWork(SprinklerWater * speed * dt);
@@ -332,9 +332,18 @@ namespace Wildbond
         /// to build it: unlock levels have moved (the power machines went from 5-8 to 12-13), and nobody loses a
         /// blueprint they were already using.
         /// </summary>
+        /// <summary>Dev: the Hearthstone goes up a level with nothing paid.</summary>
+        public void DevUpgradeCore()
+        {
+            if (CoreLevel >= MaxCoreLevel) return;
+            CoreLevel++;
+            RecalcStorage();
+            GameEvents.RaiseBaseChanged();
+        }
+
         public bool LevelOk(BuildingDef d)
         {
-            if (d == null || WorldRules.Current.freeBuild || d.unlockLevel <= GameManager.I.Player.Stats.level) return true;
+            if (d == null || WorldRules.Current.freeBuild || Dev.FreeAll || d.unlockLevel <= GameManager.I.Player.Stats.level) return true;
             foreach (var b in Buildings) if (b != null && b.Def.unlockLevel >= d.unlockLevel) return true;
             return false;
         }

@@ -58,7 +58,7 @@ namespace Wildbond
             var st = r.station;
             if (!Tech.RecipeUnlocked(r.id)) return "Research";
             if (Chests.Locked(r)) return "Blueprint";
-            if (r.unlockLevel > GameManager.I.Player.Stats.level) return $"Lv {r.unlockLevel}";
+            if (r.unlockLevel > GameManager.I.Player.Stats.level && !Dev.FreeAll) return $"Lv {r.unlockLevel}";
             if (st != CraftStation.Hand && !bm.HasStation(st)) return "Not built";
             if (st != CraftStation.Hand && !inCamp) return "Go to camp";
             if (!ItemSources.Has(r.inputs)) return "Missing";

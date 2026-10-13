@@ -64,7 +64,7 @@ namespace Wildbond
         }
 
         /// <summary>A recipe whose blueprint has not been found yet.</summary>
-        public static bool Locked(RecipeDef r) => r != null && IsBlueprint(r.id, out _) && !S.blueprints.Contains(r.id);
+        public static bool Locked(RecipeDef r) => r != null && !Dev.FreeAll && IsBlueprint(r.id, out _) && !S.blueprints.Contains(r.id);
 
         /// <summary>"Blueprint: found in chests in Driftkey Isles." (null if this recipe needs none)</summary>
         public static string BlueprintNote(RecipeDef r) => r != null && IsBlueprint(r.id, out var land) ? $"Blueprint: found in chests in {BiomeInfo.Name(land)}." : null;
@@ -86,6 +86,7 @@ namespace Wildbond
             public GameObject go;
             public Transform lid, beam;
             public Obstacle obstacle;
+            public bool dev;   // put there from the dev menu: it belongs to no square and leaves nothing in the save
             public bool opened;
             public float openT;
         }
@@ -307,7 +308,7 @@ namespace Wildbond
             return null;
         }
 
-        static bool NeedsKey(Live l) => l.tier == ChestTier.Gilded && !WorldRules.Current.simpleControls;
+        static bool NeedsKey(Live l) => l.tier == ChestTier.Gilded && !WorldRules.Current.simpleControls && !Dev.FreeAll;
 
         public string Prompt(Vector3 pp, out Action act)
         {
@@ -350,10 +351,13 @@ namespace Wildbond
             var s = S;
             if (NeedsKey(l)) { if (s.Bag.Remove(KeyItem, 1) <= 0) return; }
             l.opened = true;
-            states.TryGetValue(l.cell, out var st);
-            if (st == null) { st = new ChestState { cell = l.cell }; states[l.cell] = st; s.chests.Add(st); }
-            st.seq = l.seq + 1;
-            st.readyAt = GameManager.WorldTime + RespawnSeconds;
+            if (!l.dev)
+            {
+                states.TryGetValue(l.cell, out var st);
+                if (st == null) { st = new ChestState { cell = l.cell }; states[l.cell] = st; s.chests.Add(st); }
+                st.seq = l.seq + 1;
+                st.readyAt = GameManager.WorldTime + RespawnSeconds;
+            }
             s.chestsOpened++;
 
             int rank = Rank(l.biome), t = (int)l.tier;
@@ -369,7 +373,9 @@ namespace Wildbond
             int shards = t == 2 ? R(3, 6) : t == 1 && UnityEngine.Random.value < 0.35f ? R(1, 2) : 0;
             // a blueprint of this land, while any are left to find
             string bp = null;
-            if (UnityEngine.Random.value < (t == 0 ? 0.04f : t == 1 ? 0.15f : 0.65f))
+            bool forced = Dev.forceBlueprint && Dev.On;
+            Dev.forceBlueprint = false;
+            if (forced || UnityEngine.Random.value < (t == 0 ? 0.04f : t == 1 ? 0.15f : 0.65f))
             {
                 var open = new List<string>();
                 foreach (var b in Blueprints) if (b.land == l.biome && !s.blueprints.Contains(b.recipe)) open.Add(b.recipe);
@@ -397,6 +403,16 @@ namespace Wildbond
             Fx.Sparkle(at, TierColor[t], 14, 0.8f);
             SynthAudio.Play(t == 2 ? Sfx.LevelUp : Sfx.Pickup, 1f, 0.7f);
             GameEvents.RaiseInventoryChanged();
+        }
+
+        int devSeq;
+        /// <summary>Dev menu: a chest of this tier at this spot. It is opened like any other but belongs to no square.</summary>
+        public void DevSpawn(ChestTier tier, Vector3 pos)
+        {
+            int key = -1000 - devSeq++;
+            var l = Build(key, 0, pos, tier);
+            l.dev = true;
+            live[key] = l;
         }
 
         /// <summary>For the dev harness: every chest standing near the player right now.</summary>

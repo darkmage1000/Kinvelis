@@ -91,6 +91,16 @@ namespace Wildbond
             if (lost > 0) { SpoiledToday += lost; GameEvents.RaiseInventoryChanged(); }
         }
 
+        /// <summary>Dev: this much time's spoiling at once. Returns what was lost.</summary>
+        public int DevSpoil(float seconds)
+        {
+            int lost = SpoilStore(seconds);
+            foreach (var fb in FeedBoxes()) lost += SpoilSlots(fb.Feed.slots, fb.Uid, seconds, false);
+            SpoiledToday += lost;
+            GameEvents.RaiseInventoryChanged();
+            return lost;
+        }
+
         /// <summary>Pieces of food going off per minute in camp storage and feed boxes at the current rate.</summary>
         public float SpoilPerMinute
         {

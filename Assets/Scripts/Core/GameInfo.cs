@@ -11,5 +11,7 @@ namespace Wildbond
     public static class GameInfo
     {
         public const string Title = "Kinvelis";
+        /// <summary>Offers the DEV MODE switch in Settings (Core/Dev.cs). Set false before a store build: with it off the switch is not shown and nothing in Dev does anything.</summary>
+        public const bool DevBuild = true;
     }
 }

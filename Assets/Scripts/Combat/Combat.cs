@@ -144,6 +144,7 @@ namespace Wildbond
             var rules = WorldRules.Current;
             if (attacker != null && attacker.Team == Team.Wild) power *= rules.wildDamage;
             else if (attacker != null && attacker.Team == Team.Player) power *= rules.playerDamage;
+            if (Dev.OneHit && attacker != null && attacker.Team == Team.Player) power *= 500f;
             var hit = Compute(attacker, target, power, elem, st, stChance, elementBoost);
             hit.knockback = knock;
             target.ReceiveHit(hit);

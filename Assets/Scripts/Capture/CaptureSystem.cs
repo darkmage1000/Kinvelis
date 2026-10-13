@@ -68,6 +68,7 @@ namespace Wildbond
         public static float Chance(CreatureActor c, ItemDef seedItem, PlayerStats stats, bool sneak)
         {
             if (c == null || seedItem == null) return 0f;
+            if (Dev.SureCatch) return 1f;
             float hpFrac = Mathf.Clamp01(c.Hp / Mathf.Max(1f, c.MaxHp));
             if (IsLegendSeed(seedItem))
             {

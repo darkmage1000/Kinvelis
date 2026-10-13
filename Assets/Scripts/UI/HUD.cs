@@ -207,6 +207,9 @@ namespace Wildbond
             campBtn = UIFactory.Button(safe, "CAMP", () => MenuUI.I.OpenCamp(CampTab.Overview), new Color(0.3f, 0.42f, 0.55f, 0.95f), 28);
             ((RectTransform)campBtn.transform).Place(new Vector2(1, 1), new Vector2(1, 1), new Vector2(-310, -192), new Vector2(150, 76));
             campBtn.gameObject.SetActive(false);
+            devBtn = UIFactory.Button(safe, "DEV", () => { if (MenuUI.I != null) MenuUI.I.OpenDev(); }, new Color(0.5f, 0.28f, 0.5f, 0.95f), 26);
+            ((RectTransform)devBtn.transform).Place(new Vector2(1, 1), new Vector2(1, 1), new Vector2(-476, -20), new Vector2(150, 76));
+            devBtn.gameObject.SetActive(false);
 
             // camp warning: one line under the goal box, wherever you are, saying what is wrong at camp (tap = Camp menu)
             var warn = UIFactory.Panel(safe, "CampWarn", new Color(0.45f, 0.16f, 0.12f, 0.82f));
@@ -224,7 +227,7 @@ namespace Wildbond
 
         readonly List<Vector3> chestPos = new List<Vector3>();
         readonly List<int> chestTier = new List<int>();
-        Button campBtn;
+        Button campBtn, devBtn;
         GameObject campWarn;
         Text campWarnText;
         float campCheck, campWarnCheck;
@@ -236,6 +239,7 @@ namespace Wildbond
             var bm = BaseManager.I;
             bool show = bm != null && bm.HasBase && bm.IsInsideBase(pl.Position, 0f);
             if (campBtn.gameObject.activeSelf != show) campBtn.gameObject.SetActive(show);
+            if (devBtn.gameObject.activeSelf != Dev.On) devBtn.gameObject.SetActive(Dev.On);
             // the warning line is worked out every 2.5 s (it asks every structure for its status)
             campWarnCheck -= 0.5f;
             if (campWarnCheck <= 0f)

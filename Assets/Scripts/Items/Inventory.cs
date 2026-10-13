@@ -126,12 +126,14 @@ namespace Wildbond
 
         public static bool Has(Ingredient[] list, int times = 1)
         {
+            if (Dev.FreeAll) return true;
             foreach (var ing in list) if (Count(ing.itemId) < ing.count * times) return false;
             return true;
         }
 
         public static void Consume(Ingredient[] list, int times = 1)
         {
+            if (Dev.FreeAll) return;
             foreach (var ing in list)
             {
                 int need = ing.count * times;

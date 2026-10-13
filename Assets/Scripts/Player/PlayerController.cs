@@ -254,6 +254,7 @@ namespace Wildbond
             var compPerk = GameManager.I.Party.Companion != null ? GameManager.I.Party.Companion.Sp.perk : CompanionPerk.None;
             TickStatusAndExposure(dt);
             float staMul = (compPerk == CompanionPerk.Tailwind ? 0.65f : 1f) * (IsMounted ? 0.5f * mount.Data.MountStaminaMul * q.KinStaminaMul : 1f) * WorldRules.Current.staminaDrain * (1f + 0.3f * HeatExposure);
+            if (Dev.Stamina) q.stamina = q.MaxStamina;
             if (IsSprinting) { q.stamina -= sprintCost * staMul * (q.HasEffect(UniqueEffect.Ventwalker) ? 0.7f : 1f) * dt; staminaDelay = 0.8f; }
             else if (Gliding) { q.stamina -= GlideDrain * dt; staminaDelay = 0.8f; if (q.stamina <= 0f) SetGliding(false); }
             else if (IsSwimming && wishMag > 0.1f && !IsMounted && !WorldRules.Current.safeTravel && !q.HasEffect(UniqueEffect.Buoyant)) { q.stamina -= 4f * q.SwimStaminaMul * dt; staminaDelay = 0.8f; }
@@ -928,7 +929,7 @@ namespace Wildbond
 
         void Damage(float amount, bool fromHit)
         {
-            if (dead) return;
+            if (dead || Dev.God) return;
             Stats.hp -= amount;
             lastHurt = Time.time;
             if (fromHit) SynthAudio.Play(Sfx.Hurt, Random.Range(0.95f, 1.05f));

@@ -560,6 +560,17 @@ namespace Wildbond
             var lookRow = UIFactory.HRow(list, 84, 12);
             UIFactory.Size(UIFactory.Button(lookRow.transform, "MY LOOK  (body, hair, outfit, colours)", OpenLook, new Color(0.5f, 0.35f, 0.7f), 26), 80, 560);
             UIFactory.Size(UIFactory.Button(lookRow.transform, "PHOTO MODE", () => { Close(); PhotoMode.Enter(); }, new Color(0.3f, 0.42f, 0.7f), 26), 80, 320);
+            if (GameInfo.DevBuild)
+            {
+                // the tester's switch: adds a DEV button to the HUD and the DEV menu (Core/Dev.cs)
+                var devRow = UIFactory.HRow(list, 84, 12);
+                bool dev = gm.Settings.devMode;
+                UIFactory.Size(UIFactory.Button(devRow.transform, "DEV MODE: " + (dev ? "ON" : "OFF"), () => { gm.Settings.devMode = !gm.Settings.devMode; gm.Settings.Save(); if (!gm.Settings.devMode) Dev.AllOff(); ApplyKidTabs(); Rebuild(); },
+                    dev ? new Color(0.5f, 0.28f, 0.5f) : UIFactory.ButtonCol, 26), 80, 330);
+                if (dev) UIFactory.Size(UIFactory.Button(devRow.transform, "OPEN DEV MENU", OpenDev, new Color(0.5f, 0.28f, 0.5f), 26), 80, 330);
+                var dl = UIFactory.Label(devRow.transform, dev ? "Give, spawn, force and travel. Test on a spare world." : "For testing: a menu to give, spawn and force anything.", 20, UIFactory.TextDim);
+                UIFactory.Size(dl, 80, 520);
+            }
             var q = UIFactory.HRow(list, 84, 12);
             var ql = UIFactory.Label(q.transform, "Graphics", 26, Color.white); UIFactory.Size(ql, 80, 300);
             foreach (QualityTier t in System.Enum.GetValues(typeof(QualityTier)))

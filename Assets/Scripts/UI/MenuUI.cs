@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Wildbond
 {
-    public enum MenuTab { Bag, Gear, Craft, Kin, Dex, Camp, Build, Skills, Map, Settings, Journey, Trader, Station, KinShop, Requests, Tamer, Warden, Outpost, Hunt, Explore, Quests, Stickers, Box }
+    public enum MenuTab { Bag, Gear, Craft, Kin, Dex, Camp, Build, Skills, Map, Settings, Journey, Trader, Station, KinShop, Requests, Tamer, Warden, Outpost, Hunt, Explore, Quests, Stickers, Box, Dev }
 
     /// <summary>Full-screen tabbed menu (pauses the world). Content is rebuilt from data on open/change.</summary>
     public partial class MenuUI : MonoBehaviour
@@ -101,6 +101,7 @@ namespace Wildbond
             bool simple = WorldRules.Current.simpleControls;
             foreach (var t in KidHidden) tabButtons[t].gameObject.SetActive(!simple);
             tabButtons[MenuTab.Stickers].gameObject.SetActive(simple);
+            tabButtons[MenuTab.Dev].gameObject.SetActive(Dev.On);   // the tester's tab, only while dev mode is on
             var qt = tabButtons[MenuTab.Quests].GetComponentInChildren<Text>();
             if (qt != null) qt.text = simple ? "STARS" : "QUESTS";
         }
@@ -165,6 +166,7 @@ namespace Wildbond
                 case MenuTab.Quests: BuildQuests(); break;
                 case MenuTab.Stickers: BuildStickers(); break;
                 case MenuTab.Box: BuildBox(); break;
+                case MenuTab.Dev: BuildDev(); break;
                 case MenuTab.Craft: BuildCraft(); break;
                 case MenuTab.Kin: BuildKin(); break;
                 case MenuTab.Camp: BuildCamp(); break;

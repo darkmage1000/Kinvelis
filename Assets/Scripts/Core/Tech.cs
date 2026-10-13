@@ -113,8 +113,8 @@ namespace Wildbond
         static PlayerStats S => GameManager.I.Player.Stats;
 
         public static bool Has(string id) => S.techDone.Contains(id);
-        public static bool RecipeUnlocked(string recipeId) { var t = ForRecipe(recipeId); return t == null || Has(t.id); }
-        public static bool BuildingUnlocked(string buildingId) { var t = ForBuilding(buildingId); return t == null || Has(t.id); }
+        public static bool RecipeUnlocked(string recipeId) { var t = ForRecipe(recipeId); return t == null || Has(t.id) || Dev.FreeAll; }
+        public static bool BuildingUnlocked(string buildingId) { var t = ForBuilding(buildingId); return t == null || Has(t.id) || Dev.FreeAll; }
         public static int DoneCount => S.techDone.Count;
 
         public static TechDef Active => Get(S.researchId);
@@ -125,6 +125,7 @@ namespace Wildbond
         {
             if (Has(t.id)) return "Done";
             if (S.researchId == t.id) return "Researching";
+            if (Dev.FreeAll) return Active != null ? "Bench is busy" : null;
             if (S.level < t.level) return $"Reach Lv {t.level}";
             if (t.prereq != null && !Has(t.prereq)) return $"Needs {Get(t.prereq).name}";
             if (t.sigil != null && !Wardens.Beaten(t.sigil))

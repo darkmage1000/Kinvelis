@@ -662,6 +662,9 @@ namespace Wildbond
             if (Hp <= 0f) { Hp = 0f; Die(hit.attacker); }
         }
 
+        /// <summary>Dev menu: sets its health to this share of full (never to nothing: use a hit for that).</summary>
+        public void DevSetHp(float frac) { Hp = Mathf.Max(1f, MaxHp * Mathf.Clamp01(frac)); }
+
         void Die(ICombatant killer)
         {
             Hp = 0f;
