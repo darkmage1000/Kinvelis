@@ -135,12 +135,20 @@ namespace Wildbond
         public float CurrentHp => hp < 0f ? MaxHp : hp;
         public bool Fainted => hp == 0f;
 
-        /// <summary>Camp job level: the species' level, +1 for shimmer kin in every job the species can do at all.</summary>
-        public int WorkLevel(WorkType w)
+        /// <summary>Jobs this kin has been told not to do (a bit per WorkType). Set on the Kin tab.</summary>
+        public int jobsOff;
+        public bool JobOn(WorkType w) => (jobsOff & (1 << (int)w)) == 0;
+        public void SetJob(WorkType w, bool on) { if (on) jobsOff &= ~(1 << (int)w); else jobsOff |= 1 << (int)w; }
+
+        /// <summary>What it is capable of at a job, whether or not that job is switched on: the species' level, +1 for shimmer kin in every job the species can do at all.</summary>
+        public int JobLevel(WorkType w)
         {
             int lvl = Species != null ? Species.WorkLevel(w) : 0;
             return lvl > 0 && shimmer ? lvl + Shimmer.WorkBonus : lvl;
         }
+
+        /// <summary>Camp job level it will actually work at: its JobLevel, or 0 for a job switched off.</summary>
+        public int WorkLevel(WorkType w) => JobOn(w) ? JobLevel(w) : 0;
 
         public static int XpToNext(int level) => 18 + level * level * 5;
 

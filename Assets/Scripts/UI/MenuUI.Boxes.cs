@@ -39,6 +39,8 @@ namespace Wildbond
             if (boxTarget == null || bm == null || !bm.Buildings.Contains(boxTarget)) { boxTarget = null; Open(MenuTab.Camp); return; }
             var b = boxTarget;
             bool feed = b.Def.feeds;
+            bool larder = BaseManager.IsLarder(b);
+            var filter = BaseManager.FilterOf(b);
             bool inCamp = bm.IsInsideBase(gm.Player.Position, 0f);
             var bag = gm.Player.Stats.Bag;
             var slots = bm.BoxSlots(b);
@@ -98,10 +100,29 @@ namespace Wildbond
                 Para(rlist, b.FeedAuto
                     ? $"This box tops itself up to about {BaseManager.FeedKeep} pieces of food from camp storage, cheapest first. Switch it off to choose exactly what your kin eat."
                     : "Your kin eat only what you put in here. Nothing is taken from camp storage.", 20);
-                Para(rlist, "Kin eat until they are full: a dozen berries a meal, or a couple of melons, fish or tarts. Food left here goes off like food in storage" +
-                            (bm.LarderActive ? " (three times slower while the Frost Larder is cold)." : "; a cold Frost Larder slows that three times."), 20);
+                Para(rlist, "Kin eat until they are full: a dozen berries a meal, or a couple of melons, fish or tarts. Food left here goes off as it does in a chest; only food kept in a cold Frost Larder lasts longer.", 20);
                 float mins = bm.FoodMinutes;
                 Para(rlist, $"{gm.Party.CountIn(KinLocation.Base)} kin at camp  ·  food for " + (float.IsInfinity(mins) ? "as long as you like" : mins > 90f ? $"about {mins / 60f:0.#} h" : $"about {mins:0} min"), 20, Color.white);
+            }
+
+            if (larder)
+                Para(rlist, bm.LarderActive
+                    ? UIFactory.Col($"Cold  ·  food in here keeps three times as long  ·  {WorkStages.Clock(bm.Cold)} of cold stored", new Color(0.6f, 0.9f, 1f))
+                    : UIFactory.Col("No cold: food in here goes off as fast as anywhere. It needs a Chilling kin.", Idle), 21);
+            else if (!feed && !b.Def.isCore && b.BoxLen > 0)
+            {
+                // what this chest holds: tap one and the whole camp's storage is dealt back out to match
+                Para(rlist, $"This chest holds: <b>{BaseManager.FilterNames[(int)filter]}</b>", 22, Color.white);
+                for (int row = 0; row < 2; row++)
+                {
+                    var fr = UIFactory.HRow(rlist, 62, 8);
+                    for (int i = row * 3; i < row * 3 + 3 && i < BaseManager.FilterShort.Length; i++)
+                    {
+                        var f = (BoxFilter)i;
+                        UIFactory.Size(UIFactory.Button(fr.transform, BaseManager.FilterShort[i], inCamp ? () => { bm.SetFilter(b, f); boxSel = -1; GameEvents.Good($"{bm.BoxName(b)} now holds: {BaseManager.FilterNames[(int)f]}. Storage sorted."); Rebuild(); } : (System.Action)null,
+                            filter == f ? new Color(0.25f, 0.55f, 0.45f) : UIFactory.ButtonCol, 20), 58, 190);
+                    }
+                }
             }
 
             if (boxSel >= 0)
@@ -130,13 +151,13 @@ namespace Wildbond
                 UIFactory.Size(UIFactory.Button(bulk.transform, "EMPTY THE BOX", () => { foreach (var s in bm.BoxSlots(b)) if (!s.Empty) { int left = bag.Add(s.id, s.count); s.count = left; if (left <= 0) s.id = ""; } BoxChanged(); },
                     new Color(0.3f, 0.4f, 0.55f), 22), 72, 280);
                 if (!feed)
-                    UIFactory.Size(UIFactory.Button(bulk.transform, "STORE ALL MATERIALS", () =>
+                    UIFactory.Size(UIFactory.Button(bulk.transform, filter == BoxFilter.Any ? "STORE ALL MATERIALS" : "STORE ALL THAT FITS", () =>
                     {
                         foreach (var s in bag.slots)
                         {
                             if (s.Empty) continue;
                             var d = ContentDB.Item(s.id);
-                            if (d == null || (d.category != ItemCategory.Resource && d.category != ItemCategory.Food)) continue;
+                            if (d == null || (filter == BoxFilter.Any && d.category != ItemCategory.Resource && d.category != ItemCategory.Food)) continue;
                             int left = bm.BoxAdd(b, s.id, s.count);
                             s.count = left; if (left <= 0) s.id = "";
                         }
@@ -145,9 +166,9 @@ namespace Wildbond
             }
 
             // your bag: put things in this box
-            Header(rlist, feed ? "Food in your bag" : "Your bag", 28);
+            Header(rlist, feed || filter == BoxFilter.Food ? "Food in your bag" : filter != BoxFilter.Any ? "In your bag, for this chest" : "Your bag", 28);
             int shown = PutRows(rlist, b, bag, feed, inCamp, false);
-            if (shown == 0) Para(rlist, feed ? "No kin food in your bag (berries, crops, fish, tarts)." : "Your bag is empty.", 20);
+            if (shown == 0) Para(rlist, feed ? "No kin food in your bag (berries, crops, fish, tarts)." : filter != BoxFilter.Any ? "Nothing in your bag that this box holds." : "Your bag is empty.", 20);
             if (feed)
             {
                 Header(rlist, "Food in camp storage", 28);
@@ -172,7 +193,7 @@ namespace Wildbond
             int n = 0;
             foreach (var id in ids)
             {
-                if (foodOnly && !BaseManager.IsKinFood(id)) continue;
+                if (foodOnly ? !BaseManager.IsKinFood(id) : !BaseManager.BoxTakes(b, id)) continue;
                 n++;
                 string iid = id;
                 var row = UIFactory.HRow(list, 72, 8);
@@ -211,7 +232,7 @@ namespace Wildbond
             from.Remove(id, want);                       // out first, so a move within camp storage frees its own slot
             int left = bm.BoxAdd(b, id, want);
             if (left > 0) from.Add(id, left);
-            if (left >= want) { GameEvents.Warn(b.Def.feeds && !BaseManager.IsKinFood(id) ? "Kin won't eat that." : "That box is full."); return; }
+            if (left >= want) { GameEvents.Warn(b.Def.feeds && !BaseManager.IsKinFood(id) ? "Kin won't eat that." : !b.Def.feeds && !BaseManager.BoxTakes(b, id) ? $"This box holds {BaseManager.FilterNames[(int)BaseManager.FilterOf(b)].ToLower()} only." : "That box is full."); return; }
             if (left > 0) GameEvents.Warn("The box is full - put in what fits.");
             SynthAudio.Play(Sfx.Pickup, 0.9f);
             BoxChanged();

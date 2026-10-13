@@ -163,7 +163,7 @@ namespace Wildbond
                     break;
                 default: // Idle: decide what to do next
                     if (stateTimer > 0f) break;
-                    bool hauler = workBuilding != null && (workBuilding.Def.workType == WorkType.Hauling || workBuilding.Def.isCore);
+                    bool hauler = workBuilding != null && (workBuilding.Def.workType == WorkType.Hauling || workBuilding.Def.isCore) && Data.JobOn(WorkType.Hauling);
                     // a pylon or larder asking for a top-up outranks carrying (a camp's only Charging kin is often its hauler)
                     var call = bm.StoreCalling(Data, this);
                     if (call != null) { task = call; taskCheck = 1f; SetState(AIState.ToWork, 0f); break; }
@@ -262,7 +262,7 @@ namespace Wildbond
             }
             else
             {
-                var dest = bm.NearestStorage(transform.position);
+                var dest = bm.StorageFor(haulItem, transform.position);   // a box that takes what it carries
                 Vector3 dpos = dest != null ? dest.transform.position : bm.CorePosition;
                 float fp = dest != null ? dest.Def.footprint : 1.6f;
                 MoveTo(dpos, RunSpeed * 0.75f);

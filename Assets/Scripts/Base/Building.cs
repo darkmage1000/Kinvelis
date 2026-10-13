@@ -22,6 +22,8 @@ namespace Wildbond
 
         /// <summary>Where this structure's storage slots sit in the camp's pool (BaseManager.Boxes). BoxLen 0 = it holds none.</summary>
         public int BoxStart, BoxLen;
+        /// <summary>What a storage chest has been told to hold (BaseManager.Store). The Hearthstone and larders ignore it.</summary>
+        public BoxFilter Filter;
         /// <summary>A Feed Box's own contents (null on anything else).</summary>
         public Inventory Feed;
         /// <summary>A Feed Box keeps itself stocked from camp storage unless the player switches that off.</summary>

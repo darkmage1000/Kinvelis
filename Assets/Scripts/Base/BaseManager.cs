@@ -10,6 +10,8 @@ namespace Wildbond
         public string recipeId;
         public int remaining = 1;
         public float progress;
+        /// <summary>Queued by a standing order ("keep N in stock"), not by hand.</summary>
+        public bool auto;
     }
 
     /// <summary>
@@ -45,7 +47,7 @@ namespace Wildbond
         public int WorkerCap => Mathf.Max(1, WorldRules.Current.campWorkersBase + (CoreLevel - 1) * WorldRules.Current.campWorkersPerLevel);
 
         public readonly List<Building> Buildings = new List<Building>();
-        public readonly Inventory Storage = new Inventory(0);
+        public readonly Inventory Storage = new CampStore();   // adding to it routes each item to the box it belongs in (BaseManager.Store)
         public readonly List<CraftOrder> Orders = new List<CraftOrder>();
 
         readonly Dictionary<string, CreatureActor> workerActors = new Dictionary<string, CreatureActor>();
@@ -224,7 +226,7 @@ namespace Wildbond
         public bool WantsHands(CreatureData d, Building home, CreatureActor self)
         {
             if (PickTask(d, home, self) != null) return true;
-            bool hauler = home != null && (home.Def.isCore || home.Def.workType == WorkType.Hauling);
+            bool hauler = home != null && (home.Def.isCore || home.Def.workType == WorkType.Hauling) && d.JobOn(WorkType.Hauling);
             return (hauler || d.WorkLevel(WorkType.Hauling) > 0) && FindHaulSource() != null;
         }
 
@@ -583,8 +585,11 @@ namespace Wildbond
                     if (left > 0) { o.progress = r.work; GameEvents.Warn("Storage full - craft order paused."); return; }
                     o.progress = 0f;
                     o.remaining--;
-                    GameEvents.Good($"Crafted {r.outputCount}x {ContentDB.ItemName(r.outputItem)} (base storage)");
-                    SynthAudio.Play(Sfx.Craft, 1f, 0.6f);
+                    if (!o.auto)   // a standing order restocks quietly
+                    {
+                        GameEvents.Good($"Crafted {r.outputCount}x {ContentDB.ItemName(r.outputItem)} (base storage)");
+                        SynthAudio.Play(Sfx.Craft, 1f, 0.6f);
+                    }
                     if (o.remaining <= 0) Orders.RemoveAt(i);
                     GameEvents.RaiseInventoryChanged();
                 }
@@ -624,6 +629,7 @@ namespace Wildbond
             TickFeed(dt);
             TickSpoil(dt);
             TickSpoilNote(near);
+            TickStanding(dt);
             TickStages(dt);
             if (!near) SimulateAbstract(dt);
             TickCharge(dt);
@@ -733,7 +739,7 @@ namespace Wildbond
                     continue;
                 }
                 // haulers carry while there is something to carry; with the piles cleared they turn a hand to whatever else they can do
-                if (piles && home != null && (home.Def.isCore || home.Def.workType == WorkType.Hauling)) { haulers += 1 + d.WorkLevel(WorkType.Hauling); if (xp) AccrueWorkXp(d, dt); continue; }
+                if (piles && home != null && (home.Def.isCore || home.Def.workType == WorkType.Hauling) && d.JobOn(WorkType.Hauling)) { haulers += 1 + d.WorkLevel(WorkType.Hauling); if (xp) AccrueWorkXp(d, dt); continue; }
                 // the same choice the actors make: wherever its hands count for most, its own structure first among equals
                 Building t = null;
                 float bestScore = 0f;
@@ -794,6 +800,7 @@ namespace Wildbond
                 SimulateNeeds(step);
                 TickFeed(step);
                 TickSpoil(step);
+                TickStanding(step);
                 TickStages(step);
                 // pylons, dynamos and larders run only while a kin that is awake is at them (SimulateAbstract keeps post kin on their posts)
                 foreach (var b in Buildings) if (IsPost(b)) b.PoweredUntil = 0;
@@ -817,6 +824,7 @@ namespace Wildbond
             CoreLevel = 1;
             Charge = 0f;
             Cold = 0f;
+            Standing.Clear();
             assignmentsTidied = false;
             Orders.Clear();
             Storage.slots.Clear();

@@ -57,13 +57,28 @@ namespace Wildbond
             Header(list, $"{name}  <size=26>{UIFactory.Col(StationActivity(st), UIFactory.Accent)}</size>", 36);
             Para(list, !built ? $"You haven't built a {name} yet (Build tab). These are the recipes it unlocks."
                      : !inCamp ? $"You're away from camp, so this is view-only. Go to your {name} to {StationVerb(st).ToLower()}."
-                     : "Ingredients come from your bag and camp storage. Finished items go to camp storage.", 21);
+                     : "Ingredients come from your bag and camp storage. Finished items go to camp storage. KEEP makes the camp restock that item by itself, from camp storage.", 21);
             RecipeRows(list, st, 520);
             RestoreScroll();
 
             // ---------------- orders + workers ----------------
             var rl = UIFactory.ScrollList(right, out _, 10f);
             ((RectTransform)rl.parent).Stretch();
+            bool anyKept = false;
+            foreach (var so in bm.Standing.ToArray())
+            {
+                if (!ContentDB.Recipes.TryGetValue(so.recipeId, out var sr) || sr.station != st) continue;
+                if (!anyKept) { anyKept = true; Header(rl, "Kept in stock", 30); }
+                var skeep = so;
+                var sdef = ContentDB.Item(sr.outputItem);
+                int have = bm.Storage.Count(sr.outputItem);
+                string why = bm.StandingBlock(sr);
+                var srow = UIFactory.HRow(rl, 76, 10);
+                var sic = UIFactory.ItemIcon(srow.transform, sdef, 60); UIFactory.Size(sic, 60, 60);
+                var stx = UIFactory.Label(srow.transform, $"<b>{sdef.displayName}</b>\n<size=19>{UIFactory.Col($"{have} of {so.keep}", have >= so.keep ? Good : Color.white)}{(why != null ? UIFactory.Col("  ·  " + why, Idle) : "")}</size>", 22, Color.white);
+                stx.supportRichText = true; UIFactory.Size(stx, 70, 350);
+                UIFactory.Size(UIFactory.Button(srow.transform, "OFF", () => { bm.SetKeep(skeep.recipeId, 0); Rebuild(); }, new Color(0.45f, 0.25f, 0.25f), 20), 60, 80);
+            }
             Header(rl, "In progress", 30);
             bool any = false;
             foreach (var o in bm.Orders.ToArray())
@@ -74,14 +89,14 @@ namespace Wildbond
                 var outDef = ContentDB.Item(r.outputItem);
                 var row = UIFactory.HRow(rl, 76, 10);
                 var ic = UIFactory.ItemIcon(row.transform, outDef, 60); UIFactory.Size(ic, 60, 60);
-                var t = UIFactory.Label(row.transform, $"<b>{outDef.displayName}</b>\n<size=19>{o.remaining} left</size>", 22, Color.white);
+                var t = UIFactory.Label(row.transform, $"<b>{outDef.displayName}</b>\n<size=19>{o.remaining} left{(o.auto ? "  ·  restocking" : "")}</size>", 22, Color.white);
                 t.supportRichText = true; UIFactory.Size(t, 70, 190);
                 var bar = UIFactory.Bar(row.transform, UIFactory.Accent, out var fill);
                 UIFactory.Size(bar, 24, 150);
                 fill.SetFill(bm.OrderProgress01(o));
                 UIFactory.Size(UIFactory.Button(row.transform, "X", () => CancelOrder(oo), new Color(0.45f, 0.25f, 0.25f), 22), 60, 64);
             }
-            if (!any) Para(rl, $"Nothing queued. Pick a recipe on the left to {StationVerb(st).ToLower()} it.", 21);
+            if (!any) Para(rl, $"Nothing queued. Pick a recipe on the left to {StationVerb(st).ToLower()} it, or tap KEEP to have the camp keep it in stock.", 21);
 
             Header(rl, "Workers", 30);
             WorkType job = WorkType.None;
@@ -94,7 +109,9 @@ namespace Wildbond
             }
             if (!built) Para(rl, $"Build a {name} first.", 21);
             else if (crew.Count == 0)
-                Para(rl, $"No kin assigned. Orders only move while you stand at the {name}.{(job != WorkType.None ? $" Assign a {job} kin in Camp > Workers to keep it running." : "")}", 21, new Color(1f, 0.8f, 0.5f));
+                Para(rl, job != WorkType.None && bm.AnyoneSuits(bm.Buildings.Find(x => x.Def.station == st))
+                    ? $"No kin assigned here. Any free {job} kin comes over when there is an order; assign one in Camp > Workers to make this its first choice."
+                    : $"No {job} kin in camp. Orders only move while you stand at the {name}, or with a powered Auto-Assembler.", 21, new Color(1f, 0.8f, 0.5f));
             else
                 foreach (var d in crew)
                     Para(rl, $"<b>{d.DisplayName}</b> Lv{d.level}  <size=19>{job} Lv {d.WorkLevel(job)}{(d.hunger <= 0f ? UIFactory.Col("  hungry", new Color(1f, 0.55f, 0.5f)) : "")}</size>", 23, Color.white);
@@ -202,6 +219,14 @@ namespace Wildbond
                 var btn = UIFactory.Button(row.transform, reason ?? StationVerb(st),
                     reason == null ? () => Craft(rec) : (System.Action)null, reason == null ? new Color(0.25f, 0.55f, 0.4f) : new Color(0.3f, 0.3f, 0.32f), 26);
                 UIFactory.Size(btn, 84, 200);
+                if (st != CraftStation.Hand && tech == null && r.unlockLevel <= stats.level && bm.HasStation(st))
+                {
+                    // standing order: tap to step through 5 / 10 / 20 / 50 / off (BaseManager.Standing)
+                    int keep = bm.KeepOf(r.id);
+                    var kb = UIFactory.Button(row.transform, keep > 0 ? $"KEEP\n{keep}" : "KEEP\nin stock", () => { bm.SetKeep(rec.id, bm.NextKeep(rec.id)); SynthAudio.Play(Sfx.UiClick); Rebuild(); },
+                        keep > 0 ? new Color(0.5f, 0.42f, 0.2f) : UIFactory.ButtonCol, 20);
+                    UIFactory.Size(kb, 84, 130);
+                }
             }
         }
     }

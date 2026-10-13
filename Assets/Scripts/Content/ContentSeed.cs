@@ -483,8 +483,8 @@ namespace Wildbond
                 P(PartShape.Crystal, BodyGroup.Body, ColorSlot.Glow, -1.5f, 0.4f, 1.25f, 0.22f, 0.7f, 0.22f),
             };
 
-            var larder = Bld(b, "frost_larder", "Frost Larder", "Keeps food fresh: while it holds cold, food in camp keeps three times as long and workers get hungry 40% slower. A Chilling kin fills it with cold, then is free for other work and comes back to top it up at half and before nightfall. One larder stays cold all night.", 4, 1.2f, ("stone", 12), ("wood", 6));
-            larder.workType = WorkType.Chilling; larder.workerSlots = 1; larder.palette = Pal(Hex("#cfe6f2"), Hex("#7fa6c0"), Hex("#ffffff"), Hex("#8fe8ff"));
+            var larder = Bld(b, "frost_larder", "Frost Larder", "Cold storage for food: 12 slots that take food only. While it holds cold, food kept inside lasts three times as long and workers get hungry 40% slower. A Chilling kin fills it with cold, then is free for other work and comes back to top it up at half and before nightfall. One larder stays cold all night.", 4, 1.2f, ("stone", 12), ("wood", 6));
+            larder.workType = WorkType.Chilling; larder.workerSlots = 1; larder.storageSlots = 12; larder.palette = Pal(Hex("#cfe6f2"), Hex("#7fa6c0"), Hex("#ffffff"), Hex("#8fe8ff"));
             larder.parts = new[]
             {
                 P(PartShape.Box, BodyGroup.Body, ColorSlot.Secondary, 0, 0.6f, 0, 1.4f, 1.2f, 1.2f),

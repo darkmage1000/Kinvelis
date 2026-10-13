@@ -143,7 +143,7 @@ namespace Wildbond
             float mins = bm.FoodMinutes;
             string runway = float.IsPositiveInfinity(mins) ? "no one is eating" : (mins > 600 ? "10+ hours" : $"~{mins:0} min");
             float spoil = bm.SpoilPerMinute;
-            string going = spoil >= 0.05f ? $"  ·  {UIFactory.Col($"about {spoil:0.#} going off a minute{(bm.LarderActive ? " (larder cold)" : "")}", spoil > 3f ? Idle : Info)}" : "";
+            string going = spoil >= 0.05f ? $"  ·  {UIFactory.Col($"about {spoil:0.#} going off a minute", spoil > 3f ? Idle : Info)}" : "";
             var ft = UIFactory.Label(fc.transform, $"Sunberries {bm.Storage.Count("berry")}  ·  Berry Tarts {bm.Storage.Count("berry_tart")}  ·  lasts {runway}{going}", 24, Color.white);
             ft.supportRichText = true;
             ft.rectTransform.Stretch(16, 44, 16, 6);
@@ -423,7 +423,7 @@ namespace Wildbond
                 string job = b != null ? b.Def.displayName : UIFactory.Col("Unassigned", Idle);
                 string state = actor != null ? actor.WorkStatus : (b != null ? "Working (remote)" : "Idle");
                 var skills = new List<string>();
-                foreach (var w in d.Species.work) skills.Add($"{WorkInfo.Icon(w.type)} {d.WorkLevel(w.type)}");
+                foreach (var w in d.Species.work) skills.Add(d.JobOn(w.type) ? $"{WorkInfo.Icon(w.type)} {d.JobLevel(w.type)}" : $"{WorkInfo.Icon(w.type)} off");
                 if (d.shimmer) skills.Add(UIFactory.Col("Shimmer +1", new Color(1f, 0.85f, 0.4f)));
                 int wa = d.Apt(KinPath.Work);
                 skills.Add(UIFactory.Col($"Work {Aptitude.Grade(wa)} x{d.WorkAptMul:0.00}", Aptitude.GradeColor(wa)));
@@ -538,10 +538,13 @@ namespace Wildbond
             if (!inCamp) Para(right, UIFactory.Col("Stand inside your camp to take or deposit items.", Idle), 22);
             // each box has contents of its own: open one to fill or empty that box
             Header(right, "Boxes", 28);
+            if (inCamp) ActionBtn(right, "SORT EVERYTHING", () => { bm.SortStorage(); GameEvents.Good("Storage sorted: everything is in the box that holds its kind."); Rebuild(); }, new Color(0.25f, 0.5f, 0.42f));
             foreach (var box in bm.Boxes())
             {
                 var bx = box;
-                ActionBtn(right, $"{bm.BoxName(bx)}   {bm.BoxUsed(bx)}/{bm.BoxCapacity(bx)}", () => OpenBox(bx), new Color(0.3f, 0.36f, 0.5f));
+                var bf = BaseManager.FilterOf(bx);
+                ActionBtn(right, $"{bm.BoxName(bx)}   {bm.BoxUsed(bx)}/{bm.BoxCapacity(bx)}{(bf != BoxFilter.Any ? "   · " + BaseManager.FilterShort[(int)bf] : "")}", () => OpenBox(bx),
+                    BaseManager.IsLarder(bx) ? new Color(0.25f, 0.45f, 0.6f) : new Color(0.3f, 0.36f, 0.5f));
             }
             foreach (var fb in bm.FeedBoxes())
             {

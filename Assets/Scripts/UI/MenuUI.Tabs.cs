@@ -248,7 +248,9 @@ namespace Wildbond
             var r = ContentDB.Recipes[o.recipeId];
             foreach (var ing in r.inputs) BaseManager.I.Storage.Add(ing.itemId, ing.count * o.remaining);
             BaseManager.I.Orders.Remove(o);
-            GameEvents.Say("Order cancelled - ingredients returned to camp storage.");
+            bool kept = o.auto && BaseManager.I.KeepOf(o.recipeId) > 0;
+            if (kept) BaseManager.I.SetKeep(o.recipeId, 0);   // or it would be queued again in two seconds
+            GameEvents.Say(kept ? $"Stopped keeping {ContentDB.ItemName(r.outputItem)} in stock - ingredients returned to camp storage." : "Order cancelled - ingredients returned to camp storage.");
             GameEvents.RaiseInventoryChanged();
         }
 
@@ -349,8 +351,20 @@ namespace Wildbond
             Para(p, $"Skills {d.SkillSlots}/{CreatureData.MaxSkills}:\n  " + string.Join("\n  ", abil), 22, Color.white);
 
             var work = new List<string>();
-            foreach (var w in sp.work) work.Add($"{w.type} {new string('*', d.WorkLevel(w.type))}");
+            foreach (var w in sp.work) work.Add(d.JobOn(w.type) ? $"{w.type} {new string('*', d.JobLevel(w.type))}" : UIFactory.Col($"{w.type} (off)", new Color(0.6f, 0.6f, 0.65f)));
             Para(p, $"Camp work: {string.Join(",  ", work)}{(d.shimmer && sp.work.Length > 0 ? UIFactory.Col("  (+1 each: Shimmer)", new Color(1f, 0.85f, 0.4f)) : "")}\n{(d.Nocturnal ? UIFactory.Col("Up all night: keeps working at camp after dark.", new Color(0.75f, 0.8f, 1f)) : $"Sleeps at camp from dusk to dawn, in a {BaseManager.BedNeeded(d)} or bigger.")}\n{sp.overworldRole}", 22, UIFactory.Accent);
+            if (sp.work.Length > 0)
+            {
+                // job switches: what this kin may do at camp (and when it helps you gather)
+                var jr = UIFactory.HRow(p, 64, 8);
+                foreach (var w in sp.work)
+                {
+                    var wt = w.type;
+                    bool on = d.JobOn(wt);
+                    UIFactory.Size(UIFactory.Button(jr.transform, $"{wt}\n{(on ? "ON" : "OFF")}", () => { d.SetJob(wt, !d.JobOn(wt)); SynthAudio.Play(Sfx.UiClick); Rebuild(); },
+                        on ? new Color(0.25f, 0.5f, 0.42f) : new Color(0.32f, 0.32f, 0.36f), 19), 60, 150);
+                }
+            }
             if (d.location == KinLocation.Base)
             {
                 var bm = BaseManager.I;

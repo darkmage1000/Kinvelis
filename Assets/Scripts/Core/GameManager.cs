@@ -279,8 +279,9 @@ namespace Wildbond
                     RestoreBuilding(def, b);
                 }
                 baseMgr.Storage.CopyFrom(s.storage);
-                baseMgr.LayoutStorage();   // each structure's box is where the save left it
+                baseMgr.LayoutStorage(s.storageLayout);   // each structure's box is where the save left it
                 baseMgr.Orders.AddRange(s.orders);
+                if (s.standing != null) baseMgr.Standing.AddRange(s.standing);
             }
 
             var pos = new Vector3(s.px, s.py, s.pz);
@@ -306,6 +307,7 @@ namespace Wildbond
             bld.BufferItem = b.bufferItem;
             bld.BufferCount = b.bufferCount;
             bld.Crop = b.crop;
+            bld.Filter = (BoxFilter)Mathf.Clamp(b.filter, 0, BaseManager.FilterNames.Length - 1);
             if (bld.Feed != null)
             {
                 bld.FeedAuto = !b.feedByHand;

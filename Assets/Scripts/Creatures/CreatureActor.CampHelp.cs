@@ -138,13 +138,13 @@ namespace Wildbond
                 return true;
             }
             CampHelpStatus = $"Carrying {haulCount} {ContentDB.ItemName(haulItem)}";
-            var dest = bm.NearestStorage(transform.position);
+            var dest = bm.StorageFor(haulItem, transform.position);
             Vector3 dpos = dest != null ? dest.transform.position : bm.CorePosition;
             float fp = dest != null ? dest.Def.footprint : 1.6f;
             MoveTo(dpos, RunSpeed * 0.75f);
             if (FlatDist(transform.position, dpos) < fp + 1.6f)
             {
-                int left = bm.Deposit(bm.NearestStorage(transform.position), haulItem, haulCount);
+                int left = bm.Deposit(bm.StorageFor(haulItem, transform.position), haulItem, haulCount);
                 if (left > 0 && haulSource != null) haulSource.ReturnToBuffer(haulItem, left);
                 haulCount = 0;
                 helpPick = 0f;   // something to make may have come up meanwhile

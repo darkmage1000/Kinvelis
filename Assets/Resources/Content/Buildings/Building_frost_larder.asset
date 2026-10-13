@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: frost_larder
   displayName: Frost Larder
-  description: 'Keeps food fresh: while it holds cold, food in camp keeps three times
-    as long and workers get hungry 40% slower. A Chilling kin fills it with cold,
-    then is free for other work and comes back to top it up at half and before nightfall.
-    One larder stays cold all night.'
+  description: 'Cold storage for food: 12 slots that take food only. While it holds
+    cold, food kept inside lasts three times as long and workers get hungry 40% slower.
+    A Chilling kin fills it with cold, then is free for other work and comes back
+    to top it up at half and before nightfall. One larder stays cold all night.'
   cost:
   - itemId: stone
     count: 12
@@ -36,11 +36,14 @@ MonoBehaviour:
   inputItem: 
   inputCount: 0
   bufferCap: 30
-  storageSlots: 0
+  storageSlots: 12
   station: 0
   boostPercent: 0
   feeds: 0
   beds: 0
+  bedSize: 0
+  bedTop: 0
+  bedBonus: 0
   palette:
     primary: {r: 0.8117647, g: 0.9019608, b: 0.9490196, a: 1}
     secondary: {r: 0.49803922, g: 0.6509804, b: 0.7529412, a: 1}

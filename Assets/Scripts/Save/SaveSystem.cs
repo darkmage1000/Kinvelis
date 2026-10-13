@@ -36,7 +36,7 @@ namespace Wildbond
         }
     }
 
-    [Serializable] public class BuildingSave { public string uid, defId, bufferItem, crop; public float x, y, z, rotY, progress; public int bufferCount, stage; public List<ItemStack> feed = new List<ItemStack>(); public bool feedByHand; }
+    [Serializable] public class BuildingSave { public string uid, defId, bufferItem, crop; public float x, y, z, rotY, progress; public int bufferCount, stage, filter; public List<ItemStack> feed = new List<ItemStack>(); public bool feedByHand; }
     [Serializable] public class NodeSave { public long key; public double t; }
     [Serializable] public class AlphaSave { public string id; public double t; }
 
@@ -58,9 +58,11 @@ namespace Wildbond
         public int coreLevel = 1;
         public float campCharge;   // seconds of stored pylon / battery power
         public float campCold;     // seconds of stored larder cold
+        public int storageLayout;  // which structures held storage slots when this was written (BaseManager.SaveLayout; 0 = before larders did)
         public List<BuildingSave> buildings = new List<BuildingSave>();
         public Inventory storage = new Inventory();
         public List<CraftOrder> orders = new List<CraftOrder>();
+        public List<StandingOrder> standing = new List<StandingOrder>();
         public List<NodeSave> depleted = new List<NodeSave>();
         public List<AlphaSave> alphaCooldowns = new List<AlphaSave>();
         public List<string> goalsDone = new List<string>();
@@ -216,6 +218,7 @@ namespace Wildbond
                 coreLevel = bm.CoreLevel,
                 campCharge = bm.Charge,
                 campCold = bm.Cold,
+                storageLayout = BaseManager.SaveLayout,
                 goalsDone = new List<string>(gm.GoalsDone),
                 world = WorldRules.Current,
                 createdAtUnix = gm.CreatedAtUnix,
@@ -227,10 +230,11 @@ namespace Wildbond
             foreach (var b in bm.Buildings)
             {
                 var p = b.transform.position;
-                d.buildings.Add(new BuildingSave { uid = b.Uid, defId = b.Def.id, x = p.x, y = p.y, z = p.z, rotY = b.RotY, progress = b.Progress, stage = b.Stage, feed = b.Feed != null ? b.Feed.slots : new List<ItemStack>(), feedByHand = !b.FeedAuto, bufferItem = b.BufferItem, bufferCount = b.BufferCount, crop = b.Crop });
+                d.buildings.Add(new BuildingSave { uid = b.Uid, defId = b.Def.id, x = p.x, y = p.y, z = p.z, rotY = b.RotY, progress = b.Progress, stage = b.Stage, filter = (int)b.Filter, feed = b.Feed != null ? b.Feed.slots : new List<ItemStack>(), feedByHand = !b.FeedAuto, bufferItem = b.BufferItem, bufferCount = b.BufferCount, crop = b.Crop });
             }
             d.storage.CopyFrom(bm.Storage);
             d.orders.AddRange(bm.Orders);
+            d.standing.AddRange(bm.Standing);
             double now = GameManager.WorldTime;
             foreach (var kv in ChunkManager.I.Depleted) if (kv.Value > now) d.depleted.Add(new NodeSave { key = kv.Key, t = kv.Value });
             foreach (var kv in CreatureSpawner.I.AlphaCooldowns) if (kv.Value > now) d.alphaCooldowns.Add(new AlphaSave { id = kv.Key, t = kv.Value });

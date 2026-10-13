@@ -148,7 +148,7 @@ namespace Wildbond
             }
             if (IsLarder(b))
             {
-                const string effect = "workers get hungry 40% slower, food keeps 3x longer";
+                string effect = $"{ColdFood} food inside keeps 3x longer, workers get hungry 40% slower";
                 if (b.Powered) { text = Cold >= ColdCapacity - 0.5f ? $"Full of cold ({WorkStages.Clock(Cold)} stored) · {effect}" : $"Chilling · {Mathf.RoundToInt(Cold01 * 100f)}% cold · {effect}"; return BuildingHealth.Good; }
                 if (Cold > 0f) { text = $"Stored cold · {WorkStages.Clock(Cold)} left ({Mathf.RoundToInt(Cold01 * 100f)}%) · {effect}" + (NightNow ? "" : LarderWantsKin ? " · waiting for a Chilling kin" : " · its kin is free until it is half empty"); return BuildingHealth.Good; }
                 if (ColdAsleep) { text = "Out of cold and its kin is asleep - food is not kept fresh until dawn"; return BuildingHealth.Idle; }

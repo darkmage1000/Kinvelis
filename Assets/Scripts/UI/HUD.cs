@@ -207,10 +207,25 @@ namespace Wildbond
             campBtn = UIFactory.Button(safe, "CAMP", () => MenuUI.I.OpenCamp(CampTab.Overview), new Color(0.3f, 0.42f, 0.55f, 0.95f), 28);
             ((RectTransform)campBtn.transform).Place(new Vector2(1, 1), new Vector2(1, 1), new Vector2(-310, -192), new Vector2(150, 76));
             campBtn.gameObject.SetActive(false);
+
+            // camp warning: one line under the goal box, wherever you are, saying what is wrong at camp (tap = Camp menu)
+            var warn = UIFactory.Panel(safe, "CampWarn", new Color(0.45f, 0.16f, 0.12f, 0.82f));
+            warn.rectTransform.Place(new Vector2(0, 1), new Vector2(0, 1), new Vector2(24, -408), new Vector2(470, 46));
+            warn.raycastTarget = true;
+            var wb = warn.gameObject.AddComponent<Button>();
+            wb.transition = Selectable.Transition.None;
+            wb.onClick.AddListener(() => { if (MenuUI.I != null && !MenuUI.I.IsOpen) MenuUI.I.OpenCamp(CampTab.Overview); });
+            campWarnText = UIFactory.Label(warn.transform, "", 20, new Color(1f, 0.9f, 0.8f), TextAnchor.MiddleLeft);
+            campWarnText.supportRichText = true; campWarnText.raycastTarget = false;
+            campWarnText.rectTransform.Stretch(12, 2, 10, 2);
+            campWarn = warn.gameObject;
+            campWarn.SetActive(false);
         }
 
         Button campBtn;
-        float campCheck;
+        GameObject campWarn;
+        Text campWarnText;
+        float campCheck, campWarnCheck;
         void UpdateCampButton(PlayerController pl)
         {
             campCheck -= Time.unscaledDeltaTime;
@@ -219,11 +234,22 @@ namespace Wildbond
             var bm = BaseManager.I;
             bool show = bm != null && bm.HasBase && bm.IsInsideBase(pl.Position, 0f);
             if (campBtn.gameObject.activeSelf != show) campBtn.gameObject.SetActive(show);
+            // the warning line is worked out every 2.5 s (it asks every structure for its status)
+            campWarnCheck -= 0.5f;
+            if (campWarnCheck <= 0f)
+            {
+                campWarnCheck = 2.5f;
+                var urgent = bm != null && bm.HasBase && !WorldRules.Current.simpleControls && !Caves.InCave ? bm.UrgentAlerts() : null;
+                bool warn = urgent != null && urgent.Count > 0;
+                if (campWarn.activeSelf != warn) campWarn.SetActive(warn);
+                if (warn) campWarnText.text = $"<b>Camp:</b> {urgent[0]}{(urgent.Count > 1 ? $"  <size=17>(+{urgent.Count - 1} more)</size>" : "")}";
+                campSevere = show && bm.Alerts().Exists(x => x.severe);
+            }
             if (!show) return;
-            bool severe = bm.Alerts().Exists(x => x.severe);
-            campBtn.image.color = severe ? new Color(0.7f, 0.3f, 0.25f, 0.95f) : new Color(0.3f, 0.42f, 0.55f, 0.95f);
-            campBtn.GetComponentInChildren<Text>().text = severe ? "CAMP (!)" : "CAMP";
+            campBtn.image.color = campSevere ? new Color(0.7f, 0.3f, 0.25f, 0.95f) : new Color(0.3f, 0.42f, 0.55f, 0.95f);
+            campBtn.GetComponentInChildren<Text>().text = campSevere ? "CAMP (!)" : "CAMP";
         }
+        bool campSevere;
 
         RectTransform bossFrame;
         Text bossName;

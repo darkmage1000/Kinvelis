@@ -52,7 +52,7 @@ namespace Wildbond
         }
 
         /// <summary>Adds items, returns the amount that did not fit.</summary>
-        public int Add(string id, int count)
+        public virtual int Add(string id, int count)
         {
             if (count <= 0 || string.IsNullOrEmpty(id)) return 0;
             var def = ContentDB.Item(id);

@@ -334,6 +334,7 @@ html: `
 <div data-view="jobs"></div>
 <ul>
 <li><b>Assigning</b> a kin to a structure (CAMP &gt; Structures or Workers) makes that structure its first choice. It still helps elsewhere whenever its own structure has nothing for it.</li>
+<li><b>Standing orders</b>: at a station, tap <b>KEEP</b> on a recipe to step through 5 / 10 / 20 / 50. The camp then keeps that many in storage by itself, taking ingredients from camp storage and queueing a few at a time. The station's screen lists what is kept and why one is not moving. Tap the order's X or OFF to stop.</li>
 <li><b>Queued crafting orders</b> are picked up by any free kin with the station's job (Crafting for the Workbench, Kindling for the Campfire and Alloy Forge), whether or not it is assigned there - for example a farmer with Crafting works the Workbench while its plot grows.</li>
 <li>No structure ties a kin down any more. A Volt Pylon and a Frost Larder store what their kin gives them, and the Sprinkler and Spark Dynamo are machines that run on the pylon's power.</li>
 <li>A kin with no structure of its own simply goes wherever it is useful.</li>
@@ -342,6 +343,7 @@ html: `
 <li>Workers need <b>food</b> from a Feed Box (see <a href="#/guide/camp/feed">below</a>). Nests give them beds (see <a href="#/guide/camp/night">Night</a>), and a camp where every sleeper has a bed that fits works 15% faster.</li>
 <li>Work speed also depends on the kin's Work grade, its evolution stage and its traits. A shimmer kin is +1 level in every job.</li>
 <li>Workers earn a little XP while you play. They earn none while the game is closed.</li>
+<li><b>Job switches</b>: on a kin's page each of its jobs has an ON / OFF button. A kin never does a job that is off, at camp or when helping you gather, so you can keep your Charging kin off hauling or a strong fighter off the farm. Its appetite and its bed do not change.</li>
 <li>You can do any hands-on step yourself: stand at the structure and tap <b>PLANT</b>, <b>WATER</b>, <b>HARVEST</b> or <b>WORK</b>. You are about half as fast as a level-1 kin.</li>
 <li>Your companion pitches in by itself while you are inside the camp ring. You can switch that off on Camp &gt; Workers.</li>
 </ul>
@@ -402,8 +404,17 @@ html: `
 <li>EMPTY THE BOX and STORE ALL MATERIALS do the lot at once.</li>
 <li>The arrows step through every box in camp, so you can sort them all from one place. Camp &gt; Storage lists the boxes too.</li>
 </ul>
-<p>Kin put what they haul into the box they walk to, and crafting takes ingredients from any box. Pull a chest down and what was in it moves to the other boxes. Bigger boxes come from <a href="#/research">research</a>: Large Chest, Bulk Silo, Ironbound Vault and Grand Vault. </p>
-<p>A <b>Frost Larder</b> makes food keep three times as long and workers get hungry 40% slower, for as long as it holds cold. A Chilling kin fills it (the gauge floats over it), then is free for its other jobs, and comes back by itself to top it up at half and again in the evening. One larder holds a little over half a day of cold, so it stays cold all night while the kin sleeps.</p>
+<h3>Chest filters</h3>
+<p>Open a chest and tell it what to hold: <b>Anything</b>, <b>Food</b>, <b>Basics</b> (wood, stone, fiber), <b>Metal</b> (ore, ingots, crystal, cinder and the outer metals), <b>Finds</b> (kin drops and the rest) or <b>Gear</b> (tools, seeds, weapons, armour). The whole camp's storage is dealt back out at once, and from then on:</p>
+<ul>
+<li>anything that comes into camp goes to a chest that asks for its kind first, then to a chest that takes anything;</li>
+<li>a chest that asks for something else is never used for it, so a full Metal chest does not spill into your Food chest;</li>
+<li>haulers carry each load to a chest that takes it;</li>
+<li>the Hearthstone always takes anything, so nothing is ever turned away for want of a filter.</li>
+</ul>
+<p><b>SORT EVERYTHING</b> on Camp &gt; Storage re-deals the lot whenever you like.</p>
+<p>Crafting takes ingredients from any box. Pull a chest down and what was in it moves to the other boxes. Bigger boxes come from <a href="#/research">research</a>: Large Chest, Bulk Silo, Ironbound Vault and Grand Vault. </p>
+<p>A <b>Frost Larder</b> is cold storage: 12 slots that take food only. Food goes there before anywhere else, and while the larder holds cold, <b>food kept inside it lasts three times as long</b> (food in ordinary chests and the Feed Box does not). Workers also get hungry 40% slower while it is cold. A Chilling kin fills it (the gauge floats over it), then is free for its other jobs, and comes back by itself to top it up at half and again in the evening. One larder holds a little over half a day of cold, so it stays cold all night while the kin sleeps.</p>
 
 <h2 id="feed">The Feed Box</h2>
 <p>Camp kin eat from the <b>Feed Box</b>, which has six slots of its own. Tap <b>FEED BOX</b> at it to see what is inside, put food in from your bag or from camp storage, or take it back out.</p>
@@ -425,7 +436,7 @@ html: `
 <tr><td>Cooked food (tarts, meals)</td><td>4 days</td><td>12 days</td></tr>
 </tbody></table></div>
 <ul>
-<li>A <b>Frost Larder</b> that holds cold makes everything keep three times as long.</li>
+<li>Food stored <b>in a Frost Larder</b> that holds cold keeps three times as long. Food anywhere else does not, so a second larder is worth more than a second food chest.</li>
 <li>Food in <b>your bag</b> does not spoil. Neither does output still sitting at a structure, or an outpost's stock.</li>
 <li>So a camp can only ever hold about a day or two of what its plots grow. Grow what your kin eat, cook the surplus, and chill the rest.</li>
 <li>The Camp overview shows how much is going off each minute, and a note at dawn says what was lost.</li>

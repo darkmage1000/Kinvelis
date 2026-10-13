@@ -43,17 +43,19 @@ namespace Wildbond
         }
 
         /// <summary>After a save's slots are loaded: the boxes are wherever the save left them (same structures, same order).</summary>
-        public void LayoutStorage()
+        public void LayoutStorage(int savedLayout = SaveLayout)
         {
             int idx = 0;
             foreach (var b in Buildings)
             {
-                int want = SlotsOf(b);
+                // a structure that has gained slots since the save was written had none then (larders, before layout 2)
+                int had = savedLayout < 2 && IsLarder(b) ? 0 : SlotsOf(b);
                 b.BoxStart = idx;
-                b.BoxLen = want;
-                idx += want;
+                b.BoxLen = had;
+                idx += had;
             }
             while (Storage.slots.Count < idx) Storage.slots.Add(new ItemStack());
+            RecalcStorage();   // ...and is given them now, in place, without moving anyone else's contents
         }
 
         int BoxTotal { get { int n = 0; foreach (var b in Buildings) n += b.BoxLen; return n; } }
@@ -99,6 +101,7 @@ namespace Wildbond
         {
             if (count <= 0 || string.IsNullOrEmpty(id) || b == null) return count;
             if (b.Def.feeds) return IsKinFood(id) ? b.Feed.Add(id, count) : count;
+            if (!BoxTakes(b, id)) return count;   // a filtered chest, or a larder being offered something that is not food
             var def = ContentDB.Item(id);
             int stack = def != null ? def.maxStack : 99;
             var slots = BoxSlots(b);
@@ -140,7 +143,7 @@ namespace Wildbond
         /// <summary>A hauler's load: into the box it walked to if there is room, the rest wherever the camp has space. Returns what did not fit anywhere.</summary>
         public int Deposit(Building box, string id, int count)
         {
-            int left = box != null && box.BoxLen > 0 ? BoxAdd(box, id, count) : count;
+            int left = box != null && box.BoxLen > 0 && BoxTakes(box, id) ? BoxAdd(box, id, count) : count;
             return left > 0 ? Storage.Add(id, left) : 0;
         }
 
@@ -204,7 +207,7 @@ namespace Wildbond
                 if (n <= 0) continue;
                 int moved = n - fb.Feed.Add(id, n);
                 if (moved <= 0) break;
-                Storage.Remove(id, moved);
+                TakeFood(id, moved);   // from the warm boxes first
                 have += moved;
             }
         }

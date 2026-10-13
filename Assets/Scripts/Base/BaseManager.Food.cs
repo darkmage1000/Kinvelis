@@ -8,8 +8,8 @@ namespace Wildbond
     ///
     /// **Spoiling.** Food in camp storage and in Feed Boxes goes off. Each kind keeps for a number of days
     /// (`KeepDays`); every few seconds a share of each pile is lost so that a pile left alone is mostly gone after
-    /// that long (an even decay, so there are no per-stack timers and nothing new in the save). A Frost Larder that
-    /// holds cold makes everything keep `ColdKeeps` times as long. The effect is that a camp can never sit on more of
+    /// that long (an even decay, so there are no per-stack timers and nothing new in the save). Food stored IN a
+    /// Frost Larder that holds cold keeps `ColdKeeps` times as long (BaseManager.Store). The effect is that a camp can never sit on more of
     /// a food than it makes in about its keeping time - no more ten-thousand-berry stores. The player's bag, an
     /// outpost's stock and output still waiting at a structure do not spoil. Runs near, far and while closed.
     ///
@@ -23,7 +23,7 @@ namespace Wildbond
         public const float KinFoodMul = 2.5f;
         /// <summary>Extra hunger per job level above 1 (level 4 = about double).</summary>
         public const float HungerPerWorkLevel = 0.35f;
-        /// <summary>A cold Frost Larder makes food keep this many times as long.</summary>
+        /// <summary>Food in a cold Frost Larder keeps this many times as long.</summary>
         public const float ColdKeeps = 3f;
         const float EatUntil = 92f;
         const int MaxBites = 40;
@@ -34,7 +34,7 @@ namespace Wildbond
         public static int BestWork(CreatureData d)
         {
             int m = 0;
-            foreach (var w in d.Species.work) m = Mathf.Max(m, d.WorkLevel(w.type));
+            foreach (var w in d.Species.work) m = Mathf.Max(m, d.JobLevel(w.type));   // what it can do, not what is switched on: appetite and beds don't change with the switches
             return m;
         }
 
@@ -71,14 +71,14 @@ namespace Wildbond
             return 2f;                                                  // other crops and wild plants
         }
 
-        /// <summary>The same in seconds, with the larder counted in.</summary>
-        public float KeepSeconds(ItemDef d) => KeepDays(d) * DaySeconds * (LarderActive ? ColdKeeps : 1f);
+        /// <summary>The same in seconds: cold = it is in a larder that holds cold.</summary>
+        public float KeepSeconds(ItemDef d, bool cold) => KeepDays(d) * DaySeconds * (cold ? ColdKeeps : 1f);
 
-        /// <summary>"keeps 1 day at camp" for item lines (the larder note is on the larder).</summary>
+        /// <summary>"keeps 1 day at camp, 3 in a cold larder" for item lines.</summary>
         public static string KeepText(ItemDef d)
         {
             float k = KeepDays(d);
-            return k <= 0f ? null : $"keeps {k:0.#} day{(k == 1f ? "" : "s")} in camp storage";
+            return k <= 0f ? null : $"keeps {k:0.#} day{(k == 1f ? "" : "s")} at camp, {k * ColdKeeps:0.#} in a cold larder";
         }
 
         void TickSpoil(float dt)
@@ -86,37 +86,9 @@ namespace Wildbond
             spoilTimer += dt;
             if (spoilTimer < SpoilStep) return;
             float step = spoilTimer; spoilTimer = 0f;
-            int lost = SpoilIn(Storage, "s", step);
-            foreach (var fb in FeedBoxes()) lost += SpoilIn(fb.Feed, fb.Uid, step);
+            int lost = SpoilStore(step);   // box by box: a cold larder's contents go three times slower
+            foreach (var fb in FeedBoxes()) lost += SpoilSlots(fb.Feed.slots, fb.Uid, step, false);
             if (lost > 0) { SpoiledToday += lost; GameEvents.RaiseInventoryChanged(); }
-        }
-
-        int SpoilIn(Inventory inv, string key, float step)
-        {
-            spoilCounts.Clear();
-            foreach (var s in inv.slots)
-            {
-                if (s.Empty) continue;
-                var def = ContentDB.Item(s.id);
-                if (def == null || def.foodValue <= 0f) continue;
-                spoilCounts.TryGetValue(s.id, out int n);
-                spoilCounts[s.id] = n + s.count;
-            }
-            if (spoilCounts.Count == 0) return 0;
-            spoilIds.Clear(); spoilIds.AddRange(spoilCounts.Keys);
-            int lost = 0;
-            foreach (var id in spoilIds)
-            {
-                float life = KeepSeconds(ContentDB.Item(id));
-                if (life <= 0f) continue;
-                string k = key + ":" + id;
-                spoilCarry.TryGetValue(k, out float carry);
-                carry += spoilCounts[id] * (1f - Mathf.Exp(-step / life));
-                int gone = Mathf.FloorToInt(carry);
-                if (gone > 0) { gone = inv.Remove(id, gone); carry -= gone; lost += gone; }
-                spoilCarry[k] = carry;
-            }
-            return lost;
         }
 
         /// <summary>Pieces of food going off per minute in camp storage and feed boxes at the current rate.</summary>
@@ -125,16 +97,16 @@ namespace Wildbond
             get
             {
                 float sum = 0f;
-                foreach (var s in Storage.slots) sum += SpoilRate(s);
-                foreach (var fb in FeedBoxes()) foreach (var s in fb.Feed.slots) sum += SpoilRate(s);
+                foreach (var b in Buildings) if (b.BoxLen > 0) { bool cold = IsCold(b); foreach (var s in BoxSlots(b)) sum += SpoilRate(s, cold); }
+                foreach (var fb in FeedBoxes()) foreach (var s in fb.Feed.slots) sum += SpoilRate(s, false);
                 return sum;
             }
         }
 
-        float SpoilRate(ItemStack s)
+        float SpoilRate(ItemStack s, bool cold)
         {
             if (s.Empty) return 0f;
-            float life = KeepSeconds(ContentDB.Item(s.id));
+            float life = KeepSeconds(ContentDB.Item(s.id), cold);
             return life > 0f ? s.count * (1f - Mathf.Exp(-60f / life)) : 0f;
         }
 
@@ -145,7 +117,7 @@ namespace Wildbond
             if (wasNight && !night)
             {
                 if (near && SpoiledToday >= 5)
-                    GameEvents.Say($"{SpoiledToday} pieces of food went off at camp since yesterday." + (LarderActive ? "" : HasBuilding("frost_larder") ? " A cold Frost Larder keeps food three times as long." : " A Frost Larder would keep it three times as long."), new Color(0.85f, 0.8f, 0.6f));
+                    GameEvents.Say($"{SpoiledToday} pieces of food went off at camp since yesterday." + (HasBuilding("frost_larder") ? " Food kept in a cold Frost Larder lasts three times as long." : " Food kept in a Frost Larder lasts three times as long."), new Color(0.85f, 0.8f, 0.6f));
                 SpoiledToday = 0;
             }
             wasNight = night;
