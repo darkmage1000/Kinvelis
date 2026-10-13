@@ -273,6 +273,15 @@ namespace Wildbond
         }
 
         /// <summary>The release: loose a stone / arrow / bolt at the kin picked when the draw began, or straight ahead.</summary>
+        /// <summary>What the weapon in hand adds to a blow or a shot: its element and status (blueprint weapons), or the Venomous ring's poison on a plain one.</summary>
+        void WeaponHit(out Element el, out StatusType st, out float chance)
+        {
+            el = Element.Normal; st = StatusType.None; chance = 0f;
+            var wd = Stats.HeldDef;
+            if (wd != null && wd.category == ItemCategory.Weapon && Stats.Bag.Count(wd.id) > 0) { el = wd.hitElement; st = wd.hitStatus; chance = wd.hitStatusChance; }
+            if (st == StatusType.None && Stats.HasEffect(UniqueEffect.Venomous)) { st = StatusType.Poison; chance = 0.2f; }
+        }
+
         void FireShot()
         {
             // the shot leaves the bag as it leaves the hand
@@ -306,7 +315,8 @@ namespace Wildbond
             float vanguard = comp != null && comp.Sp.perk == CompanionPerk.Vanguard ? 1.15f : 1f;
             // like a blow, a shot is scaled by how long it takes: slow weapons hit harder
             float power = Stats.WeaponDamage * vanguard * (info.time / HandStyles.BaseTime);
-            ProjectileSystem.I.FireShot(this, origin, dir.normalized * r.speed, power, r.range + 3f, r.shot, info.knock, t, r.turn);
+            WeaponHit(out var hitEl, out var hitSt, out float hitCh);
+            ProjectileSystem.I.FireShot(this, origin, dir.normalized * r.speed, power, r.range + 3f, r.shot, info.knock, t, r.turn, hitEl, hitSt, hitCh);
             SynthAudio.Play(swingStyle == HandStyle.Sling ? Sfx.Throw : Sfx.Shoot, swingStyle == HandStyle.Crossbow ? 0.75f : 1.25f, 0.55f);
             if (swingStyle == HandStyle.Crossbow) cam.Shake(0.18f);
             shotTarget = null;

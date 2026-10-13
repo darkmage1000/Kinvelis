@@ -25,7 +25,9 @@ namespace Wildbond
 
     public enum UniqueEffect
     {
-        None, Mercy, Tamer, Thornweave, Featherstep, Glowstone, Emberward, Frostward, Rimecloak, Kinbond, Magpie, Hearthlink
+        None, Mercy, Tamer, Thornweave, Featherstep, Glowstone, Emberward, Frostward, Rimecloak, Kinbond, Magpie, Hearthlink,
+        // blueprint gear (ContentSeed.Chests): one trick each. Append only - assets store the number.
+        Bloomwalk, GreenThumb, Buoyant, SeaFriend, Ventwalker, LastEmber, Mentor, NightsFavour, FenLantern, Mirage, SecondWind, LightStep, Venomous, Shimmerlure, Starcaller
     }
 
     /// <summary>Player equipment positions (index into PlayerStats.gear).</summary>
@@ -89,6 +91,21 @@ namespace Wildbond
                 case UniqueEffect.Kinbond: return "Kinbond";
                 case UniqueEffect.Magpie: return "Magpie";
                 case UniqueEffect.Hearthlink: return "Hearthlink";
+                case UniqueEffect.Bloomwalk: return "Bloomwalk";
+                case UniqueEffect.GreenThumb: return "Green Thumb";
+                case UniqueEffect.Buoyant: return "Buoyant";
+                case UniqueEffect.SeaFriend: return "Sea-friend";
+                case UniqueEffect.Ventwalker: return "Ventwalker";
+                case UniqueEffect.LastEmber: return "Last Ember";
+                case UniqueEffect.Mentor: return "Mentor";
+                case UniqueEffect.NightsFavour: return "Night's Favour";
+                case UniqueEffect.FenLantern: return "Fen Lantern";
+                case UniqueEffect.Mirage: return "Mirage";
+                case UniqueEffect.SecondWind: return "Second Wind";
+                case UniqueEffect.LightStep: return "Light Step";
+                case UniqueEffect.Venomous: return "Venomous";
+                case UniqueEffect.Shimmerlure: return "Shimmerlure";
+                case UniqueEffect.Starcaller: return "Starcaller";
             }
             return "";
         }
@@ -108,6 +125,21 @@ namespace Wildbond
                 case UniqueEffect.Kinbond: return "Companion +20% ATK and DEF. Your ATK -10%.";
                 case UniqueEffect.Magpie: return "25% chance for double loot from defeated kin; felled nodes may drop a bonus item.";
                 case UniqueEffect.Hearthlink: return "Camp workers are 20% faster while you're away from camp.";
+                case UniqueEffect.Bloomwalk: return "Your health comes back twice as fast.";
+                case UniqueEffect.GreenThumb: return "Now and then, finishing off a plant, tree or rock turns up a Tether Seed.";
+                case UniqueEffect.Buoyant: return "Swimming costs no stamina.";
+                case UniqueEffect.SeaFriend: return "+15% capture chance on Tide kin.";
+                case UniqueEffect.Ventwalker: return "Sprinting uses 30% less stamina.";
+                case UniqueEffect.LastEmber: return "+25% attack while you are under half health.";
+                case UniqueEffect.Mentor: return "Your kin earn 15% more XP.";
+                case UniqueEffect.NightsFavour: return "+12% capture chance at night.";
+                case UniqueEffect.FenLantern: return "Your kin get hungry 20% slower, in your party and at camp.";
+                case UniqueEffect.Mirage: return "12% of hits miss you entirely.";
+                case UniqueEffect.SecondWind: return "Once every 3 minutes, a blow that would down you leaves you at 30% health instead.";
+                case UniqueEffect.LightStep: return "Rolling costs half the stamina.";
+                case UniqueEffect.Venomous: return "Hits with a weapon that has no status of its own have a 20% chance to poison.";
+                case UniqueEffect.Shimmerlure: return "Shimmer kin appear 50% more often.";
+                case UniqueEffect.Starcaller: return "Your companion's skills recharge 15% faster.";
             }
             return "";
         }

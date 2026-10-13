@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: cinder_signet
   displayName: Cinder Signet
-  description: A coal that never quite goes out, set in iron.
+  description: A coal that glows hotter the worse things get.
   category: 8
   maxStack: 1
   iconColor: {r: 0.2901961, g: 0.20392157, b: 0.20392157, a: 1}
@@ -29,6 +29,9 @@ MonoBehaviour:
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0
@@ -37,11 +40,8 @@ MonoBehaviour:
   mods:
   - stat: 1
     element: 0
-    value: 4
-  - stat: 11
-    element: 0
-    value: 0.3
-  unique: 0
+    value: 2
+  unique: 17
   gearStyle: 3
   trimColor: {r: 1, g: 0.47843137, b: 0.16470589, a: 1}
   alphaDrop: 0

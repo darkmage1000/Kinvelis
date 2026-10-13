@@ -115,12 +115,13 @@ namespace Wildbond
         }
 
         /// <summary>A ranged weapon's shot. 'home' is the kin it was loosed at (may be null): it leans toward it by up to 'turn' degrees a second.</summary>
-        public void FireShot(ICombatant owner, Vector3 origin, Vector3 velocity, float power, float range, ShotKind kind, float knock, CreatureActor home, float turn)
+        public void FireShot(ICombatant owner, Vector3 origin, Vector3 velocity, float power, float range, ShotKind kind, float knock, CreatureActor home, float turn,
+                             Element element = Element.Normal, StatusType status = StatusType.None, float statusChance = 0f)
         {
             var p = Take(MeshFor(kind), origin);
             p.owner = owner; p.vel = velocity; p.life = range / Mathf.Max(1f, velocity.magnitude); p.boost = 1f;
-            p.power = power; p.element = Element.Normal; p.status = StatusType.None; p.statusChance = 0f; p.knock = knock;
-            p.color = kind == ShotKind.Stone ? new Color(0.7f, 0.7f, 0.72f) : new Color(0.95f, 0.9f, 0.75f);
+            p.power = power; p.element = element; p.status = status; p.statusChance = statusChance; p.knock = knock;
+            p.color = element != Element.Normal ? ElementInfo.Color(element) : kind == ShotKind.Stone ? new Color(0.7f, 0.7f, 0.72f) : new Color(0.95f, 0.9f, 0.75f);
             p.kind = kind;
             p.home = home; p.turn = turn;
             if (velocity.sqrMagnitude > 0.01f) p.visual.rotation = Quaternion.LookRotation(velocity);

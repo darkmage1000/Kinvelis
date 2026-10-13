@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: starlight_bracelet
   displayName: Starlight Bracelet
-  description: A string of starcrystal chips. Kin follow it like a lure.
+  description: A string of starcrystal chips that hums when your partner is near.
   category: 8
   maxStack: 1
   iconColor: {r: 0.6901961, g: 0.627451, b: 1, a: 1}
@@ -29,6 +29,9 @@ MonoBehaviour:
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0
@@ -37,11 +40,8 @@ MonoBehaviour:
   mods:
   - stat: 9
     element: 0
-    value: 0.12
-  - stat: 6
-    element: 0
-    value: 0.06
-  unique: 0
+    value: 0.08
+  unique: 26
   gearStyle: 2
   trimColor: {r: 0.9098039, g: 1, b: 0.972549, a: 1}
   alphaDrop: 0

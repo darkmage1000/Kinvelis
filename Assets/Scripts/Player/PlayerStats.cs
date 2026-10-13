@@ -155,11 +155,11 @@ namespace Wildbond
         public float ClimbBonus => 0.12f * RelicCount(RelicType.CragClaw);
         public float KinStaminaMul => Mathf.Max(0.4f, 1f - 0.06f * RelicCount(RelicType.Kinspring));
         public float DamageTakenMul => Mathf.Max(0.5f, 1f - 0.03f * RelicCount(RelicType.Wardstone));
-        public float KinXpMul => 1f + 0.04f * RelicCount(RelicType.Kinheart);
-        public float ShimmerMul => 1f + 0.08f * RelicCount(RelicType.Glintstone);
+        public float KinXpMul => (1f + 0.04f * RelicCount(RelicType.Kinheart)) * (HasEffect(UniqueEffect.Mentor) ? 1.15f : 1f);
+        public float ShimmerMul => (1f + 0.08f * RelicCount(RelicType.Glintstone)) * (HasEffect(UniqueEffect.Shimmerlure) ? 1.5f : 1f);
         /// <summary>A Sporecap Draught is working: no Poison.</summary>
         public bool PoisonWarded => Gear[StatKind.PoisonWard] > 0f;
-        public float KinHungerMul => Mathf.Max(0.5f, 1f - 0.04f * RelicCount(RelicType.Hearthmoss));
+        public float KinHungerMul => Mathf.Max(0.5f, 1f - 0.04f * RelicCount(RelicType.Hearthmoss)) * (HasEffect(UniqueEffect.FenLantern) ? 0.8f : 1f);
         public float CraftSpeedMul => 1f + Rank(PlayerSkill.Craftsmanship) * 0.08f;
 
         // ---- meal buff: one at a time, counted in world time ----
@@ -198,7 +198,8 @@ namespace Wildbond
         public int BagSize => 30 + bonusSlots;
         public float BaseAttack => 10f + (level - 1) * 1.6f;
         public float BaseDefense => 8f + (level - 1) * 1.5f;
-        public float Attack => (BaseAttack + Gear[StatKind.Attack]) * (HasEffect(UniqueEffect.Kinbond) ? 0.9f : 1f);
+        public float Attack => (BaseAttack + Gear[StatKind.Attack]) * (HasEffect(UniqueEffect.Kinbond) ? 0.9f : 1f)
+                             * (HasEffect(UniqueEffect.LastEmber) && hp >= 0f && hp < MaxHp * 0.5f ? 1.25f : 1f);
         public float Defense => BaseDefense + Rank(PlayerSkill.Toughness) * 3f + Gear[StatKind.Defense];
         public float CritChance => 0.08f + Gear[StatKind.Crit];
         public float MoveMul => Mathf.Max(0.5f, 1f + Gear[StatKind.MoveSpeed] + 0.02f * RelicCount(RelicType.Windfeather));

@@ -138,6 +138,9 @@ namespace Wildbond
             if (d.weaponDamage > 0)
             {
                 parts.Add($"Attack power {d.weaponDamage:0}");
+                if (d.hitElement != Element.Normal || d.hitStatus != StatusType.None)
+                    parts.Add((d.hitElement != Element.Normal ? $"{d.hitElement} damage" : "") + (d.hitElement != Element.Normal && d.hitStatus != StatusType.None ? ", " : "")
+                            + (d.hitStatus != StatusType.None ? $"{d.hitStatusChance * 100f:0}% {d.hitStatus}" : ""));
                 string how = HandStyles.Describe(HandStyles.Of(d));
                 if (how != null) parts.Add(how);
             }

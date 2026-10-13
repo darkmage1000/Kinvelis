@@ -29,6 +29,9 @@ MonoBehaviour:
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0
@@ -37,11 +40,8 @@ MonoBehaviour:
   mods:
   - stat: 9
     element: 0
-    value: 0.07
-  - stat: 12
-    element: 3
-    value: 0.15
-  unique: 0
+    value: 0.03
+  unique: 15
   gearStyle: 2
   trimColor: {r: 1, g: 0.95686275, b: 0.9411765, a: 1}
   alphaDrop: 0

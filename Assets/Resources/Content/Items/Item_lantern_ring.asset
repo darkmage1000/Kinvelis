@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: lantern_ring
   displayName: Lantern Ring
-  description: A fen light caught in a loop of bog iron. Your hands keep going.
+  description: A fen light caught in a loop of bog iron. Kin are calmer near it,
+    and eat less.
   category: 8
   maxStack: 1
   iconColor: {r: 1, g: 0.827451, b: 0.41568628, a: 1}
@@ -29,19 +30,19 @@ MonoBehaviour:
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0
   equipSlot: 6
   rarity: 2
   mods:
-  - stat: 8
-    element: 0
-    value: 0.12
   - stat: 5
     element: 0
-    value: 0.12
-  unique: 0
+    value: 0.1
+  unique: 20
   gearStyle: 1
   trimColor: {r: 0.3529412, g: 0.41568628, b: 0.2901961, a: 1}
   alphaDrop: 0

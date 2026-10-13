@@ -33,6 +33,11 @@ namespace Wildbond
 
         [Header("Weapon")]
         public float weaponDamage;
+        [Tooltip("The element its blows and shots carry (Normal = plain). Strong and weak against kin like any elemental hit.")]
+        public Element hitElement;
+        [Tooltip("A status its hits can leave, and how often (0-1). A status also makes a kin easier to catch.")]
+        public StatusType hitStatus;
+        public float hitStatusChance;
 
         [Header("Capture Seed")]
         public float captureMult = 1f;

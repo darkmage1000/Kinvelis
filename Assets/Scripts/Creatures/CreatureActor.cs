@@ -770,7 +770,8 @@ namespace Wildbond
             pendingAbility = i;
             pendingTarget = target;
             windup = a.windup * (Data.alpha ? 1.25f : 1f);
-            cooldowns[i] = a.cooldown * Random.Range(0.9f, 1.2f) * (Mode == CreatureMode.Companion && Data.BondLevel >= 3 ? 0.9f : 1f);
+            cooldowns[i] = a.cooldown * Random.Range(0.9f, 1.2f) * (Mode == CreatureMode.Companion && Data.BondLevel >= 3 ? 0.9f : 1f)
+                         * (Mode == CreatureMode.Companion && GameManager.I.Player.Stats.HasEffect(UniqueEffect.Starcaller) ? 0.85f : 1f);
             if (a.kind == AbilityKind.Burst) Fx.Ring(transform.position, a.color, a.radius * 0.5f, 18);
             Rig.Flash(a.color * 0.8f, 0.08f);
         }

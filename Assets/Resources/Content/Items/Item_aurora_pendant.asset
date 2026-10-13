@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: aurora_pendant
   displayName: Aurora Pendant
-  description: It shimmers the way the night sky does up there. Kin stop to look.
+  description: It shimmers the way the night sky does up there. After dark, kin stop
+    to look.
   category: 8
   maxStack: 1
   iconColor: {r: 0.6039216, g: 0.8784314, b: 1, a: 1}
@@ -29,22 +30,19 @@ MonoBehaviour:
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0
   equipSlot: 4
   rarity: 3
   mods:
-  - stat: 9
-    element: 0
-    value: 0.08
   - stat: 4
     element: 0
     value: 15
-  - stat: 12
-    element: 4
-    value: 0.15
-  unique: 0
+  unique: 19
   gearStyle: 2
   trimColor: {r: 0.78431374, g: 0.627451, b: 1, a: 1}
   alphaDrop: 0

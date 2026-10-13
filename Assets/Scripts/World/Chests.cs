@@ -42,14 +42,15 @@ namespace Wildbond
         /// <summary>Chest-only recipes: (recipe id = item id, the land whose chests hold it). Items are in ContentSeed.Chests.cs.</summary>
         public static readonly Blueprint[] Blueprints =
         {
-            B("meadow_charm", BiomeId.Meadow), B("forager_band", BiomeId.Meadow),
-            B("tidecaller_bangle", BiomeId.Isles), B("coral_ring", BiomeId.Isles),
-            B("cinder_signet", BiomeId.Badlands), B("ashwalker_amulet", BiomeId.Badlands),
-            B("rimeglass_ring", BiomeId.Peaks), B("aurora_pendant", BiomeId.Peaks),
-            B("mire_bracer", BiomeId.Swamp), B("lantern_ring", BiomeId.Swamp),
-            B("sunscour_band", BiomeId.Desert), B("oasis_amulet", BiomeId.Desert),
-            B("blightfang_ring", BiomeId.Blight), B("miasma_ward", BiomeId.Blight),
-            B("starlight_bracelet", BiomeId.Glow), B("nebula_ring", BiomeId.Glow),
+            // a weapon, a piece of armour and an accessory for each land
+            B("honey_mace", BiomeId.Meadow), B("petal_crown", BiomeId.Meadow), B("forager_band", BiomeId.Meadow),
+            B("tidefang_harpoon", BiomeId.Isles), B("shellback_mantle", BiomeId.Isles), B("coral_ring", BiomeId.Isles),
+            B("cinder_cleaver", BiomeId.Badlands), B("ventwalker_greaves", BiomeId.Badlands), B("cinder_signet", BiomeId.Badlands),
+            B("rimeshard_bow", BiomeId.Peaks), B("frostveil_hood", BiomeId.Peaks), B("aurora_pendant", BiomeId.Peaks),
+            B("mirefang", BiomeId.Swamp), B("reedweave_cloak", BiomeId.Swamp), B("lantern_ring", BiomeId.Swamp),
+            B("sunspike_glaive", BiomeId.Desert), B("sunwrap", BiomeId.Desert), B("oasis_amulet", BiomeId.Desert),
+            B("blightcoil_crossbow", BiomeId.Blight), B("stalker_boots", BiomeId.Blight), B("blightfang_ring", BiomeId.Blight),
+            B("starfall_blade", BiomeId.Glow), B("starweave_mantle", BiomeId.Glow), B("starlight_bracelet", BiomeId.Glow),
         };
         static Blueprint B(string r, BiomeId l) => new Blueprint { recipe = r, land = l };
 

@@ -83,6 +83,8 @@ namespace Wildbond
             p *= Nightfall.CatchMul;                                   // drowsy kin on a meadow night
             p *= DexRewards.MilestoneCatchMul(stats) * DexRewards.CatchMul(stats, c.Sp.id);   // Dex milestones + knowing the species
             if (stats.HasEffect(UniqueEffect.Tamer) && hpFrac < 0.5f) p *= 1.3f;
+            if (stats.HasEffect(UniqueEffect.SeaFriend) && (c.Sp.element1 == Element.Tide || c.Sp.element2 == Element.Tide)) p *= 1.15f;
+            if (stats.HasEffect(UniqueEffect.NightsFavour) && EnvironmentSystem.I != null && EnvironmentSystem.I.IsNight) p *= 1.12f;
             if (sneak) p *= 1.35f;
             p *= SeedBonus(seedItem);                                  // better seeds: a modest boost (their real job is higher-level kin)
             int over = c.Level - SeedLevelCap(seedItem);

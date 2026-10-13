@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: blightfang_ring
   displayName: Blightfang Ring
-  description: A splinter of blight ore, barbed. It wants to bite.
+  description: A barbed splinter of blight ore. Everything you hold picks up its
+    bite.
   category: 8
   maxStack: 1
   iconColor: {r: 0.41568628, g: 0.2901961, b: 0.5411765, a: 1}
@@ -29,6 +30,9 @@ MonoBehaviour:
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0
@@ -37,11 +41,8 @@ MonoBehaviour:
   mods:
   - stat: 3
     element: 0
-    value: 0.1
-  - stat: 1
-    element: 0
-    value: 5
-  unique: 0
+    value: 0.06
+  unique: 24
   gearStyle: 4
   trimColor: {r: 0.72156864, g: 1, b: 0.2509804, a: 1}
   alphaDrop: 0

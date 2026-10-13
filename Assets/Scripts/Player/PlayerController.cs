@@ -254,9 +254,9 @@ namespace Wildbond
             var compPerk = GameManager.I.Party.Companion != null ? GameManager.I.Party.Companion.Sp.perk : CompanionPerk.None;
             TickStatusAndExposure(dt);
             float staMul = (compPerk == CompanionPerk.Tailwind ? 0.65f : 1f) * (IsMounted ? 0.5f * mount.Data.MountStaminaMul * q.KinStaminaMul : 1f) * WorldRules.Current.staminaDrain * (1f + 0.3f * HeatExposure);
-            if (IsSprinting) { q.stamina -= sprintCost * staMul * dt; staminaDelay = 0.8f; }
+            if (IsSprinting) { q.stamina -= sprintCost * staMul * (q.HasEffect(UniqueEffect.Ventwalker) ? 0.7f : 1f) * dt; staminaDelay = 0.8f; }
             else if (Gliding) { q.stamina -= GlideDrain * dt; staminaDelay = 0.8f; if (q.stamina <= 0f) SetGliding(false); }
-            else if (IsSwimming && wishMag > 0.1f && !IsMounted && !WorldRules.Current.safeTravel) { q.stamina -= 4f * q.SwimStaminaMul * dt; staminaDelay = 0.8f; }
+            else if (IsSwimming && wishMag > 0.1f && !IsMounted && !WorldRules.Current.safeTravel && !q.HasEffect(UniqueEffect.Buoyant)) { q.stamina -= 4f * q.SwimStaminaMul * dt; staminaDelay = 0.8f; }
             else
             {
                 staminaDelay -= dt;
@@ -274,7 +274,7 @@ namespace Wildbond
                 starveTick -= dt;
                 if (starveTick <= 0f) { starveTick = 1f; Damage(1.5f, false); }
             }
-            else if (q.hunger > 40f && Time.time - lastHurt > 6f && q.hp < q.MaxHp) q.hp = Mathf.Min(q.MaxHp, q.hp + 0.8f * dt);
+            else if (q.hunger > 40f && Time.time - lastHurt > 6f && q.hp < q.MaxHp) q.hp = Mathf.Min(q.MaxHp, q.hp + 0.8f * (q.HasEffect(UniqueEffect.Bloomwalk) ? 2f : 1f) * dt);
             // Blightmoor: its pools are poison to wade through (riding a kin keeps you out of it)
             var envNow = EnvironmentSystem.I;
             if (envNow != null && envNow.CurrentBiome == BiomeId.Blight && !IsMounted)
@@ -302,7 +302,7 @@ namespace Wildbond
             invuln -= dt;
             if (InputHub.Down(Btn.Dodge) && dodgeTimer <= 0f && q.stamina >= dodgeCost * 0.5f && !IsSwimming && !IsMounted)
             {
-                q.stamina -= dodgeCost * staMul; staminaDelay = 0.8f;
+                q.stamina -= dodgeCost * staMul * (q.HasEffect(UniqueEffect.LightStep) ? 0.5f : 1f); staminaDelay = 0.8f;
                 dodgeTimer = dodgeTime;
                 dodgeDir = wishMag > 0.1f ? wish : transform.forward;
                 invuln = dodgeTime + 0.05f;
@@ -720,7 +720,8 @@ namespace Wildbond
                 if (a == null || !a.IsAlive) continue;
                 Vector3 d = a.Position - pos; d.y = 0;
                 float power = Stats.WeaponDamage * (finisher ? 1.5f : 1f) * vanguard * weight;
-                CombatSystem.Apply(this, a, power, Element.Normal, StatusType.None, 0f, d.normalized * (info.knock * (finisher ? 2f : 1f)));
+                WeaponHit(out var hitEl, out var hitSt, out float hitCh);   // an elemental weapon, or the Venomous ring
+                CombatSystem.Apply(this, a, power, hitEl, hitSt, hitCh, d.normalized * (info.knock * (finisher ? 2f : 1f)));
             }
             if (swingHits.Count > 0)
             {
@@ -864,6 +865,7 @@ namespace Wildbond
                 }
                 if (Stats.HasEffect(UniqueEffect.Magpie) && Random.value < 0.2f)
                     GameManager.I.GiveItem(!string.IsNullOrEmpty(info.bonusItem) ? info.bonusItem : info.item, 1, fxPos);
+                if (Stats.HasEffect(UniqueEffect.GreenThumb) && Random.value < 0.1f) GameManager.I.GiveItem("tether_seed", 1, fxPos);
                 ChunkManager.I.Deplete(n);
                 Fx.Burst(fxPos, itemCol, 12, 4f, 0.3f, 0.6f);
                 GameManager.I.AddPlayerXp(2);
@@ -895,6 +897,12 @@ namespace Wildbond
         {
             if (dead || invuln > 0f) return;
             if (hit.attacker != null) { LastAttacker = hit.attacker; LastAttackedTime = Time.time; }
+            // Mirage: now and then the blow lands where you only seemed to be
+            if (hit.damage > 0f && Stats.HasEffect(UniqueEffect.Mirage) && Random.value < 0.12f)
+            {
+                HUD.DamageNumber(transform.position + Vector3.up * 2.4f, "MISS", new Color(1f, 0.9f, 0.6f), 0.9f);
+                return;
+            }
             // Guard: a companion with its shield planted takes this one for you
             var guard = GameManager.I.Party.Companion;
             if (guard != null && guard.TakeGuardFor(this, hit)) return;
@@ -916,6 +924,8 @@ namespace Wildbond
             cam.Shake(0.35f);
         }
 
+        float secondWindAt = -999f;
+
         void Damage(float amount, bool fromHit)
         {
             if (dead) return;
@@ -930,6 +940,17 @@ namespace Wildbond
                 Fx.Sparkle(transform.position + Vector3.up, new Color(0.6f, 1f, 0.8f), 18, 0.8f);
                 HUD.DamageNumber(transform.position + Vector3.up * 2.4f, "BACK UP!", new Color(0.6f, 1f, 0.8f), 1.1f);
                 SynthAudio.Play(Sfx.Summon, 1.3f, 0.6f);
+                return;
+            }
+            if (Stats.hp <= 0f && Stats.HasEffect(UniqueEffect.SecondWind) && Time.time - secondWindAt > 180f)
+            {
+                // Second Wind: once every three minutes the blow that would have downed you does not
+                secondWindAt = Time.time;
+                Stats.hp = Stats.MaxHp * 0.3f;
+                invuln = Mathf.Max(invuln, 1.5f);
+                Fx.Sparkle(transform.position + Vector3.up, new Color(0.4f, 0.9f, 0.75f), 18, 0.8f);
+                HUD.DamageNumber(transform.position + Vector3.up * 2.4f, "SECOND WIND", new Color(0.5f, 1f, 0.85f), 1.1f);
+                SynthAudio.Play(Sfx.Summon, 1.2f, 0.6f);
                 return;
             }
             if (Stats.hp <= 0f)
@@ -1092,10 +1113,11 @@ namespace Wildbond
                 case "short_bow":
                 case "sunsteel_longbow":
                 case "starsteel_greatbow":
+                case "rimeshard_bow":
                 {
                     // held by the middle with the limbs along Z (HandStyles stands it upright); the belly bows away from
                     // the archer (-Y) and the string runs tip to tip on the archer's side (+Y)
-                    float half = id == "short_bow" ? 0.52f : id == "sunsteel_longbow" ? 0.66f : 0.78f;
+                    float half = id == "short_bow" ? 0.52f : id == "rimeshard_bow" ? 0.6f : id == "sunsteel_longbow" ? 0.66f : 0.78f;
                     float bend = half * 0.3f;
                     bool fine = id != "short_bow";
                     Color limb = fine ? tint : wood, limbLt = fine ? tintLt : new Color(0.68f, 0.5f, 0.3f);
@@ -1117,14 +1139,31 @@ namespace Wildbond
                         mb.Cone(MeshBuilder.TRS(new Vector3(0, tipY, half + 0.04f), new Vector3(90, 0, 0), new Vector3(0.05f, 0.12f, 0.05f)), tintLt, 4);
                         mb.Cone(MeshBuilder.TRS(new Vector3(0, tipY, -half - 0.04f), new Vector3(-90, 0, 0), new Vector3(0.05f, 0.12f, 0.05f)), tintLt, 4);
                         if (id == "starsteel_greatbow") mb.Sphere(MeshBuilder.TRS(new Vector3(0, tipY, 0f), Vector3.zero, new Vector3(0.05f, 0.05f, 0.05f)), new Color(1f, 1f, 1f, 0f), 6, 4);
+                        if (id == "rimeshard_bow")
+                        {
+                            // shards of rime standing off each limb, lit from inside
+                            for (int side = -1; side <= 1; side += 2)
+                                for (int k = 1; k <= 3; k++)
+                                {
+                                    float tm = k / 4f;
+                                    mb.Crystal(MeshBuilder.TRS(new Vector3(0, bend * tm * tm - 0.02f, side * tm * half), new Vector3(180, 0, 0), new Vector3(0.05f, 0.14f - k * 0.02f, 0.05f)), tintLt, new Color(1f, 1f, 1f, 0f));
+                                }
+                        }
                     }
                     break;
                 }
                 case "ingot_crossbow":
                 case "bogsteel_crossbow":
+                case "blightcoil_crossbow":
                 {
                     // stock along Z (it points where it shoots), the prod across the front, a stirrup on the nose
-                    bool heavy = id == "bogsteel_crossbow";
+                    bool heavy = id != "ingot_crossbow";
+                    if (id == "blightcoil_crossbow")
+                    {
+                        // a coil of blight ore round the stock, and a sick green light where the bolt sits
+                        for (int k = 0; k < 4; k++) mb.Cylinder(MeshBuilder.TRS(new Vector3(0, -0.01f, 0.02f + k * 0.09f), new Vector3(90, 0, 0), new Vector3(0.1f, 0.03f, 0.11f)), tintDk, 6);
+                        mb.Sphere(MeshBuilder.TRS(new Vector3(0, 0.05f, 0.2f), Vector3.zero, new Vector3(0.06f, 0.06f, 0.06f)), new Color(0.72f, 1f, 0.25f, 0f), 6, 4);
+                    }
                     Color prod = heavy ? tint : metal, prodLt = heavy ? tintLt : Color.white;
                     float span = heavy ? 0.42f : 0.34f;
                     mb.Box(MeshBuilder.TRS(new Vector3(0, -0.01f, 0.22f), Vector3.zero, new Vector3(0.06f, 0.07f, 0.74f)), wood, new Color(0.62f, 0.44f, 0.28f));
@@ -1142,6 +1181,74 @@ namespace Wildbond
                     mb.Box(MeshBuilder.TRS(new Vector3(0, -0.02f, 0.63f), Vector3.zero, new Vector3(0.1f, 0.012f, 0.07f)), prod);
                     break;
                 }
+                case "honey_mace":
+                    // a stout stick with a wild hive bound to the end: a fat comb, cells standing out of it, a drip
+                    mb.Cylinder(MeshBuilder.TRS(new Vector3(0, 0f, 0.28f), new Vector3(90, 0, 0), new Vector3(0.065f, 0.6f, 0.065f)), wood, new Color(0.62f, 0.44f, 0.28f), 6, 1f, true);
+                    mb.Sphere(MeshBuilder.TRS(new Vector3(0, 0f, 0.68f), Vector3.zero, new Vector3(0.28f, 0.26f, 0.32f)), tint, tintDk, 8, 6);
+                    for (int k = 0; k < 7; k++)
+                    {
+                        float a = k * 51.4f * Mathf.Deg2Rad;
+                        mb.Sphere(MeshBuilder.TRS(new Vector3(Mathf.Cos(a) * 0.115f, Mathf.Sin(a) * 0.105f, 0.68f + (k % 2 == 0 ? 0.07f : -0.06f)), Vector3.zero, new Vector3(0.095f, 0.095f, 0.095f)), tintLt, 6, 4);
+                    }
+                    mb.Cylinder(MeshBuilder.TRS(new Vector3(0, 0f, 0.53f), new Vector3(90, 0, 0), new Vector3(0.11f, 0.05f, 0.11f)), new Color(0.75f, 0.68f, 0.5f), 6);
+                    mb.Sphere(MeshBuilder.TRS(new Vector3(0.02f, -0.15f, 0.72f), Vector3.zero, new Vector3(0.05f, 0.09f, 0.05f)), new Color(1f, 0.82f, 0.3f, 0f), 6, 4);
+                    break;
+                case "tidefang_harpoon":
+                    // long shaft held a third of the way up; a flat saltglass head with two barbs swept back, a float on the butt
+                    mb.Cylinder(MeshBuilder.TRS(new Vector3(0, 0f, 0.28f), new Vector3(90, 0, 0), new Vector3(0.05f, 1.36f, 0.05f)), wood, wood, 5, 1f, true);
+                    mb.Cylinder(MeshBuilder.TRS(new Vector3(0, 0f, 0.92f), new Vector3(90, 0, 0), new Vector3(0.075f, 0.12f, 0.075f)), tintDk, 6);
+                    mb.Cone(MeshBuilder.TRS(new Vector3(0, 0f, 1.14f), new Vector3(90, 0, 0), new Vector3(0.05f, 0.36f, 0.16f)), tint, 4);
+                    mb.Box(MeshBuilder.TRS(new Vector3(0, -0.09f, 1.0f), new Vector3(38, 0, 0), new Vector3(0.03f, 0.045f, 0.2f)), tintLt);
+                    mb.Box(MeshBuilder.TRS(new Vector3(0, 0.09f, 1.0f), new Vector3(-38, 0, 0), new Vector3(0.03f, 0.045f, 0.2f)), tintLt);
+                    mb.Sphere(MeshBuilder.TRS(new Vector3(0, 0f, -0.43f), Vector3.zero, new Vector3(0.1f, 0.1f, 0.1f)), new Color(1f, 0.48f, 0.54f), 6, 4);
+                    break;
+                case "cinder_cleaver":
+                    // a heavy blade that widens toward a squared tip; the edge (-Y) still glows
+                    mb.Cylinder(MeshBuilder.TRS(new Vector3(0, 0f, 0.1f), new Vector3(90, 0, 0), new Vector3(0.055f, 0.22f, 0.055f)), grip, 5, 1f, true);
+                    mb.Box(MeshBuilder.TRS(new Vector3(0, 0f, 0.23f), Vector3.zero, new Vector3(0.07f, 0.22f, 0.05f)), tintDk);
+                    for (int k = 0; k < 5; k++)
+                    {
+                        float t = k / 4f;
+                        mb.Box(MeshBuilder.TRS(new Vector3(0, -0.02f - t * 0.035f, 0.33f + t * 0.5f), Vector3.zero, new Vector3(0.045f, 0.15f + t * 0.11f, 0.135f)), tint, tintLt);
+                    }
+                    mb.Box(MeshBuilder.TRS(new Vector3(0, -0.145f, 0.6f), new Vector3(-4, 0, 0), new Vector3(0.05f, 0.03f, 0.62f)), new Color(1f, 0.5f, 0.12f, 0f));
+                    mb.Box(MeshBuilder.TRS(new Vector3(0, 0.07f, 0.62f), Vector3.zero, new Vector3(0.05f, 0.04f, 0.1f)), tintDk);
+                    break;
+                case "mirefang":
+                    // a wavy knife: the blade snakes side to side as it narrows, a green bead in the pommel
+                    mb.Cylinder(MeshBuilder.TRS(new Vector3(0, 0f, 0.07f), new Vector3(90, 0, 0), new Vector3(0.05f, 0.16f, 0.05f)), grip, 5, 1f, true);
+                    mb.Box(MeshBuilder.TRS(new Vector3(0, 0f, 0.16f), Vector3.zero, new Vector3(0.06f, 0.15f, 0.035f)), tintDk);
+                    for (int k = 0; k < 7; k++)
+                    {
+                        float t = k / 6f;
+                        mb.Box(MeshBuilder.TRS(new Vector3(0, Mathf.Sin(t * 7.2f) * 0.028f, 0.2f + t * 0.38f), new Vector3(Mathf.Cos(t * 7.2f) * -18f, 0, 0), new Vector3(0.03f, 0.085f - t * 0.05f, 0.075f)), tint, tintLt);
+                    }
+                    mb.Sphere(MeshBuilder.TRS(new Vector3(0, 0f, -0.03f), Vector3.zero, new Vector3(0.07f, 0.07f, 0.07f)), new Color(0.72f, 1f, 0.3f, 0f), 6, 4);
+                    break;
+                case "sunspike_glaive":
+                    // a pole with a crescent of sun ore (edge toward -Y) round a small bright disc
+                    mb.Cylinder(MeshBuilder.TRS(new Vector3(0, 0f, 0.3f), new Vector3(90, 0, 0), new Vector3(0.055f, 1.5f, 0.055f)), wood, wood, 5, 1f, true);
+                    mb.Cylinder(MeshBuilder.TRS(new Vector3(0, 0f, 1.04f), new Vector3(90, 0, 0), new Vector3(0.09f, 0.1f, 0.09f)), tintDk, 6);
+                    for (int k = 0; k < 7; k++)
+                    {
+                        float a = (-70f + k * 23f) * Mathf.Deg2Rad;
+                        mb.Box(MeshBuilder.TRS(new Vector3(0, -Mathf.Cos(a) * 0.2f + 0.04f, 1.3f + Mathf.Sin(a) * 0.3f), new Vector3(-a * Mathf.Rad2Deg, 0, 0), new Vector3(0.035f, 0.11f - Mathf.Abs(k - 3) * 0.022f, 0.13f)), tint, tintLt);
+                    }
+                    mb.Sphere(MeshBuilder.TRS(new Vector3(0, 0.03f, 1.3f), Vector3.zero, new Vector3(0.05f, 0.13f, 0.13f)), new Color(1f, 0.95f, 0.6f, 0f), 8, 5);
+                    mb.Cone(MeshBuilder.TRS(new Vector3(0, 0f, 1.66f), new Vector3(90, 0, 0), new Vector3(0.04f, 0.16f, 0.06f)), tintLt, 4);
+                    break;
+                case "starfall_blade":
+                    // long, slim and bright: a star for a guard, a seam of light down the blade, a chip of it trailing at the tip
+                    mb.Cylinder(MeshBuilder.TRS(new Vector3(0, 0f, 0.1f), new Vector3(90, 0, 0), new Vector3(0.05f, 0.22f, 0.05f)), grip, 5, 1f, true);
+                    mb.Crystal(MeshBuilder.TRS(new Vector3(0, 0f, 0.22f), new Vector3(0, 0, 0), new Vector3(0.07f, 0.2f, 0.07f)), tint, tintLt);
+                    mb.Crystal(MeshBuilder.TRS(new Vector3(0, 0f, 0.22f), new Vector3(180, 0, 0), new Vector3(0.07f, 0.2f, 0.07f)), tint, tintLt);
+                    mb.Crystal(MeshBuilder.TRS(new Vector3(0, 0f, 0.22f), new Vector3(0, 0, 90), new Vector3(0.06f, 0.12f, 0.06f)), tintLt, Color.white);
+                    mb.Crystal(MeshBuilder.TRS(new Vector3(0, 0f, 0.22f), new Vector3(0, 0, -90), new Vector3(0.06f, 0.12f, 0.06f)), tintLt, Color.white);
+                    mb.Box(MeshBuilder.TRS(new Vector3(0, 0f, 0.76f), Vector3.zero, new Vector3(0.035f, 0.11f, 1.0f)), tint, tintLt);
+                    mb.Cone(MeshBuilder.TRS(new Vector3(0, 0f, 1.33f), new Vector3(90, 0, 0), new Vector3(0.035f, 0.16f, 0.11f)), tintLt, 4);
+                    mb.Box(MeshBuilder.TRS(new Vector3(0, 0f, 0.76f), Vector3.zero, new Vector3(0.042f, 0.03f, 0.98f)), new Color(1f, 1f, 1f, 0f));
+                    mb.Sphere(MeshBuilder.TRS(new Vector3(0, 0f, -0.04f), Vector3.zero, new Vector3(0.08f, 0.08f, 0.08f)), new Color(0.85f, 0.8f, 1f, 0f), 6, 4);
+                    break;
                 case "iron_blade":
                     mb.Cylinder(MeshBuilder.TRS(new Vector3(0, 0f, 0.12f), new Vector3(90, 0, 0), new Vector3(0.05f, 0.2f, 0.05f)), new Color(0.35f, 0.25f, 0.2f), 5, 1f, true);
                     mb.Box(MeshBuilder.TRS(new Vector3(0, 0f, 0.22f), Vector3.zero, new Vector3(0.22f, 0.04f, 0.05f)), metal);

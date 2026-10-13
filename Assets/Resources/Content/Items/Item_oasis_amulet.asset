@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: oasis_amulet
   displayName: Oasis Amulet
-  description: A stoppered drop of oasis water. One sip and you could walk all day.
+  description: A stoppered drop of oasis water, for the moment you need it most.
   category: 8
   maxStack: 1
   iconColor: {r: 0.3529412, g: 0.78431374, b: 0.627451, a: 1}
@@ -29,6 +29,9 @@ MonoBehaviour:
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0
@@ -37,11 +40,11 @@ MonoBehaviour:
   mods:
   - stat: 2
     element: 0
-    value: 35
+    value: 30
   - stat: 7
     element: 0
-    value: 0.2
-  unique: 0
+    value: 0.15
+  unique: 22
   gearStyle: 0
   trimColor: {r: 0.9411765, g: 0.7529412, b: 0.2509804, a: 1}
   alphaDrop: 0
