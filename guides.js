@@ -548,9 +548,21 @@ html: `
 <li>Around the start only Wooden and the odd Iron chest appear.</li>
 </ul>
 <h3>Blueprints</h3>
-<p>Each land has <b>two accessories that can only be made from a blueprint</b> found in that land's chests. They show in the Workbench list from the start, marked "Blueprint" with the land to look in. Finding one teaches it for good. Gilded chests hold one about two times in three, Iron chests now and then, Wooden ones rarely; a land whose blueprints you have both found gives extra Prism Shards instead.</p>
-<p>Blueprint items are made from the land's <b>raw ore</b>, so they need no research and no Sigil - only the blueprint.</p>
-<div data-items="Sunmeadow Charm, Forager's Band, Tidecaller Bangle, Coral Ring, Cinder Signet, Ashwalker Amulet, Rimeglass Ring, Aurora Pendant, Mire Bracer, Lantern Ring, Sunscour Band, Oasis Amulet, Blightfang Ring, Miasma Ward, Starlight Bracelet, Nebula Ring"></div>
+<p>Each land has <b>three things that can only be made from a blueprint</b> found in that land's chests: a weapon, a piece of armour and an accessory. They show in the Workbench list from the start, marked "Blueprint" with the land to look in. Finding one teaches it for good. Gilded chests hold one about two times in three, Iron chests now and then, Wooden ones rarely; a land whose blueprints you have all found gives extra Prism Shards instead.</p>
+<p>They are <b>sidegrades with a trick</b>: about as strong as what you can craft in that land, but each does one thing nothing else does. They are made from the land's <b>raw ore</b>, so they need no research and no Sigil - only the blueprint.</p>
+<ul>
+<li><b>Weapons</b> strike with their land's element (strong and weak against kin like any elemental hit) and can leave a status. A kin with a status on it is easier to catch.</li>
+<li><b>Armour</b> shows on your explorer and carries a special effect.</li>
+<li><b>Accessories</b> carry a special effect too.</li>
+</ul>
+<h3>Sunmeadow Vale</h3><div data-items="Honeycomb Mace, Petal Crown, Forager's Band"></div>
+<h3>Driftkey Isles</h3><div data-items="Tidefang Harpoon, Shellback Mantle, Coral Ring"></div>
+<h3>Cinderreach Badlands</h3><div data-items="Cinder Cleaver, Ventwalker Greaves, Cinder Signet"></div>
+<h3>Rimefang Peaks</h3><div data-items="Rimeshard Bow, Frostveil Hood, Aurora Pendant"></div>
+<h3>Mirefen</h3><div data-items="Mirefang, Reedweave Cloak, Lantern Ring"></div>
+<h3>Sunscour Dunes</h3><div data-items="Sunspike Glaive, Dunewalker's Wrap, Oasis Amulet"></div>
+<h3>Blightmoor</h3><div data-items="Blightcoil Crossbow, Stalker Boots, Blightfang Ring"></div>
+<h3>Glowdeep</h3><div data-items="Starfall Blade, Starweave Mantle, Starlight Bracelet"></div>
 
 <h2 id="under">Going underground</h2>
 <p>There are 19 underground places, of three kinds. You can't build or fast travel while inside, and they refill about twenty minutes after you clear them.</p>
