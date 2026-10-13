@@ -374,7 +374,7 @@
   }
 
   function recipeRow(r) {
-    return [r.n + "&times; " + '<a href="#/item/' + r.makes + '">' + esc(itemName(r.makes)) + "</a>", cost(r.needs), r.at === "Hand" ? "By hand" : esc(r.at), r.research ? '<a href="#/research">' + esc(r.research) + "</a>" : r.level > 1 ? "Player level " + r.level : "&mdash;"];
+    return [r.n + "&times; " + '<a href="#/item/' + r.makes + '">' + esc(itemName(r.makes)) + "</a>", cost(r.needs), r.at === "Hand" ? "By hand" : esc(r.at), r.blueprint ? '<a href="#/guide/exploring/chests">Blueprint</a>: chests in ' + esc(r.blueprint) : r.research ? '<a href="#/research">' + esc(r.research) + "</a>" : r.level > 1 ? "Player level " + r.level : "&mdash;"];
   }
   function itemPage(id) {
     var it = itemById[id];

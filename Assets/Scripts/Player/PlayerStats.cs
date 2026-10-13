@@ -75,6 +75,10 @@ namespace Wildbond
         /// <summary>Points of interest (Pois ids): come across / chest opened / tablet read; lookouts climbed; relics a lookout showed you.</summary>
         public System.Collections.Generic.List<string> poisFound = new System.Collections.Generic.List<string>();
         public System.Collections.Generic.List<string> poisLooted = new System.Collections.Generic.List<string>();
+        // treasure chests (World/Chests): squares whose chest has been opened, blueprints learned, and a running count
+        public System.Collections.Generic.List<ChestState> chests = new System.Collections.Generic.List<ChestState>();
+        public System.Collections.Generic.List<string> blueprints = new System.Collections.Generic.List<string>();
+        public int chestsOpened;
         public System.Collections.Generic.List<string> poisRead = new System.Collections.Generic.List<string>();
         public System.Collections.Generic.List<string> lookouts = new System.Collections.Generic.List<string>();
         public System.Collections.Generic.List<string> relicHints = new System.Collections.Generic.List<string>();
@@ -251,6 +255,8 @@ namespace Wildbond
             if (regionsFound == null) regionsFound = new System.Collections.Generic.List<string>();
             if (poisFound == null) poisFound = new System.Collections.Generic.List<string>();
             if (poisLooted == null) poisLooted = new System.Collections.Generic.List<string>();
+            if (chests == null) chests = new System.Collections.Generic.List<ChestState>();
+            if (blueprints == null) blueprints = new System.Collections.Generic.List<string>();
             if (poisRead == null) poisRead = new System.Collections.Generic.List<string>();
             if (lookouts == null) lookouts = new System.Collections.Generic.List<string>();
             if (relicHints == null) relicHints = new System.Collections.Generic.List<string>();

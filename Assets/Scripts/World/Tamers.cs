@@ -295,6 +295,7 @@ namespace Wildbond
             s.glimmer += purse;
             var gm = GameManager.I;
             gm.GiveItem(t.rewardItem, t.rewardCount, gm.Player.Position + Vector3.up);
+            if (Random.value < 0.3f) gm.GiveItem(Chests.KeyItem, 1, gm.Player.Position + Vector3.up);   // now and then a tamer hands over a Chest Key
             gm.AddPlayerXp(60 + purse / 4);
             Requests.AddStanding(t.home, first ? 25 : 10);
             Requests.OnTamerBeaten(t.home);

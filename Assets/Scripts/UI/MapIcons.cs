@@ -6,7 +6,7 @@ namespace Wildbond
     public enum MapIcon
     {
         Dot, Camp, Village, Warden, Tamer, Waystone, Cave, Burrow, Dungeon, Lookout, Fish, Nest, Lair, Trader, Relic,
-        Wreck, Bones, Tent, Statue, Pillars, Hunter, Legend, Outpost, Crater, Tree, Stones, Arch, Crystal, Quest, Count
+        Wreck, Bones, Tent, Statue, Pillars, Hunter, Legend, Outpost, Crater, Tree, Stones, Arch, Crystal, Quest, Chest, Count
     }
 
     /// <summary>
@@ -220,6 +220,10 @@ namespace Wildbond
                     f = Poly(p, v);
                     break;
                 }
+                case MapIcon.Chest:   // a treasure chest: a box with a rounded lid, a band and a lock
+                    f = U(Box(p, 0f, -0.3f, 0.74f, 0.36f), Both(Ell(p, 0f, 0.06f, 0.74f, 0.56f), 0.06f - p.y));
+                    d = U(Box(p, 0f, 0.06f, 0.78f, 0.05f), Box(p, 0f, -0.16f, 0.12f, 0.16f));
+                    break;
                 case MapIcon.Quest:   // a diamond with an exclamation mark
                     f = Poly(p, 0f, 0.9f, 0.72f, 0f, 0f, -0.9f, -0.72f, 0f);
                     d = U(Box(p, 0f, 0.14f, 0.09f, 0.3f), Circle(p, 0f, -0.42f, 0.11f));

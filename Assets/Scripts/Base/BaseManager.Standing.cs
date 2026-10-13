@@ -70,6 +70,7 @@ namespace Wildbond
         {
             if (!HasStation(r.station)) return "station not built";
             if (!Tech.RecipeUnlocked(r.id)) return "needs research";
+            if (Chests.Locked(r)) return "needs its blueprint";
             if (r.unlockLevel > GameManager.I.Player.Stats.level) return $"needs Lv {r.unlockLevel}";
             if (StockOf(r) >= KeepOf(r.id)) return null;
             foreach (var o in Orders) if (o.recipeId == r.id) return null;   // some are on the way
@@ -86,7 +87,7 @@ namespace Wildbond
             foreach (var s in Standing)
             {
                 if (!ContentDB.Recipes.TryGetValue(s.recipeId, out var r) || r.station == CraftStation.Hand) continue;
-                if (!HasStation(r.station) || !Tech.RecipeUnlocked(r.id) || r.unlockLevel > GameManager.I.Player.Stats.level) continue;
+                if (!HasStation(r.station) || !Tech.RecipeUnlocked(r.id) || Chests.Locked(r) || r.unlockLevel > GameManager.I.Player.Stats.level) continue;
                 int queued = 0;
                 CraftOrder mine = null;
                 foreach (var o in Orders) if (o.recipeId == r.id) { mine = o; queued += o.remaining; }

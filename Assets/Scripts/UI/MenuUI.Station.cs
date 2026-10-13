@@ -197,6 +197,9 @@ namespace Wildbond
                 string stat = ItemStatLine(outDef), desc = outDef.description ?? "";
                 var tech = Tech.RecipeUnlocked(r.id) ? null : Tech.ForRecipe(r.id);
                 if (tech != null) desc += $"  Locked: research {tech.name} at a Research Bench.";
+                bool noPlan = Chests.Locked(r);
+                string plan = Chests.BlueprintNote(r);
+                if (plan != null) desc += "  " + (noPlan ? plan : "Made from a blueprint you found.");
                 int plain = PlainLength(stat) + desc.Length + (stat.Length > 0 && desc.Length > 0 ? 3 : 0);
                 int perLine = Mathf.Max(20, Mathf.FloorToInt(textWidth / (EffectFont * 0.55f)));
                 int lines = plain > 0 ? Mathf.CeilToInt(plain / (float)perLine) : 0;
@@ -211,6 +214,7 @@ namespace Wildbond
                 UIFactory.Size(tx, rowH - 6, textWidth);
                 string reason = null;
                 if (tech != null) reason = "Research";
+                else if (noPlan) reason = "Blueprint";
                 else if (r.unlockLevel > stats.level) reason = $"Lv {r.unlockLevel}";
                 else if (st != CraftStation.Hand && !bm.HasStation(st)) reason = "Not built";
                 else if (st != CraftStation.Hand && !inCamp) reason = "Go to camp";
@@ -219,7 +223,7 @@ namespace Wildbond
                 var btn = UIFactory.Button(row.transform, reason ?? StationVerb(st),
                     reason == null ? () => Craft(rec) : (System.Action)null, reason == null ? new Color(0.25f, 0.55f, 0.4f) : new Color(0.3f, 0.3f, 0.32f), 26);
                 UIFactory.Size(btn, 84, 200);
-                if (st != CraftStation.Hand && tech == null && r.unlockLevel <= stats.level && bm.HasStation(st))
+                if (st != CraftStation.Hand && tech == null && !noPlan && r.unlockLevel <= stats.level && bm.HasStation(st))
                 {
                     // standing order: tap to step through 5 / 10 / 20 / 50 / off (BaseManager.Standing)
                     int keep = bm.KeepOf(r.id);

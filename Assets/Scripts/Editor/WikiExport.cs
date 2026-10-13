@@ -158,6 +158,7 @@ namespace Wildbond.EditorTools
                 {
                     ["makes"] = r.outputItem, ["n"] = r.outputCount, ["at"] = MenuUI.StationName(r.station), ["level"] = r.unlockLevel, ["needs"] = Cost(r.inputs),
                     ["research"] = t != null ? t.name : null,
+                    ["blueprint"] = Chests.IsBlueprint(r.id, out var land) ? BiomeInfo.Name(land) : null,
                 });
             }
             return l;

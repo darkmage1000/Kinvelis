@@ -222,6 +222,8 @@ namespace Wildbond
             campWarn.SetActive(false);
         }
 
+        readonly List<Vector3> chestPos = new List<Vector3>();
+        readonly List<int> chestTier = new List<int>();
         Button campBtn;
         GameObject campWarn;
         Text campWarnText;
@@ -472,6 +474,12 @@ namespace Wildbond
                 }
             }
             if (Nests.I != null && Nests.I.Marker.HasValue) PlaceMarker(ref mi, Nests.I.Marker.Value - pl.Position, px, new Color(1f, 0.85f, 0.92f), MapIcon.Nest);
+            if (Chests.I != null)
+            {
+                chestPos.Clear(); chestTier.Clear();
+                Chests.I.Marks(pl.Position, chestPos, chestTier);
+                for (int ci = 0; ci < chestPos.Count; ci++) PlaceMarker(ref mi, chestPos[ci] - pl.Position, px, Chests.TierColor[chestTier[ci]], MapIcon.Chest, chestTier[ci] == 2);
+            }
             if (Waystones.I != null)
                 foreach (var ws in Waystones.I.All)
                 {

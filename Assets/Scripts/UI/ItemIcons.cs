@@ -569,6 +569,18 @@ namespace Wildbond
                         mb.Cylinder(M(0, 0.05f, 0, 0.4f, 0.1f, 0.4f), C("#b88a2a"), C("#f0cc5a"), 10, 0.7f, true);
                     }
                     break;
+                case "chest_key":
+                    // a gold key, built flat-on and leaned back like the Warden Heart so the camera sees its shape
+                    {
+                        var k = new MeshBuilder();
+                        k.Cylinder(M(0, 0.82f, 0, 0.5f, 0.12f, 0.5f, 90, 0, 0), C("#b88a2a"), C("#f0cc5a"), 14, 1f, true);   // the bow
+                        k.Cylinder(M(0, 0.82f, -0.02f, 0.24f, 0.16f, 0.24f, 90, 0, 0), C("#3a3020"), 10, 1f, true);        // the hole in it
+                        k.Box(M(0, 0.36f, 0, 0.11f, 0.62f, 0.11f), C("#c89a34"), C("#f0cc5a"));                             // the shaft
+                        k.Box(M(0.13f, 0.2f, 0, 0.18f, 0.09f, 0.1f), C("#f0cc5a"));                                        // two teeth
+                        k.Box(M(0.11f, 0.08f, 0, 0.14f, 0.09f, 0.1f), C("#f0cc5a"));
+                        mb.Append(k, M(0, 0.06f, 0, 1, 1, 1, 24, 49, 0));
+                    }
+                    break;
                 case "outpost_kit":
                     mb.Box(M(0, 0.25f, 0, 0.84f, 0.5f, 0.6f), C("#8a5a30"), C("#b88a50"));
                     mb.Box(M(-0.26f, 0.25f, 0, 0.08f, 0.52f, 0.62f), C("#5a3a1e"));

@@ -674,8 +674,8 @@ namespace Wildbond
                 O("Collect stickers", 10, () => Species)).Pay(60, 30, ("kin_treat", 4)).Pic("starbloom_seed");
             Q(SR, "x_look", "Top of the World", "You can see everything from up there.", "Find a lookout tower and tap LOOK OUT.",
                 O("Climb a lookout", () => S.lookouts.Count > 0)).Pay(50, 20, ("berry_tart", 2)).Pic("map:Lookout");
-            Q(SR, "x_chest", "Treasure!", "Old camps and wrecks have chests in them.", "Find a chest and tap OPEN.",
-                O("Open a treasure chest", () => S.poisLooted.Count > 0)).Pay(50, 20, ("kin_treat", 2)).Pic("map:Wreck");
+            Q(SR, "x_chest", "Treasure!", "Chests stand all over the land under a beam of light.", "Walk to a beam of light and tap OPEN.",
+                O("Open a treasure chest", () => S.poisLooted.Count > 0 || S.chestsOpened > 0)).Pay(50, 20, ("kin_treat", 2)).Pic("map:Wreck");
             Q(SR, "x_cave", "Into the Dark", "There are holes in the hills.", "Walk around until you find a cave mouth.",
                 O("Find a cave", () => S.cavesFound.Count > 0)).Pay(50, 20, ("kin_treat", 2)).Pic("map:Cave");
             Q(SR, "x_tamer", "Champion", "Somebody by the road wants a match.", "Find a tamer near the village and tap CHALLENGE.",

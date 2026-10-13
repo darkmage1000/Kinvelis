@@ -31,6 +31,7 @@ namespace Wildbond
             BuildRegionItems(b);
             BuildFishingItems(b);
             BuildRangedItems(b);
+            BuildChestItems(b);
             BuildAbilities(b);
             BuildNinjaAbilities(b);
             BuildStyledAbilities(b);

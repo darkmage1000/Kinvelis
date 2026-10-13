@@ -185,6 +185,8 @@ namespace Wildbond
             fishing.Init();
             nests = Sys("Nests").AddComponent<Nests>();
             nests.Init();
+            chests = Sys("Chests").AddComponent<Chests>();
+            chests.Init();
             ambient = Sys("AmbientLife").AddComponent<AmbientLife>();
             ambient.Init();
             trader = Sys("Trader").AddComponent<Trader>();
@@ -352,6 +354,7 @@ namespace Wildbond
         Pois pois;
         Fishing fishing;
         Nests nests;
+        Chests chests;
         AmbientLife ambient;
         Hazards hazards;
         Trader trader;
@@ -442,6 +445,7 @@ namespace Wildbond
                 pois.Tick(dt, Player);
                 fishing.Tick(dt, Player);
                 nests.Tick(dt, Player);
+                chests.Tick(dt, Player);
                 ambient.Tick(dt, Player);
                 caves.Tick(dt, Player);
                 TickProgression(dt);
@@ -694,6 +698,8 @@ namespace Wildbond
             if (nestPrompt != null) { InteractPrompt = nestPrompt; caveAction = nestAction; return; }
             var poiPrompt = pois.Prompt(Player.Position, out var poiAction);
             if (poiPrompt != null) { InteractPrompt = poiPrompt; caveAction = poiAction; return; }
+            var chestPrompt = chests.Prompt(Player.Position, out var chestAction);
+            if (chestPrompt != null) { InteractPrompt = chestPrompt; caveAction = chestAction; return; }
             if (trader.InReach(Player.Position)) { InteractPrompt = "TRADE"; caveAction = () => menu.Open(MenuTab.Trader); return; }
             var kinkeeper = settlements.NearKeeper(Player.Position);
             if (kinkeeper != null) { InteractPrompt = "KIN SHOP"; caveAction = () => menu.OpenKinShop(kinkeeper); return; }
@@ -926,6 +932,7 @@ namespace Wildbond
             if (d.alpha)
             {
                 DropAlphaTrophy(a);
+                if (Random.value < 0.4f) GiveItem(Chests.KeyItem, 1, a.Position);   // alphas guard keys to Gilded chests
                 spawner.OnAlphaGone(a);
                 GameEvents.Good($"Alpha {a.Sp.displayName} defeated!");
             }

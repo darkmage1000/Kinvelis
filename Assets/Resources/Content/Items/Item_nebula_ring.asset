@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d410b7e3ca321b469fb7773a4c2b8dc, type: 3}
+  m_Name: Item_nebula_ring
+  m_EditorClassIdentifier: 
+  id: nebula_ring
+  displayName: Nebula Ring
+  description: Looking into it is like looking a long way up.
+  category: 8
+  maxStack: 1
+  iconColor: {r: 0.47843137, g: 0.41568628, b: 0.8156863, a: 1}
+  iconGlyph: Rg
+  foodValue: 0
+  healValue: 0
+  kinHealValue: 0
+  bonusInventorySlots: 0
+  mealMods: []
+  mealMinutes: 0
+  handStyle: 0
+  toolKind: 0
+  toolPower: 0
+  weaponDamage: 0
+  captureMult: 1
+  legendFor: 
+  shimmerSeed: 0
+  equipSlot: 6
+  rarity: 3
+  mods:
+  - stat: 1
+    element: 0
+    value: 6
+  - stat: 3
+    element: 0
+    value: 0.08
+  - stat: 4
+    element: 0
+    value: 20
+  unique: 0
+  gearStyle: 2
+  trimColor: {r: 1, g: 0.9137255, b: 0.5411765, a: 1}
+  alphaDrop: 0
