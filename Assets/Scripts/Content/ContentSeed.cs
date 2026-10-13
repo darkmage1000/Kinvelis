@@ -445,13 +445,42 @@ namespace Wildbond
                 P(PartShape.Crystal, BodyGroup.Body, ColorSlot.Glow, 0.8f, 0.3f, -0.55f, 0.3f, 1.1f, 0.3f, 0, 0, -12),
             };
 
-            var nest = Bld(b, "kin_nest", "Kin Nest", "Beds for 2 workers, who sleep here from dusk to dawn. With a bed for every worker the camp works 15% faster.", 1, 1.0f, ("fiber", 10), ("wood", 4));
+            var nest = Bld(b, "kin_nest", "Kin Nest", "Beds for 2 small kin, who sleep on it from dusk to dawn. When every kin that sleeps has a bed that fits, the camp works 15% faster.", 1, 1.0f, ("fiber", 10), ("wood", 4));
             nest.beds = 2; nest.palette = Pal(Hex("#d9c08f"), Hex("#8a6a40"), Hex("#f2e6c9"), Hex("#ffd36a"));
             nest.parts = new[]
             {
                 P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Secondary, 0, 0.15f, 0, 1.8f, 0.3f, 1.8f),
                 P(PartShape.Dome, BodyGroup.Body, ColorSlot.Primary, 0, 0.2f, 0, 1.6f, 0.4f, 1.6f),
                 P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Accent, 0, 0.3f, 0, 1.0f, 0.2f, 1.0f),
+            };
+
+            var bigNest = Bld(b, "large_nest", "Large Nest", "Beds for 2 small or medium kin - the ones too big for a Kin Nest.", 3, 1.55f, ("fiber", 25), ("wood", 15), ("pelt", 6));
+            bigNest.beds = 2; bigNest.bedSize = 1.7f; bigNest.bedTop = 0.42f; bigNest.palette = Pal(Hex("#d9c08f"), Hex("#7a5a34"), Hex("#f2e6c9"), Hex("#8ad06a"));
+            bigNest.parts = new[]
+            {
+                P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Secondary, 0, 0.17f, 0, 2.9f, 0.34f, 2.9f),
+                P(PartShape.Dome, BodyGroup.Body, ColorSlot.Primary, 0, 0.22f, 0, 2.6f, 0.46f, 2.6f),
+                P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Accent, 0, 0.34f, 0, 1.7f, 0.22f, 1.7f),
+                P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Glow, 1.02f, 0.4f, 1.02f, 0.34f, 0.3f, 0.34f),
+                P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Glow, -1.02f, 0.4f, 1.02f, 0.34f, 0.3f, 0.34f),
+                P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Glow, 1.02f, 0.4f, -1.02f, 0.34f, 0.3f, 0.34f),
+                P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Glow, -1.02f, 0.4f, -1.02f, 0.34f, 0.3f, 0.34f),
+            };
+            var grandNest = Bld(b, "grand_nest", "Grand Nest", "Beds for 2 kin of any size, giants and evolved kin included.", 10, 2.2f, ("fiber", 50), ("wood", 40), ("pelt", 15), ("ingot", 6));
+            grandNest.beds = 2; grandNest.bedSize = 99f; grandNest.bedTop = 0.48f; grandNest.palette = Pal(Hex("#e2cfa0"), Hex("#6a4a2c"), Hex("#f7efd8"), Hex("#ffd36a"));
+            grandNest.parts = new[]
+            {
+                P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Secondary, 0, 0.2f, 0, 4.2f, 0.4f, 4.2f),
+                P(PartShape.Dome, BodyGroup.Body, ColorSlot.Primary, 0, 0.26f, 0, 3.8f, 0.52f, 3.8f),
+                P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Accent, 0, 0.4f, 0, 2.6f, 0.24f, 2.6f),
+                P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Secondary, 1.9f, 0.34f, 0, 0.5f, 0.42f, 0.5f),
+                P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Secondary, -1.9f, 0.34f, 0, 0.5f, 0.42f, 0.5f),
+                P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Secondary, 0.95f, 0.34f, 1.65f, 0.5f, 0.42f, 0.5f),
+                P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Secondary, -0.95f, 0.34f, 1.65f, 0.5f, 0.42f, 0.5f),
+                P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Secondary, 0.95f, 0.34f, -1.65f, 0.5f, 0.42f, 0.5f),
+                P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Secondary, -0.95f, 0.34f, -1.65f, 0.5f, 0.42f, 0.5f),
+                P(PartShape.Crystal, BodyGroup.Body, ColorSlot.Glow, 1.5f, 0.4f, 1.25f, 0.22f, 0.7f, 0.22f),
+                P(PartShape.Crystal, BodyGroup.Body, ColorSlot.Glow, -1.5f, 0.4f, 1.25f, 0.22f, 0.7f, 0.22f),
             };
 
             var larder = Bld(b, "frost_larder", "Frost Larder", "Keeps food fresh: while it holds cold, food in camp keeps three times as long and workers get hungry 40% slower. A Chilling kin fills it with cold, then is free for other work and comes back to top it up at half and before nightfall. One larder stays cold all night.", 4, 1.2f, ("stone", 12), ("wood", 6));

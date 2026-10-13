@@ -168,7 +168,7 @@ namespace Wildbond
                 text = n > 0 ? $"{n} food in it{(b.FeedAuto ? " · keeps itself stocked" : " · stocked by hand")}" : can ? "Stocking itself from storage" : b.FeedAuto ? "Empty - no food in camp storage" : "Empty - put food in it (OPEN)";
                 return can ? BuildingHealth.Good : BuildingHealth.Blocked;
             }
-            if (b.Def.beds > 0) { text = $"{b.Def.beds} beds"; return BuildingHealth.Info; }
+            if (b.Def.beds > 0) { text = BedStatus(b); return BuildingHealth.Info; }
             text = ""; return BuildingHealth.Info;
         }
 
@@ -191,7 +191,13 @@ namespace Wildbond
                 var h = Status(b, out string t);
                 if (h == BuildingHealth.Blocked && !b.Def.feeds) list.Add(new Alert { text = $"{b.Def.displayName}: {t}", severe = true });
             }
-            if (workers > 0 && BedCount < workers && BedCount > 0) list.Add(new Alert { text = $"Only {BedCount} beds for {workers} workers (no rested bonus)", severe = false });
+            var noBed = Bedless;
+            if (workers > 0 && noBed.Count > 0 && BedCount > 0)
+            {
+                var want = new List<string>();
+                foreach (var d in noBed) { string n = BedNeeded(d); if (!want.Contains(n)) want.Add(n); }
+                list.Add(new Alert { text = $"{noBed.Count} kin {(noBed.Count == 1 ? "has" : "have")} no bed that fits (no rested bonus) - build a {string.Join(" / ", want)}", severe = false });
+            }
             if (workers == 0) list.Add(new Alert { text = "No workers yet - send kin TO CAMP from the Kin tab", severe = false });
             int asleep = SleeperCount;
             if (asleep > 0) list.Add(new Alert { text = $"Night: {asleep} kin asleep until dawn (night kin and Night Owls keep working)", severe = false });

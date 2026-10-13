@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: kin_nest
   displayName: Kin Nest
-  description: Beds for 2 workers, who sleep here from dusk to dawn. With a bed for
-    every worker the camp works 15% faster.
+  description: Beds for 2 small kin, who sleep on it from dusk to dawn. When every
+    kin that sleeps has a bed that fits, the camp works 15% faster.
   cost:
   - itemId: fiber
     count: 10
@@ -39,6 +39,8 @@ MonoBehaviour:
   boostPercent: 0
   feeds: 0
   beds: 2
+  bedSize: 0
+  bedTop: 0
   palette:
     primary: {r: 0.8509804, g: 0.7529412, b: 0.56078434, a: 1}
     secondary: {r: 0.5411765, g: 0.41568628, b: 0.2509804, a: 1}

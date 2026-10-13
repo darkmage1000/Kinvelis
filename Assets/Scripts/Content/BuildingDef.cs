@@ -35,6 +35,10 @@ namespace Wildbond
         public float boostPercent;
         public bool feeds;
         public int beds;
+        [Tooltip("Nests: the biggest kin that fits (species size x alpha / giant / evolution). 0 = a small nest (1.1).")]
+        public float bedSize;
+        [Tooltip("Nests: height of the top of the pad, where a sleeper lies. 0 = 0.4.")]
+        public float bedTop;
 
         [Header("Look")]
         public Palette palette;

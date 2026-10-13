@@ -1,0 +1,119 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1add58a51849408438b7235809d63b65, type: 3}
+  m_Name: Building_grand_nest
+  m_EditorClassIdentifier: 
+  id: grand_nest
+  displayName: Grand Nest
+  description: Beds for 2 kin of any size, giants and evolved kin included.
+  cost:
+  - itemId: fiber
+    count: 50
+  - itemId: wood
+    count: 40
+  - itemId: pelt
+    count: 15
+  - itemId: ingot
+    count: 6
+  unlockLevel: 10
+  footprint: 2.2
+  isCore: 0
+  category: 0
+  workType: 0
+  secondaryWorkType: 0
+  workerSlots: 0
+  outputItem: 
+  outputCount: 1
+  workPerUnit: 10
+  inputItem: 
+  inputCount: 0
+  bufferCap: 30
+  storageSlots: 0
+  station: 0
+  boostPercent: 0
+  feeds: 0
+  beds: 2
+  bedSize: 99
+  bedTop: 0.48
+  palette:
+    primary: {r: 0.8862745, g: 0.8117647, b: 0.627451, a: 1}
+    secondary: {r: 0.41568628, g: 0.2901961, b: 0.17254902, a: 1}
+    accent: {r: 0.96862745, g: 0.9372549, b: 0.84705883, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.827451, b: 0.41568628, a: 1}
+  parts:
+  - shape: 2
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.2, z: 0}
+    scale: {x: 4.2, y: 0.4, z: 4.2}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 7
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.26, z: 0}
+    scale: {x: 3.8, y: 0.52, z: 3.8}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 2
+    pos: {x: 0, y: 0.4, z: 0}
+    scale: {x: 2.6, y: 0.24, z: 2.6}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: 1.9, y: 0.34, z: 0}
+    scale: {x: 0.5, y: 0.42, z: 0.5}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: -1.9, y: 0.34, z: 0}
+    scale: {x: 0.5, y: 0.42, z: 0.5}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: 0.95, y: 0.34, z: 1.65}
+    scale: {x: 0.5, y: 0.42, z: 0.5}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: -0.95, y: 0.34, z: 1.65}
+    scale: {x: 0.5, y: 0.42, z: 0.5}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: 0.95, y: 0.34, z: -1.65}
+    scale: {x: 0.5, y: 0.42, z: 0.5}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 1
+    pos: {x: -0.95, y: 0.34, z: -1.65}
+    scale: {x: 0.5, y: 0.42, z: 0.5}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 5
+    group: 0
+    slot: 6
+    pos: {x: 1.5, y: 0.4, z: 1.25}
+    scale: {x: 0.22, y: 0.7, z: 0.22}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 5
+    group: 0
+    slot: 6
+    pos: {x: -1.5, y: 0.4, z: 1.25}
+    scale: {x: 0.22, y: 0.7, z: 0.22}
+    rot: {x: 0, y: 0, z: 0}

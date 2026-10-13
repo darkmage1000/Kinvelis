@@ -224,7 +224,7 @@ namespace Wildbond
             deathTimer = 0f;
             for (int i = 0; i < cooldowns.Length; i++) cooldowns[i] = Random.Range(0.5f, 2f);
             RefreshAbilities();
-            EndMood(); greetedArrival = Time.time; sleeping = false; bedSet = false;   // camp life starts clean (a kin that has only just appeared doesn't re-greet)
+            EndMood(); greetedArrival = Time.time; sleeping = false; bedSet = false; ignoreObstacles = false; if (Rig != null) Rig.Lift = 0f;   // camp life starts clean (a kin that has only just appeared doesn't re-greet)
             ModelBuilder.ApplyLook(Rig, d, RenderAssets.Creature);   // a pooled model is this kin's now
             ApplyWorldSize();
             Home = pos;
@@ -565,7 +565,7 @@ namespace Wildbond
                 if (State == AIState.Wander) SetState(AIState.Idle, 1f);
             }
             if (Time.time < tetherUntil) ClampTether(ref next);
-            if (full) WorldCollision.PushOut(ref next, BodyRadius * 0.8f);
+            if (full && !ignoreObstacles) WorldCollision.PushOut(ref next, BodyRadius * 0.8f);   // a kin climbing onto its nest walks into it
             next.x = Mathf.Clamp(next.x, -WorldGen.HalfWorld + 10f, WorldGen.HalfWorld - 10f);
             next.z = Mathf.Clamp(next.z, -WorldGen.HalfWorld + 10f, WorldGen.HalfWorld - 10f);
             next.y = Mathf.Lerp(pos.y, GroundY(next), full ? Mathf.Min(1f, dt * 14f) : 1f);

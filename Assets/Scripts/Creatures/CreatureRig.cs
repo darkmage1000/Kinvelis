@@ -40,6 +40,8 @@ namespace Wildbond
         bool restMeasured;
         Color flashColor = Color.white;
         bool flashing;
+        /// <summary>Raises the model off the ground (a kin up on its nest). Reset whenever a model is handed out.</summary>
+        public float Lift;
         public float HoverHeight => Loco == Locomotion.Flyer ? 0.35f * scale : 0f;
         /// <summary>How the Extra group moves (set from the species after Setup).</summary>
         public ExtraAnim ExtraMode;
@@ -55,7 +57,7 @@ namespace Wildbond
             lookScale = Vector3.one; hasCoat = false; markGo = null; markMf = null; markMr = null;
             phase = Random.value * 10f;
             t = Random.value * 10f;
-            sleepNow = 0f; restMeasured = false;
+            sleepNow = 0f; restMeasured = false; Lift = 0f;
         }
 
         public void Register(BodyGroup g, Transform tr, Renderer r)
@@ -276,6 +278,7 @@ namespace Wildbond
 
             // idle breathing
             float breathe = 1f + Mathf.Sin(t * 2.3f) * 0.015f;
+            modelPos.y += Lift;
             Model.localPosition = modelPos;
             Model.localRotation = modelRot;
             Model.localScale = new Vector3(modelScale.x * lookScale.x, modelScale.y * breathe * lookScale.y, modelScale.z * lookScale.z);

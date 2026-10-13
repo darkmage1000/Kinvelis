@@ -229,34 +229,6 @@ namespace Wildbond
             get { int n = 0; foreach (var d in GameManager.I.Party.In(KinLocation.Base)) if (!d.Fainted && Asleep(d)) n++; return n; }
         }
 
-        /// <summary>Where a camp kin beds down: sleepers take the Kin Nests two at a time in roster order, the rest curl up round the hearth.</summary>
-        public Vector3 BedSpot(CreatureActor a)
-        {
-            int mine = 0, i = 0;
-            foreach (var d in GameManager.I.Party.In(KinLocation.Base))
-            {
-                if (d.Nocturnal || d.Fainted) continue;
-                if (d == a.Data) mine = i;
-                i++;
-            }
-            int bed = 0;
-            Vector3 p;
-            foreach (var b in Buildings)
-            {
-                if (b.Def.beds <= 0) continue;
-                if (mine < bed + b.Def.beds)
-                {
-                    float ang = (b.RotY + 90f + (mine - bed) * (360f / Mathf.Max(1, b.Def.beds))) * Mathf.Deg2Rad;
-                    p = b.transform.position + new Vector3(Mathf.Sin(ang), 0, Mathf.Cos(ang)) * (b.Def.footprint + 0.55f);
-                    p.y = WorldGen.Height(p.x, p.z);
-                    return p;
-                }
-                bed += b.Def.beds;
-            }
-            float t = (mine - bed) * 2.4f;
-            p = CorePosition + new Vector3(Mathf.Cos(t), 0, Mathf.Sin(t)) * (3.2f + ((mine - bed) % 3) * 0.9f);
-            p.y = WorldGen.Height(p.x, p.z);
-            return p;
-        }
+        // where each kin sleeps: BaseManager.Beds (BedFor)
     }
 }

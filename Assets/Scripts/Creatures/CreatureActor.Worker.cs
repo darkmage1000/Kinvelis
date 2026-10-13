@@ -64,6 +64,7 @@ namespace Wildbond
 
             // hunger drains in BaseManager.SimulateWorkers so near/far stay consistent
             workBuilding = bm.FindBuilding(Data.assignedBuilding);
+            TickBedLift(dt);
 
             // camp defense: intruders take priority over work
             if (State == AIState.Recover) { if (stateTimer <= 0f) SetState(Target != null && Target.IsAlive ? AIState.Defend : AIState.Idle, 0f); return; }
@@ -179,9 +180,17 @@ namespace Wildbond
             }
         }
 
-        bool sleeping, bedSet;
+        bool sleeping, bedSet, bedOn, ignoreObstacles;
         Vector3 bedPos;
-        float bedFx;
+        float bedFx, bedLift, bedPad;
+
+        /// <summary>A kin with a bed steps up onto the pad as it reaches it (and is not pushed out of the nest), and back down when it gets up.</summary>
+        void TickBedLift(float dt)
+        {
+            float dist = sleeping && bedSet && bedOn ? FlatDist(transform.position, bedPos) : 999f;
+            ignoreObstacles = dist < bedPad + 1.2f;
+            Rig.Lift = Mathf.MoveTowards(Rig.Lift, dist < bedPad ? bedLift : 0f, dt * 1.6f);
+        }
 
         /// <summary>
         /// Night at camp: every kin that is not nocturnal puts down what it is doing, walks to its bed (a place by a
@@ -209,12 +218,12 @@ namespace Wildbond
                 task = null;
                 EndMood();
             }
-            if (!bedSet) { bedSet = true; bedPos = bm.BedSpot(this); SetState(AIState.Wander, 25f); }
+            if (!bedSet) { bedSet = true; bedOn = bm.BedFor(this, out bedPos, out bedLift, out bedPad); SetState(AIState.Wander, 25f); }
             if (State != AIState.Rest)
             {
                 if (State != AIState.Wander) SetState(AIState.Wander, 25f);   // back to bed after a fight or a meal
                 MoveTo(bedPos, WalkSpeed * 1.25f);
-                if (FlatDist(transform.position, bedPos) < 0.8f || stateTimer <= 0f) SetState(AIState.Rest, 99999f);
+                if (FlatDist(transform.position, bedPos) < (bedOn ? 0.22f : 0.8f) || stateTimer <= 0f) SetState(AIState.Rest, 99999f);
                 return true;
             }
             bedFx -= dt;

@@ -96,15 +96,7 @@ namespace Wildbond
             get { int beds = 0; foreach (var b in Buildings) beds += b.Def.beds; return beds > 0; }
         }
 
-        public float RestedMul
-        {
-            get
-            {
-                int beds = 0;
-                foreach (var b in Buildings) beds += b.Def.beds;
-                return beds >= GameManager.I.Party.CountIn(KinLocation.Base) && beds > 0 ? 1.15f : 1f;
-            }
-        }
+        // RestedMul is in BaseManager.Beds: every kin that sleeps needs a bed that fits it
 
         public float DynamoBoost
         {
