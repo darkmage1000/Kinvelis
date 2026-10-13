@@ -339,7 +339,7 @@ html: `
 <li>A kin with no structure of its own simply goes wherever it is useful.</li>
 <li>A structure takes as many hands at once as it has worker places.</li>
 <li>Kin with the <b>Hauling</b> job carry finished batches to storage when nothing needs tending. Kin assigned to the Hearthstone carry first and tend second.</li>
-<li>Workers need <b>food</b> from a Feed Box (see <a href="#/guide/camp/feed">below</a>). A <b>Kin Nest</b> gives two workers a bed, and a camp with a bed for every worker works 15% faster.</li>
+<li>Workers need <b>food</b> from a Feed Box (see <a href="#/guide/camp/feed">below</a>). Nests give them beds (see <a href="#/guide/camp/night">Night</a>), and a camp where every sleeper has a bed that fits works 15% faster.</li>
 <li>Work speed also depends on the kin's Work grade, its evolution stage and its traits. A shimmer kin is +1 level in every job.</li>
 <li>Workers earn a little XP while you play. They earn none while the game is closed.</li>
 <li>You can do any hands-on step yourself: stand at the structure and tap <b>PLANT</b>, <b>WATER</b>, <b>HARVEST</b> or <b>WORK</b>. You are about half as fast as a level-1 kin.</li>
@@ -347,7 +347,7 @@ html: `
 </ul>
 
 <h2 id="night">Night</h2>
-<p>From dusk to dawn your camp kin <b>sleep</b>. They put down what they are doing, walk to a Kin Nest (or curl up round the Hearthstone if there are not enough beds) and stay there until morning. Anything already growing, smelting or seasoning carries on by itself.</p>
+<p>From dusk to dawn your camp kin <b>sleep</b>. They put down what they are doing, climb onto their nest and lie down until morning (or curl up on the ground round the Hearthstone if no bed fits them). Anything already growing, smelting or seasoning carries on by itself.</p>
 <ul>
 <li>Machines do not sleep: the Conveyor Hub and Auto-Assembler keep going on stored charge until it runs out (see Volt Battery below).</li>
 <li>A kin with the <b>Night Owl</b> passive stays up and works all night. It is a trait some kin are born with, and eggs can inherit it.</li>
@@ -356,6 +356,15 @@ html: `
 <li>Sleeping kin get hungry half as fast.</li>
 <li>The Kin tab says which each kin is: "Sleeps at camp from dusk to dawn" or "Up all night".</li>
 </ul>
+<h3>Beds come in sizes</h3>
+<div class="scroll"><table>
+<thead><tr><th>Nest</th><th>Build level</th><th>Sleeps</th></tr></thead>
+<tbody>
+<tr><td>Kin Nest</td><td>1</td><td>2 small kin</td></tr>
+<tr><td>Large Nest</td><td>3</td><td>2 small or medium kin</td></tr>
+<tr><td>Grand Nest</td><td>10</td><td>2 kin of any size</td></tr>
+</tbody></table></div>
+<p>About two kin in three are small. A kin that is an alpha, a giant or has evolved is bigger than its kind, so it can outgrow its bed. Each night the biggest kin are bedded first, each in the smallest free nest that fits; the Kin tab says which nest a kin needs, and a nest's line in Camp &gt; Structures says who sleeps in it. <b>When every kin that sleeps has a bed that fits, the whole camp works 15% faster.</b></p>
 <p>Night is a little under half the day, so a night shift of two or three Night Owls is worth having.</p>
 
 <h2 id="life">Life at camp</h2>
