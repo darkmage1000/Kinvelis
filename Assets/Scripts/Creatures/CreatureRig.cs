@@ -35,6 +35,9 @@ namespace Wildbond
         float scale = 1f;
         float phase, t;
         float lunge, flash, squash;
+        // lying down asleep: eased 0-1, and what it takes to lie this model down (measured once per model)
+        float sleepNow, restDrop, legLen;
+        bool restMeasured;
         Color flashColor = Color.white;
         bool flashing;
         public float HoverHeight => Loco == Locomotion.Flyer ? 0.35f * scale : 0f;
@@ -52,6 +55,7 @@ namespace Wildbond
             lookScale = Vector3.one; hasCoat = false; markGo = null; markMf = null; markMr = null;
             phase = Random.value * 10f;
             t = Random.value * 10f;
+            sleepNow = 0f; restMeasured = false;
         }
 
         public void Register(BodyGroup g, Transform tr, Renderer r)
@@ -246,7 +250,10 @@ namespace Wildbond
                 modelPos.y += Mathf.Abs(Mathf.Sin(t * 10f)) * 0.04f * scale;
             }
             if (Human) { headPitch += humanHeadPitch; headYaw += humanHeadYaw; }
-            if (sleeping)
+            // asleep and still: lie down (eased in and out). Drowsy but on its feet, or a person: only the nod.
+            sleepNow = Mathf.MoveTowards(sleepNow, sleeping && norm < 0.05f && !Human ? 1f : 0f, dt * 2.2f);
+            if (sleepNow > 0.001f) PoseAsleep(sleepNow * sleepNow * (3f - 2f * sleepNow), ref modelPos, ref modelScale, ref modelRot, ref headPitch, ref headYaw, wag);
+            else if (sleeping)
             {
                 headPitch = 25f;
                 modelScale.y *= 0.92f + Mathf.Sin(t * 1.2f) * 0.03f;
@@ -274,6 +281,87 @@ namespace Wildbond
             Model.localScale = new Vector3(modelScale.x * lookScale.x, modelScale.y * breathe * lookScale.y, modelScale.z * lookScale.z);
 
             UpdateFlash(dt);
+        }
+
+        /// <summary>
+        /// The sleeping pose, laid over the standing one by k (0-1). Four-legged kin sprawl with the front legs out
+        /// ahead and the back legs behind, belly on the ground; two-legged ones sit with their legs out; flyers land
+        /// and fold their wings; hoppers flatten; serpents stop swaying. Everyone tucks the head down and to one
+        /// side, curls the tail round and breathes slowly. How far a model sinks comes from its own meshes
+        /// (`MeasureRest`), so the body ends up resting on the ground whatever its build.
+        /// </summary>
+        void PoseAsleep(float k, ref Vector3 pos, ref Vector3 scl, ref Quaternion rot, ref float headPitch, ref float headYaw, float wag)
+        {
+            if (!restMeasured) MeasureRest();
+            float unit = scale * lookScale.y;
+            // the angle the legs swing out to when the body has sunk by restDrop (hip height above the ground = leg length)
+            float fold = legLen > 0.01f ? Mathf.Acos(Mathf.Clamp(1f - restDrop / legLen, 0.09f, 1f)) * Mathf.Rad2Deg * k : 0f;
+            switch (Loco)
+            {
+                case Locomotion.Quadruped:
+                    SetRot(BodyGroup.LegFL, Quaternion.Euler(-fold, 0, 0));
+                    SetRot(BodyGroup.LegFR, Quaternion.Euler(-fold, 0, 0));
+                    SetRot(BodyGroup.LegBL, Quaternion.Euler(fold, 0, 0));
+                    SetRot(BodyGroup.LegBR, Quaternion.Euler(fold, 0, 0));
+                    pos.y -= restDrop * unit * k;
+                    break;
+                case Locomotion.Biped:
+                    SetRot(BodyGroup.LegFL, Quaternion.Euler(-fold, 0, 0));
+                    SetRot(BodyGroup.LegFR, Quaternion.Euler(-fold, 0, 0));
+                    SetRot(BodyGroup.ArmL, Quaternion.Euler(14f * k, 0, 0));
+                    SetRot(BodyGroup.ArmR, Quaternion.Euler(14f * k, 0, 0));
+                    pos.y -= restDrop * unit * k;
+                    break;
+                case Locomotion.Hopper:
+                    scl = new Vector3(scl.x * (1f + 0.14f * k), scl.y * (1f - 0.3f * k), scl.z * (1f + 0.14f * k));
+                    break;
+                case Locomotion.Slither:
+                    rot = Quaternion.Slerp(rot, Quaternion.identity, k);
+                    scl.y *= 1f - 0.12f * k;
+                    break;
+                case Locomotion.Flyer:
+                    pos.y = Mathf.Lerp(pos.y, -restDrop * unit, k);
+                    rot = Quaternion.Slerp(rot, Quaternion.identity, k);
+                    SetRot(BodyGroup.LegFL, Quaternion.Euler(-fold, 0, 0));
+                    SetRot(BodyGroup.LegFR, Quaternion.Euler(-fold, 0, 0));
+                    SetRot(BodyGroup.LegBL, Quaternion.Euler(fold, 0, 0));
+                    SetRot(BodyGroup.LegBR, Quaternion.Euler(fold, 0, 0));
+                    break;
+            }
+            ToRest(BodyGroup.WingL, k);
+            ToRest(BodyGroup.WingR, k);
+            SetRot(BodyGroup.Tail, Quaternion.Euler(0, wag * (1f - k) + 32f * k, 0));
+            headPitch = Mathf.Lerp(headPitch, 22f, k);
+            headYaw = Mathf.Lerp(headYaw, 30f, k);
+            scl.y *= 1f + Mathf.Sin(t * 1.3f) * 0.035f * k;   // slow breathing
+        }
+
+        void ToRest(BodyGroup g, float k)
+        {
+            var tr = groups[(int)g];
+            if (tr != null) tr.localRotation = Quaternion.Slerp(tr.localRotation, baseRot[(int)g], k);
+        }
+
+        /// <summary>Reads the model: how long its legs are and how far its body is off the ground.</summary>
+        void MeasureRest()
+        {
+            restMeasured = true; restDrop = 0f; legLen = 0f;
+            int n = 0;
+            for (int g = (int)BodyGroup.LegFL; g <= (int)BodyGroup.LegBR; g++)
+            {
+                var tr = groups[g];
+                var mf = tr != null ? tr.GetComponent<MeshFilter>() : null;
+                if (mf == null || mf.sharedMesh == null) continue;
+                legLen += Mathf.Max(0f, -mf.sharedMesh.bounds.min.y);   // a leg hangs from its pivot at the hip
+                n++;
+            }
+            if (n > 0) legLen /= n;
+            var body = groups[(int)BodyGroup.Body];
+            var bmf = body != null ? body.GetComponent<MeshFilter>() : null;
+            float bottom = bmf != null && bmf.sharedMesh != null ? basePos[(int)BodyGroup.Body].y + bmf.sharedMesh.bounds.min.y : 0f;
+            restDrop = Mathf.Max(0f, bottom - 0.02f);
+            if (legLen > 0.01f) restDrop = Mathf.Min(restDrop, legLen * 0.97f);   // no further than the legs can fold
+            else if (Loco != Locomotion.Flyer) restDrop = 0f;                      // no legs: it is already sitting on the ground
         }
 
         /// <summary>Leg lengths of the human plan (hip to knee, knee to sole): how far the hips sink when the knees bend.</summary>
