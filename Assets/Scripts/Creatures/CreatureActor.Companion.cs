@@ -18,7 +18,8 @@ namespace Wildbond
 
         partial void OnSpawnMode()
         {
-            if (Mode == CreatureMode.Companion && Sp.perk == CompanionPerk.Glow || Mode == CreatureMode.Companion && Sp.perk == CompanionPerk.Warmth)
+            bool lumen = Data != null && (Data.Element1 == Element.Lumen || Data.Element2 == Element.Lumen);   // KinAid: a Lumen kin lights the dark
+            if (Mode == CreatureMode.Companion && (Sp.perk == CompanionPerk.Glow || Sp.perk == CompanionPerk.Warmth || lumen))
             {
                 if (glowLight == null)
                 {

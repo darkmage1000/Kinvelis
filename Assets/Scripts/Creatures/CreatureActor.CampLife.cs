@@ -10,7 +10,10 @@ namespace Wildbond
     /// </summary>
     public partial class CreatureActor
     {
-        enum CampMood { None, Greet, Play, Sulk }
+        enum CampMood { None, Greet, Play, Sulk, Toy }
+        /// <summary>Playing at a kin play piece (Housing): where, and whether it has got there yet.</summary>
+        Vector3 toyPos; string toyName; bool toyThere;
+        public const float ToyCheer = 300f;
         CampMood mood;
         float moodTimer, moodFx, napFx, sulkFx;
         CreatureActor playMate;
@@ -20,7 +23,7 @@ namespace Wildbond
         /// <summary>Face faceTarget whatever the state (greeting).</summary>
         bool faceAnyState;
 
-        public string CampMoodLabel => mood == CampMood.Greet ? "Welcoming you home" : mood == CampMood.Play ? "Playing" : mood == CampMood.Sulk ? "Hungry and sulking" : null;
+        public string CampMoodLabel => mood == CampMood.Greet ? "Welcoming you home" : mood == CampMood.Play ? "Playing" : mood == CampMood.Sulk ? "Hungry and sulking" : mood == CampMood.Toy ? "Playing at the " + toyName : null;
 
         void EndMood()
         {
@@ -117,6 +120,41 @@ namespace Wildbond
                     }
                     return true;
 
+                case CampMood.Toy:
+                    moodTimer -= dt;
+                    playCheck -= dt;
+                    if (playCheck <= 0f) { playCheck = 1f; if (bm.WantsHands(Data, workBuilding, this)) moodTimer = 0f; }
+                    if (moodTimer <= 0f || State == AIState.Defend)
+                    {
+                        if (toyThere && moodTimer <= 0f && State != AIState.Defend)
+                        {
+                            // done playing: back to work relaxed
+                            Data.cheerUntil = Mathf.Max(Data.cheerUntil, Time.time + ToyCheer);
+                            Fx.Sparkle(HeadPoint, new Color(0.7f, 1f, 0.8f), 10, 0.6f);
+                        }
+                        EndMood();
+                        if (State != AIState.Defend) SetState(AIState.Idle, Random.Range(0.5f, 1.2f));
+                        return false;
+                    }
+                    if (!toyThere)
+                    {
+                        MoveTo(toyPos, RunSpeed * 0.85f);
+                        if (FlatDist(transform.position, toyPos) < 1.1f) { toyThere = true; moodTimer = Random.Range(6f, 9f); }
+                        return true;
+                    }
+                    // bounce, roll about, sparkle
+                    moodFx -= dt;
+                    if (moodFx <= 0f)
+                    {
+                        moodFx = Random.Range(0.5f, 0.9f);
+                        Rig.Squash();
+                        if (Random.value < 0.4f) Rig.Lunge();
+                        Fx.Burst(HeadPoint, new Color(1f, 0.85f, 0.4f), 3, 1.4f, 0.2f, 0.6f);
+                        faceTarget = toyPos + new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f));
+                        faceAnyState = true;
+                    }
+                    return true;
+
                 case CampMood.Sulk:
                     if (Data.hunger >= 25f || (bm.HasFeedBox && bm.HasFood) || State != AIState.Rest) { EndMood(); return false; }
                     sulkFx -= dt;
@@ -139,6 +177,25 @@ namespace Wildbond
                 return true;
             }
             float roll = Random.value;
+            // a kin play piece in camp (Housing): go and play, come back relaxed (not while it is still relaxed from last time)
+            if (roll < 0.3f && Data.hunger > 25f && Time.time > Data.cheerUntil && Housing.I != null)
+            {
+                Housing.Piece toy = null; float bd = bm.Radius * 2f;
+                foreach (var t in Housing.I.PlayPieces)
+                {
+                    float d = FlatDist(transform.position, t.pos) + Random.Range(0f, 6f);
+                    if (d < bd) { bd = d; toy = t; }
+                }
+                if (toy != null)
+                {
+                    float a = Random.value * Mathf.PI * 2f, r = toy.def.radius > 0f ? toy.def.radius + BodyRadius + 0.2f : Random.Range(0f, 0.6f);
+                    toyPos = toy.pos + new Vector3(Mathf.Cos(a) * r, 0f, Mathf.Sin(a) * r);
+                    toyName = toy.def.name; toyThere = false;
+                    mood = CampMood.Toy; moodTimer = 25f; moodFx = 0.3f; playCheck = 1f;
+                    SetState(AIState.Wander, 30f);
+                    return true;
+                }
+            }
             // an afternoon nap
             if (roll < 0.16f)
             {

@@ -341,6 +341,7 @@ namespace Wildbond
                 Fx.Mote(h.go.transform.position + new Vector3(r.x, 0.12f, r.y), Vector3.up * 0.25f, new Color(0.4f, 0.3f, 0.16f, 0.7f), 0.3f, 0.9f, false);
             }
             if (d2 > 4.7f * 4.7f || pp.y - h.pos.y > 1.2f || !pl.IsAlive) { h.cool = 0f; return; }
+            if (KinAid.QuicksandProof) return;   // a Stone kin out with you keeps you on firm footing
             pl.SlowMul = 0.32f;
             pl.DrainStamina(7f * dt);
             if (fx && Random.value < 0.4f) Fx.Mote(pp + Vector3.up * 0.15f, new Vector3(Random.Range(-1f, 1f), 0.8f, Random.Range(-1f, 1f)), new Color(0.6f, 0.48f, 0.28f, 0.8f), 0.25f, 0.5f, false);

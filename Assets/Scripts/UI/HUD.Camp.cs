@@ -117,6 +117,28 @@ namespace Wildbond
                     l.text.color = new Color(1f, 1f, 1f, fade);   // (labels are shared with the pink kin-want labels)
                 }
             }
+            // construction sites: what is going up and how far along
+            if (bm != null && bm.HasBase && cam != null && gm != null && gm.Player != null && !Caves.InCave)
+                foreach (var s in bm.Sites)
+                {
+                    if (used >= CampLabelMax + 6) break;
+                    Vector3 off = s.pos - gm.Player.Position; off.y = 0f;
+                    float dist = off.magnitude;
+                    if (dist > CampLabelRange + 8f) continue;
+                    Vector3 sp = cam.WorldToScreenPoint(s.pos + Vector3.up * 2.4f);
+                    if (sp.z < 0.5f) continue;
+                    var l = CampLabelAt(used++);
+                    if (!l.root.gameObject.activeSelf) l.root.gameObject.SetActive(true);
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(safe, sp, canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null, out Vector2 local);
+                    l.root.anchoredPosition = local;
+                    l.root.localScale = Vector3.one * Mathf.Lerp(0.75f, 1f, Mathf.Clamp01(1f - dist / CampLabelRange));
+                    l.shown = null;
+                    l.text.text = $"Building {s.Name}  ·  {Mathf.RoundToInt(s.Progress01 * 100f)}%";
+                    l.text.color = Color.white;
+                    l.fill.color = LabelWork;
+                    l.fill.rectTransform.anchorMax = new Vector2(s.Progress01, 1f);
+                    var bc = l.back.color; bc.a = 0.72f; l.back.color = bc;
+                }
             // camp kin that want something from you (BaseManager.Upgrades): a pink label over the kin, bar = time left
             if (bm != null && bm.HasBase && cam != null && gm != null && gm.Player != null && !Caves.InCave)
                 foreach (var a in bm.WorkerActors)

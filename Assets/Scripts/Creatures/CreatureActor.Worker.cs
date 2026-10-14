@@ -89,6 +89,8 @@ namespace Wildbond
                 SetState(AIState.ToEat, 20f);
             }
 
+            if (TickBuildSite(bm, dt)) return;   // Crafting kin put up construction sites first (CreatureActor.Build)
+
             switch (State)
             {
                 case AIState.ToEat:

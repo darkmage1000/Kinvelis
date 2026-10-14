@@ -329,6 +329,7 @@ namespace Wildbond
             Para(p, $"<i>{sp.lore}</i>\nPersonality: {sp.personality}", 22);
             Para(p, $"HP {Mathf.CeilToInt(d.CurrentHp)}/{Mathf.CeilToInt(d.MaxHp)}    ATK {d.Atk:0}    DEF {d.Def:0}    SPD x{d.SpeedMul:0.00}\nXP {d.xp}/{CreatureData.XpToNext(d.level)}", 24, Color.white);
             Para(p, "Looks: " + d.Look.Describe(sp) + "  <size=18>(its own; eggs take after their parents)</size>", 21, Color.white);
+            Para(p, "Out with you: " + UIFactory.Col(KinAid.Describe(d.Element1, d.Element2), new Color(0.65f, 0.95f, 0.8f)) + "  <size=18>(travel help from its element)</size>", 21, Color.white);
             Para(p, "Quality: " + Aptitude.Summary(d) + $"\n<size=19>Combat x{d.CombatAptMul:0.00} stats  ·  Work x{d.WorkAptMul:0.00} speed  ·  Travel x{d.TravelAptMul:0.00} speed, x{d.MountStaminaMul:0.00} riding stamina</size>", 22, Color.white);
 
             var traits = new List<string>();
@@ -484,20 +485,27 @@ namespace Wildbond
         {
             Para(list, "Your house goes inside the camp ring, a 3 m square at a time. Lay <b>floors</b> first, then walls, doorways and windows along their edges (stand facing the edge; ROTATE steps round the square), then <b>roofs</b>. Furniture goes on floors. A <b>Bed</b> with a roof over it lets you sleep through the night.", 21);
             UIFactory.Size(UIFactory.Button(list, "REMOVE A PIECE  (half the materials back)", () => { Close(); BuildPlacement.I.BeginRemove(); }, new Color(0.5f, 0.3f, 0.28f), 22), 64);
-            bool furnitureHeader = false;
-            Header(list, "Structure", 28);
-            foreach (var d in Housing.Pieces)
+            // structure first, then furniture, then kin play pieces; blueprint pieces you haven't found are shown greyed with where to look
+            string[] heads = { "Structure", "Furniture", "Kin play  <size=20>(idle camp kin play here and come back relaxed: +25% work for 5 minutes)</size>" };
+            for (int grp = 0; grp < 3; grp++)
             {
-                if (d.kind == HouseKind.Furniture && !furnitureHeader) { furnitureHeader = true; Header(list, "Furniture", 28); }
-                var row = UIFactory.HRow(list, 96, 14);
-                row.childForceExpandHeight = false;
-                var tx = UIFactory.Label(row.transform, $"<b>{d.name}</b>\n<size=20>{d.desc}</size>\n<size=20>{Ingredients(d.cost)}</size>", 26, Color.white);
-                tx.supportRichText = true;
-                UIFactory.Size(tx, 92, 1090);
-                var dd = d;
-                bool can = WorldRules.Current.freeBuild || ItemSources.Has(d.cost);
-                UIFactory.Size(UIFactory.Button(row.transform, can ? "BUILD" : "Missing", can ? () => { Close(); BuildPlacement.I.BeginPiece(dd); } : (System.Action)null,
-                    can ? new Color(0.5f, 0.4f, 0.2f) : new Color(0.3f, 0.3f, 0.32f), 26), 84, 200);
+                Header(list, heads[grp], 28);
+                foreach (var d in Housing.Pieces)
+                {
+                    int g = d.kind != HouseKind.Furniture ? 0 : d.play ? 2 : 1;
+                    if (g != grp) continue;
+                    bool locked = Housing.Locked(d);
+                    var row = UIFactory.HRow(list, 96, 14);
+                    row.childForceExpandHeight = false;
+                    string where = d.blueprint ? UIFactory.Col(locked ? $"  Blueprint: found in chests in {BiomeInfo.Name(d.land)}." : $"  Blueprint from {BiomeInfo.Name(d.land)}.", locked ? new Color(1f, 0.8f, 0.5f) : new Color(0.6f, 0.9f, 1f)) : "";
+                    var tx = UIFactory.Label(row.transform, $"<b>{d.name}</b>{(d.ground ? "  <size=19>(floor or open ground)</size>" : "")}\n<size=20>{d.desc}{where}</size>\n<size=20>{Ingredients(d.cost)}</size>", 26, locked ? new Color(0.7f, 0.7f, 0.72f) : Color.white);
+                    tx.supportRichText = true;
+                    UIFactory.Size(tx, 92, 1090);
+                    var dd = d;
+                    bool can = !locked && (WorldRules.Current.freeBuild || ItemSources.Has(d.cost));
+                    UIFactory.Size(UIFactory.Button(row.transform, locked ? "Blueprint" : can ? "BUILD" : "Missing", can ? () => { Close(); BuildPlacement.I.BeginPiece(dd); } : (System.Action)null,
+                        can ? new Color(0.5f, 0.4f, 0.2f) : new Color(0.3f, 0.3f, 0.32f), 26), 84, 200);
+                }
             }
         }
 

@@ -289,6 +289,7 @@ namespace Wildbond
                 if (s.standing != null) baseMgr.Standing.AddRange(s.standing);
             }
             housing.Load(s.house);
+            baseMgr.LoadSites(s.sites);
 
             var pos = new Vector3(s.px, s.py, s.pz);
             Player.Teleport(pos, s.yaw);
@@ -779,6 +780,14 @@ namespace Wildbond
             {
                 interactStone = stone;
                 InteractPrompt = waystones.IsActive(stone) ? "TRAVEL" : "ATTUNE";
+                return;
+            }
+            // a construction site: BUILD to help put it up (BaseManager.Construction)
+            var site = baseMgr.HasBase ? baseMgr.SiteNear(Player.Position, 1.8f) : null;
+            if (site != null)
+            {
+                InteractPrompt = (baseMgr.PlayerBuildSite == site ? "STOP" : "BUILD") + $"\n{Mathf.RoundToInt(site.Progress01 * 100f)}%";
+                caveAction = () => baseMgr.TogglePlayerBuild(site);
                 return;
             }
             // your house: a bed to sleep in, a wardrobe to change your look (Housing)

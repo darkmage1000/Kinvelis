@@ -102,7 +102,7 @@ namespace Wildbond
                 case Temperament.Timid:
                 {
                     float scare = player.IsSprinting ? 12f : 7f;
-                    if (dPlayer < scare && player.IsAlive && !player.IsCrouching && !Tired) { SetState(AIState.Flee, 2.5f); Target = null; return; }
+                    if (dPlayer / KinAid.NoticeMul < scare && player.IsAlive && !player.IsCrouching && !Tired) { SetState(AIState.Flee, 2.5f); Target = null; return; }
                     break;
                 }
                 case Temperament.Curious:
@@ -113,14 +113,14 @@ namespace Wildbond
                     }
                     break;
                 case Temperament.Territorial:
-                    if (dPlayer < (Data.alpha ? 11f : 7.5f) && player.IsAlive)
+                    if (dPlayer / KinAid.NoticeMul < (Data.alpha ? 11f : 7.5f) && player.IsAlive)   // a Shade kin out with you: noticed later (KinAid)
                     {
                         if (State != AIState.Alert) { SetState(AIState.Alert, 1.6f); HUD.DamageNumber(transform.position + Vector3.up * (BodyRadius * 2 + 1f), "!", new Color(1f, 0.7f, 0.2f), 1.4f); return; }
                         if (stateTimer <= 0f) { Aggro = true; Target = player; return; }
                     }
                     break;
                 case Temperament.Aggressive:
-                    if (dPlayer < (night ? 17f : 13f) + (Data.alpha ? 6f : 0f) && player.IsAlive && !player.IsCrouching)
+                    if (dPlayer / KinAid.NoticeMul < (night ? 17f : 13f) + (Data.alpha ? 6f : 0f) && player.IsAlive && !player.IsCrouching)
                     {
                         Aggro = true;
                         Target = player;

@@ -16,6 +16,17 @@ namespace Wildbond
         public Ingredient[] cost;
         public float radius;          // furniture: collision circle
         public bool stone, bed, wardrobe, lamp;
+        /// <summary>Look variant of a wall / roof / floor / window ("bamboo", "adobe", "log", "dark", "thatch", "reed", "sandstone", "crystal").</summary>
+        public string style;
+        /// <summary>Found as a blueprint in this land's chests (Chests.Blueprints, id "house:" + piece id).</summary>
+        public bool blueprint;
+        public BiomeId land;
+        /// <summary>Kin play piece: idle camp kin go and play on it and come back relaxed (CreatureActor.CampLife).</summary>
+        public bool play;
+        /// <summary>Furniture that may also stand on open ground in the camp ring (play pieces, planters).</summary>
+        public bool ground;
+        /// <summary>A self-lit glow (lamps, fires): where, how big, what colour.</summary>
+        public Vector3 glowAt; public float glowSize; public Color32 glowCol;
     }
 
     /// <summary>
@@ -49,11 +60,47 @@ namespace Wildbond
             new HousePieceDef { id = "house_bed", name = "Bed", kind = HouseKind.Furniture, bed = true, radius = 0.75f, cost = C(("wood", 10), ("fiber", 12), ("pelt", 2)), desc = "SLEEP here from evening on to skip to morning (needs a roof over it). The camp keeps working while you sleep." },
             new HousePieceDef { id = "house_table", name = "Table", kind = HouseKind.Furniture, radius = 0.6f, cost = C(("wood", 6)), desc = "A sturdy table." },
             new HousePieceDef { id = "house_chair", name = "Chair", kind = HouseKind.Furniture, radius = 0.3f, cost = C(("wood", 3)), desc = "A chair." },
-            new HousePieceDef { id = "house_lamp", name = "Lamp", kind = HouseKind.Furniture, lamp = true, radius = 0.25f, cost = C(("wood", 2), ("gel", 1)), desc = "A standing lamp that glows." },
+            new HousePieceDef { id = "house_lamp", name = "Lamp", kind = HouseKind.Furniture, lamp = true, radius = 0.25f, cost = C(("wood", 2), ("gel", 1)), desc = "A standing lamp that glows.", glowAt = new Vector3(0, 1.48f, 0), glowSize = 0.26f, glowCol = new Color32(255, 235, 160, 0) },
             new HousePieceDef { id = "house_rug", name = "Rug", kind = HouseKind.Furniture, radius = 0f, cost = C(("fiber", 6)), desc = "A woven rug. You can walk over it." },
             new HousePieceDef { id = "house_shelf", name = "Bookshelf", kind = HouseKind.Furniture, radius = 0.45f, cost = C(("wood", 8)), desc = "Shelves of books and keepsakes." },
             new HousePieceDef { id = "house_wardrobe", name = "Wardrobe", kind = HouseKind.Furniture, wardrobe = true, radius = 0.45f, cost = C(("wood", 10), ("fiber", 4)), desc = "CHANGE LOOK here: your explorer's body, hair and outfit." },
+            new HousePieceDef { id = "kin_scratch_post", name = "Scratching Post", kind = HouseKind.Furniture, play = true, ground = true, radius = 0.35f, cost = C(("wood", 4), ("fiber", 6)), desc = "Kin play piece: idle camp kin come and play, and go back to work relaxed (+25% work for 5 minutes)." },
+
+            // ---- blueprints from each land's chests: a style, a decoration and a kin play piece
+            BP(BiomeId.Meadow, new HousePieceDef { id = "house_roof_thatch", name = "Thatched Roof", kind = HouseKind.RoofSlope, style = "thatch", cost = C(("fiber", 10), ("wood", 3)), desc = "A sloped roof of golden straw." }),
+            BP(BiomeId.Meadow, new HousePieceDef { id = "house_flowerbox", name = "Flower Box", kind = HouseKind.Furniture, ground = true, radius = 0.3f, cost = C(("wood", 3), ("berry", 4)), desc = "A planter full of meadow flowers." }),
+            BP(BiomeId.Meadow, new HousePieceDef { id = "kin_play_mat", name = "Play Mat", kind = HouseKind.Furniture, play = true, ground = true, radius = 0f, cost = C(("fiber", 10), ("pelt", 2)), desc = "Kin play piece: a patchwork mat with balls to bat about." }),
+            BP(BiomeId.Isles, new HousePieceDef { id = "house_wall_bamboo", name = "Bamboo Wall", kind = HouseKind.Wall, style = "bamboo", cost = C(("wood", 5), ("fiber", 3)), desc = "A breezy wall of lashed bamboo poles." }),
+            BP(BiomeId.Isles, new HousePieceDef { id = "house_shell_lamp", name = "Shell Lamp", kind = HouseKind.Furniture, lamp = true, radius = 0.25f, cost = C(("wood", 2), ("gel", 2)), desc = "A glowing seashell on a driftwood stand.", glowAt = new Vector3(0, 1.0f, 0), glowSize = 0.3f, glowCol = new Color32(255, 190, 210, 0) }),
+            BP(BiomeId.Isles, new HousePieceDef { id = "kin_splash_pool", name = "Splash Pool", kind = HouseKind.Furniture, play = true, ground = true, radius = 0.9f, cost = C(("stone", 10), ("gel", 3)), desc = "Kin play piece: a shallow pool to splash in." }),
+            BP(BiomeId.Badlands, new HousePieceDef { id = "house_wall_adobe", name = "Adobe Wall", kind = HouseKind.Wall, style = "adobe", cost = C(("stone", 6), ("wood", 2)), desc = "A smooth clay wall with beam ends." }),
+            BP(BiomeId.Badlands, new HousePieceDef { id = "house_fireplace", name = "Fireplace", kind = HouseKind.Furniture, lamp = true, radius = 0.6f, cost = C(("stone", 12), ("cinder", 2)), desc = "A stone hearth with a fire that never goes out.", glowAt = new Vector3(0, 0.38f, 0.12f), glowSize = 0.34f, glowCol = new Color32(255, 140, 50, 0) }),
+            BP(BiomeId.Badlands, new HousePieceDef { id = "kin_warm_rocks", name = "Warm Rock Bed", kind = HouseKind.Furniture, play = true, ground = true, radius = 0.8f, cost = C(("stone", 12), ("cinder", 2)), desc = "Kin play piece: sun-warmed stones to bask on." }),
+            BP(BiomeId.Peaks, new HousePieceDef { id = "house_wall_log", name = "Log Cabin Wall", kind = HouseKind.Wall, style = "log", cost = C(("wood", 9)), desc = "Round logs stacked the old way." }),
+            BP(BiomeId.Peaks, new HousePieceDef { id = "house_fur_rug", name = "Fur Rug", kind = HouseKind.Furniture, radius = 0f, cost = C(("pelt", 4)), desc = "A thick white fur rug." }),
+            BP(BiomeId.Peaks, new HousePieceDef { id = "kin_snow_slide", name = "Snow Slide", kind = HouseKind.Furniture, play = true, ground = true, radius = 0.9f, cost = C(("wood", 8), ("crystal", 1)), desc = "Kin play piece: a little slide that is always slippery." }),
+            BP(BiomeId.Swamp, new HousePieceDef { id = "house_roof_reed", name = "Reed Roof", kind = HouseKind.RoofSlope, style = "reed", cost = C(("fiber", 8), ("wood", 3)), desc = "A sloped roof of bundled marsh reeds." }),
+            BP(BiomeId.Swamp, new HousePieceDef { id = "house_lily_planter", name = "Lily Planter", kind = HouseKind.Furniture, ground = true, radius = 0.4f, cost = C(("wood", 3), ("gel", 2)), desc = "A little tub of water lilies." }),
+            BP(BiomeId.Swamp, new HousePieceDef { id = "kin_mud_wallow", name = "Mud Wallow", kind = HouseKind.Furniture, play = true, ground = true, radius = 0f, cost = C(("stone", 6), ("gel", 2)), desc = "Kin play piece: lovely, squelchy mud." }),
+            BP(BiomeId.Desert, new HousePieceDef { id = "house_floor_sandstone", name = "Sandstone Floor", kind = HouseKind.Floor, style = "sandstone", cost = C(("stone", 10)), desc = "A floor of warm sandstone tiles." }),
+            BP(BiomeId.Desert, new HousePieceDef { id = "house_tapestry", name = "Tapestry Stand", kind = HouseKind.Furniture, radius = 0.25f, cost = C(("wood", 3), ("fiber", 6)), desc = "A woven hanging in desert colours." }),
+            BP(BiomeId.Desert, new HousePieceDef { id = "kin_sand_pit", name = "Sand Pit", kind = HouseKind.Furniture, play = true, ground = true, radius = 0f, cost = C(("wood", 6), ("stone", 4)), desc = "Kin play piece: a box of soft sand to dig in." }),
+            BP(BiomeId.Blight, new HousePieceDef { id = "house_wall_dark", name = "Dark Timber Wall", kind = HouseKind.Wall, style = "dark", cost = C(("wood", 7)), desc = "Blackened planks with iron straps." }),
+            BP(BiomeId.Blight, new HousePieceDef { id = "house_spooky_lantern", name = "Ghost Lantern", kind = HouseKind.Furniture, lamp = true, radius = 0.25f, cost = C(("wood", 2), ("gel", 2)), desc = "A hanging lantern with an eerie green flame.", glowAt = new Vector3(0.32f, 1.25f, 0), glowSize = 0.2f, glowCol = new Color32(150, 255, 140, 0) }),
+            BP(BiomeId.Blight, new HousePieceDef { id = "kin_climb_tree", name = "Climbing Tree", kind = HouseKind.Furniture, play = true, ground = true, radius = 0.5f, cost = C(("wood", 12), ("fiber", 4)), desc = "Kin play piece: a twisty tree with platforms to scramble up." }),
+            BP(BiomeId.Glow, new HousePieceDef { id = "house_window_crystal", name = "Crystal Window", kind = HouseKind.Window, style = "crystal", cost = C(("wood", 5), ("crystal", 2)), desc = "A window glazed with glowing crystal." }),
+            BP(BiomeId.Glow, new HousePieceDef { id = "house_glowshroom", name = "Glowshroom Lamp", kind = HouseKind.Furniture, lamp = true, ground = true, radius = 0.3f, cost = C(("wood", 1), ("gel", 3)), desc = "A cluster of glowing mushrooms in a pot.", glowAt = new Vector3(0, 0.85f, 0), glowSize = 0.34f, glowCol = new Color32(110, 240, 255, 0) }),
+            BP(BiomeId.Glow, new HousePieceDef { id = "kin_ball_pit", name = "Glow Ball Pit", kind = HouseKind.Furniture, play = true, ground = true, radius = 0.9f, cost = C(("wood", 8), ("gel", 4)), desc = "Kin play piece: a pit of glowing balls to dive into." }),
         };
+
+        static HousePieceDef BP(BiomeId land, HousePieceDef d) { d.blueprint = true; d.land = land; return d; }
+
+        /// <summary>The id a house blueprint is stored under in PlayerStats.blueprints.</summary>
+        public static string BlueprintId(HousePieceDef d) => "house:" + d.id;
+        public static bool Locked(HousePieceDef d) => d.blueprint && !Dev.FreeAll && GameManager.I != null && !GameManager.I.Player.Stats.blueprints.Contains(BlueprintId(d));
+
+        /// <summary>The kin play pieces in camp (CreatureActor.CampLife sends idle kin to them).</summary>
+        public IEnumerable<Piece> PlayPieces { get { foreach (var f in furniture) if (f.def.play) yield return f; } }
 
         public static HousePieceDef Def(string id) { foreach (var p in Pieces) if (p.id == id) return p; return null; }
 
@@ -98,6 +145,20 @@ namespace Wildbond
 
         public void Init() { I = this; floorSnap = new Dictionary<long, float>(); }
 
+        // ---- construction sites (BaseManager.Construction) hold their slot until they are built
+        readonly HashSet<string> pending = new HashSet<string>();
+        readonly Dictionary<long, float> pendingFloors = new Dictionary<long, float>();
+        static string SlotKey(HousePieceDef d, Spot s) =>
+            d.kind == HouseKind.Floor ? $"F{s.cx},{s.cz}" : d.kind == HouseKind.Roof || d.kind == HouseKind.RoofSlope ? $"R{s.cx},{s.cz}" : d.kind == HouseKind.Furniture ? $"U{s.pos.x:0.0},{s.pos.z:0.0}" : $"E{s.side}:{s.cx},{s.cz}";
+        public void Reserve(HousePieceDef d, Spot s) { pending.Add(SlotKey(d, s)); if (d.kind == HouseKind.Floor) pendingFloors[Key(s.cx, s.cz)] = s.pos.y; }
+        public void Unreserve(HousePieceDef d, Spot s) { pending.Remove(SlotKey(d, s)); if (d.kind == HouseKind.Floor) pendingFloors.Remove(Key(s.cx, s.cz)); }
+        bool Pending(HousePieceDef d, Spot s) => pending.Contains(SlotKey(d, s));
+        bool FloorOrSite(int cx, int cz, out float y)
+        {
+            if (floors.TryGetValue(Key(cx, cz), out var f)) { y = f.Y; return true; }
+            return pendingFloors.TryGetValue(Key(cx, cz), out y);
+        }
+
         // ============================================================ PLACING
         public struct Spot { public bool ok; public string reason; public int cx, cz, side, rot; public Vector3 pos; public Quaternion q; public float depth; }
 
@@ -130,7 +191,7 @@ namespace Wildbond
                     }
                     s.pos = new Vector3(c.x, y, c.z); s.q = Quaternion.identity; s.depth = y - lo + 0.5f;
                     if (s.reason != null) break;
-                    if (floors.ContainsKey(Key(cx, cz))) { Fail("There's a floor here already"); break; }
+                    if (floors.ContainsKey(Key(cx, cz)) || Pending(def, s)) { Fail("There's a floor here already"); break; }
                     if (hi - lo > 2.2f) { Fail("Too steep here"); break; }
                     if (lo < WorldGen.WaterLevel + 0.15f) { Fail("Too wet here"); break; }
                     if (!bm.IsInsideBase(c, 1.5f)) { Fail("Inside your camp ring only"); break; }
@@ -156,7 +217,7 @@ namespace Wildbond
                     s.q = Quaternion.Euler(0f, side == 0 ? 0f : 90f, 0f);
                     if (s.reason != null) break;
                     if (float.IsNegativeInfinity(y)) { Fail("Walls go on the edge of a floor"); break; }
-                    if (edges[side].ContainsKey(Key(ex, ez))) { Fail("There's a wall here already"); break; }
+                    if (edges[side].ContainsKey(Key(ex, ez)) || Pending(def, s)) { Fail("There's a wall here already"); break; }
                     if (FurnitureNearSegment(mid, side, 0.15f)) { Fail("Furniture is in the way"); break; }
                     s.ok = true;
                     break;
@@ -165,12 +226,12 @@ namespace Wildbond
                 case HouseKind.RoofSlope:
                 {
                     var c = CellCenter(cx, cz);
-                    floors.TryGetValue(Key(cx, cz), out var f);
-                    s.pos = new Vector3(c.x, (f != null ? f.Y : WorldGen.Height(c.x, c.z)) + WallH, c.z);
+                    bool hasFloor = FloorOrSite(cx, cz, out float fy0);
+                    s.pos = new Vector3(c.x, (hasFloor ? fy0 : WorldGen.Height(c.x, c.z)) + WallH, c.z);
                     s.q = Quaternion.Euler(0f, s.rot * 90f, 0f);
                     if (s.reason != null) break;
-                    if (f == null) { Fail("Roofs go over a floor"); break; }
-                    if (roofs.ContainsKey(Key(cx, cz))) { Fail("There's a roof here already"); break; }
+                    if (!hasFloor) { Fail("Roofs go over a floor"); break; }
+                    if (roofs.ContainsKey(Key(cx, cz)) || Pending(def, s)) { Fail("There's a roof here already"); break; }
                     s.ok = true;
                     break;
                 }
@@ -182,7 +243,13 @@ namespace Wildbond
                     s.pos = new Vector3(q.x, float.IsNegativeInfinity(fy) ? WorldGen.Height(q.x, q.z) : fy, q.z);
                     s.q = Quaternion.Euler(0f, s.rot * 90f, 0f);
                     if (s.reason != null) break;
-                    if (float.IsNegativeInfinity(fy)) { Fail("Furniture goes on a floor"); break; }
+                    if (float.IsNegativeInfinity(fy))
+                    {
+                        if (!def.ground) { Fail("Furniture goes on a floor"); break; }
+                        // out in the open: inside the camp ring, clear of trees, rocks and structures
+                        if (!bm.IsInsideBase(s.pos, 0.5f)) { Fail("Inside your camp ring only"); break; }
+                        if (WorldCollision.Overlaps(s.pos, Mathf.Max(0.4f, def.radius), true)) { Fail("Something is in the way"); break; }
+                    }
                     // keep clear of walls and of other furniture
                     if (WallClearance(s.pos) < Mathf.Max(0.25f, def.radius * 0.8f)) { Fail("Too close to a wall"); break; }
                     bool hit = false;
@@ -205,9 +272,9 @@ namespace Wildbond
         float EdgeBase(int cx, int cz, int side)
         {
             float y = float.NegativeInfinity;
-            if (floors.TryGetValue(Key(cx, cz), out var a)) y = a.Y;
+            if (FloorOrSite(cx, cz, out float a)) y = a;   // a floor still being built counts: walls can go up beside it
             int nx = side == 1 ? cx + 1 : cx, nz = side == 0 ? cz + 1 : cz;
-            if (floors.TryGetValue(Key(nx, nz), out var b)) y = Mathf.Max(y, b.Y);
+            if (FloorOrSite(nx, nz, out float b)) y = Mathf.Max(y, b);
             return y;
         }
 
@@ -505,8 +572,15 @@ namespace Wildbond
             {
                 case HouseKind.Floor:
                     mb.Box(M(new Vector3(0, -0.12f - depth * 0.5f, 0), new Vector3(h - 0.06f, depth, h - 0.06f)), StoneDark, StoneC);
-                    for (int i = 0; i < 5; i++)
-                        mb.Box(M(new Vector3(-half + 0.3f + i * 0.6f, -0.06f, 0), new Vector3(0.58f, 0.12f, h)), i % 2 == 0 ? Plank : PlankLight);
+                    if (def.style == "sandstone")
+                        for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++)
+                            mb.Box(M(new Vector3(-half + 0.375f + i * 0.75f, -0.06f, -half + 0.375f + j * 0.75f), new Vector3(0.72f, 0.12f, 0.72f)), (i + j) % 2 == 0 ? Col("#e0c088") : Col("#c8a46a"));
+                    else
+                        for (int i = 0; i < 5; i++)
+                            mb.Box(M(new Vector3(-half + 0.3f + i * 0.6f, -0.06f, 0), new Vector3(0.58f, 0.12f, h)), i % 2 == 0 ? Plank : PlankLight);
+                    break;
+                case HouseKind.Wall when def.style != null:
+                    StyledWall(mb, def.style, half);
                     break;
                 case HouseKind.Wall:
                     if (def.stone)
@@ -546,8 +620,18 @@ namespace Wildbond
                     mb.Box(M(new Vector3(0, 0.5f, 0), new Vector3(1.2f, 1.0f, WallT)), Plank);
                     mb.Box(M(new Vector3(0, 2.6f, 0), new Vector3(1.2f, 0.8f, WallT)), PlankLight);
                     mb.Box(M(new Vector3(0, 1.0f, 0), new Vector3(1.34f, 0.08f, WallT + 0.12f)), Post);   // sill
-                    mb.Box(M(new Vector3(0, 1.6f, 0), new Vector3(1.2f, 0.05f, 0.05f)), Post);            // cross bars
-                    mb.Box(M(new Vector3(0, 1.6f, 0), new Vector3(0.05f, 1.2f, 0.05f)), Post);
+                    if (def.style == "crystal")
+                    {
+                        // glazed with crystal: a pale glowing pane (drawn with the lamp glow below)
+                        mb.Box(M(new Vector3(0, 1.6f, 0), new Vector3(1.2f, 1.2f, 0.04f)), new Color32(150, 230, 255, 255));
+                        mb.Box(M(new Vector3(0, 1.6f, 0), new Vector3(1.2f, 0.06f, 0.08f)), Col("#5a7a9a"));
+                        mb.Box(M(new Vector3(0, 1.6f, 0), new Vector3(0.06f, 1.2f, 0.08f)), Col("#5a7a9a"));
+                    }
+                    else
+                    {
+                        mb.Box(M(new Vector3(0, 1.6f, 0), new Vector3(1.2f, 0.05f, 0.05f)), Post);            // cross bars
+                        mb.Box(M(new Vector3(0, 1.6f, 0), new Vector3(0.05f, 1.2f, 0.05f)), Post);
+                    }
                     WallPosts(mb, half);
                     break;
                 }
@@ -560,7 +644,11 @@ namespace Wildbond
                     // rises 1.5 m toward +z (rot turns it); a beam along the high edge, open gables
                     float rise = 1.5f, run = h + 0.3f;
                     float ang = Mathf.Atan2(rise, run) * Mathf.Rad2Deg, len = Mathf.Sqrt(rise * rise + run * run);
-                    mb.Box(M(new Vector3(0, rise * 0.5f + 0.1f, 0), new Vector3(h + 0.3f, 0.18f, len), 0f, -ang), Shingle, Thatch);
+                    Color32 under = def.style == "thatch" ? Col("#c8a050") : def.style == "reed" ? Col("#6a7a3a") : Shingle;
+                    Color32 over = def.style == "thatch" ? Col("#e8c870") : def.style == "reed" ? Col("#8a9a4a") : Thatch;
+                    mb.Box(M(new Vector3(0, rise * 0.5f + 0.1f, 0), new Vector3(h + 0.3f, def.style != null ? 0.3f : 0.18f, len), 0f, -ang), under, over);
+                    if (def.style != null)   // a shaggy fringe along the low edge
+                        for (int k = 0; k < 8; k++) mb.Box(M(new Vector3(-half + 0.2f + k * 0.37f, 0.02f, -half - 0.12f), new Vector3(0.3f, 0.22f, 0.12f), 0f, 0f, (k % 2 == 0 ? 6f : -6f)), under);
                     mb.Box(M(new Vector3(0, rise + 0.05f, half + 0.1f), new Vector3(h + 0.4f, 0.16f, 0.16f)), Post);
                     for (int s = -1; s <= 1; s += 2)   // triangular-ish gable ends: stacked boards
                         for (int k = 0; k < 3; k++)
@@ -575,6 +663,37 @@ namespace Wildbond
             mesh = mb.ToMesh("house_" + key);
             meshes[key] = mesh;
             return mesh;
+        }
+
+        /// <summary>The blueprint wall looks: bamboo poles, smooth adobe, round logs, dark timber with iron straps.</summary>
+        static void StyledWall(MeshBuilder mb, string style, float half)
+        {
+            switch (style)
+            {
+                case "bamboo":
+                    for (int i = 0; i < 13; i++)
+                    {
+                        float x = -half + 0.12f + i * 0.23f;
+                        mb.Cylinder(M(new Vector3(x, WallH * 0.5f, 0), new Vector3(0.2f, WallH, 0.2f)), i % 2 == 0 ? Col("#b8b060") : Col("#9aa04a"), 6, 1f, true);
+                        for (int k = 1; k < 4; k++) mb.Cylinder(M(new Vector3(x, k * 0.75f, 0), new Vector3(0.22f, 0.05f, 0.22f)), Col("#7a8038"), 6, 1f, true);
+                    }
+                    mb.Box(M(new Vector3(0, 1.0f, 0.12f), new Vector3(half * 2f, 0.06f, 0.05f)), Col("#6a5030"));
+                    mb.Box(M(new Vector3(0, 2.2f, 0.12f), new Vector3(half * 2f, 0.06f, 0.05f)), Col("#6a5030"));
+                    break;
+                case "adobe":
+                    mb.Box(M(new Vector3(0, WallH * 0.5f, 0), new Vector3(half * 2f, WallH, WallT + 0.04f)), Col("#c8784a"), Col("#d89060"));
+                    for (int k = 0; k < 3; k++) mb.Cylinder(M(new Vector3(-half + 0.5f + k * 1f, WallH - 0.3f, 0), new Vector3(0.14f, WallT + 0.3f, 0.14f), 0f, 90f), Col("#6a4426"), 6, 1f, true);
+                    break;
+                case "log":
+                    for (int row = 0; row < 7; row++)
+                        mb.Cylinder(M(new Vector3(0, 0.21f + row * 0.42f, 0), new Vector3(0.42f, half * 2f + 0.3f, 0.42f), 0f, 0f, 90f), row % 2 == 0 ? Col("#8a5a32") : Col("#9a6a3c"), 8, 1f, true);
+                    break;
+                default:   // "dark"
+                    for (int row = 0; row < 6; row++) mb.Box(M(new Vector3(0, 0.25f + row * 0.5f, 0), new Vector3(half * 2f, 0.48f, WallT)), row % 2 == 0 ? Col("#3a3034") : Col("#48383c"));
+                    for (int k = 0; k < 2; k++) mb.Box(M(new Vector3(0, 0.8f + k * 1.4f, 0), new Vector3(half * 2f, 0.1f, WallT + 0.05f)), Col("#5a5a64"));
+                    WallPosts(mb, half);
+                    break;
+            }
         }
 
         static void WallPosts(MeshBuilder mb, float half)
@@ -628,6 +747,116 @@ namespace Wildbond
                         }
                     }
                     break;
+                case "kin_scratch_post":
+                    mb.Box(M(new Vector3(0, 0.06f, 0), new Vector3(0.6f, 0.12f, 0.6f)), Plank);
+                    mb.Cylinder(M(new Vector3(0, 0.6f, 0), new Vector3(0.2f, 1.0f, 0.2f)), Col("#c8a878"), 8, 1f, true);
+                    for (int k = 0; k < 4; k++) mb.Cylinder(M(new Vector3(0, 0.25f + k * 0.22f, 0), new Vector3(0.25f, 0.08f, 0.25f)), Col("#a88858"), 8, 1f, true);
+                    mb.Box(M(new Vector3(0, 1.12f, 0), new Vector3(0.45f, 0.06f, 0.45f)), Col("#9a3a3a"));
+                    mb.Sphere(M(new Vector3(0.22f, 0.95f, 0), Vector3.one * 0.12f), Col("#e8c040"), 6, 4);
+                    break;
+                case "house_flowerbox":
+                    mb.Box(M(new Vector3(0, 0.18f, 0), new Vector3(0.9f, 0.36f, 0.4f)), PlankDark);
+                    mb.Box(M(new Vector3(0, 0.36f, 0), new Vector3(0.84f, 0.04f, 0.34f)), Col("#5a3a20"));
+                    for (int k = 0; k < 7; k++)
+                    {
+                        float x = -0.36f + k * 0.12f;
+                        mb.Cylinder(M(new Vector3(x, 0.48f, (k % 2) * 0.08f - 0.04f), new Vector3(0.03f, 0.24f, 0.03f)), Col("#4a8a3a"), 4, 1f, false);
+                        mb.Sphere(M(new Vector3(x, 0.62f, (k % 2) * 0.08f - 0.04f), Vector3.one * 0.11f), k % 3 == 0 ? Col("#ff8ab0") : k % 3 == 1 ? Col("#ffe060") : Col("#b08aff"), 6, 4);
+                    }
+                    break;
+                case "kin_play_mat":
+                    for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++)
+                        mb.Box(M(new Vector3(-0.6f + i * 0.6f, 0.015f, -0.6f + j * 0.6f), new Vector3(0.6f, 0.03f, 0.6f)), (i + j) % 3 == 0 ? Col("#e86a6a") : (i + j) % 3 == 1 ? Col("#6ab0e8") : Col("#f0d060"));
+                    mb.Sphere(M(new Vector3(0.4f, 0.15f, 0.3f), Vector3.one * 0.26f), Col("#ff7a4a"), 8, 5);
+                    mb.Sphere(M(new Vector3(-0.5f, 0.11f, -0.4f), Vector3.one * 0.2f), Col("#7ae08a"), 8, 5);
+                    mb.Sphere(M(new Vector3(-0.2f, 0.09f, 0.55f), Vector3.one * 0.16f), Col("#c08aff"), 8, 5);
+                    break;
+                case "house_shell_lamp":
+                    mb.Cylinder(M(new Vector3(0, 0.05f, 0), new Vector3(0.4f, 0.1f, 0.4f)), Col("#d8c8a8"), 8, 1f, true);
+                    mb.Box(M(new Vector3(0, 0.45f, 0), new Vector3(0.08f, 0.8f, 0.08f), 8f), Col("#a89878"));
+                    mb.Dome(M(new Vector3(0, 0.88f, 0), new Vector3(0.6f, 0.4f, 0.5f), 0f, -20f), Col("#f0d8d0"), 10, 4);
+                    break;
+                case "kin_splash_pool":
+                    mb.Cylinder(M(new Vector3(0, 0.15f, 0), new Vector3(1.9f, 0.3f, 1.9f)), StoneC, StoneDark, 14, 1f, true);
+                    mb.Cylinder(M(new Vector3(0, 0.31f, 0), new Vector3(1.6f, 0.02f, 1.6f)), Col("#4aa8e8"), Col("#7ad0ff"), 14, 1f, true);
+                    mb.Sphere(M(new Vector3(0.4f, 0.36f, 0.2f), Vector3.one * 0.18f), Col("#ffd040"), 6, 4);
+                    break;
+                case "house_fireplace":
+                    mb.Box(M(new Vector3(0, 0.6f, -0.15f), new Vector3(1.3f, 1.2f, 0.5f)), StoneC, StoneDark);
+                    mb.Box(M(new Vector3(0, 0.35f, 0.08f), new Vector3(0.8f, 0.6f, 0.1f)), Col("#2a2420"));
+                    mb.Box(M(new Vector3(0, 1.25f, -0.1f), new Vector3(1.5f, 0.12f, 0.6f)), PlankDark);
+                    mb.Box(M(new Vector3(0, 1.9f, -0.25f), new Vector3(0.6f, 1.2f, 0.4f)), StoneDark);
+                    break;
+                case "kin_warm_rocks":
+                    for (int k = 0; k < 7; k++)
+                    {
+                        float a = k / 7f * Mathf.PI * 2f;
+                        mb.Rock(M(new Vector3(Mathf.Cos(a) * 0.65f, 0.12f, Mathf.Sin(a) * 0.65f), new Vector3(0.45f, 0.28f, 0.4f)), Col("#a8603a"), Col("#c87a4a"), (uint)(k * 7 + 3), 6, 4, 0.15f);
+                    }
+                    mb.Cylinder(M(new Vector3(0, 0.05f, 0), new Vector3(1.0f, 0.1f, 1.0f)), Col("#d8b070"), 12, 1f, true);
+                    break;
+                case "house_fur_rug":
+                    mb.Cylinder(M(new Vector3(0, 0.02f, 0), new Vector3(1.9f, 0.04f, 1.3f)), Col("#f4f0e8"), 14, 1f, true);
+                    for (int k = 0; k < 10; k++) { float a = k / 10f * Mathf.PI * 2f; mb.Sphere(M(new Vector3(Mathf.Cos(a) * 0.95f, 0.03f, Mathf.Sin(a) * 0.65f), new Vector3(0.22f, 0.06f, 0.22f)), Col("#e8e0d4"), 6, 3); }
+                    break;
+                case "kin_snow_slide":
+                    mb.Box(M(new Vector3(0, 0.55f, 0.05f), new Vector3(0.7f, 0.08f, 1.9f), 0f, 30f), Col("#d8f0ff"));
+                    mb.Box(M(new Vector3(0.38f, 0.6f, 0.05f), new Vector3(0.06f, 0.2f, 1.9f), 0f, 30f), PlankDark);
+                    mb.Box(M(new Vector3(-0.38f, 0.6f, 0.05f), new Vector3(0.06f, 0.2f, 1.9f), 0f, 30f), PlankDark);
+                    mb.Box(M(new Vector3(0, 0.6f, -0.95f), new Vector3(0.7f, 1.2f, 0.25f)), Plank);
+                    for (int k = 0; k < 4; k++) mb.Box(M(new Vector3(0, 0.15f + k * 0.3f, -1.15f), new Vector3(0.6f, 0.06f, 0.2f)), PlankLight);
+                    break;
+                case "house_lily_planter":
+                    mb.Cylinder(M(new Vector3(0, 0.2f, 0), new Vector3(0.75f, 0.4f, 0.75f)), PlankDark, Plank, 10, 1f, true);
+                    mb.Cylinder(M(new Vector3(0, 0.41f, 0), new Vector3(0.65f, 0.02f, 0.65f)), Col("#3a6a5a"), 10, 1f, true);
+                    for (int k = 0; k < 3; k++) { float a = k * 2.1f; mb.Cylinder(M(new Vector3(Mathf.Cos(a) * 0.18f, 0.43f, Mathf.Sin(a) * 0.18f), new Vector3(0.22f, 0.02f, 0.22f)), Col("#5aa04a"), 8, 1f, true); }
+                    mb.Sphere(M(new Vector3(0.05f, 0.5f, 0.05f), new Vector3(0.14f, 0.1f, 0.14f)), Col("#ffb0d0"), 6, 4);
+                    break;
+                case "kin_mud_wallow":
+                    mb.Cylinder(M(new Vector3(0, 0.03f, 0), new Vector3(2.0f, 0.06f, 1.6f)), Col("#5a4030"), Col("#6a4a34"), 14, 1f, true);
+                    for (int k = 0; k < 5; k++) { float a = k * 1.3f; mb.Sphere(M(new Vector3(Mathf.Cos(a) * 0.5f, 0.06f, Mathf.Sin(a) * 0.4f), new Vector3(0.18f, 0.06f, 0.18f)), Col("#7a5a40"), 6, 3); }
+                    break;
+                case "house_tapestry":
+                    mb.Box(M(new Vector3(-0.5f, 0.9f, 0), new Vector3(0.06f, 1.8f, 0.06f)), PlankDark);
+                    mb.Box(M(new Vector3(0.5f, 0.9f, 0), new Vector3(0.06f, 1.8f, 0.06f)), PlankDark);
+                    mb.Box(M(new Vector3(0, 1.75f, 0), new Vector3(1.1f, 0.06f, 0.06f)), PlankDark);
+                    for (int k = 0; k < 6; k++) mb.Box(M(new Vector3(0, 1.62f - k * 0.22f, 0), new Vector3(0.9f, 0.22f, 0.03f)), k % 3 == 0 ? Col("#c84a2a") : k % 3 == 1 ? Col("#e8b040") : Col("#2a6a8a"));
+                    break;
+                case "kin_sand_pit":
+                    for (int s = 0; s < 4; s++) mb.Box(M(new Vector3(s < 2 ? (s == 0 ? -0.9f : 0.9f) : 0f, 0.12f, s >= 2 ? (s == 2 ? -0.9f : 0.9f) : 0f), s < 2 ? new Vector3(0.12f, 0.24f, 1.9f) : new Vector3(1.9f, 0.24f, 0.12f)), Plank);
+                    mb.Box(M(new Vector3(0, 0.1f, 0), new Vector3(1.7f, 0.12f, 1.7f)), Col("#f0d898"));
+                    mb.Cylinder(M(new Vector3(0.4f, 0.28f, 0.4f), new Vector3(0.22f, 0.25f, 0.22f)), Col("#e84a4a"), 8, 0.8f, true);
+                    mb.Dome(M(new Vector3(-0.3f, 0.16f, -0.2f), new Vector3(0.6f, 0.3f, 0.5f)), Col("#e0c080"), 8, 3);
+                    break;
+                case "house_spooky_lantern":
+                    mb.Box(M(new Vector3(0, 0.75f, 0), new Vector3(0.08f, 1.5f, 0.08f)), Col("#3a3034"));
+                    mb.Box(M(new Vector3(0.16f, 1.48f, 0), new Vector3(0.38f, 0.06f, 0.06f)), Col("#3a3034"));
+                    mb.Box(M(new Vector3(0.32f, 1.25f, 0), new Vector3(0.24f, 0.32f, 0.24f)), Col("#4a4a52"));
+                    break;
+                case "kin_climb_tree":
+                    mb.Cylinder(M(new Vector3(0, 1.0f, 0), new Vector3(0.35f, 2.0f, 0.35f)), Col("#4a3a34"), 8, 0.7f, true);
+                    mb.Cylinder(M(new Vector3(0, 0.7f, 0), new Vector3(1.1f, 0.08f, 1.1f)), PlankDark, 10, 1f, true);
+                    mb.Cylinder(M(new Vector3(0.1f, 1.4f, 0.1f), new Vector3(0.8f, 0.08f, 0.8f)), PlankDark, 10, 1f, true);
+                    mb.Sphere(M(new Vector3(0, 2.15f, 0), new Vector3(1.0f, 0.7f, 1.0f)), Col("#5a6a3a"), 8, 5);
+                    mb.Cylinder(M(new Vector3(0.45f, 0.35f, 0), new Vector3(0.05f, 0.7f, 0.05f)), Col("#c8a878"), 4, 1f, false);
+                    break;
+                case "house_glowshroom":
+                    mb.Cylinder(M(new Vector3(0, 0.15f, 0), new Vector3(0.45f, 0.3f, 0.45f)), Col("#4a3a5a"), 8, 0.85f, true);
+                    for (int k = 0; k < 3; k++)
+                    {
+                        float a = k * 2.1f, r2 = k == 0 ? 0f : 0.14f;
+                        mb.Cylinder(M(new Vector3(Mathf.Cos(a) * r2, 0.45f + (k == 0 ? 0.15f : 0f), Mathf.Sin(a) * r2), new Vector3(0.06f, 0.3f + (k == 0 ? 0.25f : 0f), 0.06f)), Col("#d8e8f0"), 5, 1f, false);
+                    }
+                    break;
+                case "kin_ball_pit":
+                    for (int s = 0; s < 4; s++) mb.Box(M(new Vector3(s < 2 ? (s == 0 ? -0.95f : 0.95f) : 0f, 0.2f, s >= 2 ? (s == 2 ? -0.95f : 0.95f) : 0f), s < 2 ? new Vector3(0.1f, 0.4f, 2.0f) : new Vector3(2.0f, 0.4f, 0.1f)), Col("#3a4a7a"));
+                    for (int k = 0; k < 26; k++)
+                    {
+                        float x = -0.75f + (k % 6) * 0.3f + (k / 6 % 2) * 0.15f, z = -0.75f + (k / 6) * 0.36f;
+                        Color32 bc = k % 4 == 0 ? new Color32(120, 240, 255, 0) : k % 4 == 1 ? new Color32(255, 140, 220, 0) : k % 4 == 2 ? new Color32(255, 230, 120, 0) : new Color32(150, 255, 160, 0);
+                        mb.Sphere(M(new Vector3(x, 0.32f, Mathf.Clamp(z, -0.8f, 0.8f)), Vector3.one * 0.26f), bc, 6, 4);
+                    }
+                    break;
                 case "house_wardrobe":
                     mb.Box(M(new Vector3(0, 1.05f, 0), new Vector3(1.1f, 2.1f, 0.6f)), PlankDark, Plank);
                     mb.Box(M(new Vector3(-0.27f, 1.05f, 0.31f), new Vector3(0.5f, 1.9f, 0.03f)), Plank);
@@ -638,7 +867,8 @@ namespace Wildbond
             }
         }
 
-        static Mesh doorMesh, glowMesh;
+        static Mesh doorMesh;
+        static readonly Dictionary<string, Mesh> glowMeshes = new Dictionary<string, Mesh>();
 
         void Build(Piece pc, float depth)
         {
@@ -671,15 +901,17 @@ namespace Wildbond
             }
             if (pc.def.lamp)
             {
-                if (glowMesh == null)
+                if (!glowMeshes.TryGetValue(pc.def.id, out var gm))
                 {
                     var mb = new MeshBuilder();
-                    mb.Sphere(M(new Vector3(0, 1.48f, 0), Vector3.one * 0.26f), new Color32(255, 235, 160, 0), 8, 6);   // vertex alpha 0 = self-lit on the creature shader
-                    glowMesh = mb.ToMesh("house_lamp_glow");
+                    var gc = pc.def.glowCol; gc.a = 0;   // vertex alpha 0 = self-lit on the creature shader
+                    mb.Sphere(M(pc.def.glowAt, Vector3.one * Mathf.Max(0.05f, pc.def.glowSize)), gc, 8, 6);
+                    gm = mb.ToMesh("house_glow_" + pc.def.id);
+                    glowMeshes[pc.def.id] = gm;
                 }
                 var g = new GameObject("Glow");
                 g.transform.SetParent(go.transform, false);
-                g.AddComponent<MeshFilter>().sharedMesh = glowMesh;
+                g.AddComponent<MeshFilter>().sharedMesh = gm;
                 var gr = g.AddComponent<MeshRenderer>(); gr.sharedMaterial = RenderAssets.Creature; gr.shadowCastingMode = ShadowCastingMode.Off;
             }
             pc.go = go;

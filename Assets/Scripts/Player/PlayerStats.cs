@@ -154,7 +154,7 @@ namespace Wildbond
         public float SwimStaminaMul => Mathf.Max(0.3f, 1f - 0.08f * RelicCount(RelicType.Tidepearl));
         public float ClimbBonus => 0.12f * RelicCount(RelicType.CragClaw);
         public float KinStaminaMul => Mathf.Max(0.4f, 1f - 0.06f * RelicCount(RelicType.Kinspring));
-        public float DamageTakenMul => Mathf.Max(0.5f, 1f - 0.03f * RelicCount(RelicType.Wardstone));
+        public float DamageTakenMul => Mathf.Max(0.5f, 1f - 0.03f * RelicCount(RelicType.Wardstone)) * KinAid.DamageTakenMul;   // + a Stone kin out with you
         public float KinXpMul => (1f + 0.04f * RelicCount(RelicType.Kinheart)) * (HasEffect(UniqueEffect.Mentor) ? 1.15f : 1f);
         public float ShimmerMul => (1f + 0.08f * RelicCount(RelicType.Glintstone)) * (HasEffect(UniqueEffect.Shimmerlure) ? 1.5f : 1f);
         /// <summary>A Sporecap Draught is working: no Poison.</summary>

@@ -18,8 +18,9 @@ namespace Wildbond
         public bool Removing { get; private set; }
         Housing.Spot spot;
         Housing.Piece removeTarget;
+        BaseManager.Site removeSite;
         int turns;
-        public string CurrentName => Removing ? (removeTarget != null ? "Remove " + removeTarget.def.name + " (half back)" : "Remove") : Piece != null ? Piece.name : Current != null ? Current.displayName : "";
+        public string CurrentName => Removing ? (removeSite != null ? "Cancel " + removeSite.Name + " (all back)" : removeTarget != null ? "Remove " + removeTarget.def.name + " (half back)" : "Remove") : Piece != null ? Piece.name : Current != null ? Current.displayName : "";
         public bool Valid { get; private set; }
         public string Reason { get; private set; }
 
@@ -79,6 +80,16 @@ namespace Wildbond
             var p = GameManager.I.Player;
             if (Removing)
             {
+                var site = BaseManager.I.SiteNear(p.Position + p.Forward * 1.8f, 1.6f);
+                if (site != null)
+                {
+                    removeSite = site; removeTarget = null;
+                    ghost.SetActive(false);
+                    Valid = true; Reason = null;
+                    if (InputHub.Down(Btn.Confirm)) Confirm();
+                    return;
+                }
+                removeSite = null;
                 var t = Housing.I.PieceAt(p.Position, p.Forward);
                 if (t != removeTarget)
                 {
@@ -113,6 +124,7 @@ namespace Wildbond
             bool free = WorldRules.Current.freeBuild;
             if (Removing)
             {
+                if (removeSite != null) { BaseManager.I.CancelSite(removeSite); removeSite = null; SynthAudio.Play(Sfx.Chop, 0.8f); return; }
                 var t = removeTarget;
                 string why = h.RemoveBlock(t);
                 if (why != null) { GameEvents.Warn(why); SynthAudio.Play(Sfx.Clunk); return; }
@@ -129,7 +141,8 @@ namespace Wildbond
             if (!s.ok) { GameEvents.Warn(s.reason); SynthAudio.Play(Sfx.Clunk); return; }
             if (!free && !ItemSources.Has(Piece.cost)) { GameEvents.Warn("Missing materials"); SynthAudio.Play(Sfx.Clunk); return; }
             if (!free) ItemSources.Consume(Piece.cost);
-            h.Place(Piece, s);
+            if (BaseManager.PieceBuildsOverTime) BaseManager.I.StartSite(Piece, s);   // a site Crafting kin (or you) build
+            else h.Place(Piece, s);
             Fx.Burst(s.pos + Vector3.up * 0.5f, new Color(0.95f, 0.85f, 0.6f), 16, 4f, 0.35f, 0.6f);
             SynthAudio.Play(Sfx.Build, 1.15f);
             GameManager.I.AddPlayerXp(2);
@@ -207,6 +220,17 @@ namespace Wildbond
             bool free = WorldRules.Current.freeBuild;   // free-building worlds: nothing is spent
             if (!free && !ItemSources.Has(Current.cost)) { GameEvents.Warn("Missing materials"); SynthAudio.Play(Sfx.Clunk); return; }
             if (!free) ItemSources.Consume(Current.cost);
+            // most structures go up as a construction site that Crafting kin (or you) build (BaseManager.Construction)
+            if (BaseManager.BuildsOverTime(Current))
+            {
+                bm.StartSite(Current, target, rotY);
+                Fx.Ring(target, new Color(1f, 0.95f, 0.7f), Current.footprint + 1f, 24);
+                SynthAudio.Play(Sfx.Build, 0.8f, 0.7f);
+                GameManager.I.AddPlayerXp(8);
+                GameEvents.Say($"{Current.displayName}: construction started - Crafting kin will build it, or tap BUILD there to help.");
+                if (!free && !ItemSources.Has(Current.cost)) Cancel();
+                return;
+            }
             var b = bm.Place(Current, target, rotY);
             Fx.Burst(target + Vector3.up * 0.5f, new Color(0.95f, 0.85f, 0.6f), 24, 5f, 0.4f, 0.7f);
             Fx.Ring(target, new Color(1f, 0.95f, 0.7f), Current.footprint + 1f, 24);
@@ -220,12 +244,7 @@ namespace Wildbond
                 return;
             }
             GameEvents.Good($"Built {Current.displayName}");
-            // Auto-staff new buildings with idle base kin
-            foreach (var d in GameManager.I.Party.In(KinLocation.Base))
-            {
-                if (b.WorkerSlots <= 0 || b.AssignedCount >= b.WorkerSlots) break;
-                if (d.assignedBuilding == null && b.Suitability(d) > 0) d.assignedBuilding = b.Uid;
-            }
+            bm.StaffNew(b);   // idle camp kin that suit it start there
             if (!free && !ItemSources.Has(Current.cost)) Cancel();
         }
 

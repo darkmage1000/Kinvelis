@@ -165,8 +165,8 @@ namespace Wildbond
                 if (env.CurrentBiome == BiomeId.Desert && !env.IsNight) heat = Mathf.Max(heat, 0.6f);
             }
             if (IsMounted && (mount.Data.Element1 == Element.Frost || mount.Data.Element2 == Element.Frost)) cold = 0f;
-            ColdExposure = cold * (1f - Stats.ColdResist);
-            HeatExposure = heat * (1f - Stats.HeatResist);
+            ColdExposure = cold * (1f - Stats.ColdResist) * KinAid.ColdMul;   // an Ember kin out with you keeps you warm (KinAid)
+            HeatExposure = heat * (1f - Stats.HeatResist) * KinAid.HeatMul;   // a Frost kin keeps you cool
         }
 
         void UpdateGearVisual()
@@ -253,15 +253,16 @@ namespace Wildbond
             // ---------------- stamina ----------------
             var compPerk = GameManager.I.Party.Companion != null ? GameManager.I.Party.Companion.Sp.perk : CompanionPerk.None;
             TickStatusAndExposure(dt);
-            float staMul = (compPerk == CompanionPerk.Tailwind ? 0.65f : 1f) * (IsMounted ? 0.5f * mount.Data.MountStaminaMul * q.KinStaminaMul : 1f) * WorldRules.Current.staminaDrain * (1f + 0.3f * HeatExposure);
+            KinAid.Tick(this, dt);
+            float staMul = KinAid.StaminaCostMul * (compPerk == CompanionPerk.Tailwind ? 0.65f : 1f) * (IsMounted ? 0.5f * mount.Data.MountStaminaMul * q.KinStaminaMul : 1f) * WorldRules.Current.staminaDrain * (1f + 0.3f * HeatExposure);
             if (Dev.Stamina) q.stamina = q.MaxStamina;
             if (IsSprinting) { q.stamina -= sprintCost * staMul * (q.HasEffect(UniqueEffect.Ventwalker) ? 0.7f : 1f) * dt; staminaDelay = 0.8f; }
             else if (Gliding) { q.stamina -= GlideDrain * dt; staminaDelay = 0.8f; if (q.stamina <= 0f) SetGliding(false); }
-            else if (IsSwimming && wishMag > 0.1f && !IsMounted && !WorldRules.Current.safeTravel && !q.HasEffect(UniqueEffect.Buoyant)) { q.stamina -= 4f * q.SwimStaminaMul * dt; staminaDelay = 0.8f; }
+            else if (IsSwimming && wishMag > 0.1f && !IsMounted && !WorldRules.Current.safeTravel && !q.HasEffect(UniqueEffect.Buoyant)) { q.stamina -= 4f * q.SwimStaminaMul * KinAid.SwimStaminaMul * dt; staminaDelay = 0.8f; }
             else
             {
                 staminaDelay -= dt;
-                float regen = staminaRegen * q.RegenMul * (CreatureActor.AnthemMul(Team.Player, transform.position) > 1f ? SkillEffects.AnthemStamina : 1f) * (1f - 0.5f * ColdExposure) * (Status.Active && Status.type == StatusType.Drowsy ? 0.35f : 1f);
+                float regen = staminaRegen * q.RegenMul * KinAid.StaminaRegenMul * (CreatureActor.AnthemMul(Team.Player, transform.position) > 1f ? SkillEffects.AnthemStamina : 1f) * (1f - 0.5f * ColdExposure) * (Status.Active && Status.type == StatusType.Drowsy ? 0.35f : 1f);
                 if (staminaDelay <= 0f) q.stamina = Mathf.Min(maxSta, q.stamina + regen * dt);
             }
             q.stamina = Mathf.Max(0f, q.stamina);
@@ -287,7 +288,7 @@ namespace Wildbond
                     if (toxicTick <= 0f)
                     {
                         toxicTick = 1f;
-                        Damage(4f, false);
+                        Damage(4f * KinAid.ToxicWaterMul, false);
                         HUD.DamageNumber(tp + Vector3.up * 2.2f, "TOXIC", new Color(0.7f, 1f, 0.3f), 0.8f);
                         if (Time.time - toxicHint > 40f) { toxicHint = Time.time; GameEvents.Warn("The pools here are poison - get out of the water."); }
                     }
@@ -378,13 +379,13 @@ namespace Wildbond
             else
             {
                 vVel -= gravity * dt * (Gliding ? 0.15f : 1f);
-                if (Gliding) vVel = Mathf.Max(vVel, -GlideFall);
+                if (Gliding) vVel = Mathf.Max(vVel, -GlideFall * KinAid.GlideFallMul);
                 next.y = pos.y + vVel * dt;
                 if (next.y <= hNext)
                 {
                     float fallSafe = IsMounted ? 18f : 14f;
                     var wr = WorldRules.Current;   // safe-travel worlds and toy-box jumps never hurt on landing
-                    if (!grounded && vVel < -fallSafe && !launched && !q.HasEffect(UniqueEffect.Featherstep) && !wr.safeTravel && wr.jumpPower <= 1.05f) Damage((-vVel - fallSafe) * 3f, false);
+                    if (!grounded && vVel < -fallSafe && !launched && !q.HasEffect(UniqueEffect.Featherstep) && !wr.safeTravel && wr.jumpPower <= 1.05f && !KinAid.NoFallDamage) Damage((-vVel - fallSafe) * 3f, false);
                     launched = false;
                     if (Gliding) SetGliding(false);
                     next.y = hNext;

@@ -136,6 +136,7 @@ namespace Wildbond
                 Para(right, "Best caught: " + UIFactory.Col($"{Aptitude.Names[e.bestPath]} {Aptitude.Grade(e.bestScore)} ({e.bestScore})", Aptitude.GradeColor(e.bestScore)), 24, Color.white);
             Para(right, got ? $"<i>{sp.lore}</i>" : "<i>Catch one to learn more about it.</i>", 21);
             if (!sp.bossOnly) Para(right, EvolutionLine(sp, got), 21, Color.white);
+            if (!sp.bossOnly) Para(right, "Out with you: " + UIFactory.Col(KinAid.Describe(sp.element1, sp.element2), new Color(0.65f, 0.95f, 0.8f)), 21, Color.white);
             {
                 var coats = new List<string>();
                 for (int v = 0; v < Shimmer.Variants; v++) coats.Add(UIFactory.Col(Shimmer.NameFor(sp, v), Color.Lerp(Shimmer.PaletteFor(sp, v).primary, Color.white, 0.25f)));

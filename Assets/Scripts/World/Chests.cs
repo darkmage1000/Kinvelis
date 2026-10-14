@@ -51,7 +51,23 @@ namespace Wildbond
             B("sunspike_glaive", BiomeId.Desert), B("sunwrap", BiomeId.Desert), B("oasis_amulet", BiomeId.Desert),
             B("blightcoil_crossbow", BiomeId.Blight), B("stalker_boots", BiomeId.Blight), B("blightfang_ring", BiomeId.Blight),
             B("starfall_blade", BiomeId.Glow), B("starweave_mantle", BiomeId.Glow), B("starlight_bracelet", BiomeId.Glow),
+            // house blueprints (Housing.Pieces with blueprint = true): a style, a decoration and a kin play piece per land
+            B("house:house_roof_thatch", BiomeId.Meadow), B("house:house_flowerbox", BiomeId.Meadow), B("house:kin_play_mat", BiomeId.Meadow),
+            B("house:house_wall_bamboo", BiomeId.Isles), B("house:house_shell_lamp", BiomeId.Isles), B("house:kin_splash_pool", BiomeId.Isles),
+            B("house:house_wall_adobe", BiomeId.Badlands), B("house:house_fireplace", BiomeId.Badlands), B("house:kin_warm_rocks", BiomeId.Badlands),
+            B("house:house_wall_log", BiomeId.Peaks), B("house:house_fur_rug", BiomeId.Peaks), B("house:kin_snow_slide", BiomeId.Peaks),
+            B("house:house_roof_reed", BiomeId.Swamp), B("house:house_lily_planter", BiomeId.Swamp), B("house:kin_mud_wallow", BiomeId.Swamp),
+            B("house:house_floor_sandstone", BiomeId.Desert), B("house:house_tapestry", BiomeId.Desert), B("house:kin_sand_pit", BiomeId.Desert),
+            B("house:house_wall_dark", BiomeId.Blight), B("house:house_spooky_lantern", BiomeId.Blight), B("house:kin_climb_tree", BiomeId.Blight),
+            B("house:house_window_crystal", BiomeId.Glow), B("house:house_glowshroom", BiomeId.Glow), B("house:kin_ball_pit", BiomeId.Glow),
         };
+
+        /// <summary>A blueprint's display name: an item's, or a house piece's ("house:" ids).</summary>
+        public static string BlueprintName(string id)
+        {
+            if (id != null && id.StartsWith("house:")) { var d = Housing.Def(id.Substring(6)); return d != null ? d.name : id; }
+            return ContentDB.ItemName(id);
+        }
         static Blueprint B(string r, BiomeId l) => new Blueprint { recipe = r, land = l };
 
         static PlayerStats S => GameManager.I.Player.Stats;
@@ -395,7 +411,7 @@ namespace Wildbond
             if (bp != null)
             {
                 s.blueprints.Add(bp);
-                GameEvents.Say($"Blueprint found: {ContentDB.ItemName(bp)}! You can now make it at the Workbench.", new Color(0.6f, 0.9f, 1f));
+                GameEvents.Say(bp.StartsWith("house:") ? $"House blueprint found: {BlueprintName(bp)}! You can now build it (BUILD > HOUSE)." : $"Blueprint found: {ContentDB.ItemName(bp)}! You can now make it at the Workbench.", new Color(0.6f, 0.9f, 1f));
                 gm.Confetti(at);
             }
             gm.AddPlayerXp(t == 0 ? 12 : t == 1 ? 30 : 70);

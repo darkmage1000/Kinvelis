@@ -619,6 +619,7 @@ namespace Wildbond
             float dist = Vector3.Distance(playerPos, CorePosition);
             bool near = dist < actorRange;
             TickWants(dt, near && dist < Radius + 25f);
+            TickPlayerBuild(dt);
             // coming home: after 40 s or more away, the kin at camp welcome you (CreatureActor.CampLife)
             bool inRing = dist < Radius;
             if (inRing && !playerInRing && Time.time - playerLeftAt > 40f)
@@ -723,6 +724,7 @@ namespace Wildbond
         /// <summary>Same production math as the actor path, without movement. Used far away and for offline progress.</summary>
         public void SimulateAbstract(float dt, bool xp = true)
         {
+            SimulateSites(dt);   // Crafting kin put up construction sites (BaseManager.Construction)
             float haulers = 0;
             var party = GameManager.I.Party;
             abstractHands.Clear();

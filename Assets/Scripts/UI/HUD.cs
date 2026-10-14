@@ -161,8 +161,9 @@ namespace Wildbond
         {
             var parts = new List<string>();
             if (pl.Status.Active) parts.Add(UIFactory.Col($"{pl.Status.type.ToString().ToUpperInvariant()} {Mathf.CeilToInt(pl.Status.time)}s", StatusState.Color(pl.Status.type)));
-            if (pl.ColdExposure > 0.01f) parts.Add(UIFactory.Col(pl.ColdExposure > 0.6f ? "FREEZING" : "COLD", new Color(0.6f, 0.9f, 1f)));
-            if (pl.HeatExposure > 0.01f) parts.Add(UIFactory.Col(pl.HeatExposure > 0.6f ? "SCORCHING" : "HOT", new Color(1f, 0.6f, 0.3f)));
+            // a kin out with you that is helping (KinAid) says so instead of the warning
+            if (pl.ColdExposure > 0.01f) parts.Add(KinAid.Has(Element.Ember) ? UIFactory.Col($"KEPT WARM ({KinAid.Who(Element.Ember)})", new Color(1f, 0.7f, 0.4f)) : UIFactory.Col(pl.ColdExposure > 0.6f ? "FREEZING" : "COLD", new Color(0.6f, 0.9f, 1f)));
+            if (pl.HeatExposure > 0.01f) parts.Add(KinAid.Has(Element.Frost) ? UIFactory.Col($"KEPT COOL ({KinAid.Who(Element.Frost)})", new Color(0.6f, 0.9f, 1f)) : UIFactory.Col(pl.HeatExposure > 0.6f ? "SCORCHING" : "HOT", new Color(1f, 0.6f, 0.3f)));
             if (pl.Stats.MealActive)
             {
                 int left = Mathf.CeilToInt(pl.Stats.MealSecondsLeft);
