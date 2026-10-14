@@ -233,6 +233,9 @@ html: `
 <p>You carry a <b>party of five</b>. One of them is out with you as your companion; the rest wait and can be swapped in at any time with <b>KIN SWAP</b>. Kin that are not in the party are either working at camp, away on an expedition or outpost, or resting in the box.</p>
 <p>XP is shared: the kin that is out gets all of it, the rest of the party half. A catch gives everyone half.</p>
 
+<h2 id="aid">Help on the road</h2>
+<p>The kin that is out with you helps by its element (a kin with two elements gives both): <b>Ember</b> keeps you warm in the cold; <b>Frost</b> keeps you cool in the heat; <b>Flora</b> draws out poison and makes Blightmoor's toxic water hurt half as much; <b>Tide</b> puts out burns and halves swimming stamina; <b>Volt</b> brings stamina back 30% faster; <b>Lumen</b> lights the dark and shakes off drowsiness; <b>Gale</b> slows your glides and saves you from fall damage; <b>Stone</b> takes 8% off the damage you take and keeps quicksand from dragging you; <b>Shade</b> lets you get a third closer before wild kin notice; <b>Normal</b> takes 15% off stamina costs. Not while you are riding it. Each kin's page says what it does.</p>
+
 <h2 id="quality">Quality grades</h2>
 <p>Two kin of the same kind are not equal. Every kin is born with three grades, from D up to S:</p>
 <ul>
@@ -319,6 +322,12 @@ html: `
 <h2 id="house">Your house</h2>
 <p>Build a home inside the camp ring, a 3 m square at a time: <b>BUILD &gt; HOUSE</b>. Lay <b>floors</b> first (they sit level even on a slope), then <b>walls</b>, a <b>doorway</b> and <b>windows</b> along their edges - stand facing the edge you want, and ROTATE steps round the square's four sides. Put <b>roofs</b> over the floors (two sloped roofs back to back make a ridge). Furniture goes on floors: a bed, table, chair, lamp, rug, bookshelf and a wardrobe where you can change your look. Doors open by themselves when someone walks up, and when you are inside, the roof and the walls in the way fade so you can see in. <b>REMOVE A PIECE</b> gives half its materials back.</p>
 <p><b>Sleeping:</b> from evening on, a bed with a roof over it lets you <b>SLEEP</b>. The night passes in a moment: you wake at dawn fully healed and <b>well rested</b> (+10% XP for ten minutes), a little hungry, and the camp has done a night's work and sleep while you were out.</p>
+
+<h2 id="building">Building takes work</h2>
+<p>When you place a structure or a house piece, its materials are used and a <b>construction site</b> goes up: the thing rises out of the ground inside a scaffold as it is built. Camp kin with the <b>Crafting</b> job go and build it by themselves (better crafters build faster), and they keep building while you are away. You can help: stand at the site and tap <b>BUILD</b>. Changed your mind? <b>REMOVE A PIECE</b> on a site takes it down and gives every material back. (The Hearthstone, and worlds with free building, go up at once.)</p>
+
+<h2 id="houseblueprints">House blueprints and kin play pieces</h2>
+<p>Every land's treasure chests hold three house blueprints: a new look (bamboo, adobe, log-cabin or dark-timber walls, thatched or reed roofs, sandstone floors, crystal windows), a decoration (flower box, shell lamp, fireplace, fur rug, lily planter, tapestry, ghost lantern, glowshroom lamp) and a <b>kin play piece</b> (Play Mat, Splash Pool, Warm Rock Bed, Snow Slide, Mud Wallow, Sand Pit, Climbing Tree, Glow Ball Pit). A Scratching Post needs no blueprint. Idle camp kin go and play on play pieces, inside or out in the camp, and come back <b>relaxed</b>: 25% faster work for five minutes.</p>
 
 <h2 id="levels">Structure levels</h2>
 <p>Workshops and producers (the Workbench, Campfire, Smelter, Crop Plots, Lumber Mill and the rest) can be upgraded twice, standing at them: <b>MANAGE &gt; UPGRADE</b>. Each level makes work there 25% faster, adds a worker place and a bigger output shelf, and puts a pennant on a post beside it. Level 2 costs the structure's own materials again plus 3 ingots; level 3 twice its materials, 6 ingots and 3 Rime Crystal.</p>
