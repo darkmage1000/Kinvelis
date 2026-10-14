@@ -149,6 +149,7 @@ namespace Wildbond
             Capture = Sys("Capture").AddComponent<CaptureSystem>(); Capture.Init();
             baseMgr = Sys("Camp").AddComponent<BaseManager>(); baseMgr.Init();
             placement = Sys("Placement").AddComponent<BuildPlacement>(); placement.Init();
+            housing = Sys("House").AddComponent<Housing>(); housing.Init();
             Sys("Audio").AddComponent<SynthAudio>().Init();
             Party = new KinRoster();
 
@@ -287,6 +288,7 @@ namespace Wildbond
                 baseMgr.Orders.AddRange(s.orders);
                 if (s.standing != null) baseMgr.Standing.AddRange(s.standing);
             }
+            housing.Load(s.house);
 
             var pos = new Vector3(s.px, s.py, s.pz);
             Player.Teleport(pos, s.yaw);
@@ -643,6 +645,56 @@ namespace Wildbond
         }
 
         /// <summary>PET your summoned partner when standing right next to it (lowest-priority prompt).</summary>
+        // ============================================================ SLEEP (a bed in your house)
+        Housing housing;
+        /// <summary>A bed can be slept in from this time of day (evening) until dawn.</summary>
+        public const float SleepFrom = 0.68f, WakeAt = 0.25f;
+        public const float RestedXp = 1.1f, RestedMinutes = 10f;
+        public bool Sleeping { get; private set; }
+
+        void TrySleep(Housing.Piece bed)
+        {
+            var env = EnvironmentSystem.I;
+            if (env == null || Sleeping) return;
+            if (!(env.IsNight || env.timeOfDay >= SleepFrom)) { GameEvents.Say("Not sleepy yet - you can sleep here from evening until dawn."); return; }
+            if (!housing.Indoors(bed.pos)) { GameEvents.Warn("You need a roof over the bed to sleep in it."); return; }
+            if (Wardens.I != null && Wardens.I.Active != null) { GameEvents.Warn("Not while a Warden is awake!"); return; }
+            foreach (var a in CreatureRegistry.All)
+                if (a != null && a.IsAlive && a.Mode == CreatureMode.Wild && a.Aggro && (a.Position - Player.Position).sqrMagnitude < 30f * 30f) { GameEvents.Warn("You can't sleep with wild kin after you."); return; }
+            StartCoroutine(SleepRoutine(bed));
+        }
+
+        System.Collections.IEnumerator SleepRoutine(Housing.Piece bed)
+        {
+            Sleeping = true;
+            var env = EnvironmentSystem.I;
+            if (Player.IsMounted) Player.Dismount(true);
+            Party.Recall(false);
+            InputHub.ClearAll();
+            SynthAudio.Play(Sfx.Recall, 0.7f, 0.6f);
+            for (float t = 0f; t < 1f; t += Time.unscaledDeltaTime / 0.9f) { hud.SetFade(t); yield return null; }
+            hud.SetFade(1f);
+            // the night passes: the clock jumps to dawn and the camp catches up as if you had been away that long
+            float dayLen = Mathf.Max(60f, env.DayLength);
+            float skip = Mathf.Repeat(WakeAt - env.timeOfDay, 1f) * dayLen;
+            env.timeOfDay = WakeAt;
+            WorldTime += skip;
+            baseMgr.SimulateOffline(skip);
+            var s = Player.Stats;
+            s.hp = s.MaxHp; s.stamina = s.MaxStamina;
+            s.hunger = Mathf.Max(5f, s.hunger - 15f);
+            s.restedUntil = WorldTime + RestedMinutes * 60.0;
+            Player.Status = default;
+            yield return new WaitForSecondsRealtime(0.6f);
+            for (float t = 1f; t > 0f; t -= Time.unscaledDeltaTime / 1.2f) { hud.SetFade(t); yield return null; }
+            hud.SetFade(0f);
+            GameEvents.Good($"Good morning! You slept through the night. Well rested: +10% XP for {RestedMinutes:0} minutes.");
+            SynthAudio.Play(Sfx.LevelUp, 1.3f, 0.6f);
+            Quests.Note("sleep");
+            Sleeping = false;
+            SaveSystem.Save();
+        }
+
         void TryPetPrompt()
         {
             var c = Party.Companion;
@@ -729,6 +781,18 @@ namespace Wildbond
                 InteractPrompt = waystones.IsActive(stone) ? "TRAVEL" : "ATTUNE";
                 return;
             }
+            // your house: a bed to sleep in, a wardrobe to change your look (Housing)
+            var bed = housing.BedNear(Player.Position, 1.4f);
+            if (bed != null)
+            {
+                var env0 = EnvironmentSystem.I;
+                bool late = env0 != null && (env0.IsNight || env0.timeOfDay >= SleepFrom);
+                InteractPrompt = late ? "SLEEP" : "BED";
+                caveAction = () => TrySleep(bed);
+                return;
+            }
+            var wardrobe = housing.WardrobeNear(Player.Position, 1.4f);
+            if (wardrobe != null) { InteractPrompt = "CHANGE\nLOOK"; caveAction = () => menu.OpenLook(); return; }
             // a camp kin that wants something from you (BaseManager.Upgrades): answered before the structure behind it
             var wanting = baseMgr.HasBase ? baseMgr.WantNear(Player.Position, 2.4f) : null;
             if (wanting != null) { InteractPrompt = BaseManager.WantPrompt(wanting.Data.campWant); caveAction = () => baseMgr.AnswerWant(wanting); return; }
@@ -869,7 +933,7 @@ namespace Wildbond
 
         public void AddPlayerXp(int amount)
         {
-            amount = Mathf.Max(1, Mathf.RoundToInt(amount * WorldRules.Current.expRate));
+            amount = Mathf.Max(1, Mathf.RoundToInt(amount * WorldRules.Current.expRate * (Player.Stats.Rested ? RestedXp : 1f)));
             int lv = Player.Stats.AddXp(amount);
             if (lv > 0)
             {

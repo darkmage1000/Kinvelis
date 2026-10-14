@@ -361,6 +361,7 @@ namespace Wildbond
             {
                 if (!HasBase) { reason = "Place a Hearthstone first"; return false; }
                 if (!IsInsideBase(pos, -def.footprint)) { reason = "Must be inside your camp"; return false; }
+                if (Housing.I != null && Housing.I.Occupies(pos, def.footprint)) { reason = "That's where your house is"; return false; }
             }
             float h = WorldGen.Height(pos.x, pos.z);
             if (h < 0.4f) { reason = "Too wet here"; return false; }

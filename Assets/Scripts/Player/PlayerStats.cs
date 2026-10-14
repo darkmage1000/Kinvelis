@@ -165,6 +165,9 @@ namespace Wildbond
         // ---- meal buff: one at a time, counted in world time ----
         public string mealItem;
         public double mealUntil;
+        /// <summary>Slept in a bed (GameManager.Sleep): +10% explorer XP until this world time.</summary>
+        public double restedUntil;
+        public bool Rested => GameManager.WorldTime < restedUntil;
         public bool MealActive => !string.IsNullOrEmpty(mealItem) && GameManager.WorldTime < mealUntil;
         public float MealSecondsLeft => MealActive ? (float)(mealUntil - GameManager.WorldTime) : 0f;
         public void SetMeal(ItemDef d) { mealItem = d.id; mealUntil = GameManager.WorldTime + d.mealMinutes * 60.0; GearChanged(); }

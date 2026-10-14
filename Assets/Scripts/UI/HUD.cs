@@ -54,6 +54,22 @@ namespace Wildbond
 
         Canvas canvas;
 
+        Image sleepFade;
+        /// <summary>Sleeping (GameManager.Sleep): the whole screen to black (1) and back (0). Blocks taps while it is up.</summary>
+        public void SetFade(float a)
+        {
+            if (root == null) return;
+            if (sleepFade == null)
+            {
+                sleepFade = UIFactory.Panel(root, "SleepFade", Color.black);
+                sleepFade.rectTransform.Stretch();
+            }
+            sleepFade.transform.SetAsLastSibling();
+            sleepFade.color = new Color(0f, 0f, 0.02f, Mathf.Clamp01(a));
+            sleepFade.raycastTarget = a > 0.01f;
+            sleepFade.gameObject.SetActive(a > 0.001f);
+        }
+
         /// <summary>Photo mode: the HUD turns invisible but every control still answers.</summary>
         public void SetFaded(bool faded)
         {
@@ -151,6 +167,11 @@ namespace Wildbond
             {
                 int left = Mathf.CeilToInt(pl.Stats.MealSecondsLeft);
                 parts.Add(UIFactory.Col($"{ContentDB.ItemName(pl.Stats.mealItem)} {left / 60}:{left % 60:00}", new Color(1f, 0.85f, 0.45f)));
+            }
+            if (pl.Stats.Rested)
+            {
+                int left = Mathf.CeilToInt((float)(pl.Stats.restedUntil - GameManager.WorldTime));
+                parts.Add(UIFactory.Col($"WELL RESTED {left / 60}:{left % 60:00}", new Color(0.7f, 0.85f, 1f)));
             }
             string t = parts.Count > 0 ? string.Join("   ", parts) : "HP   ·   STAMINA   ·   FOOD";
             if (t != vitalsTipLast) { vitalsTipLast = t; vitalsTip.text = t; }
@@ -673,7 +694,7 @@ namespace Wildbond
             if (placing)
             {
                 var bp = BuildPlacement.I;
-                placeReason.text = bp.Valid ? UIFactory.Col($"Place {bp.Current.displayName}", new Color(0.6f, 1f, 0.6f)) : UIFactory.Col(bp.Reason ?? "", new Color(1f, 0.55f, 0.45f));
+                placeReason.text = bp.Valid ? UIFactory.Col(bp.Removing ? bp.CurrentName : $"Place {bp.CurrentName}", bp.Removing ? new Color(1f, 0.7f, 0.6f) : new Color(0.6f, 1f, 0.6f)) : UIFactory.Col(bp.Reason ?? "", new Color(1f, 0.55f, 0.45f));
                 placeReason.supportRichText = true;
                 return;
             }

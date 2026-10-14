@@ -71,6 +71,7 @@ namespace Wildbond
             obsBuf.Clear();
             Obstacles.Query(pos, r + 6f, obsBuf);
             for (int i = 0; i < obsBuf.Count; i++) hit |= Resolve(ref pos, obsBuf[i].pos, r + obsBuf[i].radius);
+            hit |= Housing.PushOut(ref pos, r);   // house walls are segments, not circles
             return hit;
         }
 

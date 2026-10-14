@@ -440,6 +440,14 @@ namespace Wildbond
             var list = TrackedList(content);
             var lvl = GameManager.I.Player.Stats.level;
             Header(list, "Build");
+            if (bm.HasBase)
+            {
+                // camp structures, or your house piece by piece (Housing)
+                var sw = UIFactory.HRow(list, 76, 12);
+                UIFactory.Size(UIFactory.Button(sw.transform, "CAMP STRUCTURES", () => { buildHouse = false; Rebuild(); }, !buildHouse ? new Color(0.25f, 0.55f, 0.45f) : UIFactory.ButtonCol, 24), 70, 380);
+                UIFactory.Size(UIFactory.Button(sw.transform, "HOUSE", () => { buildHouse = true; Rebuild(); }, buildHouse ? new Color(0.25f, 0.55f, 0.45f) : UIFactory.ButtonCol, 24), 70, 380);
+                if (buildHouse) { BuildHouseList(list); RestoreScroll(); return; }
+            }
             Para(list, bm.HasBase ? "Structures must be placed inside your camp ring." : UIFactory.Col("Start by placing a Hearthstone - it founds your camp.", UIFactory.Accent));
             var defs = ContentDB.BuildingList.FindAll(x => x.isCore != bm.HasBase);
             // split into category tabs once the camp exists (MenuUI.Categories)
@@ -467,6 +475,30 @@ namespace Wildbond
                 UIFactory.Size(btn, 90, 220);
             }
             RestoreScroll();
+        }
+
+        bool buildHouse;
+
+        /// <summary>BUILD > HOUSE: floors, walls, doorways, windows, roofs and furniture (Housing), plus the REMOVE tool.</summary>
+        void BuildHouseList(RectTransform list)
+        {
+            Para(list, "Your house goes inside the camp ring, a 3 m square at a time. Lay <b>floors</b> first, then walls, doorways and windows along their edges (stand facing the edge; ROTATE steps round the square), then <b>roofs</b>. Furniture goes on floors. A <b>Bed</b> with a roof over it lets you sleep through the night.", 21);
+            UIFactory.Size(UIFactory.Button(list, "REMOVE A PIECE  (half the materials back)", () => { Close(); BuildPlacement.I.BeginRemove(); }, new Color(0.5f, 0.3f, 0.28f), 22), 64);
+            bool furnitureHeader = false;
+            Header(list, "Structure", 28);
+            foreach (var d in Housing.Pieces)
+            {
+                if (d.kind == HouseKind.Furniture && !furnitureHeader) { furnitureHeader = true; Header(list, "Furniture", 28); }
+                var row = UIFactory.HRow(list, 96, 14);
+                row.childForceExpandHeight = false;
+                var tx = UIFactory.Label(row.transform, $"<b>{d.name}</b>\n<size=20>{d.desc}</size>\n<size=20>{Ingredients(d.cost)}</size>", 26, Color.white);
+                tx.supportRichText = true;
+                UIFactory.Size(tx, 92, 1090);
+                var dd = d;
+                bool can = WorldRules.Current.freeBuild || ItemSources.Has(d.cost);
+                UIFactory.Size(UIFactory.Button(row.transform, can ? "BUILD" : "Missing", can ? () => { Close(); BuildPlacement.I.BeginPiece(dd); } : (System.Action)null,
+                    can ? new Color(0.5f, 0.4f, 0.2f) : new Color(0.3f, 0.3f, 0.32f), 26), 84, 200);
+            }
         }
 
         // ============================================================ SKILLS

@@ -13,6 +13,13 @@ namespace Wildbond
 
         public bool Active { get; private set; }
         public BuildingDef Current { get; private set; }
+        /// <summary>House building (Housing): the piece being placed, or the REMOVE tool.</summary>
+        public HousePieceDef Piece { get; private set; }
+        public bool Removing { get; private set; }
+        Housing.Spot spot;
+        Housing.Piece removeTarget;
+        int turns;
+        public string CurrentName => Removing ? (removeTarget != null ? "Remove " + removeTarget.def.name + " (half back)" : "Remove") : Piece != null ? Piece.name : Current != null ? Current.displayName : "";
         public bool Valid { get; private set; }
         public string Reason { get; private set; }
 
@@ -49,9 +56,90 @@ namespace Wildbond
             ring.enabled = false;
         }
 
+        public void BeginPiece(HousePieceDef def)
+        {
+            if (def == null) return;
+            if (!WorldRules.Current.freeBuild && !ItemSources.Has(def.cost)) { GameEvents.Warn($"Not enough materials for {def.name}."); return; }
+            Current = null; Removing = false; Piece = def; Active = true;
+            ghostMf.sharedMesh = Housing.MeshFor(def);
+            ghost.SetActive(true);
+            turns = 0;
+            SynthAudio.Play(Sfx.UiOpen);
+        }
+
+        public void BeginRemove()
+        {
+            Current = null; Piece = null; Removing = true; Active = true; removeTarget = null; turns = 0;
+            ghost.SetActive(false);
+            SynthAudio.Play(Sfx.UiOpen);
+        }
+
+        void TickHouse(float dt)
+        {
+            var p = GameManager.I.Player;
+            if (Removing)
+            {
+                var t = Housing.I.PieceAt(p.Position, p.Forward);
+                if (t != removeTarget)
+                {
+                    removeTarget = t;
+                    if (t != null) ghostMf.sharedMesh = t.go.GetComponent<MeshFilter>().sharedMesh;
+                }
+                ghost.SetActive(t != null);
+                if (t != null) { ghost.transform.SetPositionAndRotation(t.go.transform.position, t.go.transform.rotation); ghost.transform.localScale = Vector3.one * 1.02f; }
+                string why = Housing.I.RemoveBlock(t);
+                Valid = why == null; Reason = why;
+                mpb.SetColor("_FlashColor", new Color(1f, 0.25f, 0.2f, Valid ? 0.6f : 0.3f));
+                ghostMr.SetPropertyBlock(mpb);
+                if (InputHub.Down(Btn.Confirm)) Confirm();
+                return;
+            }
+            spot = Housing.I.Snap(Piece, p.Position, p.Forward, turns);
+            Vector3 target = spot.pos;
+            pos = Vector3.Lerp(pos, target, (pos - target).sqrMagnitude > 25f ? 1f : dt * 18f);
+            ghost.transform.SetPositionAndRotation(pos, Quaternion.Slerp(ghost.transform.rotation, spot.q, dt * 15f));
+            ghost.transform.localScale = Vector3.one;
+            bool afford = WorldRules.Current.freeBuild || ItemSources.Has(Piece.cost);
+            Valid = spot.ok && afford;
+            Reason = !spot.ok ? spot.reason : afford ? null : "Missing materials";
+            mpb.SetColor("_FlashColor", Valid ? new Color(0.3f, 1f, 0.45f, 0.45f) : new Color(1f, 0.25f, 0.2f, 0.55f));
+            ghostMr.SetPropertyBlock(mpb);
+            if (InputHub.Down(Btn.Confirm)) Confirm();
+        }
+
+        void ConfirmHouse()
+        {
+            var h = Housing.I;
+            bool free = WorldRules.Current.freeBuild;
+            if (Removing)
+            {
+                var t = removeTarget;
+                string why = h.RemoveBlock(t);
+                if (why != null) { GameEvents.Warn(why); SynthAudio.Play(Sfx.Clunk); return; }
+                if (!free) foreach (var c in t.def.cost) { int n = c.count / 2; if (n > 0) GameManager.I.Player.Stats.Bag.Add(c.itemId, n); }
+                Fx.Burst(t.go.transform.position + Vector3.up, new Color(0.8f, 0.65f, 0.45f), 18, 4f, 0.35f, 0.7f);
+                SynthAudio.Play(Sfx.Chop, 0.8f);
+                h.Remove(t);
+                removeTarget = null;
+                GameEvents.RaiseInventoryChanged();
+                return;
+            }
+            var p = GameManager.I.Player;
+            var s = h.Snap(Piece, p.Position, p.Forward, turns);
+            if (!s.ok) { GameEvents.Warn(s.reason); SynthAudio.Play(Sfx.Clunk); return; }
+            if (!free && !ItemSources.Has(Piece.cost)) { GameEvents.Warn("Missing materials"); SynthAudio.Play(Sfx.Clunk); return; }
+            if (!free) ItemSources.Consume(Piece.cost);
+            h.Place(Piece, s);
+            Fx.Burst(s.pos + Vector3.up * 0.5f, new Color(0.95f, 0.85f, 0.6f), 16, 4f, 0.35f, 0.6f);
+            SynthAudio.Play(Sfx.Build, 1.15f);
+            GameManager.I.AddPlayerXp(2);
+            if (!free && !ItemSources.Has(Piece.cost)) { GameEvents.Say($"Out of materials for another {Piece.name}."); Cancel(); }
+        }
+
         public void Begin(BuildingDef def)
         {
             if (def == null) return;
+            Piece = null; Removing = false;
             if (!WorldRules.Current.freeBuild && !ItemSources.Has(def.cost))
             {
                 GameEvents.Warn($"Not enough materials for {def.displayName}.");
@@ -71,6 +159,7 @@ namespace Wildbond
         {
             Active = false;
             Current = null;
+            Piece = null; Removing = false; removeTarget = null;
             ghost.SetActive(false);
             ring.enabled = false;
         }
@@ -82,8 +171,9 @@ namespace Wildbond
             if (ring.enabled) DrawRing(bm.CorePosition, bm.Radius);
             if (!Active) return;
 
-            if (InputHub.Down(Btn.Rotate)) rotY += rotateStep;
+            if (InputHub.Down(Btn.Rotate)) Rotate();
             if (InputHub.Down(Btn.Cancel)) { Cancel(); return; }
+            if (Piece != null || Removing) { TickHouse(dt); return; }
 
             var p = GameManager.I.Player;
             Vector3 target = p.Position + p.Forward * (Current.footprint + 2.2f);
@@ -105,11 +195,12 @@ namespace Wildbond
             if (InputHub.Down(Btn.Confirm)) Confirm();
         }
 
-        public void Rotate() => rotY += rotateStep;
+        public void Rotate() { rotY += rotateStep; turns++; }
 
         public void Confirm()
         {
             if (!Active) return;
+            if (Piece != null || Removing) { ConfirmHouse(); return; }
             var bm = BaseManager.I;
             Vector3 target = ghost.transform.position;
             if (!bm.CanPlace(Current, target, out string reason)) { GameEvents.Warn(reason); SynthAudio.Play(Sfx.Clunk); return; }

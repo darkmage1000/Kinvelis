@@ -61,6 +61,8 @@ namespace Wildbond
         public float campCold;     // seconds of stored larder cold
         public int storageLayout;  // which structures held storage slots when this was written (BaseManager.SaveLayout; 0 = before larders did)
         public List<BuildingSave> buildings = new List<BuildingSave>();
+        /// <summary>The player's house, piece by piece (Housing).</summary>
+        public List<HouseSave> house = new List<HouseSave>();
         public Inventory storage = new Inventory();
         public List<CraftOrder> orders = new List<CraftOrder>();
         public List<StandingOrder> standing = new List<StandingOrder>();
@@ -233,6 +235,7 @@ namespace Wildbond
                 var p = b.transform.position;
                 d.buildings.Add(new BuildingSave { uid = b.Uid, defId = b.Def.id, x = p.x, y = p.y, z = p.z, rotY = b.RotY, progress = b.Progress, stage = b.Stage, filter = (int)b.Filter, level = b.Level, feed = b.Feed != null ? b.Feed.slots : new List<ItemStack>(), feedByHand = !b.FeedAuto, bufferItem = b.BufferItem, bufferCount = b.BufferCount, crop = b.Crop });
             }
+            if (Housing.I != null) d.house = Housing.I.Save();
             d.storage.CopyFrom(bm.Storage);
             d.orders.AddRange(bm.Orders);
             d.standing.AddRange(bm.Standing);
