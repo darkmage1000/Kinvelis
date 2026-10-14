@@ -22,6 +22,7 @@ MonoBehaviour:
   element2: 9
   rarity: 0
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 6
   spawnTime: 0
@@ -188,6 +189,241 @@ MonoBehaviour:
     pivot: {x: 0.12, y: 0.1, z: 0}
   - group: 2
     pivot: {x: -0.12, y: 0.1, z: 0}
+  forms:
+  - name: Geodite
+    blurb: Its crystals have grown through the rock, and its arms are heavier.
+    parts:
+    - shape: 6
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.3424, z: -0.0011374978}
+      scale: {x: 0.616, y: 0.60480005, z: 0.59400004}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.32080004, z: 0.108862504}
+      scale: {x: 0.44000003, y: 0.38880002, z: 0.418}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 0
+      slot: 2
+      pos: {x: 0, y: 0.62319994, z: -0.0011374978}
+      scale: {x: 0.33, y: 0.0432, z: 0.33}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.6685599, z: -0.0011374978}
+      scale: {x: 0.1452, y: 0.39312002, z: 0.1452}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0.0676393, y: 0.65238506, z: 0.020862501}
+      scale: {x: 0.10890001, y: 0.3024, z: 0.10890001}
+      rot: {x: 0, y: 0, z: -28}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: -0.0676393, y: 0.65238506, z: 0.020862501}
+      scale: {x: 0.10890001, y: 0.3024, z: 0.10890001}
+      rot: {x: 0, y: -0, z: 28}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.63514405, z: -0.06372969}
+      scale: {x: 0.0968, y: 0.27216002, z: 0.0968}
+      rot: {x: -25, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 3
+      pos: {x: 0.11000001, y: 0.36400002, z: 0.2738625}
+      scale: {x: 0.09900001, y: 0.11178, z: 0.0693}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 3
+      pos: {x: -0.11000001, y: 0.36400002, z: 0.2738625}
+      scale: {x: 0.09900001, y: 0.11178, z: 0.0693}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.12650001, y: 0.38830003, z: 0.30356252}
+      scale: {x: 0.03465, y: 0.034020003, z: 0.03465}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.12650001, y: 0.38830003, z: 0.30356252}
+      scale: {x: 0.03465, y: 0.034020003, z: 0.03465}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 7
+      slot: 0
+      pos: {x: 0.33600003, y: 0.2948, z: 0.0508625}
+      scale: {x: 0.15599999, y: 0.15599999, z: 0.15599999}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 6
+      slot: 0
+      pos: {x: -0.33600003, y: 0.2948, z: 0.0508625}
+      scale: {x: 0.15599999, y: 0.15599999, z: 0.15599999}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 3
+      slot: 0
+      pos: {x: 0.12, y: 0.05, z: 0.04}
+      scale: {x: 0.18, y: 0.1, z: 0.22}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 2
+      slot: 0
+      pos: {x: -0.12, y: 0.05, z: 0.04}
+      scale: {x: 0.18, y: 0.1, z: 0.22}
+      rot: {x: 0, y: -0, z: -0}
+    pivots:
+    - group: 7
+      pivot: {x: 0.29700002, y: 0.32080004, z: -0.0011374978}
+    - group: 6
+      pivot: {x: -0.29700002, y: 0.32080004, z: -0.0011374978}
+    - group: 3
+      pivot: {x: 0.12, y: 0.1, z: 0}
+    - group: 2
+      pivot: {x: -0.12, y: 0.1, z: 0}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Geocolossus
+    blurb: A walking geode, crystal bursting from its shoulders.
+    parts:
+    - shape: 6
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.378688, z: -0.0023887493}
+      scale: {x: 0.68992, y: 0.67737603, z: 0.65340006}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.35449603, z: 0.118611254}
+      scale: {x: 0.49280003, y: 0.43545604, z: 0.45980003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 0
+      slot: 2
+      pos: {x: 0, y: 0.693184, z: -0.0023887493}
+      scale: {x: 0.36960003, y: 0.048384, z: 0.36300004}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.78801656, z: -0.0023887493}
+      scale: {x: 0.162624, y: 0.52835333, z: 0.15972}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0.091656454, y: 0.7557756, z: 0.02181125}
+      scale: {x: 0.121968016, y: 0.4064256, z: 0.11979002}
+      rot: {x: 0, y: 0, z: -28}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: -0.091656454, y: 0.7557756, z: 0.02181125}
+      scale: {x: 0.121968016, y: 0.4064256, z: 0.11979002}
+      rot: {x: 0, y: -0, z: 28}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.73418736, z: -0.084122375}
+      scale: {x: 0.108416, y: 0.3657831, z: 0.10648}
+      rot: {x: -25, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 3
+      pos: {x: 0.12320001, y: 0.40288, z: 0.30011126}
+      scale: {x: 0.11088001, y: 0.12519361, z: 0.076230004}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 3
+      pos: {x: -0.12320001, y: 0.40288, z: 0.30011126}
+      scale: {x: 0.11088001, y: 0.12519361, z: 0.076230004}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.14168002, y: 0.43009603, z: 0.33278129}
+      scale: {x: 0.038808003, y: 0.038102403, z: 0.038115002}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.14168002, y: 0.43009603, z: 0.33278129}
+      scale: {x: 0.038808003, y: 0.038102403, z: 0.038115002}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 7
+      slot: 0
+      pos: {x: 0.37944004, y: 0.323296, z: 0.06001125}
+      scale: {x: 0.1872, y: 0.1872, z: 0.1872}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 6
+      slot: 0
+      pos: {x: -0.37944004, y: 0.323296, z: 0.06001125}
+      scale: {x: 0.1872, y: 0.1872, z: 0.1872}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 3
+      slot: 0
+      pos: {x: 0.12, y: 0.05, z: 0.04}
+      scale: {x: 0.18, y: 0.1, z: 0.22}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 2
+      slot: 0
+      pos: {x: -0.12, y: 0.05, z: 0.04}
+      scale: {x: 0.18, y: 0.1, z: 0.22}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 5
+      group: 7
+      slot: 6
+      pos: {x: 0.33839762, y: 0.2841329, z: 0.06001125}
+      scale: {x: 0.08, y: 0.24, z: 0.08}
+      rot: {x: 0, y: 0, z: -20}
+    - shape: 5
+      group: 6
+      slot: 6
+      pos: {x: -0.33839762, y: 0.2841329, z: 0.06001125}
+      scale: {x: 0.08, y: 0.24, z: 0.08}
+      rot: {x: 0, y: -0, z: 20}
+    pivots:
+    - group: 7
+      pivot: {x: 0.33264002, y: 0.35449603, z: -0.0023887493}
+    - group: 6
+      pivot: {x: -0.33264002, y: 0.35449603, z: -0.0023887493}
+    - group: 3
+      pivot: {x: 0.12, y: 0.1, z: 0}
+    - group: 2
+      pivot: {x: -0.12, y: 0.1, z: 0}
+    element2: 0
+    skill: prism_quake
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

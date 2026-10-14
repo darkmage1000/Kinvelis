@@ -104,6 +104,19 @@ namespace Wildbond
         public static ItemDef Item(string id) => id != null && Items.TryGetValue(id, out var d) ? d : null;
         public static SpeciesDef Sp(string id) => id != null && Species.TryGetValue(id, out var d) ? d : null;
         public static AbilityDef Ability(string id) => id != null && Abilities.TryGetValue(id, out var d) ? d : null;
+
+        static HashSet<string> formSkills;
+        /// <summary>A skill an Exalted form brings (EvoForm.skill): it belongs to that line only, never to the shared pool other kin learn from.</summary>
+        public static bool IsFormSkill(string id)
+        {
+            if (formSkills == null)
+            {
+                formSkills = new HashSet<string>();
+                foreach (var sp in Species.Values)
+                    if (sp.forms != null) foreach (var f in sp.forms) if (f != null && !string.IsNullOrEmpty(f.skill)) formSkills.Add(f.skill);
+            }
+            return id != null && formSkills.Contains(id);
+        }
         public static TraitDef Trait(string id) => id != null && Traits.TryGetValue(id, out var d) ? d : null;
         public static BuildingDef Building(string id) => id != null && Buildings.TryGetValue(id, out var d) ? d : null;
         public static string ItemName(string id) { var d = Item(id); return d != null ? d.displayName : id; }

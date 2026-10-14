@@ -50,6 +50,8 @@ MonoBehaviour:
     level: 2
   - type: 8
     level: 1
+  - type: 11
+    level: 1
   perk: 8
   overworldRole: 'Companion: slowly restores your HP.'
   mountable: 0
@@ -161,6 +163,277 @@ MonoBehaviour:
   pivots:
   - group: 11
     pivot: {x: 0, y: 0.7, z: 0}
+  forms:
+  - name: Oozeling
+    blurb: A taller slime with slow drips running down it.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.120000005, z: 0}
+      scale: {x: 0.693, y: 0.24000001, z: 0.65099996}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.33600003, z: 0}
+      scale: {x: 0.525, y: 0.55200005, z: 0.50399995}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: -0.105, y: 0.504, z: 0.105}
+      scale: {x: 0.147, y: 0.120000005, z: 0.08399999}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0.105, y: 0.624, z: -0.041999996}
+      scale: {x: 0.16799998, y: 0.21600002, z: 0.16799998}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 5
+      pos: {x: 0.11591999, y: 0.39672002, z: 0.23687997}
+      scale: {x: 0.105, y: 0.13800001, z: 0.0735}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 5
+      pos: {x: -0.11591999, y: 0.39672002, z: 0.23687997}
+      scale: {x: 0.105, y: 0.13800001, z: 0.0735}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.13166998, y: 0.42672002, z: 0.26837996}
+      scale: {x: 0.03675, y: 0.042000003, z: 0.03675}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.13166998, y: 0.42672002, z: 0.26837996}
+      scale: {x: 0.03675, y: 0.042000003, z: 0.03675}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 5
+      pos: {x: 0, y: 0.24000001, z: 0.24359998}
+      scale: {x: 0.105, y: 0.060000002, z: 0.031499997}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: 0.20799999, y: 0.84000003, z: 0}
+      scale: {x: 0.13, y: 0.13, z: 0.13}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: -0.15599999, y: 0.99600005, z: 0.051999997}
+      scale: {x: 0.091, y: 0.091, z: 0.091}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: 0.025999999, y: 1.1520001, z: -0.077999994}
+      scale: {x: 0.065, y: 0.065, z: 0.065}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0.2965, y: 0.15, z: 0.05}
+      scale: {x: 0.08, y: 0.18, z: 0.08}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: -0.2965, y: 0.15, z: 0.05}
+      scale: {x: 0.08, y: 0.18, z: 0.08}
+      rot: {x: 0, y: -0, z: -0}
+    pivots:
+    - group: 11
+      pivot: {x: 0, y: 0.84000003, z: 0}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Oozelord
+    blurb: A crowned king of the bog slime, sitting in its own puddle.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.13200001, z: 0}
+      scale: {x: 0.7623, y: 0.26400003, z: 0.7161}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.36960003, z: 0}
+      scale: {x: 0.5775, y: 0.6072001, z: 0.55439997}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: -0.115499996, y: 0.5544, z: 0.115499996}
+      scale: {x: 0.16170001, y: 0.13200001, z: 0.09239999}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0.115499996, y: 0.68640006, z: -0.046199996}
+      scale: {x: 0.18479998, y: 0.23760003, z: 0.18479998}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 5
+      pos: {x: 0.127512, y: 0.43639204, z: 0.26056796}
+      scale: {x: 0.115499996, y: 0.15180002, z: 0.080850005}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 5
+      pos: {x: -0.127512, y: 0.43639204, z: 0.26056796}
+      scale: {x: 0.115499996, y: 0.15180002, z: 0.080850005}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.14483699, y: 0.46939203, z: 0.29521796}
+      scale: {x: 0.040425003, y: 0.046200003, z: 0.040425003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.14483699, y: 0.46939203, z: 0.29521796}
+      scale: {x: 0.040425003, y: 0.046200003, z: 0.040425003}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 5
+      pos: {x: 0, y: 0.26400003, z: 0.26795998}
+      scale: {x: 0.115499996, y: 0.06600001, z: 0.034649998}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: 0.20799999, y: 0.9240001, z: 0}
+      scale: {x: 0.13, y: 0.13, z: 0.13}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: -0.15599999, y: 1.0800002, z: 0.051999997}
+      scale: {x: 0.091, y: 0.091, z: 0.091}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: 0.025999999, y: 1.2360001, z: -0.077999994}
+      scale: {x: 0.065, y: 0.065, z: 0.065}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0.32615, y: 0.165, z: 0.055000003}
+      scale: {x: 0.088, y: 0.19800001, z: 0.088}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: -0.32615, y: 0.165, z: 0.055000003}
+      scale: {x: 0.088, y: 0.19800001, z: 0.088}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: 0, y: 0.7552001, z: 0.167706}
+      scale: {x: 0.07, y: 0.18, z: 0.07}
+      rot: {x: 12, y: 0, z: 0}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: 0.15949789, y: 0.7552001, z: 0.051824}
+      scale: {x: 0.07, y: 0.18, z: 0.07}
+      rot: {x: 12, y: 72, z: 0}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: 0.0985751, y: 0.7552001, z: -0.13567701}
+      scale: {x: 0.07, y: 0.18, z: 0.07}
+      rot: {x: 12, y: 144, z: 0}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: -0.09857509, y: 0.7552001, z: -0.13567701}
+      scale: {x: 0.07, y: 0.18, z: 0.07}
+      rot: {x: 12, y: 216, z: 0}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: -0.15949787, y: 0.7552001, z: 0.051824026}
+      scale: {x: 0.07, y: 0.18, z: 0.07}
+      rot: {x: 12, y: 288, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.03, z: 0.38115}
+      scale: {x: 0.14, y: 0.06, z: 0.14}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0.29799506, y: 0.03, z: 0.23764317}
+      scale: {x: 0.14, y: 0.06, z: 0.14}
+      rot: {x: 0, y: 51.42857, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0.3715938, y: 0.03, z: -0.08481382}
+      scale: {x: 0.14, y: 0.06, z: 0.14}
+      rot: {x: 0, y: 102.85714, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0.16537474, y: 0.03, z: -0.3434043}
+      scale: {x: 0.14, y: 0.06, z: 0.14}
+      rot: {x: 0, y: 154.28572, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: -0.16537471, y: 0.03, z: -0.34340432}
+      scale: {x: 0.14, y: 0.06, z: 0.14}
+      rot: {x: 0, y: 205.71428, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: -0.37159377, y: 0.03, z: -0.084813885}
+      scale: {x: 0.14, y: 0.06, z: 0.14}
+      rot: {x: 0, y: 257.14285, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: -0.297995, y: 0.03, z: 0.23764323}
+      scale: {x: 0.14, y: 0.06, z: 0.14}
+      rot: {x: 0, y: 308.57144, z: 0}
+    pivots:
+    - group: 11
+      pivot: {x: 0, y: 0.9240001, z: 0}
+    element2: 0
+    skill: ooze_flood
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

@@ -193,6 +193,288 @@ MonoBehaviour:
     pivot: {x: 0, y: 0.5, z: 0}
   - group: 8
     pivot: {x: 0, y: 0.26, z: -0.24}
+  forms:
+  - name: Bibbun
+    blurb: Longer ears and a much bigger puff of a tail.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.3312, z: 0}
+      scale: {x: 0.56, y: 0.58239996, z: 0.54}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.264, z: 0.12}
+      scale: {x: 0.4, y: 0.40320003, z: 0.36}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0.13, y: 0.7952, z: -0.02}
+      scale: {x: 0.13, y: 0.48, z: 0.08}
+      rot: {x: -8, y: 0, z: -14}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: -0.13, y: 0.7952, z: -0.02}
+      scale: {x: 0.13, y: 0.48, z: 0.08}
+      rot: {x: -8, y: -0, z: 14}
+    - shape: 0
+      group: 1
+      slot: 2
+      pos: {x: 0.13, y: 0.7952, z: 0.01}
+      scale: {x: 0.07, y: 0.36, z: 0.05}
+      rot: {x: -8, y: 0, z: -14}
+    - shape: 0
+      group: 1
+      slot: 2
+      pos: {x: -0.13, y: 0.7952, z: 0.01}
+      scale: {x: 0.07, y: 0.36, z: 0.05}
+      rot: {x: -8, y: -0, z: 14}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0.2, y: 0.2864, z: 0.2}
+      scale: {x: 0.12, y: 0.10080001, z: 0.07}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: -0.2, y: 0.2864, z: 0.2}
+      scale: {x: 0.12, y: 0.10080001, z: 0.07}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 5
+      pos: {x: 0, y: 0.3312, z: 0.275}
+      scale: {x: 0.05, y: 0.0448, z: 0.03}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 3
+      pos: {x: 0.11, y: 0.4208, z: 0.23}
+      scale: {x: 0.09, y: 0.11592, z: 0.063}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 3
+      pos: {x: -0.11, y: 0.4208, z: 0.23}
+      scale: {x: 0.09, y: 0.11592, z: 0.063}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.125, y: 0.446, z: 0.257}
+      scale: {x: 0.0315, y: 0.03528, z: 0.0315}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.125, y: 0.446, z: 0.257}
+      scale: {x: 0.0315, y: 0.03528, z: 0.0315}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 3
+      slot: 1
+      pos: {x: 0.13, y: 0.04, z: 0.1}
+      scale: {x: 0.16, y: 0.08, z: 0.22}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 2
+      slot: 1
+      pos: {x: -0.13, y: 0.04, z: 0.1}
+      scale: {x: 0.16, y: 0.08, z: 0.22}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 8
+      slot: 4
+      pos: {x: 0, y: 0.2864, z: -0.29399997}
+      scale: {x: 0.216, y: 0.216, z: 0.216}
+      rot: {x: 0, y: 0, z: 0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.5552, z: 0}
+    - group: 8
+      pivot: {x: 0, y: 0.2864, z: -0.23999998}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Bunnoble
+    blurb: A moon rabbit with a lace ruff and a glowing mark on its brow. It gains
+      the Lumen element.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.354496, z: -0.00090000033}
+      scale: {x: 0.5936, y: 0.62899196, z: 0.5724}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.28192002, z: 0.12629999}
+      scale: {x: 0.424, y: 0.43545604, z: 0.3816}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0.13, y: 0.836416, z: -0.0209}
+      scale: {x: 0.13, y: 0.48, z: 0.08}
+      rot: {x: -8, y: 0, z: -14}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: -0.13, y: 0.836416, z: -0.0209}
+      scale: {x: 0.13, y: 0.48, z: 0.08}
+      rot: {x: -8, y: -0, z: 14}
+    - shape: 0
+      group: 1
+      slot: 2
+      pos: {x: 0.13, y: 0.836416, z: 0.009099999}
+      scale: {x: 0.07, y: 0.36, z: 0.05}
+      rot: {x: -8, y: 0, z: -14}
+    - shape: 0
+      group: 1
+      slot: 2
+      pos: {x: -0.13, y: 0.836416, z: 0.009099999}
+      scale: {x: 0.07, y: 0.36, z: 0.05}
+      rot: {x: -8, y: -0, z: 14}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0.212, y: 0.306112, z: 0.2111}
+      scale: {x: 0.12719999, y: 0.10886401, z: 0.0742}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: -0.212, y: 0.306112, z: 0.2111}
+      scale: {x: 0.12719999, y: 0.10886401, z: 0.0742}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 5
+      pos: {x: 0, y: 0.354496, z: 0.2906}
+      scale: {x: 0.053, y: 0.048384, z: 0.031799998}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 3
+      pos: {x: 0.11659999, y: 0.45126402, z: 0.24289998}
+      scale: {x: 0.0954, y: 0.12519361, z: 0.06678}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 3
+      pos: {x: -0.11659999, y: 0.45126402, z: 0.24289998}
+      scale: {x: 0.0954, y: 0.12519361, z: 0.06678}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.1325, y: 0.47848004, z: 0.27152}
+      scale: {x: 0.03339, y: 0.038102403, z: 0.03339}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.1325, y: 0.47848004, z: 0.27152}
+      scale: {x: 0.03339, y: 0.038102403, z: 0.03339}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 3
+      slot: 1
+      pos: {x: 0.13, y: 0.04, z: 0.1}
+      scale: {x: 0.16, y: 0.08, z: 0.22}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 2
+      slot: 1
+      pos: {x: -0.13, y: 0.04, z: 0.1}
+      scale: {x: 0.16, y: 0.08, z: 0.22}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 8
+      slot: 4
+      pos: {x: 0, y: 0.306112, z: -0.30929995}
+      scale: {x: 0.216, y: 0.216, z: 0.216}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0, y: 0.608992, z: 0.22869602}
+      scale: {x: 0.11, y: 0.09, z: 0.11}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.1511059, y: 0.608992, z: 0.16610591}
+      scale: {x: 0.11, y: 0.09, z: 0.11}
+      rot: {x: 0, y: 45, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.213696, y: 0.608992, z: 0.015000006}
+      scale: {x: 0.11, y: 0.09, z: 0.11}
+      rot: {x: 0, y: 90, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.1511059, y: 0.608992, z: -0.13610588}
+      scale: {x: 0.11, y: 0.09, z: 0.11}
+      rot: {x: 0, y: 135, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.000000018681899, y: 0.608992, z: -0.19869599}
+      scale: {x: 0.11, y: 0.09, z: 0.11}
+      rot: {x: 0, y: 180, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.15110588, y: 0.608992, z: -0.13610588}
+      scale: {x: 0.11, y: 0.09, z: 0.11}
+      rot: {x: 0, y: 225, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.213696, y: 0.608992, z: 0.015000018}
+      scale: {x: 0.11, y: 0.09, z: 0.11}
+      rot: {x: 0, y: 270, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.15110591, y: 0.608992, z: 0.16610588}
+      scale: {x: 0.11, y: 0.09, z: 0.11}
+      rot: {x: 0, y: 315, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0, y: 0.980416, z: 0.012699998}
+      scale: {x: 0.1, y: 0.1, z: 0.03}
+      rot: {x: 0, y: 0, z: 0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.596416, z: -0.00090000033}
+    - group: 8
+      pivot: {x: 0, y: 0.306112, z: -0.25529996}
+    element2: 9
+    skill: moon_hop
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

@@ -159,7 +159,7 @@ namespace Wildbond
         {
             var pool = new List<AbilityDef>();
             foreach (var a in ContentDB.Abilities.Values)
-                if (a.element == e && a.effect == AbilityEffect.None && a.kind != AbilityKind.Blink && a.power > 0f) pool.Add(a);
+                if (a.element == e && a.effect == AbilityEffect.None && a.kind != AbilityKind.Blink && a.power > 0f && !ContentDB.IsFormSkill(a.id)) pool.Add(a);
             pool.Sort((x, y) => x.power.CompareTo(y.power));
             if (pool.Count == 0) return new[] { "tackle" };
             if (pool.Count == 1) return new[] { pool[0].id };

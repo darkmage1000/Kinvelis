@@ -173,6 +173,259 @@ MonoBehaviour:
   pivots:
   - group: 1
     pivot: {x: 0, y: 0.34, z: 0}
+  forms:
+  - name: Frostmote
+    blurb: A bigger snowball with a long icicle horn.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.33900002, z: 0.0017999988}
+      scale: {x: 0.6272, y: 0.598, z: 0.6272}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0.224, y: 0.47699997, z: -0.1102}
+      scale: {x: 0.224, y: 0.23, z: 0.224}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: -0.224, y: 0.47699997, z: -0.1102}
+      scale: {x: 0.224, y: 0.23, z: 0.224}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.22399999, z: -0.2222}
+      scale: {x: 0.2688, y: 0.253, z: 0.2464}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 0
+      slot: 2
+      pos: {x: 0.3584, y: 0.362, z: 0.0017999988}
+      scale: {x: 0.0224, y: 0.253, z: 0.0224}
+      rot: {x: 0, y: 0, z: -60}
+    - shape: 2
+      group: 0
+      slot: 2
+      pos: {x: -0.3584, y: 0.362, z: 0.0017999988}
+      scale: {x: 0.0224, y: 0.253, z: 0.0224}
+      rot: {x: 0, y: -0, z: 60}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.1, y: 0.42499998, z: 0.2418}
+      scale: {x: 0.07, y: 0.0805, z: 0.049}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.1, y: 0.42499998, z: 0.2418}
+      scale: {x: 0.07, y: 0.0805, z: 0.049}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.115, y: 0.4425, z: 0.2628}
+      scale: {x: 0.0245, y: 0.0245, z: 0.0245}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.115, y: 0.4425, z: 0.2628}
+      scale: {x: 0.0245, y: 0.0245, z: 0.0245}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.17, y: 0.345, z: 0.2218}
+      scale: {x: 0.08, y: 0.05, z: 0.04}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.17, y: 0.345, z: 0.2218}
+      scale: {x: 0.08, y: 0.05, z: 0.04}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 5
+      group: 1
+      slot: 1
+      pos: {x: 0, y: 0.56499994, z: 0.0017999988}
+      scale: {x: 0.12, y: 0.22, z: 0.12}
+      rot: {x: 0, y: 0, z: 0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.385, z: 0.0017999988}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Avalord
+    blurb: A blizzard with a face, crowned in icicles. It gains the Gale element.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.36890003, z: 0.0034800004}
+      scale: {x: 0.68992, y: 0.6578, z: 0.68992}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0.24640001, y: 0.5207, z: -0.119720004}
+      scale: {x: 0.24640001, y: 0.25300002, z: 0.24640001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: -0.24640001, y: 0.5207, z: -0.119720004}
+      scale: {x: 0.24640001, y: 0.25300002, z: 0.24640001}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.24239999, z: -0.24292001}
+      scale: {x: 0.29568, y: 0.2783, z: 0.27104}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 0
+      slot: 2
+      pos: {x: 0.39424, y: 0.3942, z: 0.0034800004}
+      scale: {x: 0.02464, y: 0.2783, z: 0.02464}
+      rot: {x: 0, y: 0, z: -60}
+    - shape: 2
+      group: 0
+      slot: 2
+      pos: {x: -0.39424, y: 0.3942, z: 0.0034800004}
+      scale: {x: 0.02464, y: 0.2783, z: 0.02464}
+      rot: {x: 0, y: -0, z: 60}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.1, y: 0.45949998, z: 0.24348}
+      scale: {x: 0.07, y: 0.0805, z: 0.049}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.1, y: 0.45949998, z: 0.24348}
+      scale: {x: 0.07, y: 0.0805, z: 0.049}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.115, y: 0.477, z: 0.26448}
+      scale: {x: 0.0245, y: 0.0245, z: 0.0245}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.115, y: 0.477, z: 0.26448}
+      scale: {x: 0.0245, y: 0.0245, z: 0.0245}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.17, y: 0.3795, z: 0.22348}
+      scale: {x: 0.08, y: 0.05, z: 0.04}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.17, y: 0.3795, z: 0.22348}
+      scale: {x: 0.08, y: 0.05, z: 0.04}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 5
+      group: 1
+      slot: 1
+      pos: {x: 0, y: 0.59949994, z: 0.0034800004}
+      scale: {x: 0.12, y: 0.22, z: 0.12}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.45684612, z: 0.14010817}
+      scale: {x: 0.09, y: 0.3, z: 0.09}
+      rot: {x: 20, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 1
+      pos: {x: 0.12517759, y: 0.45684612, z: 0.07982583}
+      scale: {x: 0.09, y: 0.3, z: 0.09}
+      rot: {x: 20, y: 51.42857, z: 0}
+    - shape: 5
+      group: 0
+      slot: 1
+      pos: {x: 0.15609394, y: 0.45684612, z: -0.055627406}
+      scale: {x: 0.09, y: 0.3, z: 0.09}
+      rot: {x: 20, y: 102.85714, z: 0}
+    - shape: 5
+      group: 0
+      slot: 1
+      pos: {x: 0.06946831, y: 0.45684612, z: -0.16425249}
+      scale: {x: 0.09, y: 0.3, z: 0.09}
+      rot: {x: 20, y: 154.28572, z: 0}
+    - shape: 5
+      group: 0
+      slot: 1
+      pos: {x: -0.069468305, y: 0.45684612, z: -0.16425249}
+      scale: {x: 0.09, y: 0.3, z: 0.09}
+      rot: {x: 20, y: 205.71428, z: 0}
+    - shape: 5
+      group: 0
+      slot: 1
+      pos: {x: -0.15609393, y: 0.45684612, z: -0.05562743}
+      scale: {x: 0.09, y: 0.3, z: 0.09}
+      rot: {x: 20, y: 257.14285, z: 0}
+    - shape: 5
+      group: 0
+      slot: 1
+      pos: {x: -0.12517759, y: 0.45684612, z: 0.07982585}
+      scale: {x: 0.09, y: 0.3, z: 0.09}
+      rot: {x: 20, y: 308.57144, z: 0}
+    - shape: 0
+      group: 7
+      slot: 1
+      pos: {x: 0.38656, y: 0.32890004, z: 0.04}
+      scale: {x: 0.16, y: 0.14, z: 0.16}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 6
+      slot: 1
+      pos: {x: -0.38656, y: 0.32890004, z: 0.04}
+      scale: {x: 0.16, y: 0.14, z: 0.16}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 1
+      group: 1
+      slot: 1
+      pos: {x: 0.014, y: 0.4791, z: 0.27148}
+      scale: {x: 0.018199999, y: 0.0042, z: 0.0056}
+      rot: {x: 0, y: 0, z: 22}
+    - shape: 1
+      group: 1
+      slot: 1
+      pos: {x: -0.014, y: 0.4791, z: 0.27148}
+      scale: {x: 0.018199999, y: 0.0042, z: 0.0056}
+      rot: {x: 0, y: -0, z: -22}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.4195, z: 0.0034800004}
+    element2: 7
+    skill: avalanche
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

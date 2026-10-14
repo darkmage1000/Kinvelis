@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Wildbond
 {
     [CreateAssetMenu(menuName = "Wildbond/Species", fileName = "Species_")]
-    public class SpeciesDef : ScriptableObject
+    public partial class SpeciesDef : ScriptableObject
     {
         [Header("Identity")]
         public string id;
@@ -73,6 +73,8 @@ namespace Wildbond
         public Palette shimmerPalette3;
         public BodyPart[] parts = new BodyPart[0];
         public GroupPivot[] pivots = new GroupPivot[0];
+        [Tooltip("Real evolved forms: [0] Ascended (Lv 20), [1] Exalted (Lv 35). Empty = perfect form (it only grows and glows). See EvoForm.")]
+        public EvoForm[] forms = new EvoForm[0];
         public RegionalForm regional;
         [Tooltip("Motion of the Extra part group (orbiting bits, propeller, floating puffs).")]
         public ExtraAnim extraAnim;

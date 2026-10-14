@@ -395,10 +395,11 @@ namespace Wildbond
             // evolution
             if (KinGrowth.CanEvolveStage(d))
             {
-                string nextName = CreatureData.StageName(d.stage + 1);
+                var nextForm = d.Species.FormAt(d.stage + 1);
+                string nextName = nextForm != null ? nextForm.name : CreatureData.StageName(d.stage + 1);
                 string why = KinGrowth.WhyNot(d);
                 int g = KinGrowth.EvolveGlimmer(d);
-                Para(p, $"{UIFactory.Col($"Evolve to {nextName}", new Color(0.75f, 0.6f, 1f))} at Lv {KinGrowth.EvolveLevel(d)}: {Ingredients(KinGrowth.EvolveCost(d))}{(g > 0 ? $"   {UIFactory.Col($"{g} Glimmer", Gold)}" : "")}\n<size=19>+15% HP/ATK/DEF, bigger glowing form, +10% work speed</size>", 22, Color.white);
+                Para(p, $"{UIFactory.Col($"Evolve to {nextName}", new Color(0.75f, 0.6f, 1f))} at Lv {KinGrowth.EvolveLevel(d)}: {Ingredients(KinGrowth.EvolveCost(d))}{(g > 0 ? $"   {UIFactory.Col($"{g} Glimmer", Gold)}" : "")}\n<size=19>{(nextForm != null ? EvoChangeText(nextForm) + "  " : "")}+15% HP/ATK/DEF, {(nextForm != null ? "bigger" : "bigger glowing form")}, +10% work speed</size>", 22, Color.white);
                 var dd = d;
                 UIFactory.Size(UIFactory.Button(p, why == null ? $"EVOLVE INTO {nextName.ToUpperInvariant()}" : why,
                     why == null ? () => Confirm("Evolve?", $"Evolve {dd.DisplayName} into its {nextName} form? Materials are used up.", () => EvolveWithShow(dd, false)) : (System.Action)null,

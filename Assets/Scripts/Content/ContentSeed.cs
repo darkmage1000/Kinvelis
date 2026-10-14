@@ -35,6 +35,7 @@ namespace Wildbond
             BuildAbilities(b);
             BuildNinjaAbilities(b);
             BuildStyledAbilities(b);
+            BuildEvoSkills(b);
             BuildTraits(b);
             BuildSpecies(b);
             BuildStarters(b);
@@ -50,6 +51,7 @@ namespace Wildbond
             ApplyOuterBiomes(b);
             ApplyEarlyEmber(b);
             ApplyJobBalance(b);
+            BuildEvolutions(b);
             BuildBuildings(b);
             BuildTechBuildings(b);
             BuildStorageBuildings(b);

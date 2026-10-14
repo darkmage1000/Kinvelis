@@ -46,13 +46,28 @@ namespace Wildbond
             {
                 var s = Species;
                 if (s == null) return speciesId;
-                string n = regional && s.regional.enabled ? $"{s.displayName} ({s.regional.formName})" : s.displayName;
-                return stage > 0 ? StageName(stage) + " " + n : n;
+                string n = s.NameAt(stage);   // a real form's own name, else "Ascended X"
+                return regional && s.regional.enabled ? $"{n} ({s.regional.formName})" : n;
             }
         }
 
         public Element Element1 => Species != null ? Species.element1 : Element.Normal;
-        public Element Element2 => Species == null ? Element.Normal : (regional && Species.regional.enabled ? Species.regional.element2 : Species.element2);
+        public Element Element2
+        {
+            get
+            {
+                if (Species == null) return Element.Normal;
+                var ex = stage >= 2 ? Species.FormAt(2) : null;
+                if (ex != null && ex.element2 != Element.Normal && ex.element2 != Species.element1) return ex.element2;   // an Exalted form's new element
+                return regional && Species.regional.enabled ? Species.regional.element2 : Species.element2;
+            }
+        }
+
+        /// <summary>This kin's real evolved form, if its kind has one at its stage.</summary>
+        public EvoForm Form => Species != null ? Species.FormAt(stage) : null;
+        /// <summary>The body it is built from: its form's parts, or the kind's.</summary>
+        public BodyPart[] Parts => Species.PartsAt(stage);
+        public GroupPivot[] Pivots => Species.PivotsAt(stage);
 
         public Palette Palette
         {
@@ -60,12 +75,14 @@ namespace Wildbond
             {
                 var s = Species;
                 var p = shimmer ? Shimmer.PaletteFor(s, shimmerVariant) : (regional && s.regional.enabled ? s.regional.palette : s.palette);
+                var form = !shimmer && !(regional && s.regional.enabled) ? Form : null;
+                if (form != null && form.ownPalette) p = form.palette;   // a real evolved form's own colours
                 if (mutation == Mutation.Glowing)
                 {
                     p.primary = Color.Lerp(p.primary, p.glow, 0.25f);
                     p.accent = p.glow;
                 }
-                if (stage > 0)
+                if (stage > 0 && Form == null)   // a real evolved form has its own design: no wash
                 {
                     // evolved forms glow with their element
                     p.primary = Color.Lerp(p.primary, p.glow, 0.1f * stage);
@@ -180,6 +197,8 @@ namespace Wildbond
         public int SkillSlots => Mathf.Clamp(1 + level / 5, 1, MaxSkills);
 
         [NonSerialized] string[] learnsetCache;
+        /// <summary>After evolving (a new element or form skill changes what it learns).</summary>
+        public void ResetLearnset() => learnsetCache = null;
 
         /// <summary>
         /// The 4 skills this individual learns, in unlock order: its own moves first (incl. a rolled rare combo),
@@ -197,7 +216,7 @@ namespace Wildbond
                 if (l.Count < MaxSkills)
                 {
                     var pool = new List<AbilityDef>(ContentDB.Abilities.Values);
-                    pool.RemoveAll(x => x.effect != AbilityEffect.None || x.kind == AbilityKind.Blink);   // signature moves stay with their own kin
+                    pool.RemoveAll(x => x.effect != AbilityEffect.None || x.kind == AbilityKind.Blink || ContentDB.IsFormSkill(x.id));   // signature and Exalted-form moves stay with their own kin
                     pool.Sort((x, y) => x.power != y.power ? y.power.CompareTo(x.power) : string.CompareOrdinal(x.id, y.id));
                     foreach (var e in new[] { Element1, Element2 })
                     {
@@ -206,6 +225,12 @@ namespace Wildbond
                     }
                     Add("tackle");
                     foreach (var a in pool) if (a.element == Element.Normal) Add(a.id);
+                }
+                // an Exalted form's own skill takes the last slot
+                var exf = stage >= 2 && Species != null ? Species.FormAt(2) : null;
+                if (exf != null && !string.IsNullOrEmpty(exf.skill) && ContentDB.Ability(exf.skill) != null && !l.Contains(exf.skill))
+                {
+                    if (l.Count >= MaxSkills) l[MaxSkills - 1] = exf.skill; else l.Add(exf.skill);
                 }
                 learnsetCache = l.ToArray();
                 return learnsetCache;

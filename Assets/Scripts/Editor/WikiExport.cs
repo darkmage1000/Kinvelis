@@ -103,6 +103,16 @@ namespace Wildbond.EditorTools
                 var drops = L();
                 foreach (var d in sp.drops) drops.Add(new Dictionary<string, object> { ["item"] = d.itemId, ["min"] = d.min, ["max"] = d.max, ["chance"] = d.chance });
                 o["drops"] = drops;
+                var forms = L();
+                for (int st = 1; st <= 2; st++)
+                {
+                    var f = sp.FormAt(st);
+                    if (f == null) continue;
+                    var ab = ContentDB.Ability(f.skill);
+                    forms.Add(new Dictionary<string, object> { ["name"] = f.name, ["lv"] = st == 1 ? KinGrowth.Stage1Level : KinGrowth.Stage2Level, ["blurb"] = f.blurb,
+                        ["element"] = f.element2 != Element.Normal ? f.element2.ToString() : null, ["skill"] = ab != null ? ab.id : null });
+                }
+                o["forms"] = forms;
                 o["mount"] = sp.mountable; o["water"] = sp.nearWater;
                 o["surf"] = sp.nearWater || sp.element1 == Element.Tide || sp.element2 == Element.Tide;
                 o["when"] = sp.spawnCondition != SpawnCondition.None ? EnvironmentSystem.ConditionText(sp.spawnCondition) : sp.spawnTime != SpawnTime.Any ? sp.spawnTime.ToString().ToLowerInvariant() + " only" : null;

@@ -22,10 +22,12 @@ MonoBehaviour:
   element2: 0
   rarity: 0
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 4
   spawnTime: 0
   nearWater: 0
+  spawnCondition: 0
   spawnWeight: 2.4
   minGroup: 2
   maxGroup: 5
@@ -71,6 +73,18 @@ MonoBehaviour:
     accent: {r: 1, g: 0.8784314, b: 0.4392157, a: 1}
     eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
     glow: {r: 1, g: 0.7529412, b: 0.9098039, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
   parts:
   - shape: 0
     group: 0
@@ -185,6 +199,300 @@ MonoBehaviour:
     pivot: {x: 0.1, y: 0.08, z: 0}
   - group: 2
     pivot: {x: -0.1, y: 0.08, z: 0}
+  forms:
+  - name: Frostpip
+    blurb: A taller penguin with a proud crest.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.433, z: 0}
+      scale: {x: 0.48, y: 0.69, z: 0.46}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0, y: 0.38700002, z: 0.08}
+      scale: {x: 0.36, y: 0.529, z: 0.34}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.663, z: 0.02}
+      scale: {x: 0.44, y: 0.138, z: 0.42}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.8759999, z: 0.018}
+      scale: {x: 0.378, y: 0.34199998, z: 0.35999998}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0, y: 0.84, z: 0.107999995}
+      scale: {x: 0.288, y: 0.23399998, z: 0.198}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 2
+      pos: {x: 0, y: 0.82199997, z: 0.23399998}
+      scale: {x: 0.089999996, y: 0.107999995, z: 0.072}
+      rot: {x: 95, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.089999996, y: 0.89399993, z: 0.17999999}
+      scale: {x: 0.0765, y: 0.087974995, z: 0.05355}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.089999996, y: 0.89399993, z: 0.17999999}
+      scale: {x: 0.0765, y: 0.087974995, z: 0.05355}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.1035, y: 0.9131249, z: 0.20295}
+      scale: {x: 0.026775, y: 0.026775, z: 0.026775}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.1035, y: 0.9131249, z: 0.20295}
+      scale: {x: 0.026775, y: 0.026775, z: 0.026775}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 5
+      group: 1
+      slot: 6
+      pos: {x: 0, y: 1.0177499, z: 0}
+      scale: {x: 0.089999996, y: 0.2475, z: 0.089999996}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 5
+      group: 1
+      slot: 6
+      pos: {x: 0.040817466, y: 1.0142808, z: 0}
+      scale: {x: 0.063, y: 0.1575, z: 0.063}
+      rot: {x: 0, y: 0, z: -28}
+    - shape: 5
+      group: 1
+      slot: 6
+      pos: {x: -0.040817466, y: 1.0142808, z: 0}
+      scale: {x: 0.063, y: 0.1575, z: 0.063}
+      rot: {x: 0, y: -0, z: 28}
+    - shape: 0
+      group: 7
+      slot: 0
+      pos: {x: 0.26, y: 0.497, z: 0}
+      scale: {x: 0.08, y: 0.3, z: 0.16}
+      rot: {x: 0, y: 0, z: -15}
+    - shape: 0
+      group: 6
+      slot: 0
+      pos: {x: -0.26, y: 0.497, z: 0}
+      scale: {x: 0.08, y: 0.3, z: 0.16}
+      rot: {x: 0, y: -0, z: 15}
+    - shape: 0
+      group: 3
+      slot: 2
+      pos: {x: 0.1, y: 0.048, z: 0.06}
+      scale: {x: 0.16, y: 0.096, z: 0.22}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 2
+      slot: 2
+      pos: {x: -0.1, y: 0.048, z: 0.06}
+      scale: {x: 0.16, y: 0.096, z: 0.22}
+      rot: {x: 0, y: -0, z: -0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.732, z: 0}
+    - group: 7
+      pivot: {x: 0.23, y: 0.617, z: 0}
+    - group: 6
+      pivot: {x: -0.23, y: 0.617, z: 0}
+    - group: 3
+      pivot: {x: 0.1, y: 0.128, z: 0}
+    - group: 2
+      pivot: {x: -0.1, y: 0.128, z: 0}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Emperice
+    blurb: An emperor of the ice with a crystal crown and flippers like blades. It
+      gains the Tide element.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.4675, z: -0.0005999999}
+      scale: {x: 0.5184, y: 0.759, z: 0.48759997}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0, y: 0.41690004, z: 0.084199995}
+      scale: {x: 0.38880002, y: 0.5819, z: 0.3604}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.7205, z: 0.020599999}
+      scale: {x: 0.47520003, y: 0.1518, z: 0.44519997}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.93319994, z: 0.0165}
+      scale: {x: 0.35909998, y: 0.32489997, z: 0.34199998}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0, y: 0.899, z: 0.10199999}
+      scale: {x: 0.27359998, y: 0.22229998, z: 0.1881}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 2
+      pos: {x: 0, y: 0.88189995, z: 0.22169998}
+      scale: {x: 0.085499994, y: 0.10259999, z: 0.068399996}
+      rot: {x: 95, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.085499994, y: 0.9503, z: 0.1704}
+      scale: {x: 0.072675, y: 0.08357625, z: 0.0508725}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.085499994, y: 0.9503, z: 0.1704}
+      scale: {x: 0.072675, y: 0.08357625, z: 0.0508725}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.098325, y: 0.96846867, z: 0.19220251}
+      scale: {x: 0.02543625, y: 0.02543625, z: 0.02543625}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.098325, y: 0.96846867, z: 0.19220251}
+      scale: {x: 0.02543625, y: 0.02543625, z: 0.02543625}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 5
+      group: 1
+      slot: 6
+      pos: {x: 0, y: 1.0678625, z: -0.0005999999}
+      scale: {x: 0.085499994, y: 0.235125, z: 0.085499994}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 5
+      group: 1
+      slot: 6
+      pos: {x: 0.03877659, y: 1.0645667, z: -0.0005999999}
+      scale: {x: 0.05985, y: 0.149625, z: 0.05985}
+      rot: {x: 0, y: 0, z: -28}
+    - shape: 5
+      group: 1
+      slot: 6
+      pos: {x: -0.03877659, y: 1.0645667, z: -0.0005999999}
+      scale: {x: 0.05985, y: 0.149625, z: 0.05985}
+      rot: {x: 0, y: -0, z: 28}
+    - shape: 0
+      group: 7
+      slot: 0
+      pos: {x: 0.2844, y: 0.52590007, z: -0.0005999999}
+      scale: {x: 0.096, y: 0.36, z: 0.192}
+      rot: {x: 0, y: 0, z: -15}
+    - shape: 0
+      group: 6
+      slot: 0
+      pos: {x: -0.2844, y: 0.52590007, z: -0.0005999999}
+      scale: {x: 0.096, y: 0.36, z: 0.192}
+      rot: {x: 0, y: -0, z: 15}
+    - shape: 0
+      group: 3
+      slot: 2
+      pos: {x: 0.1, y: 0.048, z: 0.06}
+      scale: {x: 0.16, y: 0.096, z: 0.22}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 2
+      slot: 2
+      pos: {x: -0.1, y: 0.048, z: 0.06}
+      scale: {x: 0.16, y: 0.096, z: 0.22}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 5
+      group: 1
+      slot: 6
+      pos: {x: 0, y: 1.0017372, z: 0.07293145}
+      scale: {x: 0.05, y: 0.14, z: 0.05}
+      rot: {x: 14, y: 0, z: 0}
+    - shape: 5
+      group: 1
+      slot: 6
+      pos: {x: 0.072690636, y: 1.0017372, z: 0.020118617}
+      scale: {x: 0.05, y: 0.14, z: 0.05}
+      rot: {x: 14, y: 72, z: 0}
+    - shape: 5
+      group: 1
+      slot: 6
+      pos: {x: 0.044925272, y: 1.0017372, z: -0.06533435}
+      scale: {x: 0.05, y: 0.14, z: 0.05}
+      rot: {x: 14, y: 144, z: 0}
+    - shape: 5
+      group: 1
+      slot: 6
+      pos: {x: -0.044925272, y: 1.0017372, z: -0.06533435}
+      scale: {x: 0.05, y: 0.14, z: 0.05}
+      rot: {x: 14, y: 216, z: 0}
+    - shape: 5
+      group: 1
+      slot: 6
+      pos: {x: -0.072690636, y: 1.0017372, z: 0.02011863}
+      scale: {x: 0.05, y: 0.14, z: 0.05}
+      rot: {x: 14, y: 288, z: 0}
+    - shape: 3
+      group: 7
+      slot: 6
+      pos: {x: 0.3324, y: 0.38590005, z: -0.0005999999}
+      scale: {x: 0.05, y: 0.2, z: 0.12}
+      rot: {x: 0, y: 0, z: 160}
+    - shape: 3
+      group: 6
+      slot: 6
+      pos: {x: -0.3324, y: 0.38590005, z: -0.0005999999}
+      scale: {x: 0.05, y: 0.2, z: 0.12}
+      rot: {x: 0, y: -0, z: -160}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.7964, z: -0.0005999999}
+    - group: 7
+      pivot: {x: 0.24840002, y: 0.6699, z: -0.0005999999}
+    - group: 6
+      pivot: {x: -0.24840002, y: 0.6699, z: -0.0005999999}
+    - group: 3
+      pivot: {x: 0.1, y: 0.128, z: 0}
+    - group: 2
+      pivot: {x: -0.1, y: 0.128, z: 0}
+    element2: 3
+    skill: glacier_slide
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

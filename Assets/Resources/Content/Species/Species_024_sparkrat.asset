@@ -22,6 +22,7 @@ MonoBehaviour:
   element2: 0
   rarity: 0
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 2
   spawnTime: 0
@@ -184,6 +185,263 @@ MonoBehaviour:
     pivot: {x: 0, y: 0.36, z: 0.14}
   - group: 8
     pivot: {x: 0, y: 0.28, z: -0.18}
+  forms:
+  - name: Zaprat
+    blurb: A bigger rat with a bolt of crystal on the tip of its tail.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.322, z: -0.0005000001}
+      scale: {x: 0.357, y: 0.414, z: 0.44099995}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.276, z: 0.0835}
+      scale: {x: 0.27299997, y: 0.299, z: 0.315}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 4
+      group: 0
+      slot: 1
+      pos: {x: 0.105, y: 0.138, z: -0.1055}
+      scale: {x: 0.08399999, y: 0.276, z: 0.105}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 4
+      group: 0
+      slot: 1
+      pos: {x: -0.105, y: 0.138, z: -0.1055}
+      scale: {x: 0.08399999, y: 0.276, z: 0.105}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.4876, z: 0.2201}
+      scale: {x: 0.27600002, y: 0.2576, z: 0.2576}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0.1288, y: 0.6716, z: 0.1833}
+      scale: {x: 0.1104, y: 0.2392, z: 0.046}
+      rot: {x: 0, y: 0, z: -25}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: -0.1288, y: 0.6716, z: 0.1833}
+      scale: {x: 0.1104, y: 0.2392, z: 0.046}
+      rot: {x: 0, y: -0, z: 25}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.1288, y: 0.6716, z: 0.20169999}
+      scale: {x: 0.0644, y: 0.16560002, z: 0.0184}
+      rot: {x: 0, y: 0, z: -25}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.1288, y: 0.6716, z: 0.20169999}
+      scale: {x: 0.0644, y: 0.16560002, z: 0.0184}
+      rot: {x: 0, y: -0, z: 25}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.0736, y: 0.5244, z: 0.32130003}
+      scale: {x: 0.0644, y: 0.07406, z: 0.04508}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.0736, y: 0.5244, z: 0.32130003}
+      scale: {x: 0.0644, y: 0.07406, z: 0.04508}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.0874, y: 0.54050004, z: 0.34062004}
+      scale: {x: 0.02254, y: 0.02254, z: 0.02254}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.0874, y: 0.54050004, z: 0.34062004}
+      scale: {x: 0.02254, y: 0.02254, z: 0.02254}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 8
+      slot: 2
+      pos: {x: 0, y: 0.34600002, z: -0.52550006}
+      scale: {x: 0.036000002, y: 0.72, z: 0.036000002}
+      rot: {x: -80, y: 0, z: 0}
+    - shape: 0
+      group: 8
+      slot: 6
+      pos: {x: 0, y: 0.394, z: -0.89750004}
+      scale: {x: 0.16800001, y: 0.16800001, z: 0.16800001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 5
+      group: 8
+      slot: 6
+      pos: {x: 0.04648801, y: 0.6263062, z: -0.9415}
+      scale: {x: 0.08, y: 0.22, z: 0.04}
+      rot: {x: 0, y: 0, z: 25}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.414, z: 0.14649999}
+    - group: 8
+      pivot: {x: 0, y: 0.322, z: -0.1895}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Dynamouse
+    blurb: Its cheeks hold a charge you can see, and its tail is a lightning rod.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.3542, z: -0.0013400009}
+      scale: {x: 0.38556, y: 0.45540002, z: 0.47627997}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.3036, z: 0.08938}
+      scale: {x: 0.29483998, y: 0.3289, z: 0.3402}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 4
+      group: 0
+      slot: 1
+      pos: {x: 0.1134, y: 0.1518, z: -0.11474001}
+      scale: {x: 0.09072, y: 0.3036, z: 0.1134}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 4
+      group: 0
+      slot: 1
+      pos: {x: -0.1134, y: 0.1518, z: -0.11474001}
+      scale: {x: 0.09072, y: 0.3036, z: 0.1134}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.52532005, z: 0.22734001}
+      scale: {x: 0.26220003, y: 0.24472001, z: 0.24472001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0.13436447, y: 0.72586364, z: 0.19238001}
+      scale: {x: 0.10488, y: 0.28405, z: 0.0437}
+      rot: {x: 0, y: 0, z: -25}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: -0.13436447, y: 0.72586364, z: 0.19238001}
+      scale: {x: 0.10488, y: 0.28405, z: 0.0437}
+      rot: {x: 0, y: -0, z: 25}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.1306708, y: 0.71794254, z: 0.20986}
+      scale: {x: 0.061180003, y: 0.19665001, z: 0.01748}
+      rot: {x: 0, y: 0, z: -25}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.1306708, y: 0.71794254, z: 0.20986}
+      scale: {x: 0.061180003, y: 0.19665001, z: 0.01748}
+      rot: {x: 0, y: -0, z: 25}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.06992, y: 0.56028, z: 0.32348}
+      scale: {x: 0.061180003, y: 0.070357, z: 0.042825997}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.06992, y: 0.56028, z: 0.32348}
+      scale: {x: 0.061180003, y: 0.070357, z: 0.042825997}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.08302999, y: 0.57825166, z: 0.341834}
+      scale: {x: 0.021412998, y: 0.026766248, z: 0.021412998}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.08302999, y: 0.57825166, z: 0.341834}
+      scale: {x: 0.021412998, y: 0.026766248, z: 0.021412998}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 8
+      slot: 2
+      pos: {x: 0, y: 0.37820002, z: -0.54146004}
+      scale: {x: 0.036000002, y: 0.72, z: 0.036000002}
+      rot: {x: -80, y: 0, z: 0}
+    - shape: 0
+      group: 8
+      slot: 6
+      pos: {x: 0, y: 0.4262, z: -0.91346}
+      scale: {x: 0.16800001, y: 0.16800001, z: 0.16800001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 5
+      group: 8
+      slot: 6
+      pos: {x: 0.04648801, y: 0.65850616, z: -0.95746005}
+      scale: {x: 0.08, y: 0.22, z: 0.04}
+      rot: {x: 0, y: 0, z: 25}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.086526014, y: 0.50696605, z: 0.30862203}
+      scale: {x: 0.052440006, y: 0.034086004, z: 0.026220003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.086526014, y: 0.50696605, z: 0.30862203}
+      scale: {x: 0.052440006, y: 0.034086004, z: 0.026220003}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 5
+      group: 8
+      slot: 6
+      pos: {x: 0, y: 0.40685308, z: -0.5344889}
+      scale: {x: 0.0375, y: 0.089999996, z: 0.0375}
+      rot: {x: -60, y: 0, z: 0}
+    - shape: 5
+      group: 8
+      slot: 6
+      pos: {x: 0, y: 0.41135308, z: -0.6834985}
+      scale: {x: 0.05, y: 0.12, z: 0.05}
+      rot: {x: -60, y: 0, z: 0}
+    - shape: 5
+      group: 8
+      slot: 6
+      pos: {x: 0, y: 0.40685308, z: -0.85848886}
+      scale: {x: 0.0375, y: 0.089999996, z: 0.0375}
+      rot: {x: -60, y: 0, z: 0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.45540002, z: 0.15742}
+    - group: 8
+      pivot: {x: 0, y: 0.3542, z: -0.20546001}
+    element2: 0
+    skill: dynamo_burst
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

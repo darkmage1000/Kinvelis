@@ -50,7 +50,7 @@ namespace Wildbond
             string key = owner.Data.ModelKey;
             if (!meshes.TryGetValue(key, out var mesh))
             {
-                mesh = ModelBuilder.BuildStatic(owner.Sp.parts, owner.Data.Palette, "decoy_" + key);
+                mesh = ModelBuilder.BuildStatic(owner.Data.Parts, owner.Data.Palette, "decoy_" + key);
                 meshes[key] = mesh;
             }
             d.go = new GameObject("Decoy");

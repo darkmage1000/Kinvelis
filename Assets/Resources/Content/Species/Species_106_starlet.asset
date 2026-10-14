@@ -52,6 +52,8 @@ MonoBehaviour:
     level: 1
   - type: 3
     level: 1
+  - type: 11
+    level: 2
   perk: 5
   overworldRole: 'Companion: lights up the night around you.'
   mountable: 0
@@ -197,6 +199,309 @@ MonoBehaviour:
     scale: {x: 0.072000004, y: 0.0468, z: 0.036000002}
     rot: {x: 0, y: -0, z: -0}
   pivots: []
+  forms:
+  - name: Starlette
+    blurb: Longer points and a brighter middle.
+    parts:
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.713, z: -0.0016887505}
+      scale: {x: 0.299, y: 0.43699998, z: 0.176}
+      rot: {x: 0, y: 0, z: -0}
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: 0.218743, y: 0.55407387, z: -0.0016887505}
+      scale: {x: 0.299, y: 0.43699998, z: 0.176}
+      rot: {x: 0, y: 0, z: -72}
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: 0.13519059, y: 0.29692608, z: -0.0016887505}
+      scale: {x: 0.299, y: 0.43699998, z: 0.176}
+      rot: {x: 0, y: 0, z: -144}
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: -0.13519058, y: 0.29692608, z: -0.0016887505}
+      scale: {x: 0.299, y: 0.43699998, z: 0.176}
+      rot: {x: 0, y: 0, z: -216}
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: -0.21874298, y: 0.5540739, z: -0.0016887505}
+      scale: {x: 0.299, y: 0.43699998, z: 0.176}
+      rot: {x: 0, y: 0, z: -288}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.48299998, z: -0.0016887505}
+      scale: {x: 0.414, y: 0.414, z: 0.242}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.48299998, z: 0.05331125}
+      scale: {x: 0.299, y: 0.299, z: 0.154}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.828, z: 0.02031125}
+      scale: {x: 0.069, y: 0.069, z: 0.154}
+      rot: {x: 0, y: 0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0.3281145, y: 0.5896108, z: 0.02031125}
+      scale: {x: 0.069, y: 0.069, z: 0.154}
+      rot: {x: 0, y: 0, z: -72}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0.2027859, y: 0.20388909, z: 0.02031125}
+      scale: {x: 0.069, y: 0.069, z: 0.154}
+      rot: {x: 0, y: 0, z: -144}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: -0.20278586, y: 0.20388909, z: 0.02031125}
+      scale: {x: 0.069, y: 0.069, z: 0.154}
+      rot: {x: 0, y: 0, z: -216}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: -0.32811448, y: 0.58961093, z: 0.02031125}
+      scale: {x: 0.069, y: 0.069, z: 0.154}
+      rot: {x: 0, y: 0, z: -288}
+    - shape: 0
+      group: 0
+      slot: 3
+      pos: {x: 0.099360004, y: 0.54924, z: 0.11205125}
+      scale: {x: 0.09775, y: 0.1124125, z: 0.065450005}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 3
+      pos: {x: -0.099360004, y: 0.54924, z: 0.11205125}
+      scale: {x: 0.09775, y: 0.1124125, z: 0.065450005}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.11661, y: 0.5736775, z: 0.14010125}
+      scale: {x: 0.0342125, y: 0.0342125, z: 0.032725003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.11661, y: 0.5736775, z: 0.14010125}
+      scale: {x: 0.0342125, y: 0.0342125, z: 0.032725003}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0.13662, y: 0.47885996, z: 0.07641125}
+      scale: {x: 0.0828, y: 0.05382, z: 0.039600004}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: -0.13662, y: 0.47885996, z: 0.07641125}
+      scale: {x: 0.0828, y: 0.05382, z: 0.039600004}
+      rot: {x: 0, y: -0, z: -0}
+    pivots: []
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Stellamare
+    blurb: A sea star queen with a tiara of light and a string of pearls.
+    parts:
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.7843, z: -0.0035463758}
+      scale: {x: 0.3289, y: 0.4807, z: 0.1936}
+      rot: {x: 0, y: 0, z: -0}
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: 0.2406173, y: 0.6094813, z: -0.0035463758}
+      scale: {x: 0.3289, y: 0.4807, z: 0.1936}
+      rot: {x: 0, y: 0, z: -72}
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: 0.14870965, y: 0.3266187, z: -0.0035463758}
+      scale: {x: 0.3289, y: 0.4807, z: 0.1936}
+      rot: {x: 0, y: 0, z: -144}
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: -0.14870964, y: 0.3266187, z: -0.0035463758}
+      scale: {x: 0.3289, y: 0.4807, z: 0.1936}
+      rot: {x: 0, y: 0, z: -216}
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: -0.24061729, y: 0.60948133, z: -0.0035463758}
+      scale: {x: 0.3289, y: 0.4807, z: 0.1936}
+      rot: {x: 0, y: 0, z: -288}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.5313, z: -0.0035463758}
+      scale: {x: 0.45540002, y: 0.45540002, z: 0.2662}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.5313, z: 0.056953628}
+      scale: {x: 0.3289, y: 0.3289, z: 0.1694}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.91080004, z: 0.020653624}
+      scale: {x: 0.0759, y: 0.0759, z: 0.1694}
+      rot: {x: 0, y: 0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0.36092597, y: 0.6485719, z: 0.020653624}
+      scale: {x: 0.0759, y: 0.0759, z: 0.1694}
+      rot: {x: 0, y: 0, z: -72}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0.22306448, y: 0.224278, z: 0.020653624}
+      scale: {x: 0.0759, y: 0.0759, z: 0.1694}
+      rot: {x: 0, y: 0, z: -144}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: -0.22306445, y: 0.224278, z: 0.020653624}
+      scale: {x: 0.0759, y: 0.0759, z: 0.1694}
+      rot: {x: 0, y: 0, z: -216}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: -0.36092594, y: 0.648572, z: 0.020653624}
+      scale: {x: 0.0759, y: 0.0759, z: 0.1694}
+      rot: {x: 0, y: 0, z: -288}
+    - shape: 0
+      group: 0
+      slot: 3
+      pos: {x: 0.10929601, y: 0.604164, z: 0.12156763}
+      scale: {x: 0.107525006, y: 0.12365375, z: 0.071995005}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 3
+      pos: {x: -0.10929601, y: 0.604164, z: 0.12156763}
+      scale: {x: 0.107525006, y: 0.12365375, z: 0.071995005}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.128271, y: 0.6310452, z: 0.15242264}
+      scale: {x: 0.03763375, y: 0.03763375, z: 0.035997503}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.128271, y: 0.6310452, z: 0.15242264}
+      scale: {x: 0.03763375, y: 0.03763375, z: 0.035997503}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0.15028201, y: 0.526746, z: 0.08236362}
+      scale: {x: 0.09108, y: 0.059202, z: 0.043560006}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: -0.15028201, y: 0.526746, z: 0.08236362}
+      scale: {x: 0.09108, y: 0.059202, z: 0.043560006}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 0
+      slot: 6
+      pos: {x: -0.06928203, y: 1.08465, z: 0.02}
+      scale: {x: 0.04, y: 0.12, z: 0.04}
+      rot: {x: 0, y: 0, z: 60}
+    - shape: 3
+      group: 0
+      slot: 6
+      pos: {x: -0.04, y: 1.1139321, z: 0.02}
+      scale: {x: 0.04, y: 0.12, z: 0.04}
+      rot: {x: 0, y: 0, z: 30}
+    - shape: 3
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 1.1246501, z: 0.02}
+      scale: {x: 0.04, y: 0.12, z: 0.04}
+      rot: {x: 0, y: 0, z: -0}
+    - shape: 3
+      group: 0
+      slot: 6
+      pos: {x: 0.04, y: 1.1139321, z: 0.02}
+      scale: {x: 0.04, y: 0.12, z: 0.04}
+      rot: {x: 0, y: 0, z: -30}
+    - shape: 3
+      group: 0
+      slot: 6
+      pos: {x: 0.06928203, y: 1.08465, z: 0.02}
+      scale: {x: 0.04, y: 0.12, z: 0.04}
+      rot: {x: 0, y: 0, z: -60}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.15237924, y: 0.5554594, z: 0.22973205}
+      scale: {x: 0.07, y: 0.07, z: 0.07}
+      rot: {x: 0, y: 36, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.24655482, y: 0.5554594, z: -0.0601105}
+      scale: {x: 0.07, y: 0.07, z: 0.07}
+      rot: {x: 0, y: 108, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.000000022663748, y: 0.5554594, z: -0.23924308}
+      scale: {x: 0.07, y: 0.07, z: 0.07}
+      rot: {x: 0, y: 180, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.2465548, y: 0.5554594, z: -0.060110543}
+      scale: {x: 0.07, y: 0.07, z: 0.07}
+      rot: {x: 0, y: 252, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.15237927, y: 0.5554594, z: 0.22973204}
+      scale: {x: 0.07, y: 0.07, z: 0.07}
+      rot: {x: 0, y: 324, z: 0}
+    pivots: []
+    element2: 0
+    skill: tidal_starburst
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

@@ -67,6 +67,7 @@ namespace Wildbond
             bool wasOut = gm.Party.Companion != null && gm.Party.Companion.Data == d;
             if (wasOut) gm.Party.Recall(false);
             d.stage++;
+            d.ResetLearnset();   // an Exalted form may bring an element and a skill
             if (d.hp >= 0f) d.hp = d.MaxHp * hpFrac;
             var worker = BaseManager.I != null ? BaseManager.I.ActorFor(d) : null;
             if (worker != null) BaseManager.I.RespawnWorker(d);

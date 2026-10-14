@@ -64,11 +64,13 @@ namespace Wildbond
             if (cache.TryGetValue(key, out var meshes)) return meshes;
             var sp = d.Species;
             var pal = d.Palette;
-            var parts = new List<BodyPart>(sp.parts);
+            var body = d.Parts;   // its evolved form's body, or the kind's
+            var pivots = d.Pivots;
+            var parts = new List<BodyPart>(body);
 
             // ---- variant geometry ----
             float topY = 0f, headTop = 0f; Vector3 bodyC = Vector3.zero; int bodyN = 0;
-            foreach (var p in sp.parts)
+            foreach (var p in body)
             {
                 float t = p.pos.y + p.scale.y * 0.5f;
                 if (p.group == BodyGroup.Body) { topY = Mathf.Max(topY, t); bodyC += p.pos; bodyN++; }
@@ -83,7 +85,7 @@ namespace Wildbond
             }
             if (d.mutation == Mutation.Twintail)
             {
-                foreach (var p in sp.parts)
+                foreach (var p in body)
                 {
                     if (p.group != BodyGroup.Tail) continue;
                     var a = p; a.pos.x += 0.09f; a.rot.y += 18f; parts.Add(a);
@@ -94,7 +96,7 @@ namespace Wildbond
                 float y = headTop > 0 ? headTop : topY;
                 var hg = headTop > 0 ? BodyGroup.Head : BodyGroup.Body;
                 Vector3 hc = Vector3.zero; int hn = 0;
-                foreach (var p in sp.parts) if (p.group == hg) { hc += p.pos; hn++; }
+                foreach (var p in body) if (p.group == hg) { hc += p.pos; hn++; }
                 if (hn > 0) hc /= hn;
                 var gold = ColorSlot.Accent;
                 parts.Add(new BodyPart(PartShape.Cone, hg, gold, new Vector3(hc.x, y + 0.02f, hc.z), new Vector3(0.08f, 0.16f, 0.08f)));
@@ -107,7 +109,7 @@ namespace Wildbond
             {
                 mb.Clear();
                 var grp = (BodyGroup)g;
-                Vector3 pivot = PivotOf(sp.pivots, grp);
+                Vector3 pivot = PivotOf(pivots, grp);
                 foreach (var p in parts)
                 {
                     if (p.group != grp) continue;
@@ -144,7 +146,7 @@ namespace Wildbond
                 var grp = (BodyGroup)g;
                 var go = new GameObject(grp.ToString());
                 go.transform.SetParent(model, false);
-                go.transform.localPosition = PivotOf(sp.pivots, grp);
+                go.transform.localPosition = PivotOf(d.Pivots, grp);
                 go.AddComponent<MeshFilter>().sharedMesh = meshes[g];
                 var mr = go.AddComponent<MeshRenderer>();
                 mr.sharedMaterial = mat;
@@ -172,12 +174,12 @@ namespace Wildbond
         static bool Round(PartShape s) => s == PartShape.Sphere || s == PartShape.Capsule || s == PartShape.Rock;
 
         /// <summary>The biggest rounded part of a group: what a marking is painted on (-1 = the kind has none).</summary>
-        static int MarkHost(SpeciesDef sp, BodyGroup g)
+        static int MarkHost(BodyPart[] parts, BodyGroup g)
         {
             int best = -1; float vol = 0f;
-            for (int i = 0; i < sp.parts.Length; i++)
+            for (int i = 0; i < parts.Length; i++)
             {
-                var p = sp.parts[i];
+                var p = parts[i];
                 if (p.group != g || !Round(p.shape)) continue;
                 float v = p.scale.x * p.scale.y * p.scale.z;
                 if (v > vol) { vol = v; best = i; }
@@ -189,7 +191,7 @@ namespace Wildbond
         public static bool CanMark(SpeciesDef sp, int mark)
         {
             if (sp == null || sp.parts == null || mark <= 0 || sp.rarity == Rarity.Legendary || sp.bossOnly) return false;
-            return MarkHost(sp, mark == 4 ? BodyGroup.Head : BodyGroup.Body) >= 0;
+            return MarkHost(sp.parts, mark == 4 ? BodyGroup.Head : BodyGroup.Body) >= 0;
         }
 
         /// <summary>
@@ -203,14 +205,15 @@ namespace Wildbond
             string key = d.ModelKey + "|m" + mark;
             if (marks.TryGetValue(key, out var mesh)) return mesh;
             var sp = d.Species;
-            int host = MarkHost(sp, grp);
+            var body = d.Parts;
+            int host = MarkHost(body, grp);
             if (host < 0) { marks[key] = null; return null; }
-            var p = sp.parts[host];
+            var p = body[host];
             Color baseCol = d.Palette.Get(p.slot);
             Color col = mark == 1 ? (Color)Darker(baseCol, 0.5f)
                       : mark == 3 ? (Color)Darker(Color.Lerp(baseCol, d.Palette.secondary, 0.5f), 0.6f)
                       : Color.Lerp(baseCol, Color.white, mark == 4 ? 0.9f : 0.72f);
-            Vector3 r = p.scale * 0.5f, centre = p.pos - PivotOf(sp.pivots, grp);
+            Vector3 r = p.scale * 0.5f, centre = p.pos - PivotOf(d.Pivots, grp);
             Quaternion R = Quaternion.Euler(p.rot), Rinv = Quaternion.Inverse(R);
             float unit = Mathf.Min(r.x, Mathf.Min(r.y, r.z));
             var mk = new MeshBuilder();
@@ -253,6 +256,9 @@ namespace Wildbond
             marks[key] = mesh;
             return mesh;
         }
+
+        /// <summary>Dev: forget every cached kin model (after changing a kind's body in play). Live models keep their meshes until rebuilt.</summary>
+        public static void ClearCache() { cache.Clear(); marks.Clear(); }
 
         /// <summary>Forgets a custom model's meshes (the character creator makes a new one for every change).</summary>
         public static void DropCustom(string key)
