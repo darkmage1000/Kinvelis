@@ -316,6 +316,10 @@ html: `
 <li>The Hearthstone's upgrade, AUTO-ASSIGN and the job list: at the Hearthstone.</li>
 </ul>
 
+<h2 id="house">Your house</h2>
+<p>Build a home inside the camp ring, a 3 m square at a time: <b>BUILD &gt; HOUSE</b>. Lay <b>floors</b> first (they sit level even on a slope), then <b>walls</b>, a <b>doorway</b> and <b>windows</b> along their edges - stand facing the edge you want, and ROTATE steps round the square's four sides. Put <b>roofs</b> over the floors (two sloped roofs back to back make a ridge). Furniture goes on floors: a bed, table, chair, lamp, rug, bookshelf and a wardrobe where you can change your look. Doors open by themselves when someone walks up, and when you are inside, the roof and the walls in the way fade so you can see in. <b>REMOVE A PIECE</b> gives half its materials back.</p>
+<p><b>Sleeping:</b> from evening on, a bed with a roof over it lets you <b>SLEEP</b>. The night passes in a moment: you wake at dawn fully healed and <b>well rested</b> (+10% XP for ten minutes), a little hungry, and the camp has done a night's work and sleep while you were out.</p>
+
 <h2 id="levels">Structure levels</h2>
 <p>Workshops and producers (the Workbench, Campfire, Smelter, Crop Plots, Lumber Mill and the rest) can be upgraded twice, standing at them: <b>MANAGE &gt; UPGRADE</b>. Each level makes work there 25% faster, adds a worker place and a bigger output shelf, and puts a pennant on a post beside it. Level 2 costs the structure's own materials again plus 3 ingots; level 3 twice its materials, 6 ingots and 3 Rime Crystal.</p>
 
