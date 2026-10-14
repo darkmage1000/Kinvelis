@@ -86,6 +86,23 @@ namespace Wildbond
             return aim;
         }
 
+        /// <summary>A house wall, stair side or railing between a and b for a walker of radius r on the ground (KinNav).</summary>
+        public bool WallBetween(Vector3 a, Vector3 b, float r) => segs.Count > 0 && Near(a, b) && !Clear(a, b, r, a.y, 0);
+
+        /// <summary>Every wall, stair side and railing segment in a rectangle that stands in the way at height y, as (ax, az, bx, bz).</summary>
+        public void SegsIn(float x0, float z0, float x1, float z1, float y, List<Vector4> into)
+        {
+            into.Clear();
+            if (!Near(new Vector3(x0, 0f, z0), new Vector3(x1, 0f, z1))) return;
+            foreach (var list in segs.Values)
+                foreach (var s in list)
+                {
+                    if (y < s.lo || y > s.hi) continue;
+                    if (Mathf.Max(s.a.x, s.b.x) < x0 || Mathf.Min(s.a.x, s.b.x) > x1 || Mathf.Max(s.a.y, s.b.y) < z0 || Mathf.Min(s.a.y, s.b.y) > z1) continue;
+                    into.Add(new Vector4(s.a.x, s.a.y, s.b.x, s.b.y));
+                }
+        }
+
         /// <summary>The walker is in the square the path starts from (it hasn't reached the first step yet).</summary>
         bool Leads(Route rt, int here) => rt.nodes.Count > 0 && Adjacent(here, rt.nodes[0]);
         static bool Adjacent(int a, int b)

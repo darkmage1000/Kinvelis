@@ -124,6 +124,22 @@ namespace Wildbond
             return found;
         }
 
+        /// <summary>Every round obstacle (living nodes, obstacles in the way at height y) within radius of center, as (x, radius, z) (KinNav stamps them).</summary>
+        public static void CirclesIn(Vector3 center, float radius, float y, List<Vector3> into)
+        {
+            into.Clear();
+            var cm = ChunkManager.I;
+            if (cm != null)
+            {
+                nodeBuf.Clear();
+                cm.Nodes.Query(center, radius + 3f, nodeBuf);
+                foreach (var n in nodeBuf) if (n.alive && n.Radius > 0f) into.Add(new Vector3(n.pos.x, n.Radius, n.pos.z));
+            }
+            obsBuf.Clear();
+            Obstacles.Query(center, radius + 6f, obsBuf);
+            foreach (var o in obsBuf) if (y >= o.yLo && y <= o.yHi) into.Add(new Vector3(o.pos.x, o.radius, o.pos.z));
+        }
+
         /// <summary>The first round obstacle a circle at p of radius r overlaps (at p's height), if any.</summary>
         public static bool Overlapping(Vector3 p, float r, out Vector3 center, out float radius)
         {

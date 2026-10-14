@@ -547,10 +547,20 @@ namespace Wildbond
             }
             else if (moving)
             {
-                // round house walls, through doorways and up stairs (Housing.Route): head for the next waypoint
-                Vector3 aim = full && Housing.I != null ? Housing.I.Steer(route ?? (route = new Housing.Route()), pos, moveTarget, BodyRadius * 0.8f) : moveTarget;
+                Vector3 aim = moveTarget;
                 Vector3 left = moveTarget - pos; left.y = 0f;
-                if (full && !ignoreObstacles) aim = AvoidObstacles(pos, aim, left.magnitude, dt);   // round structures, trees and rocks
+                if (full && !ignoreObstacles)
+                {
+                    // up and down storeys and stairs (Housing.Route); wild kin also take the house's way round its walls
+                    var house = Housing.I;
+                    bool upstairs = house != null && house.LevelAt(pos) > 0;
+                    if (house != null && (upstairs || house.LevelAt(moveTarget) > 0 || Mode == CreatureMode.Wild))
+                        aim = house.Steer(route ?? (route = new Housing.Route()), pos, moveTarget, BodyRadius * 0.8f);
+                    // on the ground, camp kin and your companion follow a real path round everything (KinNav); anyone
+                    // without one (wild kin, a walker waiting for a search, no way found) steers round what is in front
+                    bool pathed = !upstairs && Mode != CreatureMode.Wild && KinNav.Steer(nav ?? (nav = new KinNav.Route()), pos, aim, BodyRadius * 0.8f, out aim);
+                    if (!pathed && !upstairs) aim = AvoidObstacles(pos, aim, left.magnitude, dt);
+                }
                 Vector3 to = aim - pos; to.y = 0f;
                 float d = to.magnitude;
                 if (d > 0.15f) desired = to / d * Mathf.Min(moveSpeed, left.magnitude / Mathf.Max(dt, 0.001f));
@@ -593,6 +603,7 @@ namespace Wildbond
 
         Vector3 faceTarget;
         Housing.Route route;
+        KinNav.Route nav;
 
         // ---- steering round round things (structures, trees, rocks, furniture), and stepping aside when stuck
         Vector3 avoidAim, avoidC, stuckFrom, detour;
