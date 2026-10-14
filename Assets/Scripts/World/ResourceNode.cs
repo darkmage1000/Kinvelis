@@ -90,6 +90,90 @@ namespace Wildbond
             return true;
         }
 
+        /// <summary>
+        /// The first round obstacle (structure, landmark piece, tree, rock, furniture) a walker of radius r would bump into
+        /// going straight from a to b. One it is already touching counts if it is in front; one its goal is right beside
+        /// (it is walking up to it) doesn't count. Used by CreatureActor to steer round things.
+        /// </summary>
+        public static bool FirstBlocker(Vector3 a, Vector3 b, float r, Vector3 goal, out Vector3 center, out float radius)
+        {
+            center = default; radius = 0f;
+            if (Caves.InZone(a.x, a.z)) return false;
+            Vector3 mid = (a + b) * 0.5f;
+            float half = new Vector2(b.x - a.x, b.z - a.z).magnitude * 0.5f, best = float.MaxValue;
+            bool found = false;
+            var cm = ChunkManager.I;
+            if (cm != null)
+            {
+                nodeBuf.Clear();
+                cm.Nodes.Query(mid, half + 3f, nodeBuf);
+                for (int i = 0; i < nodeBuf.Count; i++)
+                {
+                    var n = nodeBuf[i];
+                    if (n.alive && n.Radius > 0f) Consider(a, b, r, goal, n.pos, n.Radius, ref best, ref center, ref radius, ref found);
+                }
+            }
+            obsBuf.Clear();
+            Obstacles.Query(mid, half + 6f, obsBuf);
+            for (int i = 0; i < obsBuf.Count; i++)
+            {
+                var o = obsBuf[i];
+                if (a.y < o.yLo || a.y > o.yHi) continue;
+                Consider(a, b, r, goal, o.pos, o.radius, ref best, ref center, ref radius, ref found);
+            }
+            return found;
+        }
+
+        /// <summary>The first round obstacle a circle at p of radius r overlaps (at p's height), if any.</summary>
+        public static bool Overlapping(Vector3 p, float r, out Vector3 center, out float radius)
+        {
+            center = default; radius = 0f;
+            var cm = ChunkManager.I;
+            if (cm != null)
+            {
+                nodeBuf.Clear();
+                cm.Nodes.Query(p, r + 3f, nodeBuf);
+                for (int i = 0; i < nodeBuf.Count; i++)
+                {
+                    var n = nodeBuf[i];
+                    if (!n.alive || n.Radius <= 0f) continue;
+                    float dx = p.x - n.pos.x, dz = p.z - n.pos.z, m = r + n.Radius;
+                    if (dx * dx + dz * dz < m * m) { center = n.pos; radius = n.Radius; return true; }
+                }
+            }
+            obsBuf.Clear();
+            Obstacles.Query(p, r + 6f, obsBuf);
+            for (int i = 0; i < obsBuf.Count; i++)
+            {
+                var o = obsBuf[i];
+                if (p.y < o.yLo || p.y > o.yHi) continue;
+                float dx = p.x - o.pos.x, dz = p.z - o.pos.z, m = r + o.radius;
+                if (dx * dx + dz * dz < m * m) { center = o.pos; radius = o.radius; return true; }
+            }
+            return false;
+        }
+
+        static void Consider(Vector3 a, Vector3 b, float r, Vector3 goal, Vector3 c, float cr, ref float best, ref Vector3 center, ref float radius, ref bool found)
+        {
+            float rr = r + cr;
+            float ax = a.x - c.x, az = a.z - c.z;
+            float gx = goal.x - c.x, gz = goal.z - c.z, near = rr + 0.6f;
+            if (gx * gx + gz * gz < near * near) return;                                 // walking up to it
+            float dx = b.x - a.x, dz = b.z - a.z, len2 = dx * dx + dz * dz;
+            if (len2 < 1e-4f) return;
+            if (ax * ax + az * az < rr * rr)
+            {
+                // already touching it: in the way if it is in front
+                float fwd = -(ax * dx + az * dz) / (Mathf.Sqrt(len2) * Mathf.Max(1e-4f, Mathf.Sqrt(ax * ax + az * az)));
+                if (fwd > 0.3f && 0f < best) { best = 0f; center = c; radius = cr; found = true; }
+                return;
+            }
+            float t = Mathf.Clamp01(-(ax * dx + az * dz) / len2);
+            float px = ax + dx * t, pz = az + dz * t;
+            if (px * px + pz * pz >= rr * rr || t >= best) return;
+            best = t; center = c; radius = cr; found = true;
+        }
+
         /// <summary>True if a circle overlaps any obstacle (used by build placement).</summary>
         public static bool Overlaps(Vector3 pos, float r, bool includeNodes)
         {

@@ -13,9 +13,10 @@ namespace Wildbond
     /// The best nest also makes its sleepers work faster (`BuildingDef.bedBonus`, Grand Nest +10%, `BedBonusMul`).
     /// Big kin get those places because they need them; any left over go to the best workers in camp.
     ///
-    /// House beds (2026-10-14): your Bed and Kin Baskets in the house (`Housing.KinBeds`) are beds too, one kin each,
-    /// small kin only (they have to fit through a doorway), and only if a kin can walk to them from the Hearthstone
-    /// (`Housing.ReachableFromCamp`: stairs for one upstairs). Under a roof a sleeper there is snug: +5% work (`SnugBonus`).
+    /// House beds (2026-10-14): your Bed, Kin Baskets and Big / Grand Kin Beds in the house (`Housing.KinBeds`) are beds
+    /// too, one kin each, taken only by a kin that can walk there from the Hearthstone at its own size
+    /// (`Housing.ReachableFromCamp(piece, KinRadius)`: through a doorway wide enough, up stairs for one upstairs).
+    /// Under a roof a sleeper there is snug: +5% work (`SnugBonus`).
     /// </summary>
     public partial class BaseManager
     {
@@ -29,6 +30,10 @@ namespace Wildbond
         public static float BedTop(BuildingDef d) => d.bedTop > 0f ? d.bedTop : 0.37f;
         /// <summary>A kin's size as far as beds go.</summary>
         public static float SleepSize(CreatureData d) => d.Species.size * d.SizeScale;
+        /// <summary>A camp kin's collision radius (what has to fit through doorways), as CreatureActor works it out.</summary>
+        public static float KinRadius(CreatureData d) => 0.36f * SleepSize(d) * Mathf.Clamp(WorldRules.Current.kinSize, 0.2f, 4f);
+        /// <summary>Can this kin get to this bed (a house bed: through doors wide enough, up stairs if need be)?</summary>
+        static bool CanReach(BedSlot s, CreatureData d) => s.hb == null || (Housing.I != null && Housing.I.ReachableFromCamp(s.hb, KinRadius(d)));
         public static string BedNeeded(CreatureData d) { float s = SleepSize(d); return s <= SmallBed ? "Kin Nest" : s <= LargeBed ? "Large Nest" : "Grand Nest"; }
         static string BedTakes(BuildingDef d) { float s = BedSize(d); return s <= SmallBed ? "small kin" : s <= LargeBed ? "small and medium kin" : "kin of any size"; }
 
@@ -59,7 +64,7 @@ namespace Wildbond
             if (house != null)
                 foreach (var pc in house.KinBeds)
                 {
-                    if (!house.ReachableFromCamp(pc)) continue;   // upstairs with no stairs, or walled in
+                    if (!house.ReachableFromCamp(pc, 0.3f)) continue;   // upstairs with no stairs, or walled in (bigger kin are checked one by one below)
                     planSlots.Add(new BedSlot { hb = pc, size = pc.def.bedSize, bonus = house.Indoors(pc.pos) ? SnugBonus : 0f });
                     planTaken.Add(false);
                 }
@@ -75,7 +80,7 @@ namespace Wildbond
                 float need = SleepSize(d); int best = -1;
                 for (int i = 0; i < planSlots.Count; i++)
                 {
-                    if (planTaken[i] || planSlots[i].size < need) continue;
+                    if (planTaken[i] || planSlots[i].size < need || !CanReach(planSlots[i], d)) continue;
                     if (best < 0 || planSlots[i].size < planSlots[best].size) best = i;
                 }
                 if (best < 0) { bedless.Add(d); continue; }
@@ -89,7 +94,7 @@ namespace Wildbond
                 CreatureData pick = null; int pickWork = -1;
                 foreach (var d in planKin)
                 {
-                    if (SleepSize(d) > planSlots[i].size) continue;
+                    if (SleepSize(d) > planSlots[i].size || !CanReach(planSlots[i], d)) continue;
                     if (bedOf.TryGetValue(d.uid, out var cur) && cur.bonus >= planSlots[i].bonus) continue;
                     int w = BestWork(d) * 1000 + d.level;
                     if (w > pickWork) { pickWork = w; pick = d; }
@@ -169,7 +174,7 @@ namespace Wildbond
                 // a bed or basket in the house: in the middle of it, at its storey
                 pos = s.hb.pos;
                 lift = Housing.SleepTop(s.hb.def);
-                pad = 0.45f;
+                pad = Mathf.Max(0.45f, s.hb.def.radius);   // the whole bed: a big kin walks onto a big bed past its edge
                 return true;
             }
             if (bedOf.TryGetValue(a.Data.uid, out s) && !Gone(s))

@@ -29,6 +29,8 @@ namespace Wildbond
         public Vector3 glowAt; public float glowSize; public Color32 glowCol;
         /// <summary>A camp kin sleeps on it at night (BaseManager.Beds): `bed` is also yours to SLEEP in, `kinBed` is for kin only. `bedSize` = the biggest kin it takes.</summary>
         public bool kinBed; public float bedSize;
+        /// <summary>A doorway's opening (0 = the ordinary 1.2 m door): wider ones let bigger kin in. `tall` = it fills two storeys of its edge.</summary>
+        public float gap; public bool tall;
     }
 
     /// <summary>
@@ -49,6 +51,11 @@ namespace Wildbond
     /// round it). The ground floor is still `FloorAt` for everything; walkers that know their height use
     /// `SurfaceAt` (`Ground.HeightNear`), which adds upper floors and stair ramps within `StepUp` of their feet.
     /// Kin find their way round walls, through doorways and up stairs with `Steer` (Housing.Route.cs).
+    ///
+    /// Room for big kin (2026-10-14): three door sizes (`gap`: Doorway 1.2 m for small kin, Wide Doorway 1.6 m double
+    /// doors for medium, Grand Archway 2.7 m and two storeys tall for large - `MaxRadius`), walls stack on walls with
+    /// no floor beside them (tall halls), a roof sits on the highest wall round its square (`RoofY`), and Big / Grand
+    /// Kin Beds take medium and large sleepers.
     /// </summary>
     public partial class Housing : MonoBehaviour
     {
@@ -65,15 +72,19 @@ namespace Wildbond
         public static readonly List<HousePieceDef> Pieces = new List<HousePieceDef>
         {
             new HousePieceDef { id = "house_floor", name = "Wooden Floor", kind = HouseKind.Floor, cost = C(("wood", 8), ("stone", 4)), desc = "A 3 m square of planks on a stone footing. Everything else stands on floors. Laid over another floor it makes an upper storey (up to three)." },
-            new HousePieceDef { id = "house_wall", name = "Wooden Wall", kind = HouseKind.Wall, cost = C(("wood", 6)), desc = "A plank wall along one edge of a floor." },
+            new HousePieceDef { id = "house_wall", name = "Wooden Wall", kind = HouseKind.Wall, cost = C(("wood", 6)), desc = "A plank wall along one edge of a floor. Facing a wall that is already there puts another on top of it - tall rooms for big kin." },
             new HousePieceDef { id = "house_wall_stone", name = "Stone Wall", kind = HouseKind.Wall, stone = true, cost = C(("stone", 10), ("wood", 2)), desc = "A sturdier-looking wall of fitted stone." },
-            new HousePieceDef { id = "house_door", name = "Doorway", kind = HouseKind.Doorway, cost = C(("wood", 8)), desc = "A wall with a door that swings open as you come near." },
+            new HousePieceDef { id = "house_door", name = "Doorway", kind = HouseKind.Doorway, cost = C(("wood", 8)), desc = "A wall with a door that swings open as you come near. Small kin fit through." },
+            new HousePieceDef { id = "house_door_wide", name = "Wide Doorway", kind = HouseKind.Doorway, gap = 1.6f, cost = C(("wood", 12), ("fiber", 2)), desc = "Double doors almost a storey tall: medium-sized kin fit through." },
+            new HousePieceDef { id = "house_arch_grand", name = "Grand Archway", kind = HouseKind.Doorway, gap = 2.7f, tall = true, cost = C(("wood", 16), ("stone", 16)), desc = "An open arch two storeys tall that fills a whole edge: any kin fits through. Stack walls on walls beside it for a hall big kin can stand up in." },
             new HousePieceDef { id = "house_window", name = "Window Wall", kind = HouseKind.Window, cost = C(("wood", 6), ("fiber", 2)), desc = "A wall with a window in it." },
             new HousePieceDef { id = "house_roof", name = "Flat Roof", kind = HouseKind.Roof, cost = C(("wood", 6), ("fiber", 4)), desc = "A roof over the top floor of one square. A bed needs a roof (or a floor) over it to sleep in." },
             new HousePieceDef { id = "house_roof_slope", name = "Sloped Roof", kind = HouseKind.RoofSlope, cost = C(("wood", 6), ("fiber", 4)), desc = "A roof that slopes one way (ROTATE turns it). Two back to back make a ridge." },
             new HousePieceDef { id = "house_stairs", name = "Wooden Stairs", kind = HouseKind.Stairs, cost = C(("wood", 14), ("stone", 2)), desc = "Stairs up one storey, on a floor; they climb the way you face (ROTATE turns them). Lay floors beside the top for an upstairs. Camp kin use them too." },
             new HousePieceDef { id = "house_bed", name = "Bed", kind = HouseKind.Furniture, bed = true, bedSize = 1.2f, radius = 0.75f, cost = C(("wood", 10), ("fiber", 12), ("pelt", 2)), desc = "SLEEP here from evening on to skip to morning (needs a roof over it). The camp keeps working while you sleep. At night a small camp kin curls up on it too." },
             new HousePieceDef { id = "kin_basket", name = "Kin Basket", kind = HouseKind.Furniture, kinBed = true, bedSize = 1.1f, radius = 0.45f, cost = C(("fiber", 8), ("wood", 3), ("pelt", 1)), desc = "A cushioned basket a small camp kin sleeps in at night. Under a roof it sleeps snug and works 5% faster." },
+            new HousePieceDef { id = "kin_bed_big", name = "Big Kin Bed", kind = HouseKind.Furniture, kinBed = true, bedSize = 1.7f, radius = 0.8f, cost = C(("fiber", 16), ("wood", 6), ("pelt", 3)), desc = "A deep round cushion for a medium-sized camp kin (in through a Wide Doorway). Under a roof: snug, +5% work." },
+            new HousePieceDef { id = "kin_bed_grand", name = "Grand Kin Bed", kind = HouseKind.Furniture, kinBed = true, bedSize = 99f, radius = 1.25f, cost = C(("fiber", 30), ("wood", 12), ("pelt", 6)), desc = "A huge nest of cushions any kin can sleep on - big ones come in through a Grand Archway. Under a roof: snug, +5% work." },
             new HousePieceDef { id = "house_table", name = "Table", kind = HouseKind.Furniture, radius = 0.6f, cost = C(("wood", 6)), desc = "A sturdy table." },
             new HousePieceDef { id = "house_chair", name = "Chair", kind = HouseKind.Furniture, radius = 0.3f, cost = C(("wood", 3)), desc = "A chair." },
             new HousePieceDef { id = "house_lamp", name = "Lamp", kind = HouseKind.Furniture, lamp = true, radius = 0.25f, cost = C(("wood", 2), ("gel", 1)), desc = "A standing lamp that glows.", glowAt = new Vector3(0, 1.48f, 0), glowSize = 0.26f, glowCol = new Color32(255, 235, 160, 0) },
@@ -120,18 +131,26 @@ namespace Wildbond
         /// <summary>Beds and baskets camp kin can sleep on (BaseManager.Beds).</summary>
         public IEnumerable<Piece> KinBeds { get { foreach (var f in furniture) if (f.def.bed || f.def.kinBed) yield return f; } }
         /// <summary>How high a sleeper lies on it.</summary>
-        public static float SleepTop(HousePieceDef d) => d.bed ? 0.5f : 0.2f;
+        public static float SleepTop(HousePieceDef d) => d.bed ? 0.5f : d.bedSize > 2f ? 0.3f : d.bedSize > 1.2f ? 0.25f : 0.2f;
+        /// <summary>A doorway's opening (0 for a wall or window).</summary>
+        public static float GapOf(HousePieceDef d) => d.kind != HouseKind.Doorway ? 0f : d.gap > 0f ? d.gap : DoorGap;
+        /// <summary>The widest walker (its collision radius) that gets through.</summary>
+        public static float MaxRadius(HousePieceDef d) => GapOf(d) * 0.5f - WallT * 0.5f - 0.04f;
+        /// <summary>The top of an edge piece (a Grand Archway is two storeys).</summary>
+        public static float PieceTop(Piece p) => p.Y + (p.def.tall ? LevelH : 0f) + WallH;
 
         public static HousePieceDef Def(string id) { foreach (var p in Pieces) if (p.id == id) return p; return null; }
 
         public class Piece
         {
+            static int counter;
+            public readonly int id = ++counter;
             public HousePieceDef def;
             public int cx, cz, side, rot, level;
             public Vector3 pos;
             public GameObject go;
             public Obstacle obs;
-            public Transform door;
+            public Transform door, door2;
             public float doorOpen;
             public Renderer[] rends;
             public Renderer rail;      // stairs: the railing round the stairwell up top
@@ -214,10 +233,19 @@ namespace Wildbond
         Piece EdgeAt(int cx, int cz, int dir, int level)
         {
             // the edge on side `dir` (0 north, 1 east, 2 south, 3 west) of a square
-            var e = dir == 0 ? edges[0] : dir == 1 ? edges[1] : dir == 2 ? edges[0] : edges[1];
-            int x = dir == 3 ? cx - 1 : cx, z = dir == 2 ? cz - 1 : cz;
-            return e.TryGetValue(LKey(x, z, level), out var p) ? p : null;
+            EdgeOf(cx, cz, dir, out int x, out int z, out int side);
+            return EdgePiece(x, z, side, level);
         }
+        /// <summary>What stands on an edge at a storey: a piece of that storey, or a two-storey archway from the one below.</summary>
+        Piece EdgePiece(int ex, int ez, int side, int level)
+        {
+            if (edges[side].TryGetValue(LKey(ex, ez, level), out var p)) return p;
+            if (level > 0 && edges[side].TryGetValue(LKey(ex, ez, level - 1), out p) && p.def.tall) return p;
+            return null;
+        }
+        bool EdgeTaken(int ex, int ez, int side, int level) => EdgePiece(ex, ez, side, level) != null || pending.Contains($"E{level}:{side}:{ex},{ez}");
+        /// <summary>An edge piece with no floor beside it at its storey: it stands on the wall below (a tall room).</summary>
+        bool Stacked(Piece p) => p.level > 0 && float.IsNegativeInfinity(EdgeBase(p.cx, p.cz, p.side, p.level));
         /// <summary>The edge a direction leads over, as (cx, cz, side) the way walls are keyed.</summary>
         static void EdgeOf(int cx, int cz, int dir, out int ex, out int ez, out int side)
         {
@@ -334,14 +362,24 @@ namespace Wildbond
                     EdgeOf(cx, cz, e, out int ex, out int ez, out int side);
                     s.cx = ex; s.cz = ez; s.side = side;
                     Vector3 mid = side == 0 ? new Vector3((ex + 0.5f) * Cell, 0f, (ez + 1) * Cell) : new Vector3((ex + 1) * Cell, 0f, (ez + 0.5f) * Cell);
-                    float y = EdgeBase(ex, ez, side, lv);
+                    // your storey, or the first one up where this edge is free: a wall facing a wall goes on top of it (tall rooms for big kin)
+                    int L = lv;
+                    while (L <= MaxLevel && EdgeTaken(ex, ez, side, L)) L++;
+                    s.level = Mathf.Min(L, MaxLevel);
+                    float y = EdgeBase(ex, ez, side, s.level);
+                    if (float.IsNegativeInfinity(y) && s.level > 0)
+                    {
+                        var below = EdgePiece(ex, ez, side, s.level - 1);
+                        if (below != null) y = below.Y + LevelH * (s.level - below.level);
+                    }
                     s.pos = new Vector3(mid.x, float.IsNegativeInfinity(y) ? WorldGen.Height(mid.x, mid.z) : y, mid.z);
                     s.q = Quaternion.Euler(0f, side == 0 ? 0f : 90f, 0f);
                     if (s.reason != null) break;
-                    if (float.IsNegativeInfinity(y)) { Fail("Walls go on the edge of a floor"); break; }
-                    if (edges[side].ContainsKey(LKey(ex, ez, lv)) || Pending(def, s)) { Fail("There's a wall here already"); break; }
-                    if (FurnitureNearSegment(mid, side, 0.15f, lv)) { Fail("Furniture is in the way"); break; }
-                    string st = StairEdge(ex, ez, side, lv);
+                    if (L > MaxLevel) { Fail("Walls go three storeys high at most"); break; }
+                    if (float.IsNegativeInfinity(y)) { Fail("Walls go on the edge of a floor, or on top of a wall"); break; }
+                    if (def.tall && (s.level >= MaxLevel || EdgeTaken(ex, ez, side, s.level + 1))) { Fail("No room above for an archway two storeys tall"); break; }
+                    if (s.level == lv && FurnitureNearSegment(mid, side, 0.15f, lv)) { Fail("Furniture is in the way"); break; }
+                    string st = StairEdge(ex, ez, side, s.level);
                     if (st != null) { Fail(st); break; }
                     s.ok = true;
                     break;
@@ -353,7 +391,7 @@ namespace Wildbond
                     int top = TopFloor(cx, cz);
                     s.level = Mathf.Max(0, top);
                     bool hasFloor = FloorOrSite(cx, cz, s.level, out float fy0);
-                    s.pos = new Vector3(c.x, (hasFloor ? fy0 : WorldGen.Height(c.x, c.z)) + WallH, c.z);
+                    s.pos = new Vector3(c.x, hasFloor ? RoofY(cx, cz, s.level, fy0) : WorldGen.Height(c.x, c.z) + WallH, c.z);
                     s.q = Quaternion.Euler(0f, s.rot * 90f, 0f);
                     if (s.reason != null) break;
                     if (!hasFloor) { Fail("Roofs go over a floor"); break; }
@@ -426,6 +464,19 @@ namespace Wildbond
             if (FloorOrSite(cx, cz, level, out float a)) y = a;   // a floor still being built counts: walls can go up beside it
             int nx = side == 1 ? cx + 1 : cx, nz = side == 0 ? cz + 1 : cz;
             if (FloorOrSite(nx, nz, level, out float b)) y = Mathf.Max(y, b);
+            return y;
+        }
+
+        /// <summary>How high a roof sits over a square: on its top floor's walls, or on the highest wall stacked round it (a tall room).</summary>
+        float RoofY(int cx, int cz, int top, float topY)
+        {
+            float y = topY + WallH;
+            for (int k = 0; k < 4; k++)
+                for (int l = top; l <= MaxLevel; l++)
+                {
+                    var p = EdgeAt(cx, cz, k, l);
+                    if (p != null && (p.level == top || p.def.tall || Stacked(p))) y = Mathf.Max(y, PieceTop(p));
+                }
             return y;
         }
 
@@ -524,13 +575,13 @@ namespace Wildbond
                     Vector2 dir = side == 0 ? Vector2.right : Vector2.up;
                     Vector2 m = new Vector2(pc.pos.x, pc.pos.z), a = m - dir * Cell * 0.5f, b = m + dir * Cell * 0.5f;
                     // blocks from a little under its floor (the ground floor: well under, for slopes) to just under the floor above
-                    float lo = pc.Y - (pc.level == 0 ? 2f : 0.6f), hi = pc.Y + WallH - 0.25f;
+                    float lo = pc.Y - (pc.level == 0 ? 2f : 0.6f), hi = PieceTop(pc) - 0.25f;
                     int nx = side == 1 ? pc.cx + 1 : pc.cx, nz = side == 0 ? pc.cz + 1 : pc.cz;
                     foreach (var k in new[] { Key(pc.cx, pc.cz), Key(nx, nz) })
                     {
                         if (pc.def.kind == HouseKind.Doorway)
                         {
-                            float w = (Cell - DoorGap) * 0.5f;
+                            float w = (Cell - GapOf(pc.def)) * 0.5f;
                             Add(k, a, a + dir * w, lo, hi);
                             Add(k, b - dir * w, b, lo, hi);
                         }
@@ -579,7 +630,17 @@ namespace Wildbond
             bd = 1.3f;
             for (int side = 0; side < 2; side++)
                 foreach (var w in edges[side].Values) { if (w.level != lv) continue; float d = Flat(w.pos - t); if (d < bd) { bd = d; best = w; } }
-            if (best != null) return best;
+            if (best != null)
+            {
+                // a stack of walls comes down from the top
+                while (true)
+                {
+                    int up = best.level + (best.def.tall ? 2 : 1);
+                    if (up > MaxLevel || !edges[best.side].TryGetValue(LKey(best.cx, best.cz, up), out var above) || !Stacked(above)) break;
+                    best = above;
+                }
+                return best;
+            }
             int cx = CellOf(t.x), cz = CellOf(t.z);
             var st = StairsAt(cx, cz, lv);
             if (st != null) return st;
@@ -594,6 +655,12 @@ namespace Wildbond
         public string RemoveBlock(Piece pc)
         {
             if (pc == null) return "Nothing here to remove";
+            if (pc.def.kind == HouseKind.Wall || pc.def.kind == HouseKind.Doorway || pc.def.kind == HouseKind.Window)
+            {
+                int up = pc.level + (pc.def.tall ? 2 : 1);
+                if (up <= MaxLevel && edges[pc.side].TryGetValue(LKey(pc.cx, pc.cz, up), out var above) && Stacked(above)) return "Take down the wall on top of it first";
+                return null;
+            }
             if (pc.def.kind != HouseKind.Floor) return null;
             if (floors.ContainsKey(LKey(pc.cx, pc.cz, pc.level + 1))) return "Take down the floor above first";
             if (roofs.TryGetValue(Key(pc.cx, pc.cz), out var rf) && rf.level == pc.level) return "Take the roof off first";
@@ -736,6 +803,7 @@ namespace Wildbond
                             w.doorOpen = Mathf.MoveTowards(w.doorOpen, want, Time.deltaTime * 3f);
                             float e = w.doorOpen * w.doorOpen * (3f - 2f * w.doorOpen);
                             w.door.localRotation = Quaternion.Euler(0f, -100f * e, 0f);
+                            if (w.door2 != null) w.door2.localRotation = Quaternion.Euler(0f, 100f * e, 0f);
                         }
                     }
                 }
@@ -842,14 +910,31 @@ namespace Wildbond
                         WallPosts(mb, half);
                     }
                     break;
+                case HouseKind.Doorway when def.tall:
+                {
+                    // two stone pillars two storeys tall, a great beam with brackets and a carved cap
+                    float H = LevelH + WallH, pw = (h - GapOf(def)) * 0.5f;
+                    for (int s = -1; s <= 1; s += 2)
+                    {
+                        float x = s * (half - pw * 0.5f);
+                        mb.Box(M(new Vector3(x, H * 0.5f, 0), new Vector3(pw, H, WallT + 0.14f)), StoneDark, StoneC);
+                        mb.Box(M(new Vector3(x, 0.2f, 0), new Vector3(pw + 0.14f, 0.4f, WallT + 0.3f)), StoneC);
+                        mb.Box(M(new Vector3(x - s * 0.36f, H - 0.85f, 0), new Vector3(0.14f, 1.0f, 0.16f), 0f, 0f, s * 45f), Post);
+                    }
+                    mb.Box(M(new Vector3(0, H - 0.22f, 0), new Vector3(h + 0.3f, 0.44f, WallT + 0.18f)), Post);
+                    mb.Box(M(new Vector3(0, H + 0.12f, 0), new Vector3(1.3f, 0.26f, WallT + 0.24f)), PlankDark);
+                    mb.Box(M(new Vector3(0, H + 0.36f, 0), new Vector3(0.5f, 0.24f, WallT + 0.2f)), Col("#d8b25a"));
+                    break;
+                }
                 case HouseKind.Doorway:
                 {
-                    float w = (h - DoorGap) * 0.5f;
+                    // the opening (1.2 m, or 1.6 m double doors almost a storey tall), plank wall either side, a lintel over it
+                    float gp = GapOf(def), w = (h - gp) * 0.5f, top = gp > 1.3f ? 2.6f : 2.1f;
                     for (int s = -1; s <= 1; s += 2)
                         for (int row = 0; row < 6; row++)
                             mb.Box(M(new Vector3(s * (half - w * 0.5f), 0.25f + row * 0.5f, 0), new Vector3(w, 0.48f, WallT)), row % 2 == 0 ? Plank : PlankLight);
-                    mb.Box(M(new Vector3(0, 2.55f, 0), new Vector3(DoorGap, 0.9f, WallT)), PlankDark);
-                    mb.Box(M(new Vector3(0, 2.12f, 0), new Vector3(DoorGap + 0.1f, 0.1f, WallT + 0.06f)), Post);
+                    mb.Box(M(new Vector3(0, (top + WallH) * 0.5f, 0), new Vector3(gp, WallH - top, WallT)), PlankDark);
+                    mb.Box(M(new Vector3(0, top + 0.02f, 0), new Vector3(gp + 0.1f, 0.1f, WallT + 0.06f)), Post);
                     WallPosts(mb, half);
                     break;
                 }
@@ -1123,6 +1208,19 @@ namespace Wildbond
                         mb.Sphere(M(new Vector3(x, 0.32f, Mathf.Clamp(z, -0.8f, 0.8f)), Vector3.one * 0.26f), bc, 6, 4);
                     }
                     break;
+                case "kin_bed_big":
+                case "kin_bed_grand":
+                {
+                    float r = d.id == "kin_bed_grand" ? 1.2f : 0.78f;
+                    mb.Cylinder(M(new Vector3(0, 0.12f, 0), new Vector3(r * 2f, 0.24f, r * 2f)), PlankDark, Plank, 14, 1f, true);
+                    mb.Dome(M(new Vector3(0, 0.22f, 0), new Vector3(r * 1.8f, r * 0.22f, r * 1.8f)), Col("#7a8ad8"), 14, 4);
+                    for (int k = 0; k < 6; k++)   // a ring of bolsters
+                    {
+                        float a = k / 6f * Mathf.PI * 2f;
+                        mb.Sphere(M(new Vector3(Mathf.Cos(a) * r * 0.86f, 0.3f, Mathf.Sin(a) * r * 0.86f), new Vector3(r * 0.5f, 0.22f, r * 0.5f)), k % 2 == 0 ? Col("#e8c86a") : Col("#d86a7a"), 8, 4);
+                    }
+                    break;
+                }
                 case "kin_basket":
                     mb.Cylinder(M(new Vector3(0, 0.13f, 0), new Vector3(0.95f, 0.26f, 0.75f)), Col("#b08850"), Col("#c8a060"), 12, 1f, true);
                     mb.Cylinder(M(new Vector3(0, 0.27f, 0), new Vector3(1.0f, 0.06f, 0.8f)), Col("#8a6438"), 12, 1f, true);
@@ -1140,7 +1238,25 @@ namespace Wildbond
             }
         }
 
-        static Mesh doorMesh, railMesh;
+        static Mesh railMesh;
+        static readonly Dictionary<string, Mesh> leafMeshes = new Dictionary<string, Mesh>();
+
+        /// <summary>A plank door leaf hinged at x 0, reaching to x = width.</summary>
+        static Mesh DoorLeaf(float width, float height)
+        {
+            string key = $"{width:0.00}x{height:0.00}";
+            if (leafMeshes.TryGetValue(key, out var m)) return m;
+            var mb = new MeshBuilder();
+            int n = Mathf.Max(2, Mathf.RoundToInt(width / 0.29f));
+            float pw = width / n;
+            for (int i = 0; i < n; i++) mb.Box(M(new Vector3((i + 0.5f) * pw, height * 0.5f, 0), new Vector3(pw - 0.01f, height, 0.07f)), i % 2 == 0 ? PlankDark : Plank);
+            mb.Box(M(new Vector3(width * 0.5f, height * 0.24f, 0.02f), new Vector3(width, 0.1f, 0.08f)), Post);
+            mb.Box(M(new Vector3(width * 0.5f, height * 0.76f, 0.02f), new Vector3(width, 0.1f, 0.08f)), Post);
+            mb.Sphere(M(new Vector3(width - 0.16f, height * 0.5f, 0.07f), Vector3.one * 0.08f), Col("#d8b25a"), 6, 4);
+            m = mb.ToMesh("house_door_leaf_" + key);
+            leafMeshes[key] = m;
+            return m;
+        }
         static readonly Dictionary<string, Mesh> glowMeshes = new Dictionary<string, Mesh>();
 
         void Build(Piece pc, float depth)
@@ -1153,24 +1269,25 @@ namespace Wildbond
             mr.sharedMaterial = RenderAssets.Building;
             mr.shadowCastingMode = pc.def.kind == HouseKind.Floor || pc.def.id == "house_rug" ? ShadowCastingMode.Off : ShadowCastingMode.On;
             var rends = new List<Renderer> { mr };
-            if (pc.def.kind == HouseKind.Doorway)
+            if (pc.def.kind == HouseKind.Doorway && !pc.def.tall)
             {
-                if (doorMesh == null)
+                // one door, or a pair for a wide doorway (the second is a mirror image hinged on the other side)
+                float gp = GapOf(pc.def);
+                bool pair = gp > 1.3f;
+                var leaf = DoorLeaf(pair ? gp * 0.5f : gp, pair ? 2.55f : 2.1f);
+                Transform Hinge(float x, bool mirror)
                 {
-                    var mb = new MeshBuilder();
-                    for (int i = 0; i < 4; i++) mb.Box(M(new Vector3(0.15f + i * 0.29f, 1.05f, 0), new Vector3(0.28f, 2.1f, 0.07f)), i % 2 == 0 ? PlankDark : Plank);
-                    mb.Box(M(new Vector3(0.58f, 0.5f, 0.02f), new Vector3(1.16f, 0.1f, 0.08f)), Post);
-                    mb.Box(M(new Vector3(0.58f, 1.6f, 0.02f), new Vector3(1.16f, 0.1f, 0.08f)), Post);
-                    mb.Sphere(M(new Vector3(1.0f, 1.05f, 0.07f), Vector3.one * 0.08f), Col("#d8b25a"), 6, 4);
-                    doorMesh = mb.ToMesh("house_door_leaf");
+                    var t = new GameObject("Door").transform;
+                    t.SetParent(go.transform, false);
+                    t.localPosition = new Vector3(x, 0f, 0f);
+                    if (mirror) t.localScale = new Vector3(-1f, 1f, 1f);
+                    t.gameObject.AddComponent<MeshFilter>().sharedMesh = leaf;
+                    var dr = t.gameObject.AddComponent<MeshRenderer>(); dr.sharedMaterial = RenderAssets.Building;
+                    rends.Add(dr);
+                    return t;
                 }
-                var hinge = new GameObject("Door").transform;
-                hinge.SetParent(go.transform, false);
-                hinge.localPosition = new Vector3(-DoorGap * 0.5f, 0f, 0f);
-                hinge.gameObject.AddComponent<MeshFilter>().sharedMesh = doorMesh;
-                var dr = hinge.gameObject.AddComponent<MeshRenderer>(); dr.sharedMaterial = RenderAssets.Building;
-                rends.Add(dr);
-                pc.door = hinge;
+                pc.door = Hinge(-gp * 0.5f, false);
+                if (pair) pc.door2 = Hinge(gp * 0.5f, true);
             }
             if (pc.def.lamp)
             {

@@ -103,18 +103,20 @@ namespace Wildbond
         }
         readonly List<int> scratchPath = new List<int>();
 
-        readonly Dictionary<Piece, bool> reachCache = new Dictionary<Piece, bool>();
+        readonly Dictionary<long, bool> reachCache = new Dictionary<long, bool>();
         int reachVer = -1;
-        /// <summary>Can a camp kin walk from the Hearthstone to this piece? (Kept until the house changes.)</summary>
-        public bool ReachableFromCamp(Piece pc)
+        /// <summary>Can a camp kin of collision radius r walk from the Hearthstone to this piece? (Kept until the house changes.)</summary>
+        public bool ReachableFromCamp(Piece pc, float r = 0.42f)
         {
             var bm = BaseManager.I;
             if (pc == null || pc.removed || bm == null || !bm.HasBase) return false;
             if (reachVer != Version) { reachCache.Clear(); reachVer = Version; }
-            if (reachCache.TryGetValue(pc, out bool ok)) return ok;
+            int bucket = Mathf.Clamp(Mathf.CeilToInt(r * 20f), 0, 255);   // 5 cm steps, rounded up
+            long key = ((long)pc.id << 8) | (uint)bucket;
+            if (reachCache.TryGetValue(key, out bool ok)) return ok;
             Vector3 core = bm.CorePosition; core.y = Ground.Height(core.x, core.z);
-            ok = Reachable(core, pc.pos + Vector3.up * 0.1f, 0.42f);
-            reachCache[pc] = ok;
+            ok = Reachable(core, pc.pos + Vector3.up * 0.1f, bucket / 20f);
+            reachCache[key] = ok;
             return ok;
         }
 
@@ -147,7 +149,7 @@ namespace Wildbond
         {
             var e = EdgeAt(x, z, dir, l);
             if (e == null) return false;
-            return e.def.kind != HouseKind.Doorway || r > DoorGap * 0.5f - WallT * 0.5f - 0.04f;
+            return e.def.kind != HouseKind.Doorway || r > MaxRadius(e.def);   // a doorway lets through what fits its opening
         }
 
         static readonly Queue<int> open = new Queue<int>();

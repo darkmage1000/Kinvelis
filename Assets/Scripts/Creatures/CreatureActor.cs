@@ -549,8 +549,9 @@ namespace Wildbond
             {
                 // round house walls, through doorways and up stairs (Housing.Route): head for the next waypoint
                 Vector3 aim = full && Housing.I != null ? Housing.I.Steer(route ?? (route = new Housing.Route()), pos, moveTarget, BodyRadius * 0.8f) : moveTarget;
-                Vector3 to = aim - pos; to.y = 0f;
                 Vector3 left = moveTarget - pos; left.y = 0f;
+                if (full && !ignoreObstacles) aim = AvoidObstacles(pos, aim, left.magnitude, dt);   // round structures, trees and rocks
+                Vector3 to = aim - pos; to.y = 0f;
                 float d = to.magnitude;
                 if (d > 0.15f) desired = to / d * Mathf.Min(moveSpeed, left.magnitude / Mathf.Max(dt, 0.001f));
             }
@@ -592,6 +593,62 @@ namespace Wildbond
 
         Vector3 faceTarget;
         Housing.Route route;
+
+        // ---- steering round round things (structures, trees, rocks, furniture), and stepping aside when stuck
+        Vector3 avoidAim, avoidC, stuckFrom, detour;
+        float avoidT, stuckT, detourUntil;
+        int avoidSide;
+
+        /// <summary>
+        /// Where to head instead of `aim` so as not to walk into the first obstacle in the way: past its near side, keeping
+        /// to the same side while going round it. If a kin with somewhere to go has barely moved for 1.2 s anyway (a pocket
+        /// between two structures), it steps aside for a moment.
+        /// </summary>
+        Vector3 AvoidObstacles(Vector3 pos, Vector3 aim, float leftToGo, float dt)
+        {
+            stuckT += dt;
+            if (stuckT >= 1.2f)
+            {
+                Vector3 moved = pos - stuckFrom; moved.y = 0f;
+                if (leftToGo > 1.2f && moved.magnitude < 0.35f && Time.time > detourUntil)
+                {
+                    Vector3 f = aim - pos; f.y = 0f; f = f.sqrMagnitude > 0.01f ? f.normalized : transform.forward;
+                    Vector3 n = new Vector3(-f.z, 0f, f.x) * (Random.value < 0.5f ? -1f : 1f);
+                    detour = pos + n * 2.2f - f * 0.6f;
+                    detourUntil = Time.time + 0.9f;
+                }
+                stuckT = 0f; stuckFrom = pos;
+            }
+            if (Time.time < detourUntil) return detour;
+            Vector3 to = aim - pos; to.y = 0f;
+            float dist = to.magnitude;
+            if (dist < 0.5f) return aim;
+            avoidT -= dt;
+            if (avoidT > 0f) return avoidAim;
+            avoidT = 0.2f;
+            Vector3 u = to / dist, look = pos + u * Mathf.Min(dist, 6f);
+            float r = BodyRadius * 0.8f;
+            if (WorldCollision.FirstBlocker(pos, look, r, moveTarget, out var c, out float cr))
+            {
+                // pass it on the side away from its middle, and keep to that side until the way is clear (round a whole cluster)
+                Vector3 n = new Vector3(-u.z, 0f, u.x);
+                int s = avoidSide != 0 ? avoidSide : (Vector3.Dot(c - pos, n) > 0f ? -1 : 1);
+                avoidSide = s; avoidC = c;
+                float side = Vector3.Dot(c - pos, n) * s + cr + r + 0.45f, ahead = Vector3.Dot(c - pos, u);
+                // a point beside it that is inside the next thing along (structures side by side) moves out past that one too
+                for (int k = 0; k < 6; k++)
+                {
+                    Vector3 p = pos + u * ahead + n * (s * side);
+                    if (!WorldCollision.Overlapping(p, r, out var c2, out float cr2)) break;
+                    side = Mathf.Max(side + 0.3f, Vector3.Dot(c2 - pos, n) * s + cr2 + r + 0.45f);
+                }
+                // aim beside it, no further on than its near edge: the kin slides along the face of a cluster until the way is clear
+                avoidAim = pos + u * Mathf.Max(0f, ahead - cr - r - 0.1f) + n * (s * Mathf.Max(side, 0.6f));
+                avoidAim.y = pos.y;
+            }
+            else { avoidAim = aim; avoidSide = 0; }
+            return avoidAim;
+        }
 
         Vector3 RandomPointNear(Vector3 center, float radius)
         {
