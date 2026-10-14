@@ -30,6 +30,7 @@ namespace Wildbond
         RectTransform actionCluster, placeCluster, deathPanel;
         Text interactLabel, throwLabel, placeReason, sneakLabel, attackLabel;
         GameObject interactBtn, kinSkillBtn, hookBtn;
+        Button manageBtn;
         // lock-on: the LOCK button and the previous / next arrows either side of the target frame
         Text lockLabel;
         GameObject lockPrev, lockNext;
@@ -356,6 +357,11 @@ namespace Wildbond
             interactBtn = actionCluster.Find("Btn_Interact").gameObject;
             ((RectTransform)interactBtn.transform).Place(new Vector2(1, 0), new Vector2(0.5f, 0.5f), new Vector2(-420, 450), new Vector2(230, 84));
             var ib = interactBtn.GetComponent<Image>(); ib.sprite = UIFactory.Rounded; ib.type = Image.Type.Sliced;
+            // MANAGE: the structure you are standing at - its workers, crop, output, demolish (BaseManager.Reach)
+            manageBtn = UIFactory.Button(actionCluster, "MANAGE", () => { var b = GameManager.I.ManageTarget; if (b != null && MenuUI.I != null) MenuUI.I.OpenManage(b); }, new Color(0.3f, 0.42f, 0.55f, 0.92f), 22);
+            ((RectTransform)manageBtn.transform).Place(new Vector2(1, 0), new Vector2(0.5f, 0.5f), new Vector2(-655, 450), new Vector2(190, 84));   // left of the interact button (the skill chips sit above it)
+            var mi = manageBtn.GetComponent<Image>(); mi.sprite = UIFactory.Rounded; mi.type = Image.Type.Sliced;
+            manageBtn.gameObject.SetActive(false);
         }
 
         void BuildPlacementUI()
@@ -701,6 +707,8 @@ namespace Wildbond
             bool showI = !string.IsNullOrEmpty(prompt);
             if (interactBtn.activeSelf != showI) interactBtn.SetActive(showI);
             if (showI) interactLabel.text = prompt;
+            bool showM = gm.ManageTarget != null;
+            if (manageBtn.gameObject.activeSelf != showM) manageBtn.gameObject.SetActive(showM);
         }
 
         // ============================================================ TOASTS / FEED

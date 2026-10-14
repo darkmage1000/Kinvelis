@@ -41,7 +41,7 @@ namespace Wildbond
             bool feed = b.Def.feeds;
             bool larder = BaseManager.IsLarder(b);
             var filter = BaseManager.FilterOf(b);
-            bool inCamp = bm.IsInsideBase(gm.Player.Position, 0f);
+            bool inCamp = bm.PlayerAt(b);   // a box is filled and emptied standing at it
             var bag = gm.Player.Stats.Bag;
             var slots = bm.BoxSlots(b);
             if (boxSel >= slots.Count || (boxSel >= 0 && slots[boxSel].Empty)) boxSel = -1;
@@ -91,7 +91,7 @@ namespace Wildbond
             // ---------------- right: take out, put in ----------------
             var rlist = UIFactory.ScrollList(right, out _, 8f);
             ((RectTransform)rlist.parent).Stretch();
-            if (!inCamp) Para(rlist, UIFactory.Col("Stand inside your camp to move things in or out.", Idle), 22);
+            if (!inCamp) Para(rlist, UIFactory.Col($"This is a view. Walk up to this box ({bm.WayTo(b)}) to put things in or take them out.", Idle), 22);
 
             if (feed)
             {

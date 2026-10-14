@@ -45,6 +45,8 @@ namespace Wildbond
         public bool ShowCampRing = true;
         public float AutosaveInterval => autosaveInterval;
         public string InteractPrompt { get; private set; }
+        /// <summary>The camp structure the player is standing at (MANAGE on the HUD opens it), or null.</summary>
+        public Building ManageTarget { get; private set; }
         public readonly HashSet<string> GoalsDone = new HashSet<string>();
         public long CreatedAtUnix { get; private set; }
         public double PlaySeconds { get; private set; }
@@ -688,7 +690,9 @@ namespace Wildbond
             interactStone = null;
             InteractPrompt = null;
             caveAction = null;
+            ManageTarget = null;
             if (placement.Active || !Player.IsAlive) return;
+            if (baseMgr.HasBase && !Caves.InCave) ManageTarget = baseMgr.NearestInteractable(Player.Position, 2.2f);   // the HUD's MANAGE button
             // caves: ENTER at a mouth, LEAVE at a portal, OPEN chests
             var cavePrompt = caves.Prompt(Player.Position, out caveAction);
             if (cavePrompt != null) { InteractPrompt = cavePrompt; return; }

@@ -19,7 +19,14 @@ namespace Wildbond
         static readonly Color Good = new Color(0.35f, 0.85f, 0.45f), Idle = new Color(1f, 0.8f, 0.3f), Bad = new Color(1f, 0.4f, 0.35f), Info = new Color(0.6f, 0.68f, 0.78f);
         static Color HealthColor(BuildingHealth h) => h == BuildingHealth.Good ? Good : h == BuildingHealth.Idle ? Idle : h == BuildingHealth.Blocked ? Bad : Info;
 
-        public void OpenCamp(CampTab t) { campTab = t; campScrollReset = true; Open(MenuTab.Camp); }
+        public void OpenCamp(CampTab t) { campTab = t; campScrollReset = true; manageUid = null; Open(MenuTab.Camp); }
+
+        /// <summary>MANAGE at a structure: the Structures page showing just that one, with everything you can do there.</summary>
+        string manageUid;
+        public void OpenManage(Building b) { campTab = CampTab.Structures; campScrollReset = true; manageUid = b != null ? b.Uid : null; Open(MenuTab.Camp); }
+
+        /// <summary>A greyed "go there" button for something that is done at a structure.</summary>
+        void WalkBtn(Transform parent, string label, int size = 20) => UIFactory.Button(parent, label, null, new Color(0.3f, 0.3f, 0.32f), size);
 
         void BuildCamp()
         {
@@ -50,7 +57,7 @@ namespace Wildbond
                 if (t == CampTab.Outposts && Outposts.All.Count > 0) label += $" ({Outposts.All.Count})";
                 if (t == CampTab.Hatchery) { int eggs = 0; foreach (var eg in GameManager.I.Player.Stats.eggs) if (KinGrowth.EggReady(eg)) eggs++; if (eggs > 0) label += $" ({eggs}!)"; }
                 if (t == CampTab.Expeditions) { int back = 0; foreach (var ex in GameManager.I.Player.Stats.expeditions) if (Expeditions.Done(ex)) back++; if (back > 0) label += $" ({back}!)"; }
-                UIFactory.Button(bar, label, () => { campTab = tt; campScrollReset = true; Rebuild(); },
+                UIFactory.Button(bar, label, () => { campTab = tt; campScrollReset = true; manageUid = null; Rebuild(); },
                     campTab == t ? new Color(0.25f, 0.55f, 0.45f) : UIFactory.ButtonCol, 20);
             }
 
@@ -105,7 +112,8 @@ namespace Wildbond
             if (bm.CoreLevel < BaseManager.MaxCoreLevel)
             {
                 var cost = BaseManager.UpgradeCost(bm.CoreLevel + 1);
-                var up = UIFactory.Button(hc.transform, "UPGRADE", () => { bm.TryUpgradeCore(); Rebuild(); }, ItemSources.Has(cost) ? new Color(0.5f, 0.4f, 0.2f) : new Color(0.3f, 0.3f, 0.32f), 26);
+                var up = bm.AtCore ? UIFactory.Button(hc.transform, "UPGRADE", () => { bm.TryUpgradeCore(); Rebuild(); }, ItemSources.Has(cost) ? new Color(0.5f, 0.4f, 0.2f) : new Color(0.3f, 0.3f, 0.32f), 26)
+                                   : UIFactory.Button(hc.transform, "AT THE\nHEARTHSTONE", null, new Color(0.3f, 0.3f, 0.32f), 18);
                 ((RectTransform)up.transform).Place(new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-14, 18), new Vector2(200, 70));
                 var ct = UIFactory.Label(hc.transform, Ingredients(cost), 18, Color.white, TextAnchor.UpperRight);
                 ct.supportRichText = true;
@@ -116,8 +124,8 @@ namespace Wildbond
                 var mx = UIFactory.Label(hc.transform, "MAX LEVEL", 26, UIFactory.Accent, TextAnchor.MiddleRight, FontStyle.Bold);
                 mx.rectTransform.Place(new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-20, 0), new Vector2(300, 60));
             }
-            var auto = UIFactory.Button(list, "AUTO-ASSIGN ALL WORKERS", () => { bm.AutoAssignAll(); Rebuild(); }, new Color(0.25f, 0.5f, 0.42f), 26);
-            UIFactory.Size(auto, 72);
+            if (bm.AtCore) UIFactory.Size(UIFactory.Button(list, "AUTO-ASSIGN ALL WORKERS", () => { bm.AutoAssignAll(); Rebuild(); }, new Color(0.25f, 0.5f, 0.42f), 26), 72);
+            else Para(list, UIFactory.Col($"This is a view of your camp. Its work is done at each structure: walk up to one and use its button, or MANAGE for its workers and crop. The Hearthstone ({bm.WayTo(bm.Core)}) holds the upgrade, AUTO-ASSIGN and the job list.", Idle), 21, Color.white);
 
             // alerts
             if (alerts.Count > 0)
@@ -199,9 +207,24 @@ namespace Wildbond
             grid.spacing = new Vector2(14, 14);
             grid.padding = new RectOffset(8, 8, 8, 8);
 
-            foreach (var b in bm.Buildings)
+            var shownList = bm.Buildings;
+            if (manageUid != null)
+            {
+                var mb = bm.FindBuilding(manageUid);
+                if (mb == null) manageUid = null;
+                else
+                {
+                    shownList = new List<Building> { mb };
+                    var all = UIFactory.Panel(list, "All", new Color(1, 1, 1, 0.03f));
+                    all.gameObject.AddComponent<Button>().onClick.AddListener(() => { manageUid = null; Rebuild(); });
+                    var allT = UIFactory.Label(all.transform, "SHOW EVERY STRUCTURE", 26, new Color(1, 1, 1, 0.6f), TextAnchor.MiddleCenter, FontStyle.Bold);
+                    allT.rectTransform.Stretch();
+                }
+            }
+            foreach (var b in shownList)
             {
                 var bb = b;
+                bool here = bm.PlayerAt(b);
                 var health = bm.Status(b, out string status);
                 var card = UIFactory.Panel(list, "Bld", new Color(1, 1, 1, 0.07f));
                 // icon + light
@@ -236,7 +259,7 @@ namespace Wildbond
                     {
                         var s = UIFactory.Panel(slots, "Slot", new Color(0, 0, 0, 0.3f));
                         s.rectTransform.Place(new Vector2(0, 0), new Vector2(0, 0), new Vector2(i * 88, 0), new Vector2(78, 78));
-                        s.gameObject.AddComponent<Button>().onClick.AddListener(() => AssignPicker(bb));
+                        s.gameObject.AddComponent<Button>().onClick.AddListener(() => { if (bm.PlayerAt(bb)) AssignPicker(bb); else GameEvents.Say($"Walk up to the {bb.Def.displayName} ({bm.WayTo(bb)}) to choose who works there."); });
                         if (i < workers.Count)
                         {
                             var p = Portrait(s.transform, workers[i], 64);
@@ -256,12 +279,22 @@ namespace Wildbond
                 var act = UIFactory.Rect(card.transform, "Actions").Place(new Vector2(0, 0), new Vector2(0, 0), new Vector2(12, 12), new Vector2(476, 60));
                 var ah = act.gameObject.AddComponent<HorizontalLayoutGroup>();
                 ah.spacing = 8; ah.childControlWidth = true; ah.childControlHeight = true; ah.childForceExpandWidth = true;
+                if (!here)
+                {
+                    // far away: look, don't touch
+                    if (b.IsStation) UIFactory.Button(act, "VIEW", () => OpenStation(bb.Def.station), new Color(0.3f, 0.36f, 0.45f), 20);
+                    WalkBtn(act, "Walk there: " + bm.WayTo(b), 18);
+                    continue;
+                }
                 if (b.BufferCount > 0) UIFactory.Button(act, $"COLLECT {b.BufferCount}", () => { GameManager.I.CollectBuffer(bb); Rebuild(); }, new Color(0.25f, 0.5f, 0.42f), 22);
                 if (b.IsStation) UIFactory.Button(act, StationVerb(b.Def.station), () => OpenStation(bb.Def.station), new Color(0.3f, 0.4f, 0.55f), 22);
                 if (Crops.IsPlot(b)) UIFactory.Button(act, "CROP", () => CropPicker(bb), new Color(0.3f, 0.5f, 0.3f), 22);
+                if (b.Def.feeds || (b.BoxLen > 0 && !b.Def.isCore)) UIFactory.Button(act, b.Def.feeds ? "FEED BOX" : "OPEN", () => OpenBox(bb), new Color(0.3f, 0.36f, 0.5f), 22);
+                if (b.Def.id == "hatchery") UIFactory.Button(act, "HATCHERY", () => OpenHatchery(), new Color(0.5f, 0.38f, 0.25f), 22);
                 if (!b.Def.isCore) UIFactory.Button(act, "DEMOLISH", () => Confirm("Demolish?", $"Demolish {bb.Def.displayName}? Half the materials go to storage.", () => { bm.Demolish(bb); Rebuild(); }), new Color(0.42f, 0.24f, 0.24f), 20);
             }
             // add-building card
+            if (manageUid != null) return;   // MANAGE shows just the one structure
             var add = UIFactory.Panel(list, "Add", new Color(1, 1, 1, 0.03f));
             add.gameObject.AddComponent<Button>().onClick.AddListener(() => Open(MenuTab.Build));
             var at = UIFactory.Label(add.transform, "+ BUILD NEW", 32, new Color(1, 1, 1, 0.6f), TextAnchor.MiddleCenter, FontStyle.Bold);
@@ -399,8 +432,10 @@ namespace Wildbond
                 : $"{comp.Data.DisplayName} has nothing it can do here right now, so it follows you.";
             var cl = UIFactory.Label(crow.transform, cline, 20, UIFactory.TextDim);
             UIFactory.Size(cl, 58, 900);
+            bool atCore = bm.AtCore;
+            if (!atCore) Para(list, UIFactory.Col($"Assign jobs at the Hearthstone ({bm.WayTo(bm.Core)}), or at each structure with MANAGE.", Idle), 21, Color.white);
             var top = UIFactory.HRow(list, 70, 8);
-            UIFactory.Size(UIFactory.Button(top.transform, "AUTO-ASSIGN", () => { bm.AutoAssignAll(); Rebuild(); }, new Color(0.25f, 0.5f, 0.42f), 22), 64, 220);
+            if (atCore) UIFactory.Size(UIFactory.Button(top.transform, "AUTO-ASSIGN", () => { bm.AutoAssignAll(); Rebuild(); }, new Color(0.25f, 0.5f, 0.42f), 22), 64, 220);
             UIFactory.Size(UIFactory.Button(top.transform, "ALL", () => { workerFilter = WorkType.None; Rebuild(); }, workerFilter == WorkType.None ? new Color(0.25f, 0.55f, 0.45f) : UIFactory.ButtonCol, 20), 64, 90);
             var types = new HashSet<WorkType>();
             foreach (var d in party.In(KinLocation.Base)) foreach (var w in d.Species.work) types.Add(w.type);
@@ -438,7 +473,8 @@ namespace Wildbond
                 xb.rectTransform.Place(new Vector2(0, 0), new Vector2(0, 0), new Vector2(440, 16), new Vector2(260, 16));
                 xf.SetFill(d.xp / (float)CreatureData.XpToNext(d.level));
                 var xl = UIFactory.Label(card.transform, "XP", 16, UIFactory.TextDim); xl.rectTransform.Place(new Vector2(0, 0), new Vector2(0, 0), new Vector2(440, 34), new Vector2(200, 20));
-                var jb = UIFactory.Button(card.transform, "JOB", () => JobPicker(dd), new Color(0.25f, 0.42f, 0.55f), 22);
+                var jb = atCore ? UIFactory.Button(card.transform, "JOB", () => JobPicker(dd), new Color(0.25f, 0.42f, 0.55f), 22)
+                                : UIFactory.Button(card.transform, "JOB", null, new Color(0.3f, 0.3f, 0.32f), 22);
                 ((RectTransform)jb.transform).Place(new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-150, 0), new Vector2(130, 90));
                 var bx = UIFactory.Button(card.transform, "TO BOX", () => { party.Move(dd, KinLocation.Box); Rebuild(); }, new Color(0.35f, 0.32f, 0.4f), 20);
                 ((RectTransform)bx.transform).Place(new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-12, 0), new Vector2(128, 90));
@@ -480,7 +516,7 @@ namespace Wildbond
         {
             var bm = BaseManager.I;
             var gm = GameManager.I;
-            bool inCamp = bm.IsInsideBase(gm.Player.Position, 0f);
+            bool inCamp = bm.StorageHere() != null;   // camp-wide taking and storing: at any box or the Hearthstone
             var left = UIFactory.Rect(body, "Left");
             var right = UIFactory.Rect(body, "Right");
             left.Anchors(new Vector2(0, 0), new Vector2(0.66f, 1), new Vector2(16, 16), new Vector2(-8, -8));
@@ -535,7 +571,7 @@ namespace Wildbond
             // right: selection + bulk actions
             var v = right.gameObject.AddComponent<VerticalLayoutGroup>();
             v.spacing = 12; v.childControlHeight = true; v.childControlWidth = true; v.childForceExpandHeight = false;
-            if (!inCamp) Para(right, UIFactory.Col("Stand inside your camp to take or deposit items.", Idle), 22);
+            if (!inCamp) Para(right, UIFactory.Col("Walk up to a chest or the Hearthstone to take or store things. Each box can also be opened at the box itself.", Idle), 22);
             // each box has contents of its own: open one to fill or empty that box
             Header(right, "Boxes", 28);
             if (inCamp) ActionBtn(right, "SORT EVERYTHING", () => { bm.SortStorage(); GameEvents.Good("Storage sorted: everything is in the box that holds its kind."); Rebuild(); }, new Color(0.25f, 0.5f, 0.42f));
@@ -595,7 +631,7 @@ namespace Wildbond
             foreach (var st in RecipeStations())
             {
                 var s2 = st;
-                UIFactory.Size(UIFactory.Button(srow.transform, $"+ {StationName(st).ToUpper()}", () => OpenStation(s2), new Color(0.3f, 0.4f, 0.55f), 24), 70, 360);
+                UIFactory.Size(UIFactory.Button(srow.transform, bm.AtStation(st) ? $"+ {StationName(st).ToUpper()}" : StationName(st).ToUpper(), () => OpenStation(s2), new Color(0.3f, 0.4f, 0.55f), 24), 70, 360);
             }
             if (bm.Orders.Count == 0) { Para(list, "No orders. Each station (Workbench, Campfire) has its own menu - queue there, and Crafting / Kindling kin work the orders (or you, standing at the station).", 24, Color.white); return; }
             for (int i = 0; i < bm.Orders.Count; i++)
@@ -615,9 +651,10 @@ namespace Wildbond
                 var btns = UIFactory.Rect(card.transform, "B").Place(new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-12, 0), new Vector2(360, 90));
                 var bh = btns.gameObject.AddComponent<HorizontalLayoutGroup>();
                 bh.spacing = 8; bh.childControlWidth = true; bh.childControlHeight = true; bh.childForceExpandWidth = true;
+                var oo = o;
+                if (!bm.AtStation(r.station)) { WalkBtn(btns, $"At the {StationName(r.station)}", 18); continue; }
                 UIFactory.Button(btns, "UP", idx > 0 ? () => { MoveOrder(idx, -1); } : (Action)null, idx > 0 ? UIFactory.ButtonCol : new Color(0.25f, 0.25f, 0.27f), 22);
                 UIFactory.Button(btns, "DOWN", idx < bm.Orders.Count - 1 ? () => { MoveOrder(idx, 1); } : (Action)null, idx < bm.Orders.Count - 1 ? UIFactory.ButtonCol : new Color(0.25f, 0.25f, 0.27f), 22);
-                var oo = o;
                 UIFactory.Button(btns, "CANCEL", () => CancelOrder(oo), new Color(0.45f, 0.25f, 0.25f), 20);
             }
         }

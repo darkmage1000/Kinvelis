@@ -263,7 +263,7 @@ html: `
 
 <h2 id="eggs">Eggs</h2>
 <ul>
-<li>Build a <b>Hatchery</b>. Pick two kin and pay two Berry Tarts for an egg. It is ready after ten minutes of real time (you get a note when it starts to wobble). Walk up to the Hatchery and tap <b>HATCH!</b> (or Camp &gt; Hatchery): the egg rocks, cracks and bursts, and the kin's page shows its quality grades, traits, looks, skills and camp jobs. Name it there and choose party, camp or box. Tap the picture to hurry the egg along.</li>
+<li>Build a <b>Hatchery</b>. Pick two kin and pay two Berry Tarts for an egg. It is ready after ten minutes of real time (you get a note when it starts to wobble). Walk up to the Hatchery and tap <b>HATCH!</b>: the egg rocks, cracks and bursts, and the kin's page shows its quality grades, traits, looks, skills and camp jobs. Name it there and choose party, camp or box. Tap the picture to hurry the egg along.</li>
 <li>The child is the kind of one parent or the other, starts at level 1, and takes after the better parent in each quality grade, give or take a little. Good traits pass on.</li>
 <li>Out in the world, wild <b>nests</b> appear now and then. A mother guards each one. Take the egg and you get a kin of her kind with better-than-usual grades.</li>
 </ul>
@@ -306,6 +306,15 @@ html: `
 { id: "camp", group: "Camp", title: "Camp and jobs", blurb: "The Hearthstone, workers, food, storage, defense, farming and automation.",
 html: `
 <p class="lead">Your camp is the ring around a Hearthstone. Everything in it can be run by your kin while you are out exploring, and it keeps going while the game is closed.</p>
+
+<h2 id="walk">Working your camp</h2>
+<p>Camp work is done <b>at the structure</b>. Walk up to it and use its button (CRAFT, COOK, OPEN, FEED BOX, PLANT, WORK, HATCH!...), or tap <b>MANAGE</b> next to it to choose who works there, change a crop, collect what it made or take it down. The Camp menu, opened from anywhere, is a view of the whole camp: what every structure is doing, what it needs, and how far away it is.</p>
+<ul>
+<li>Crafting, keeping things in stock, orders and research: at that station.</li>
+<li>Taking things out or putting them in: at that box. The camp-wide store (STORE IN CAMP, TAKE, SORT EVERYTHING) works at any chest or at the Hearthstone.</li>
+<li>Pairing kin and hatching eggs: at the Hatchery.</li>
+<li>The Hearthstone's upgrade, AUTO-ASSIGN and the job list: at the Hearthstone.</li>
+</ul>
 
 <h2 id="hearth">The Hearthstone</h2>
 <ul>
@@ -402,7 +411,7 @@ html: `
 <li>The box's slots are on the left. Tap something to take 1, 10 or all of it.</li>
 <li>Your bag is on the right, with +1, +10 and ALL buttons to put things into this box.</li>
 <li>EMPTY THE BOX and STORE ALL MATERIALS do the lot at once.</li>
-<li>The arrows step through every box in camp, so you can sort them all from one place. Camp &gt; Storage lists the boxes too.</li>
+<li>The arrows step through every box in camp so you can see what each one holds; to put things in or take them out, stand at that box. Camp &gt; Storage lists the boxes too.</li>
 </ul>
 <h3>Chest filters</h3>
 <p>Open a chest and tell it what to hold: <b>Anything</b>, <b>Food</b>, <b>Basics</b> (wood, stone, fiber), <b>Metal</b> (ore, ingots, crystal, cinder and the outer metals), <b>Finds</b> (kin drops and the rest) or <b>Gear</b> (tools, seeds, weapons, armour). The whole camp's storage is dealt back out at once, and from then on:</p>
@@ -412,7 +421,7 @@ html: `
 <li>haulers carry each load to a chest that takes it;</li>
 <li>the Hearthstone always takes anything, so nothing is ever turned away for want of a filter.</li>
 </ul>
-<p><b>SORT EVERYTHING</b> on Camp &gt; Storage re-deals the lot whenever you like.</p>
+<p><b>SORT EVERYTHING</b> on Camp &gt; Storage re-deals the lot whenever you like, while you stand at a chest or the Hearthstone.</p>
 <p>Crafting takes ingredients from any box. Pull a chest down and what was in it moves to the other boxes. Bigger boxes come from <a href="#/research">research</a>: Large Chest, Bulk Silo, Ironbound Vault and Grand Vault. </p>
 <p>A <b>Frost Larder</b> is cold storage: 12 slots that take food only. Food goes there before anywhere else, and while the larder holds cold, <b>food kept inside it lasts three times as long</b> (food in ordinary chests and the Feed Box does not). Workers also get hungry 40% slower while it is cold. A Chilling kin fills it (the gauge floats over it), then is free for its other jobs, and comes back by itself to top it up at half and again in the evening. One larder holds a little over half a day of cold, so it stays cold all night while the kin sleeps.</p>
 

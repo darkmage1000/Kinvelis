@@ -14,11 +14,19 @@ namespace Wildbond
             var s = GameManager.I.Player.Stats;
             var party = GameManager.I.Party;
             var list = TrackedList(body);
+            var hb0 = BaseManager.I.BuildingHere("hatchery");
+            bool here = hb0 != null;   // eggs are laid and hatched at the Hatchery itself
             Header(list, $"Hatchery  <size=22>{s.eggs.Count}/{KinGrowth.MaxEggs} eggs</size>", 32);
             if (!KinGrowth.HasHatchery)
             {
                 Para(list, "Build a Hatchery (BUILD menu, Explorer Lv 3) to breed kin. Eggs inherit the best quality grades of both parents and good traits - the way to raise S-grade kin.", 23, Color.white);
                 return;
+            }
+            if (!here)
+            {
+                Building near = null;
+                foreach (var hb1 in BaseManager.I.Buildings) if (hb1.Def.id == "hatchery") near = hb1;
+                Para(list, UIFactory.Col($"This is a view. Walk up to the Hatchery ({BaseManager.I.WayTo(near)}) to pair kin and hatch eggs.", Idle), 21, Color.white);
             }
 
             // incubating eggs
@@ -34,7 +42,7 @@ namespace Wildbond
                 var bar = UIFactory.Bar(card.transform, ready ? Good : new Color(1f, 0.75f, 0.4f), out var fill);
                 bar.rectTransform.Place(new Vector2(0, 0), new Vector2(0, 0), new Vector2(18, 12), new Vector2(620, 20));
                 fill.SetFill(Mathf.Clamp01(1f - left / (KinGrowth.HatchMinutes * 60f)));
-                var hb = UIFactory.Button(card.transform, ready ? "HATCH!" : "WARMING", ready ? () => ShowHatch(ee) : (System.Action)null,
+                var hb = UIFactory.Button(card.transform, ready ? (here ? "HATCH!" : "AT THE\nHATCHERY") : "WARMING", ready && here ? () => ShowHatch(ee) : (System.Action)null,
                     ready ? new Color(0.3f, 0.6f, 0.4f) : new Color(0.3f, 0.3f, 0.32f), 22);
                 ((RectTransform)hb.transform).Place(new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-14, 0), new Vector2(200, 76));
             }
@@ -57,12 +65,12 @@ namespace Wildbond
                 var best = new List<string>();
                 for (int i = 0; i < 3; i++) { int v = Mathf.Max(a.apt[i], b.apt[i]); best.Add(UIFactory.Col($"{Aptitude.Names[i]} ~{Aptitude.Grade(v)}", Aptitude.GradeColor(v))); }
                 Para(list, $"Egg: a {a.Species.displayName}{(a.speciesId != b.speciesId ? " or " + b.Species.displayName : "")}, quality around the best of both: {string.Join("  ", best)}\nCost: {Ingredients(KinGrowth.BreedCost)}  ·  hatches in {KinGrowth.HatchMinutes} min", 21, Color.white);
-                var go = UIFactory.Button(list, "BREED", () =>
+                var go = UIFactory.Button(list, here ? "BREED" : "BREED AT THE HATCHERY", here ? () =>
                 {
                     string err = KinGrowth.Breed(a, b);
                     if (err != null) GameEvents.Warn(err); else { hatchA = null; hatchB = null; }
                     Rebuild();
-                }, s.eggs.Count < KinGrowth.MaxEggs ? new Color(0.6f, 0.4f, 0.25f) : new Color(0.3f, 0.3f, 0.32f), 26);
+                } : (System.Action)null, here && s.eggs.Count < KinGrowth.MaxEggs ? new Color(0.6f, 0.4f, 0.25f) : new Color(0.3f, 0.3f, 0.32f), 26);
                 UIFactory.Size(go, 76);
             }
 

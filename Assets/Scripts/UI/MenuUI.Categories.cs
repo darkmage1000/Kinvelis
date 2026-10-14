@@ -60,7 +60,7 @@ namespace Wildbond
             if (Chests.Locked(r)) return "Blueprint";
             if (r.unlockLevel > GameManager.I.Player.Stats.level && !Dev.FreeAll) return $"Lv {r.unlockLevel}";
             if (st != CraftStation.Hand && !bm.HasStation(st)) return "Not built";
-            if (st != CraftStation.Hand && !inCamp) return "Go to camp";
+            if (st != CraftStation.Hand && !inCamp) return "Walk to it";
             if (!ItemSources.Has(r.inputs)) return "Missing";
             return null;
         }

@@ -49,14 +49,14 @@ namespace Wildbond
             var st = stationSel;
             string name = StationName(st);
             bool built = bm.HasStation(st);
-            bool inCamp = bm.HasBase && bm.IsInsideBase(GameManager.I.Player.Position, 0f);
+            bool inCamp = bm.AtStation(st);   // you work a station standing at it
             LeftRight(out var left, out var right, 0.63f);
 
             // ---------------- recipes ----------------
             var list = TrackedList(left);
             Header(list, $"{name}  <size=26>{UIFactory.Col(StationActivity(st), UIFactory.Accent)}</size>", 36);
             Para(list, !built ? $"You haven't built a {name} yet (Build tab). These are the recipes it unlocks."
-                     : !inCamp ? $"You're away from camp, so this is view-only. Go to your {name} to {StationVerb(st).ToLower()}."
+                     : !inCamp ? $"This is a view. Walk up to your {name} ({bm.WayTo(bm.NearestStation(st))}) to {StationVerb(st).ToLower()}, queue orders or keep things in stock."
                      : "Ingredients come from your bag and camp storage. Finished items go to camp storage. KEEP makes the camp restock that item by itself, from camp storage.", 21);
             RecipeRows(list, st, 520);
             RestoreScroll();
@@ -77,7 +77,7 @@ namespace Wildbond
                 var sic = UIFactory.ItemIcon(srow.transform, sdef, 60); UIFactory.Size(sic, 60, 60);
                 var stx = UIFactory.Label(srow.transform, $"<b>{sdef.displayName}</b>\n<size=19>{UIFactory.Col($"{have} of {so.keep}", have >= so.keep ? Good : Color.white)}{(why != null ? UIFactory.Col("  ·  " + why, Idle) : "")}</size>", 22, Color.white);
                 stx.supportRichText = true; UIFactory.Size(stx, 70, 350);
-                UIFactory.Size(UIFactory.Button(srow.transform, "OFF", () => { bm.SetKeep(skeep.recipeId, 0); Rebuild(); }, new Color(0.45f, 0.25f, 0.25f), 20), 60, 80);
+                if (inCamp) UIFactory.Size(UIFactory.Button(srow.transform, "OFF", () => { bm.SetKeep(skeep.recipeId, 0); Rebuild(); }, new Color(0.45f, 0.25f, 0.25f), 20), 60, 80);
             }
             Header(rl, "In progress", 30);
             bool any = false;
@@ -94,7 +94,7 @@ namespace Wildbond
                 var bar = UIFactory.Bar(row.transform, UIFactory.Accent, out var fill);
                 UIFactory.Size(bar, 24, 150);
                 fill.SetFill(bm.OrderProgress01(o));
-                UIFactory.Size(UIFactory.Button(row.transform, "X", () => CancelOrder(oo), new Color(0.45f, 0.25f, 0.25f), 22), 60, 64);
+                if (inCamp) UIFactory.Size(UIFactory.Button(row.transform, "X", () => CancelOrder(oo), new Color(0.45f, 0.25f, 0.25f), 22), 60, 64);
             }
             if (!any) Para(rl, $"Nothing queued. Pick a recipe on the left to {StationVerb(st).ToLower()} it, or tap KEEP to have the camp keep it in stock.", 21);
 
@@ -177,7 +177,7 @@ namespace Wildbond
         {
             var bm = BaseManager.I;
             var stats = GameManager.I.Player.Stats;
-            bool inCamp = bm.HasBase && bm.IsInsideBase(GameManager.I.Player.Position, 0f);
+            bool inCamp = bm.AtStation(st);   // standing at a station of this kind (always true for hand recipes)
             // tools & supplies first, then armor, then accessories (each by unlock level)
             var recs = ContentDB.RecipeList.FindAll(x => x.station == st);
             recs.Sort((x, y) => CraftGroup(x) != CraftGroup(y) ? CraftGroup(x).CompareTo(CraftGroup(y)) : (CraftGroup(x) == 0 ? 0 : x.unlockLevel.CompareTo(y.unlockLevel)));
@@ -220,13 +220,13 @@ namespace Wildbond
                 else if (noPlan) reason = "Blueprint";
                 else if (r.unlockLevel > stats.level && !Dev.FreeAll) reason = $"Lv {r.unlockLevel}";
                 else if (st != CraftStation.Hand && !bm.HasStation(st)) reason = "Not built";
-                else if (st != CraftStation.Hand && !inCamp) reason = "Go to camp";
+                else if (st != CraftStation.Hand && !inCamp) reason = "Walk to it";
                 else if (!ItemSources.Has(r.inputs)) reason = "Missing";
                 var rec = r;
                 var btn = UIFactory.Button(row.transform, reason ?? StationVerb(st),
                     reason == null ? () => Craft(rec) : (System.Action)null, reason == null ? new Color(0.25f, 0.55f, 0.4f) : new Color(0.3f, 0.3f, 0.32f), 26);
                 UIFactory.Size(btn, 84, 200);
-                if (st != CraftStation.Hand && tech == null && !noPlan && r.unlockLevel <= stats.level && bm.HasStation(st))
+                if (st != CraftStation.Hand && inCamp && tech == null && !noPlan && r.unlockLevel <= stats.level && bm.HasStation(st))
                 {
                     // standing order: tap to step through 5 / 10 / 20 / 50 / off (BaseManager.Standing)
                     int keep = bm.KeepOf(r.id);

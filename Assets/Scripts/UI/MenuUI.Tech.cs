@@ -14,12 +14,12 @@ namespace Wildbond
             var bm = BaseManager.I;
             var stats = GameManager.I.Player.Stats;
             bool built = bm.HasStation(CraftStation.Research);
-            bool inCamp = bm.HasBase && bm.IsInsideBase(GameManager.I.Player.Position, 0f);
+            bool inCamp = bm.AtStation(CraftStation.Research);   // research is started standing at the bench
             var list = TrackedList(content);
             Header(list, $"Research Bench  <size=24>{UIFactory.Col($"{Tech.DoneCount}/{Tech.All.Length} researched", UIFactory.Accent)}   " +
                          $"{UIFactory.Col($"Sigils {Wardens.Sigils}/{Wardens.SigilsNeeded}", Gold)}   Warden Hearts {ItemSources.Count(Wardens.HeartItem)}</size>", 36);
             Para(list, !built ? "You haven't built a Research Bench yet (Build tab, level 3). This is what it can teach you."
-                     : !inCamp ? "You're away from camp, so this is view-only. Go to your Research Bench to start something."
+                     : !inCamp ? $"This is a view. Walk up to your Research Bench ({bm.WayTo(bm.NearestStation(CraftStation.Research))}) to start something."
                      : "Pick one thing to study. Materials are taken when you start; then a Crafting kin on the bench works on it, or you can stand at the bench yourself. " +
                        "Each project opens at an explorer level; a land's Sigil comes from beating its Warden (see JOURNEY).", 21);
 
@@ -74,7 +74,7 @@ namespace Wildbond
                     tx.supportRichText = true;
                     UIFactory.Size(tx, rowH - 6, 1180);
                     if (done) continue;
-                    string label = busy ? "IN PROGRESS" : !built ? "Not built" : !inCamp ? "Go to camp" : why ?? "RESEARCH";
+                    string label = busy ? "IN PROGRESS" : !built ? "Not built" : !inCamp ? "At the bench" : why ?? "RESEARCH";
                     var tt = t;
                     bool can = why == null && built && inCamp;
                     var btn = UIFactory.Button(row.transform, label, can ? () => { string err = Tech.Start(tt); if (err != null) GameEvents.Warn(err); Rebuild(); } : (System.Action)null,

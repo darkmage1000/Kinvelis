@@ -157,7 +157,7 @@ namespace Wildbond
                     break;
                 }
             }
-            if (BaseManager.I.HasBase && BaseManager.I.IsInsideBase(gm.Player.Position, 0f))
+            if (BaseManager.I.HasBase && BaseManager.I.StorageHere() != null)   // standing at a chest or the Hearthstone
                 ActionBtn(right, "STORE IN CAMP", () =>
                 {
                     int left2 = BaseManager.I.Storage.Add(st.id, st.count);

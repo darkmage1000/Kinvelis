@@ -221,7 +221,7 @@ namespace Wildbond
             {
                 if (e.child == null || told.Contains(e.child.uid) || !EggReady(e)) continue;
                 told.Add(e.child.uid);
-                GameEvents.Good(WorldRules.Current.simpleControls ? "An egg is wobbling! Go to the Hatchery to see who is inside." : "An egg is wobbling - it's ready to hatch! (the Hatchery, or Camp > Hatchery)");
+                GameEvents.Good(WorldRules.Current.simpleControls ? "An egg is wobbling! Go to the Hatchery to see who is inside." : "An egg is wobbling - it's ready to hatch! Walk up to the Hatchery.");
                 SynthAudio.Play(Sfx.Shake, 1.1f, 0.8f);
             }
         }
