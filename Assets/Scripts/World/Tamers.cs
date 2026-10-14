@@ -170,6 +170,7 @@ namespace Wildbond
             if (lead != null)
             {
                 var d = new CreatureData { uid = "tamerlead", speciesId = lead.id, level = t.levels[2], apt = new[] { 50, 50, 50 }, spec = 0 };
+                CreatureFactory.EvolveForLevel(d, 1f);   // the one at their side is the one they will send out
                 var kin = new GameObject("LeadKin");
                 kin.transform.SetParent(t.root.transform, false);
                 var kp = t.pos + new Vector3(1.6f + lead.size * 0.4f, 0, 0.3f); kp.y = WorldGen.Height(kp.x, kp.z);
@@ -267,6 +268,7 @@ namespace Wildbond
             var sp = ContentDB.Sp(t.team[index]);
             var d = CreatureFactory.RollWild(sp, t.levels[index], t.home.biome, false);
             d.shimmer = false; d.traits.Remove("radiant");
+            CreatureFactory.EvolveForLevel(d, 1f);   // a tamer's kin is trained: evolved as soon as its level allows
             Vector3 toPlayer = pl.Position - t.pos; toPlayer.y = 0;
             Vector3 p = t.pos + (toPlayer.sqrMagnitude > 0.1f ? toPlayer.normalized : Vector3.forward) * 3.5f;
             fighter = CreatureSpawner.I.SpawnActor(d, CreatureMode.Wild, p);

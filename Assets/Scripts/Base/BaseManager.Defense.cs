@@ -140,7 +140,7 @@ namespace Wildbond
                 if (i > 0 && Random.value < 0.35f) sp = pool[Random.Range(0, pool.Count)];
                 var off = Random.insideUnitCircle * 4f;
                 var pos = origin + new Vector3(off.x, 0, off.y);
-                var data = CreatureFactory.RollWild(sp, Mathf.Clamp(avg - 2 + Random.Range(-1, 2), 1, 60), biome, false);
+                var data = CreatureFactory.RollWildMaybeEvolved(sp, Mathf.Clamp(avg - 2 + Random.Range(-1, 2), 1, 60), biome, false);
                 var a = CreatureSpawner.I.SpawnActor(data, CreatureMode.Wild, pos);
                 a.MakeRaider(CorePosition, NearestWorkerActor(pos) ?? (ICombatant)GameManager.I.Player);
                 raiders.Add(a);

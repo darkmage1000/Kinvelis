@@ -169,7 +169,8 @@ namespace Wildbond
             float lvl = b.WorkLevelFor(d);   // for a producer: at the step it is on (planting, watering, harvesting...)
             float hungerMul = d.hunger > 0f ? 1f : 0.4f;
             float levelMul = (1f + 0.02f * (d.level - 1)) * WorldRules.Current.workSpeed;   // experienced workers are a bit faster
-            return lvl * d.WorkMul * hungerMul * levelMul * (1f + DynamoBoost) * RestedMul * BedBonusMul(d) * Dev.WorkMul * GameManager.I.Player.Stats.WorkBonus * HearthlinkMul * IrrigationMul(b);
+            return lvl * d.WorkMul * hungerMul * levelMul * (1f + DynamoBoost) * RestedMul * BedBonusMul(d) * Dev.WorkMul * GameManager.I.Player.Stats.WorkBonus * HearthlinkMul * IrrigationMul(b)
+                 * b.LevelMul * CheerMul(d);   // an upgraded structure; a kin you have just cheered up (BaseManager.Upgrades)
         }
 
         /// <summary>Hearthlink Pendant: +20% work speed while the player is away from camp.</summary>
@@ -208,13 +209,13 @@ namespace Wildbond
             var call = StoreCalling(d, self, current);
             if (call != null) return call;
             // A Volt Pylon stores charge, so it only "can be worked" while it wants topping up - then its kin goes straight back.
-            if (IsPost(home) && home.CanWork(d) && (home == current || HandsAt(home, self) < home.Def.workerSlots)) return home;
+            if (IsPost(home) && home.CanWork(d) && (home == current || HandsAt(home, self) < home.WorkerSlots)) return home;
             Building best = null; float bestScore = 0f;
             foreach (var b in Buildings)
             {
-                if (b == null || b.Def.isCore || b.Def.workType == WorkType.Hauling || b.Def.workerSlots <= 0) continue;
+                if (b == null || b.Def.isCore || b.Def.workType == WorkType.Hauling || b.WorkerSlots <= 0) continue;
                 if (!b.CanWork(d)) continue;
-                if (b != current && HandsAt(b, self) >= b.Def.workerSlots) continue;
+                if (b != current && HandsAt(b, self) >= b.WorkerSlots) continue;
                 float score = TaskScore(d, b, home) * (b == current ? 1.3f : 1f);
                 if (self != null) score /= 1f + Vector3.Distance(self.transform.position, b.transform.position) * 0.03f;
                 if (score > bestScore) { bestScore = score; best = b; }
@@ -244,7 +245,7 @@ namespace Wildbond
                 bool pylon = b.Def.id == "volt_pylon";
                 if (!pylon && !IsLarder(b)) continue;
                 if (!b.CanWork(d)) continue;
-                if (b != current && HandsAt(b, self) >= b.Def.workerSlots) continue;
+                if (b != current && HandsAt(b, self) >= b.WorkerSlots) continue;
                 if (pylon) return b;
                 best = b;
             }
@@ -253,7 +254,7 @@ namespace Wildbond
 
         /// <summary>A machine that only runs while a kin stays at it: its assigned kin never leaves for other work (anyone else only minds it when idle).</summary>
         public static bool IsPost(Building b) =>
-            b != null && !b.IsProducer && !b.IsStation && !b.Def.isCore && b.Def.workType != WorkType.Hauling && b.Def.workerSlots > 0;
+            b != null && !b.IsProducer && !b.IsStation && !b.Def.isCore && b.Def.workType != WorkType.Hauling && b.WorkerSlots > 0;
 
         /// <summary>Night, the camp has no power, and the kin who could run the pylon are in bed.</summary>
         public bool PowerAsleep
@@ -307,7 +308,7 @@ namespace Wildbond
             foreach (var d in GameManager.I.Party.In(KinLocation.Base))
             {
                 var b = FindBuilding(d.assignedBuilding);
-                if (b != null && b.Def.workerSlots <= 0) d.assignedBuilding = null;
+                if (b != null && b.WorkerSlots <= 0) d.assignedBuilding = null;
             }
         }
 
@@ -470,7 +471,7 @@ namespace Wildbond
         {
             if (b == null) { d.assignedBuilding = null; GameEvents.RaiseBaseChanged(); return true; }
             if (b.Suitability(d) <= 0) { GameEvents.Warn($"{d.DisplayName} can't do {b.Def.workType} work."); return false; }
-            if (b.AssignedCount >= b.Def.workerSlots && d.assignedBuilding != b.Uid) { GameEvents.Warn($"{b.Def.displayName} is fully staffed."); return false; }
+            if (b.AssignedCount >= b.WorkerSlots && d.assignedBuilding != b.Uid) { GameEvents.Warn($"{b.Def.displayName} is fully staffed."); return false; }
             d.assignedBuilding = b.Uid;
             GameEvents.RaiseBaseChanged();
             return true;
@@ -481,7 +482,7 @@ namespace Wildbond
             Building best = null; int bestScore = 0;
             foreach (var b in Buildings)
             {
-                if (b.Def.workerSlots <= 0 || b.AssignedCount >= b.Def.workerSlots) continue;
+                if (b.WorkerSlots <= 0 || b.AssignedCount >= b.WorkerSlots) continue;
                 int s = b.Suitability(d);
                 if (s > bestScore) { bestScore = s; best = b; }
             }
@@ -616,6 +617,7 @@ namespace Wildbond
             if (!assignmentsTidied) { assignmentsTidied = true; TidyAssignments(); }
             float dist = Vector3.Distance(playerPos, CorePosition);
             bool near = dist < actorRange;
+            TickWants(dt, near && dist < Radius + 25f);
             // coming home: after 40 s or more away, the kin at camp welcome you (CreatureActor.CampLife)
             bool inRing = dist < Radius;
             if (inRing && !playerInRing && Time.time - playerLeftAt > 40f)
@@ -735,7 +737,7 @@ namespace Wildbond
                     bool pylon = b.Def.id == "volt_pylon";
                     if ((!pylon && !IsLarder(b)) || !b.CanWork(d)) continue;
                     abstractHands.TryGetValue(b, out int at);
-                    if (at >= b.Def.workerSlots) continue;
+                    if (at >= b.WorkerSlots) continue;
                     call = b;
                     if (pylon) break;
                 }
@@ -755,9 +757,9 @@ namespace Wildbond
                 if (IsPost(home) && home.CanWork(d)) { t = home; bestScore = float.MaxValue; }   // a kin on a post stays on it
                 foreach (var b in Buildings)
                 {
-                    if (b.Def.isCore || b.Def.workType == WorkType.Hauling || b.Def.workerSlots <= 0 || !b.CanWork(d)) continue;
+                    if (b.Def.isCore || b.Def.workType == WorkType.Hauling || b.WorkerSlots <= 0 || !b.CanWork(d)) continue;
                     abstractHands.TryGetValue(b, out int there);
-                    if (there >= b.Def.workerSlots) continue;
+                    if (there >= b.WorkerSlots) continue;
                     float score = TaskScore(d, b, home);
                     if (score > bestScore) { bestScore = score; t = b; }
                 }

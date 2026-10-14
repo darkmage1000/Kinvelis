@@ -75,7 +75,7 @@ namespace Wildbond
                 if (FlatDist(transform.position, b.transform.position) > b.Def.footprint + 1.8f)
                 {
                     State = AIState.Follow;
-                    MoveTo(b.WorkSpot(b.Def.workerSlots), RunSpeed * 0.85f);   // the spot after the assigned crew's
+                    MoveTo(b.WorkSpot(b.WorkerSlots), RunSpeed * 0.85f);   // the spot after the assigned crew's
                     CampHelpStatus = "To " + b.Def.displayName;
                     return true;
                 }

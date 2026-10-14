@@ -114,9 +114,33 @@ namespace Wildbond
                         l.fill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01(fill), 1f);
                     }
                     var bc = l.back.color; bc.a = 0.72f * fade; l.back.color = bc;
-                    var tc = l.text.color; tc.a = fade; l.text.color = tc;
+                    l.text.color = new Color(1f, 1f, 1f, fade);   // (labels are shared with the pink kin-want labels)
                 }
             }
+            // camp kin that want something from you (BaseManager.Upgrades): a pink label over the kin, bar = time left
+            if (bm != null && bm.HasBase && cam != null && gm != null && gm.Player != null && !Caves.InCave)
+                foreach (var a in bm.WorkerActors)
+                {
+                    if (used >= CampLabelMax + 3) break;
+                    if (a == null || !a.IsAlive || a.Data == null || a.Data.campWant == CampWant.None) continue;
+                    Vector3 off = a.Position - gm.Player.Position; off.y = 0f;
+                    float dist = off.magnitude;
+                    if (dist > CampLabelRange + 8f) continue;
+                    Vector3 sp = cam.WorldToScreenPoint(a.Position + Vector3.up * (a.Radius * 2.4f + 0.5f));
+                    if (sp.z < 0.5f) continue;
+                    var l = CampLabelAt(used++);
+                    if (!l.root.gameObject.activeSelf) l.root.gameObject.SetActive(true);
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(safe, sp, canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null, out Vector2 local);
+                    l.root.anchoredPosition = local + new Vector2(0f, Mathf.Sin(Time.unscaledTime * 3f) * 5f);
+                    l.root.localScale = Vector3.one * Mathf.Lerp(0.8f, 1f, Mathf.Clamp01(1f - dist / CampLabelRange));
+                    l.shown = null;
+                    string what = a.Data.campWant == CampWant.Pat ? "Wants a pat!" : a.Data.campWant == CampWant.Snack ? "Wants a snack!" : "Found something!";
+                    l.text.text = $"{a.Data.DisplayName}: {what}";
+                    l.text.color = new Color(1f, 0.8f, 0.9f, 1f);
+                    l.fill.color = new Color(1f, 0.55f, 0.75f);
+                    l.fill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01((a.Data.campWantUntil - Time.time) / BaseManager.WantSeconds), 1f);
+                    var bc = l.back.color; bc.a = 0.78f; l.back.color = bc;
+                }
             for (int i = used; i < campLabels.Count; i++)
                 if (campLabels[i].root.gameObject.activeSelf) campLabels[i].root.gameObject.SetActive(false);
         }
@@ -127,7 +151,7 @@ namespace Wildbond
             string block = b.AtStart ? b.StartBlock() : null;
             if (block != null)
             {
-                text = (b.BufferCount + b.BatchOutput > b.Def.bufferCap ? "Full" : $"Needs {ContentDB.ItemName(b.Def.inputItem)}") + ready;
+                text = (b.BufferCount + b.BatchOutput > b.BufferCap ? "Full" : $"Needs {ContentDB.ItemName(b.Def.inputItem)}") + ready;
                 fill = 0f; col = LabelStuck;
                 return;
             }

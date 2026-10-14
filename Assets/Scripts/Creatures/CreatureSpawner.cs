@@ -164,7 +164,7 @@ namespace Wildbond
                 {
                     var off = Random.insideUnitCircle * 4f;
                     var sp2 = new Vector3(p.x + off.x, 0, p.z + off.y);
-                    var data = CreatureFactory.RollWild(sp, Random.Range(lv.x, lv.y + 1), biome, false);
+                    var data = CreatureFactory.RollWildMaybeEvolved(sp, Random.Range(lv.x, lv.y + 1), biome, false);
                     SpawnActor(data, CreatureMode.Wild, sp2);
                 }
                 return;

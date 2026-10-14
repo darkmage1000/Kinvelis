@@ -107,7 +107,10 @@ namespace Wildbond
                 UIFactory.Size(pic, 80, 80);
                 string el = UIFactory.Col(sp.element1.ToString(), ElementInfo.Color(sp.element1)) + (sp.element2 != Element.Normal && sp.element2 != sp.element1 ? "/" + UIFactory.Col(sp.element2.ToString(), ElementInfo.Color(sp.element2)) : "");
                 bool skull = t.levels[i] >= myLv + DangerSkull.LevelGap;
-                var lb = UIFactory.Label(row.transform, $"<b>{sp.displayName}</b>  {UIFactory.Col($"Lv {t.levels[i]}", skull ? new Color(1f, 0.3f, 0.25f) : Color.white)}{(skull ? UIFactory.Col("  10+ levels over you", new Color(1f, 0.3f, 0.25f)) : "")}\n<size=20>{el}  ·  {UIFactory.Col(sp.rarity.ToString(), RarityInfo.Color(sp.rarity))}</size>", 26, Color.white);
+                int stage = sp.rarity == Rarity.Legendary || sp.bossOnly ? 0 : t.levels[i] >= KinGrowth.Stage2Level ? 2 : t.levels[i] >= KinGrowth.Stage1Level ? 1 : 0;   // tamers evolve their kin (CreatureFactory.EvolveForLevel)
+                var ex = stage >= 2 ? sp.FormAt(2) : null;
+                if (ex != null && ex.element2 != Element.Normal && ex.element2 != sp.element1) el = UIFactory.Col(sp.element1.ToString(), ElementInfo.Color(sp.element1)) + "/" + UIFactory.Col(ex.element2.ToString(), ElementInfo.Color(ex.element2));
+                var lb = UIFactory.Label(row.transform, $"<b>{sp.NameAt(stage)}</b>  {UIFactory.Col($"Lv {t.levels[i]}", skull ? new Color(1f, 0.3f, 0.25f) : Color.white)}{(skull ? UIFactory.Col("  10+ levels over you", new Color(1f, 0.3f, 0.25f)) : "")}\n<size=20>{el}  ·  {UIFactory.Col(sp.rarity.ToString(), RarityInfo.Color(sp.rarity))}</size>", 26, Color.white);
                 lb.supportRichText = true; UIFactory.Size(lb, 88, 800);
             }
             Header(list, "Prize", 28);

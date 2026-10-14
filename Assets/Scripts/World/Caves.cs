@@ -474,7 +474,7 @@ namespace Wildbond
             {
                 float a = k * 2.094f + 0.5f;
                 var p = r.ambushPos + new Vector3(Mathf.Cos(a) * 5.5f, 0f, Mathf.Sin(a) * 5.5f);
-                var d = CreatureFactory.RollWild(r.ambushSp, Random.Range(e.minLv, e.maxLv + 1), e.biome, false);
+                var d = CreatureFactory.RollWildMaybeEvolved(r.ambushSp, Random.Range(e.minLv, e.maxLv + 1), e.biome, false);
                 var act = CreatureSpawner.I.SpawnActor(d, CreatureMode.Wild, p);
                 act.Persistent = true;
                 act.Provoke(pl);
@@ -1037,7 +1037,7 @@ namespace Wildbond
                                         Origin.y + (rm.yMin + 1.5f + (float)rng.NextDouble() * (rm.height - 3f)) * Cell);
                     for (int k = 0; k < n; k++)
                     {
-                        var d = CreatureFactory.RollWild(sp, rng.Next(e.minLv, e.maxLv + 1), e.biome, false);
+                        var d = CreatureFactory.RollWildMaybeEvolved(sp, rng.Next(e.minLv, e.maxLv + 1), e.biome, false);
                         var a = CreatureSpawner.I.SpawnActor(d, CreatureMode.Wild, c + new Vector3(k * 1.8f, 0f, k * 1.2f));
                         a.Persistent = true;
                         r.kin.Add(a);
@@ -1063,7 +1063,7 @@ namespace Wildbond
                 r.bossData = ld;
                 for (int k = -1; k <= 1; k += 2)
                 {
-                    var d = CreatureFactory.RollWild(lsp, rng.Next(e.minLv, e.maxLv + 1), e.biome, false);
+                    var d = CreatureFactory.RollWildMaybeEvolved(lsp, rng.Next(e.minLv, e.maxLv + 1), e.biome, false);
                     var a = CreatureSpawner.I.SpawnActor(d, CreatureMode.Wild, bc + new Vector3(k * 3.2f, 0f, -2f));
                     a.Persistent = true;
                     r.kin.Add(a);

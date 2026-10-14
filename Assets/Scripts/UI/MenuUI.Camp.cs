@@ -235,7 +235,7 @@ namespace Wildbond
                 var light = UIFactory.Panel(card.transform, "Light", HealthColor(health), UIFactory.Circle);
                 light.type = Image.Type.Simple;
                 light.rectTransform.Place(new Vector2(1, 1), new Vector2(1, 1), new Vector2(-14, -14), new Vector2(26, 26));
-                var name = UIFactory.Label(card.transform, $"<b>{b.Def.displayName}</b>\n<size=19>{status}</size>", 27, Color.white, TextAnchor.UpperLeft);
+                var name = UIFactory.Label(card.transform, $"<b>{b.Def.displayName}</b>{(b.Upgradable ? $"  <size=20>{UIFactory.Col($"Lv {b.Level}", b.Level > 1 ? new Color(1f, 0.82f, 0.35f) : UIFactory.TextDim)}</size>" : "")}\n<size=19>{status}</size>", 27, Color.white, TextAnchor.UpperLeft);
                 name.supportRichText = true;
                 name.rectTransform.Place(new Vector2(0, 1), new Vector2(0, 1), new Vector2(140, -12), new Vector2(320, 110));
                 name.color = Color.white;
@@ -243,19 +243,19 @@ namespace Wildbond
                 // output buffer bar
                 if (b.IsProducer)
                 {
-                    var buf = UIFactory.Bar(card.transform, b.BufferCount >= b.Def.bufferCap ? Bad : UIFactory.Accent, out var bf);
+                    var buf = UIFactory.Bar(card.transform, b.BufferCount >= b.BufferCap ? Bad : UIFactory.Accent, out var bf);
                     buf.rectTransform.Place(new Vector2(0, 1), new Vector2(0, 1), new Vector2(140, -126), new Vector2(340, 18));
-                    bf.SetFill(b.BufferCount / (float)b.Def.bufferCap);
-                    var bl = UIFactory.Label(card.transform, $"{ContentDB.ItemName(b.OutputItem)} {b.BufferCount}/{b.Def.bufferCap}", 18, UIFactory.TextDim);
+                    bf.SetFill(b.BufferCount / (float)b.BufferCap);
+                    var bl = UIFactory.Label(card.transform, $"{ContentDB.ItemName(b.OutputItem)} {b.BufferCount}/{b.BufferCap}", 18, UIFactory.TextDim);
                     bl.rectTransform.Place(new Vector2(0, 1), new Vector2(0, 1), new Vector2(140, -148), new Vector2(340, 24));
                 }
 
                 // worker slots
-                if (b.Def.workerSlots > 0)
+                if (b.WorkerSlots > 0)
                 {
                     var slots = UIFactory.Rect(card.transform, "Slots").Place(new Vector2(0, 0), new Vector2(0, 0), new Vector2(12, 82), new Vector2(476, 80));
                     var workers = new List<CreatureData>(bm.WorkersAt(b));
-                    for (int i = 0; i < b.Def.workerSlots; i++)
+                    for (int i = 0; i < b.WorkerSlots; i++)
                     {
                         var s = UIFactory.Panel(slots, "Slot", new Color(0, 0, 0, 0.3f));
                         s.rectTransform.Place(new Vector2(0, 0), new Vector2(0, 0), new Vector2(i * 88, 0), new Vector2(78, 78));
@@ -291,6 +291,12 @@ namespace Wildbond
                 if (Crops.IsPlot(b)) UIFactory.Button(act, "CROP", () => CropPicker(bb), new Color(0.3f, 0.5f, 0.3f), 22);
                 if (b.Def.feeds || (b.BoxLen > 0 && !b.Def.isCore)) UIFactory.Button(act, b.Def.feeds ? "FEED BOX" : "OPEN", () => OpenBox(bb), new Color(0.3f, 0.36f, 0.5f), 22);
                 if (b.Def.id == "hatchery") UIFactory.Button(act, "HATCHERY", () => OpenHatchery(), new Color(0.5f, 0.38f, 0.25f), 22);
+                if (b.Upgradable && b.Level < Building.MaxLevel)
+                {
+                    var upCost = BaseManager.StructureUpgradeCost(b);
+                    UIFactory.Button(act, "UPGRADE", () => Confirm($"Upgrade the {bb.Def.displayName}?", BaseManager.UpgradeText(bb) + "\n\nCost: " + Ingredients(BaseManager.StructureUpgradeCost(bb)),
+                        () => { bm.TryUpgradeStructure(bb); Rebuild(); }), ItemSources.Has(upCost) ? new Color(0.55f, 0.45f, 0.2f) : new Color(0.35f, 0.33f, 0.3f), 20);
+                }
                 if (!b.Def.isCore) UIFactory.Button(act, "DEMOLISH", () => Confirm("Demolish?", $"Demolish {bb.Def.displayName}? Half the materials go to storage.", () => { bm.Demolish(bb); Rebuild(); }), new Color(0.42f, 0.24f, 0.24f), 20);
             }
             // add-building card
@@ -330,7 +336,7 @@ namespace Wildbond
         void AssignPicker(Building b)
         {
             var bm = BaseManager.I;
-            ShowModal($"{b.Def.displayName} - {b.Def.workType} ({new List<CreatureData>(bm.WorkersAt(b)).Count}/{b.Def.workerSlots})", list =>
+            ShowModal($"{b.Def.displayName} - {b.Def.workType} ({new List<CreatureData>(bm.WorkersAt(b)).Count}/{b.WorkerSlots})", list =>
             {
                 var current = new List<CreatureData>(bm.WorkersAt(b));
                 foreach (var d in current)
@@ -490,7 +496,7 @@ namespace Wildbond
             {
                 UIFactory.Size(UIFactory.Button(list, "Unassign (idle)", () => { bm.Assign(d, null); CloseModal(); Rebuild(); }, new Color(0.4f, 0.3f, 0.3f), 24), 70);
                 var options = new List<Building>();
-                foreach (var b in bm.Buildings) if (b.Def.workerSlots > 0 && b.Suitability(d) > 0) options.Add(b);
+                foreach (var b in bm.Buildings) if (b.WorkerSlots > 0 && b.Suitability(d) > 0) options.Add(b);
                 options.Sort((x, y) => x.Suitability(d) != y.Suitability(d) ? y.Suitability(d).CompareTo(x.Suitability(d)) : string.CompareOrdinal(x.Def.displayName, y.Def.displayName));
                 foreach (var b in options)
                 {
@@ -501,9 +507,9 @@ namespace Wildbond
                     var row = UIFactory.HRow(list, 90, 12);
                     var ic = UIFactory.Rect(row.transform, "I").gameObject.AddComponent<Image>();
                     ic.sprite = ItemIcons.Get("bld_" + b.Def.id); ic.preserveAspect = true; UIFactory.Size(ic, 80, 80);
-                    var t = UIFactory.Label(row.transform, $"<b>{b.Def.displayName}</b>  {UIFactory.Col(new string('*', lvl), new Color(1f, 0.85f, 0.3f))}\n<size=19>{b.Def.workType} · {n}/{b.Def.workerSlots} workers{(here ? " · current" : "")}</size>", 26, Color.white);
+                    var t = UIFactory.Label(row.transform, $"<b>{b.Def.displayName}</b>  {UIFactory.Col(new string('*', lvl), new Color(1f, 0.85f, 0.3f))}\n<size=19>{b.Def.workType} · {n}/{b.WorkerSlots} workers{(here ? " · current" : "")}</size>", 26, Color.white);
                     t.supportRichText = true; UIFactory.Size(t, 84, 560);
-                    bool full = n >= b.Def.workerSlots && !here;
+                    bool full = n >= b.WorkerSlots && !here;
                     UIFactory.Size(UIFactory.Button(row.transform, here ? "HERE" : (full ? "FULL" : "ASSIGN"), here || full ? (Action)null : () => { if (bm.Assign(d, bb)) { CloseModal(); Rebuild(); } },
                         here || full ? new Color(0.3f, 0.3f, 0.32f) : new Color(0.25f, 0.5f, 0.42f), 22), 76, 180);
                 }

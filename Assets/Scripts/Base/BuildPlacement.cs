@@ -132,7 +132,7 @@ namespace Wildbond
             // Auto-staff new buildings with idle base kin
             foreach (var d in GameManager.I.Party.In(KinLocation.Base))
             {
-                if (b.Def.workerSlots <= 0 || b.AssignedCount >= b.Def.workerSlots) break;
+                if (b.WorkerSlots <= 0 || b.AssignedCount >= b.WorkerSlots) break;
                 if (d.assignedBuilding == null && b.Suitability(d) > 0) d.assignedBuilding = b.Uid;
             }
             if (!free && !ItemSources.Has(Current.cost)) Cancel();

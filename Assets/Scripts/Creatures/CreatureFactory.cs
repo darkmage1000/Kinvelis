@@ -15,6 +15,33 @@ namespace Wildbond
         /// <summary>Glintstone relics (outer lands) raise shimmer odds.</summary>
         static float RelicShimmer => GameManager.I != null && GameManager.I.Player != null ? GameManager.I.Player.Stats.ShimmerMul : 1f;
 
+        /// <summary>Chance a wild kin past Lv 20 is Ascended; an Exalted one (Lv 35+) needs the roll twice.</summary>
+        public const float WildEvolveChance = 0.35f;
+
+        /// <summary>
+        /// A kin at the evolution levels may already have evolved: wild ones sometimes (chance per stage, so Exalted is
+        /// rarer), a tamer's kin always (chance 1). Never legendaries, bosses, partners or alphas (an alpha is big enough).
+        /// Returns the stage it ended on.
+        /// </summary>
+        public static int EvolveForLevel(CreatureData d, float chance)
+        {
+            var sp = d.Species;
+            if (sp == null || sp.rarity == Rarity.Legendary || sp.bossOnly || sp.starter || d.alpha) return d.stage;
+            int max = d.level >= KinGrowth.Stage2Level ? 2 : d.level >= KinGrowth.Stage1Level ? 1 : 0;
+            int st = 0;
+            while (st < max && (chance >= 1f || Random.value < chance)) st++;
+            if (st > d.stage) { d.stage = st; d.ResetLearnset(); }
+            return d.stage;
+        }
+
+        /// <summary>RollWild + the wild evolution roll: what the open world, caves, nests, herds and raids spawn.</summary>
+        public static CreatureData RollWildMaybeEvolved(SpeciesDef sp, int level, BiomeId biome, bool alpha)
+        {
+            var d = RollWild(sp, level, biome, alpha);
+            EvolveForLevel(d, WildEvolveChance);
+            return d;
+        }
+
         public static CreatureData RollWild(SpeciesDef sp, int level, BiomeId biome, bool alpha)
         {
             var d = new CreatureData

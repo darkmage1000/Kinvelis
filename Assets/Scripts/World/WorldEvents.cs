@@ -206,7 +206,7 @@ namespace Wildbond
             for (int i = 0; i < n; i++)
             {
                 var off = Random.insideUnitCircle * 6f;
-                var d = CreatureFactory.RollWild(sp, Random.Range(lv.x, lv.y + 1), biome, false);
+                var d = CreatureFactory.RollWildMaybeEvolved(sp, Random.Range(lv.x, lv.y + 1), biome, false);
                 var a = CreatureSpawner.I.SpawnActor(d, CreatureMode.Wild, from + new Vector3(off.x, 0, off.y));
                 a.Persistent = true;
                 a.Migrate(to + new Vector3(off.x, 0, off.y));

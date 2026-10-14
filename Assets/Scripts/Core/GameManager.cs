@@ -311,6 +311,7 @@ namespace Wildbond
             bld.BufferItem = b.bufferItem;
             bld.BufferCount = b.bufferCount;
             bld.Crop = b.crop;
+            bld.Level = bld.Upgradable ? Mathf.Clamp(b.level, 1, Building.MaxLevel) : 1;   // 0 in saves from before levels
             bld.Filter = (BoxFilter)Mathf.Clamp(b.filter, 0, BaseManager.FilterNames.Length - 1);
             if (bld.Feed != null)
             {
@@ -728,6 +729,9 @@ namespace Wildbond
                 InteractPrompt = waystones.IsActive(stone) ? "TRAVEL" : "ATTUNE";
                 return;
             }
+            // a camp kin that wants something from you (BaseManager.Upgrades): answered before the structure behind it
+            var wanting = baseMgr.HasBase ? baseMgr.WantNear(Player.Position, 2.4f) : null;
+            if (wanting != null) { InteractPrompt = BaseManager.WantPrompt(wanting.Data.campWant); caveAction = () => baseMgr.AnswerWant(wanting); return; }
             var b = baseMgr.NearestInteractable(Player.Position, 2.2f);
             if (b == null) { TryPetPrompt(); return; }
             interactBuilding = b;

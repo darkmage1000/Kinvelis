@@ -316,6 +316,12 @@ html: `
 <li>The Hearthstone's upgrade, AUTO-ASSIGN and the job list: at the Hearthstone.</li>
 </ul>
 
+<h2 id="levels">Structure levels</h2>
+<p>Workshops and producers (the Workbench, Campfire, Smelter, Crop Plots, Lumber Mill and the rest) can be upgraded twice, standing at them: <b>MANAGE &gt; UPGRADE</b>. Each level makes work there 25% faster, adds a worker place and a bigger output shelf, and puts a pennant on a post beside it. Level 2 costs the structure's own materials again plus 3 ingots; level 3 twice its materials, 6 ingots and 3 Rime Crystal.</p>
+
+<h2 id="wants">Kin that want something</h2>
+<p>While you are in camp, every few minutes one of your camp kin wants something from you, shown by a pink label over it: <b>a pat</b>, <b>a snack</b> (any food in your bag that isn't a meal) or <b>a gift</b> it found (something from its job, now and then a Prism Shard or Tether Seeds). Walk up and answer it. A pat or a snack cheers it up: it works 25% faster for ten minutes, and its bond grows. If you miss one, nothing bad happens.</p>
+
 <h2 id="hearth">The Hearthstone</h2>
 <ul>
 <li>Place it with <b>BUILD</b>. You get one, so choose somewhere flat with trees and rock nearby.</li>

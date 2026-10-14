@@ -38,6 +38,18 @@ namespace Wildbond
         public bool IsStation => Def.station != CraftStation.Hand;
         public bool IsProducer => !string.IsNullOrEmpty(Def.outputItem);
 
+        // ---- structure level (upgraded at the structure: MANAGE > UPGRADE, BaseManager.Upgrades) ----
+        public const int MaxLevel = 3;
+        /// <summary>1-3. Producers and stations only; saved as BuildingSave.level.</summary>
+        public int Level = 1;
+        public bool Upgradable => !Def.isCore && (IsProducer || IsStation);
+        /// <summary>Worker places: one more per level above 1 (structures that take workers at all).</summary>
+        public int WorkerSlots => Def.workerSlots > 0 ? Def.workerSlots + (Level - 1) : 0;
+        /// <summary>Output shelf: bigger with each level.</summary>
+        public int BufferCap => Def.bufferCap * Level;
+        /// <summary>Work done here: +25% per level above 1.</summary>
+        public float LevelMul => 1f + 0.25f * (Level - 1);
+
         // ---- a producer makes a batch in stages (WorkStages): Progress is the work or the seconds put into the current one ----
         /// <summary>Which step of the batch this producer is on (index into Stages).</summary>
         public int Stage;
@@ -81,7 +93,7 @@ namespace Wildbond
         /// <summary>Why a new batch can't start, or null. (Room for the output, and the inputs in storage.)</summary>
         public string StartBlock()
         {
-            if (BufferCount + BatchOutput > Def.bufferCap) return "Output full - collect it or add haulers";
+            if (BufferCount + BatchOutput > BufferCap) return "Output full - collect it or add haulers";
             if (!string.IsNullOrEmpty(Def.inputItem) && BaseManager.I.Storage.Count(Def.inputItem) < BatchInput)
                 return $"Needs {BatchInput} {ContentDB.ItemName(Def.inputItem)} in storage";
             return null;
@@ -243,7 +255,7 @@ namespace Wildbond
             // the batch is done
             Stage = 0;
             BufferItem = OutputItem;
-            BufferCount = Mathf.Min(Def.bufferCap, BufferCount + BatchOutput);
+            BufferCount = Mathf.Min(BufferCap, BufferCount + BatchOutput);
             if (Def.id == "forage_hut")
                 for (int i = 0; i < Batch; i++) if (Random.value < 0.25f) BaseManager.I.Storage.Add("berry", 1);
         }
@@ -256,7 +268,7 @@ namespace Wildbond
             var bm = BaseManager.I;
             if (AtStart)
             {
-                if (BufferCount + BatchOutput > Def.bufferCap) return "FULL";
+                if (BufferCount + BatchOutput > BufferCap) return "FULL";
                 if (!string.IsNullOrEmpty(Def.inputItem))
                 {
                     int need = BatchInput, stored = bm.Storage.Count(Def.inputItem);
@@ -346,9 +358,47 @@ namespace Wildbond
             if (l != null) { l.range = 12f + level * 3f; l.intensity = 1.6f + level * 0.25f; }
         }
 
+        int pennantsShown = 1;
+        GameObject pennantGo;
+        static readonly Dictionary<int, Mesh> pennantMeshes = new Dictionary<int, Mesh>();
+
+        /// <summary>A gold pennant on a post for each level above 1 (key: level and footprint).</summary>
+        void ShowPennants()
+        {
+            pennantsShown = Level;
+            if (pennantGo != null) Destroy(pennantGo);
+            pennantGo = null;
+            if (Level <= 1) return;
+            int key = Level * 1000 + Mathf.RoundToInt(Def.footprint * 100f);
+            if (!pennantMeshes.TryGetValue(key, out var mesh))
+            {
+                var mb = new MeshBuilder();
+                Color32 wood = new Color(0.45f, 0.3f, 0.18f), gold = new Color(1f, 0.8f, 0.3f), red = new Color(0.75f, 0.2f, 0.2f);
+                float r = Def.footprint * 0.95f + 0.25f;
+                for (int i = 0; i < Level - 1; i++)
+                {
+                    float side = i == 0 ? 1f : -1f;
+                    var post = new Vector3(side * r * 0.72f, 0f, -r * 0.72f);
+                    mb.Cylinder(Matrix4x4.TRS(post + Vector3.up * 0.95f, Quaternion.identity, new Vector3(0.07f, 1.9f, 0.07f)), wood, wood, 6, 1f, true);
+                    mb.Sphere(Matrix4x4.TRS(post + Vector3.up * 1.92f, Quaternion.identity, Vector3.one * 0.12f), gold, 6, 4);
+                    mb.Box(Matrix4x4.TRS(post + new Vector3(side * 0.2f, 1.62f, 0f), Quaternion.identity, new Vector3(0.36f, 0.26f, 0.03f)), i == 0 ? gold : red);
+                    mb.Box(Matrix4x4.TRS(post + new Vector3(side * 0.2f, 1.62f, 0.02f), Quaternion.identity, new Vector3(0.14f, 0.1f, 0.03f)), i == 0 ? red : gold);
+                }
+                mesh = mb.ToMesh("pennants_" + key);
+                pennantMeshes[key] = mesh;
+            }
+            pennantGo = new GameObject("Pennants");
+            pennantGo.transform.SetParent(transform, false);
+            pennantGo.AddComponent<MeshFilter>().sharedMesh = mesh;
+            var mr = pennantGo.AddComponent<MeshRenderer>();
+            mr.sharedMaterial = RenderAssets.Building;
+            mr.shadowCastingMode = ShadowCastingMode.Off;
+        }
+
         void Update()
         {
             if (Def != null && Def.isCore && BaseManager.I != null && BaseManager.I.CoreLevel != tierShown) ShowTier(BaseManager.I.CoreLevel);
+            if (Def != null && Level != pennantsShown) ShowPennants();
             if (pulse > 0f)
             {
                 pulse = Mathf.Max(0f, pulse - Time.deltaTime * 4f);

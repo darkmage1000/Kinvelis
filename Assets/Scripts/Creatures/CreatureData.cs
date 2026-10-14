@@ -175,6 +175,9 @@ namespace Wildbond
         public static readonly float[] BondThresholds = { 0f, 20f, 60f, 120f, 200f, 300f };
         public const int MaxBond = 5;
         [NonSerialized] public float lastPet = -999f, lastFeed = -999f, lastStand = -999f;
+        /// <summary>Camp life (BaseManager.Upgrades): what this camp kin wants from you right now, until when, and how long it stays cheered up.</summary>
+        [NonSerialized] public CampWant campWant;
+        [NonSerialized] public float campWantUntil, cheerUntil = -999f;
 
         public int BondLevel
         {

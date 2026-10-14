@@ -157,7 +157,7 @@ namespace Wildbond
                 if (pool.Count == 0) return false;
                 var pick = pool[Random.Range(0, pool.Count)];
                 var lv = BiomeInfo.LevelRange(biome, p);
-                var data = CreatureFactory.RollWild(pick, lv.y + 2, biome, false);
+                var data = CreatureFactory.RollWildMaybeEvolved(pick, lv.y + 2, biome, false);
                 var mother = CreatureSpawner.I.SpawnActor(data, CreatureMode.Wild, p + new Vector3(1.8f, 0f, 1.2f));
                 if (mother == null) return false;
                 mother.Persistent = true;
