@@ -48,6 +48,31 @@ namespace Wildbond
             hatchStage.Begin(d);
             var sp = d.Species;
 
+            var pageBg = ShowFrame("Something stirs inside...", $"An egg from {e.parents}  ·  tap to hurry it along", 210, out var list);
+            FillHatchPage(list, d, e.parents);
+
+            hatchWhere = UIFactory.Rect(pageBg, "Where");
+            hatchWhere.Anchors(new Vector2(0, 0), new Vector2(1, 0), new Vector2(16, 112), new Vector2(-16, 196));
+            var hl = hatchWhere.gameObject.AddComponent<HorizontalLayoutGroup>();
+            hl.spacing = 10; hl.childControlHeight = true; hl.childControlWidth = true; hl.childForceExpandWidth = true; hl.childForceExpandHeight = true;
+            FillHatchWhere();
+
+            var end = UIFactory.Rect(pageBg, "End");
+            end.Anchors(new Vector2(0, 0), new Vector2(1, 0), new Vector2(16, 16), new Vector2(-16, 100));
+            var el = end.gameObject.AddComponent<HorizontalLayoutGroup>();
+            el.spacing = 10; el.childControlHeight = true; el.childControlWidth = true; el.childForceExpandWidth = true; el.childForceExpandHeight = true;
+            UIFactory.Button(end, "KIN CARD", () => ShowKinCard(d), new Color(0.3f, 0.42f, 0.7f), 26);
+            var next = KinGrowth.FirstReady();
+            if (next != null) UIFactory.Button(end, "NEXT EGG", () => ShowHatch(KinGrowth.FirstReady() ?? next), new Color(0.65f, 0.45f, 0.2f), 26);
+            UIFactory.Button(end, "DONE", () => { CloseModal(); Rebuild(); }, new Color(0.2f, 0.55f, 0.42f), 26);
+
+            hatchFlash.transform.SetAsLastSibling();
+            SynthAudio.Play(Sfx.Summon, 0.7f, 0.8f);
+        }
+
+        /// <summary>The parts both shows share: backdrop, stage picture (tap = hurry), title and subtitle over it, the page (faded in after the burst) and the flash.</summary>
+        RectTransform ShowFrame(string title, string sub, float bottomRoom, out RectTransform list)
+        {
             var bg = UIFactory.Panel(panel.transform, "Hatch", new Color(0.02f, 0.03f, 0.07f, 1f));
             bg.rectTransform.Stretch();
             modal = bg.gameObject;
@@ -62,12 +87,12 @@ namespace Wildbond
             tap.transition = Selectable.Transition.None;
             tap.onClick.AddListener(() => hatchStage.Skip());
 
-            hatchTitle = UIFactory.Label(frame.transform, "Something stirs inside...", 54, Color.white, TextAnchor.MiddleCenter, FontStyle.Bold);
+            hatchTitle = UIFactory.Label(frame.transform, title, 54, Color.white, TextAnchor.MiddleCenter, FontStyle.Bold);
             hatchTitle.supportRichText = true;
             hatchTitle.rectTransform.Place(new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -24), new Vector2(980, 80));
             hatchTitle.raycastTarget = false;
             var sh = hatchTitle.gameObject.AddComponent<Outline>(); sh.effectColor = new Color(0, 0, 0, 0.8f); sh.effectDistance = new Vector2(3, -3);
-            hatchSub = UIFactory.Label(frame.transform, $"An egg from {e.parents}  ·  tap to hurry it along", 26, new Color(1f, 1f, 1f, 0.75f), TextAnchor.MiddleCenter);
+            hatchSub = UIFactory.Label(frame.transform, sub, 26, new Color(1f, 1f, 1f, 0.75f), TextAnchor.MiddleCenter);
             hatchSub.supportRichText = true;
             hatchSub.rectTransform.Place(new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 26), new Vector2(980, 90));
             hatchSub.raycastTarget = false;
@@ -78,29 +103,12 @@ namespace Wildbond
             pageBg.rectTransform.Place(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(520, 0), new Vector2(780, 1000));
             hatchPage = pageBg.gameObject.AddComponent<CanvasGroup>();
             hatchPage.alpha = 0f; hatchPage.interactable = false; hatchPage.blocksRaycasts = false;
-            var list = UIFactory.ScrollList(pageBg.transform, out _);
-            ((RectTransform)list.parent).Anchors(Vector2.zero, Vector2.one, new Vector2(16, 210), new Vector2(-16, -16));
-            FillHatchPage(list, d, e.parents);
-
-            hatchWhere = UIFactory.Rect(pageBg.transform, "Where");
-            hatchWhere.Anchors(new Vector2(0, 0), new Vector2(1, 0), new Vector2(16, 112), new Vector2(-16, 196));
-            var hl = hatchWhere.gameObject.AddComponent<HorizontalLayoutGroup>();
-            hl.spacing = 10; hl.childControlHeight = true; hl.childControlWidth = true; hl.childForceExpandWidth = true; hl.childForceExpandHeight = true;
-            FillHatchWhere();
-
-            var end = UIFactory.Rect(pageBg.transform, "End");
-            end.Anchors(new Vector2(0, 0), new Vector2(1, 0), new Vector2(16, 16), new Vector2(-16, 100));
-            var el = end.gameObject.AddComponent<HorizontalLayoutGroup>();
-            el.spacing = 10; el.childControlHeight = true; el.childControlWidth = true; el.childForceExpandWidth = true; el.childForceExpandHeight = true;
-            UIFactory.Button(end, "KIN CARD", () => ShowKinCard(d), new Color(0.3f, 0.42f, 0.7f), 26);
-            var next = KinGrowth.FirstReady();
-            if (next != null) UIFactory.Button(end, "NEXT EGG", () => ShowHatch(KinGrowth.FirstReady() ?? next), new Color(0.65f, 0.45f, 0.2f), 26);
-            UIFactory.Button(end, "DONE", () => { CloseModal(); Rebuild(); }, new Color(0.2f, 0.55f, 0.42f), 26);
-
+            list = UIFactory.ScrollList(pageBg.transform, out _);
+            ((RectTransform)list.parent).Anchors(Vector2.zero, Vector2.one, new Vector2(16, bottomRoom), new Vector2(-16, -16));
             hatchFlash = UIFactory.Panel(bg.transform, "Flash", new Color(1f, 1f, 1f, 0f));
             hatchFlash.rectTransform.Stretch();
             hatchFlash.raycastTarget = false;
-            SynthAudio.Play(Sfx.Summon, 0.7f, 0.8f);
+            return pageBg.rectTransform;
         }
 
         void FillHatchPage(RectTransform list, CreatureData d, string parents)
@@ -190,8 +198,16 @@ namespace Wildbond
             int ev = hatchStage.Event;
             if (ev >= 0 && ev < 3)
             {
-                SynthAudio.Play(Sfx.Shake, 0.85f + 0.15f * ev, 0.9f);
-                hatchTitle.text = ev == 0 ? "It moved!" : ev == 1 ? "It's cracking..." : "Here it comes!";
+                if (hatchStage.Evolving)
+                {
+                    SynthAudio.Play(Sfx.Summon, 0.9f + 0.2f * ev, 0.9f);
+                    hatchTitle.text = ev == 0 ? $"{d.Species.displayName} is glowing!" : ev == 1 ? "It's changing..." : "Almost there!";
+                }
+                else
+                {
+                    SynthAudio.Play(Sfx.Shake, 0.85f + 0.15f * ev, 0.9f);
+                    hatchTitle.text = ev == 0 ? "It moved!" : ev == 1 ? "It's cracking..." : "Here it comes!";
+                }
             }
             if (hatchStage.Burst && !hatchRevealed)   // not keyed to the burst frame, so a long frame can never skip it
             {
@@ -200,6 +216,7 @@ namespace Wildbond
                 SynthAudio.Play(Sfx.LevelUp, d.shimmer ? 1.25f : 1f);
                 hatchFanfare = true; hatchFanfareAt = hatchStage.T + 0.55f;
                 var sp = d.Species;
+                if (hatchStage.Evolving) { RevealEvolve(d); goto revealed; }
                 hatchTitle.text = $"It's {(StartsWithVowel(sp.displayName) ? "an" : "a")} {UIFactory.Col(sp.displayName, Color.Lerp(RarityInfo.Color(sp.rarity), Color.white, 0.25f))}!";
                 var tags = new List<string>();
                 if (d.shimmer) tags.Add(UIFactory.Col($"A SHIMMER! {Shimmer.NameFor(sp, d.shimmerVariant)} coat", new Color(1f, 0.85f, 0.35f)));
@@ -207,6 +224,7 @@ namespace Wildbond
                 tags.Add($"{UIFactory.Col(sp.rarity.ToString(), RarityInfo.Color(sp.rarity))}  ·  best at {Aptitude.Names[d.spec]} ({Aptitude.Grade(d.apt[d.spec])})");
                 hatchSub.text = string.Join("\n", tags);
                 hatchSub.fontSize = 30;
+                revealed:;
             }
             if (hatchFanfare && hatchStage.T >= hatchFanfareAt)
             {

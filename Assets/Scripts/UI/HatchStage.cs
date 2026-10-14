@@ -34,8 +34,12 @@ namespace Wildbond
         readonly Mesh fxMesh, shardMesh;
         Color bg, rarityCol, elCol, el2Col, shellCol, spotCol;
         bool shimmer;
-        CreatureRig rig;
-        float yaw, focusY, gap, raysBack;
+        CreatureRig rig, oldRig;
+        readonly Transform oldRoot;
+        /// <summary>True = the evolution show (the old form glows, spins and flickers into the new one) instead of an egg.</summary>
+        public bool Evolving { get; private set; }
+        float spinAngle, flickerPhase;
+        float yaw, focusY, gap, raysBack, kinRadius;
         Vector3 eggFocus, eggCam, kinFocus, kinCam;
         Vector3 topVel, topSpin;
         readonly System.Random rnd = new System.Random();
@@ -71,6 +75,7 @@ namespace Wildbond
             bottom = Child("Bottom", eggRoot, RenderAssets.Creature, out bottomF);
             top = Child("Top", eggRoot, RenderAssets.Creature, out topF);
             kinRoot = new GameObject("Kin").transform; kinRoot.SetParent(root.transform, false);
+            oldRoot = new GameObject("OldForm").transform; oldRoot.SetParent(root.transform, false);
             fxMesh = new Mesh { name = "HatchFx" }; fxMesh.MarkDynamic();
             Child("Fx", root.transform, RenderAssets.ParticleAdd, out var fxF).localPosition = Vector3.zero; fxF.sharedMesh = fxMesh;
             shardMesh = new Mesh { name = "HatchShards" }; shardMesh.MarkDynamic();
@@ -92,10 +97,40 @@ namespace Wildbond
         }
 
         // ============================================================ SET UP
+        /// <summary>The evolution show for a kin that has just gone up a stage (d.stage is already the new one).</summary>
+        public void BeginEvolve(CreatureData d)
+        {
+            Begin(d);
+            Evolving = true;
+            eggRoot.gameObject.SetActive(false);
+            int was = d.stage;
+            d.stage = Mathf.Max(0, was - 1);
+            oldRig = ModelBuilder.Build(d, oldRoot, RenderAssets.Creature);
+            d.stage = was;
+            oldRig.Animate(0.016f, 0f, false, false);
+            foreach (var t in oldRoot.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = Layer;
+            oldRoot.gameObject.SetActive(true);
+            oldRoot.localScale = Vector3.zero; oldRoot.localRotation = Quaternion.identity;
+            kinRoot.gameObject.SetActive(false);
+            // one framing all the way through: the new, bigger form, a little wider (it rises and pulses) and centred
+            Vector3 off = kinCam - kinFocus;
+            kinFocus += Vector3.up * kinRadius * 0.16f;
+            kinCam = kinFocus + off * 1.15f;
+            eggCam = kinCam; eggFocus = kinFocus;
+            PlaceCamera(0f);
+            spinAngle = 0f; flickerPhase = 0f;
+            bg = Color.Lerp(new Color(0.06f, 0.04f, 0.14f), elCol, 0.14f);
+            cam.backgroundColor = bg;
+        }
+
         public void Begin(CreatureData d)
         {
             var sp = d.Species;
             root.SetActive(true);
+            Evolving = false;
+            if (oldRig != null && oldRig.Model != null) Object.Destroy(oldRig.Model.gameObject);
+            oldRig = null;
+            kinRoot.gameObject.SetActive(true);
             T = 0f; Event = -1; gap = 0f; yaw = 0f;
             sparks.Clear(); shards.Clear();
             shimmer = d.shimmer;
@@ -132,6 +167,7 @@ namespace Wildbond
             float radius = Mathf.Max(0.5f, b.extents.magnitude * 0.9f);
             focusY = Mathf.Max(0.25f, b.center.y - Origin.y) - radius * 0.12f;
             float dist = radius / Mathf.Tan(13f * Mathf.Deg2Rad);
+            kinRadius = radius;
             kinFocus = Origin + new Vector3(0f, focusY, 0f);
             kinCam = kinFocus + new Vector3(0f, radius * 0.3f, dist);
             eggFocus = Origin + new Vector3(0f, EggH * 0.52f, 0f);
@@ -160,6 +196,8 @@ namespace Wildbond
             root.SetActive(false);
             if (rig != null && rig.Model != null) Object.Destroy(rig.Model.gameObject);
             rig = null;
+            if (oldRig != null && oldRig.Model != null) Object.Destroy(oldRig.Model.gameObject);
+            oldRig = null;
         }
 
         // ============================================================ PLAY
@@ -169,10 +207,10 @@ namespace Wildbond
             float was = T;
             T += dt;
             Event = -1;
-            for (int k = 0; k < Knocks.Length; k++) if (was < Knocks[k] && T >= Knocks[k]) { Event = k; Knock(k); }
+            for (int k = 0; k < Knocks.Length; k++) if (was < Knocks[k] && T >= Knocks[k]) { Event = k; if (Evolving) Pulse(k); else Knock(k); }
             if (was < BurstAt && T >= BurstAt) { Event = 3; DoBurst(); }
 
-            if (!Burst) TickEgg(dt);
+            if (!Burst) { if (Evolving) TickEvolve(dt); else TickEgg(dt); }
             else TickAfter(dt);
 
             // aura motes: rarity colour round the egg, the kin's colours afterwards
@@ -209,9 +247,58 @@ namespace Wildbond
             if (shake > 0f && Rand() < 30f * shake * dt) SeamSpark(1);
         }
 
+        /// <summary>Before the burst of an evolution: the old form turns faster and faster, goes white, and flickers with the new one.</summary>
+        void TickEvolve(float dt)
+        {
+            float u = Mathf.Clamp01(T / BurstAt);
+            float appear = EaseOutBack(Mathf.Clamp01(T / AppearTime));
+            spinAngle += dt * (25f + 900f * u * u * u);
+            var rot = Quaternion.Euler(0f, spinAngle, 0f);
+            float glow = Mathf.Clamp01((T - 0.5f) / 1.2f);
+            Color hold = Color.Lerp(Color.white, elCol, 0.15f); hold.a = glow * (0.82f + 0.1f * Mathf.Sin(T * 9f));
+            // the flicker: slow at first, a blur by the end
+            bool showNew = false;
+            if (T > 1.5f)
+            {
+                float f = Mathf.Lerp(1.5f, 14f, Mathf.Clamp01((T - 1.5f) / (BurstAt - 1.5f)));
+                flickerPhase += dt * f;
+                showNew = flickerPhase % 1f > 0.6f;
+            }
+            oldRoot.gameObject.SetActive(!showNew);
+            kinRoot.gameObject.SetActive(showNew);
+            float lift = 0.12f * glow + 0.04f * Mathf.Sin(T * 3f) * glow;
+            oldRoot.localScale = Vector3.one * appear; oldRoot.localRotation = rot; oldRoot.localPosition = new Vector3(0f, lift, 0f);
+            kinRoot.localScale = Vector3.one; kinRoot.localRotation = rot; kinRoot.localPosition = new Vector3(0f, lift, 0f);
+            oldRig.Hold = hold; rig.Hold = hold;
+            oldRig.Animate(dt, 0f, false, false);
+            rig.Animate(dt, 0f, false, false);
+            rays.localScale = Vector3.one * (0.2f + 0.8f * u * u);
+            rays.Rotate(0f, 0f, dt * (20f + 120f * u), Space.Self);
+            // light drawn in from all round
+            if (Rand() < (8f + 50f * u) * dt * 2f)
+            {
+                Vector3 dir = Random.onUnitSphere; dir.z = -Mathf.Abs(dir.z) * 0.5f;   // from the sides and behind, never right in front of the lens
+                Vector3 c = new Vector3(0f, focusY, 0f);
+                Vector3 p = c + dir * (1.1f + Rand() * 0.6f) * Mathf.Max(1f, kinRadius);
+                Add(p, (c - p) * 1.5f, Rand() < 0.5f ? elCol : Color.white, 0.6f, 0.04f + Rand() * 0.04f, 0f);
+            }
+        }
+
+        void Pulse(int k)
+        {
+            Vector3 c = new Vector3(0f, focusY, 0f);
+            for (int i = 0; i < 16 + 8 * k; i++)
+            {
+                float a = i / (16f + 8f * k) * Mathf.PI * 2f;
+                Vector3 dir = new Vector3(Mathf.Cos(a), Mathf.Sin(a) * 0.35f, Mathf.Sin(a) * 0.4f);
+                Add(c, dir * (2f + k), i % 2 == 0 ? elCol : Color.white, 0.7f, 0.07f, 0f);
+            }
+        }
+
         void TickAfter(float dt)
         {
             float t = T - BurstAt;
+            if (Evolving) { TickEvolveAfter(dt, t); return; }
             // the cap flies up and away, the cup sinks out of sight
             topVel += Vector3.down * 9f * dt;
             top.localPosition += topVel * dt;
@@ -237,6 +324,32 @@ namespace Wildbond
             cam.backgroundColor = Color.Lerp(Color.Lerp(bg, rarityCol, 0.35f), Color.Lerp(bg, rarityCol, 0.1f), Mathf.Clamp01(t / 1.2f));
         }
 
+        void TickEvolveAfter(float dt, float t)
+        {
+            if (oldRoot.gameObject.activeSelf) oldRoot.gameObject.SetActive(false);
+            if (!kinRoot.gameObject.activeSelf) kinRoot.gameObject.SetActive(true);
+            // white light drains away to show the new colours; a big pulse, then the slow turntable
+            Color hold = Color.white; hold.a = Mathf.Clamp01(1f - t / 0.9f) * 0.95f;
+            rig.Hold = hold;
+            float pop = 1f + 0.22f * Mathf.Exp(-t * 4.5f) * Mathf.Sin(t * 12f + 1.2f);
+            kinRoot.localScale = Vector3.one * pop;
+            kinRoot.localPosition = new Vector3(0f, Mathf.Max(0f, 0.16f * (1f - t / 0.6f)), 0f);
+            spinAngle = Mathf.MoveTowardsAngle(spinAngle, 0f, dt * 500f);
+            yaw += dt * 18f;
+            float settle = Mathf.Clamp01(t / 0.8f);
+            kinRoot.localRotation = Quaternion.Slerp(Quaternion.Euler(0f, spinAngle, 0f), Quaternion.Euler(0f, Mathf.Sin(yaw * Mathf.Deg2Rad) * 32f, 0f), settle);
+            rig.Animate(dt, 0f, false, false);
+            float rs = t < 0.3f ? Mathf.Lerp(1f, 1.45f, t / 0.3f) : Mathf.Lerp(1.45f, 0.8f, Mathf.Clamp01((t - 0.3f) / 1.4f));
+            rays.localScale = Vector3.one * rs;
+            rays.Rotate(0f, 0f, dt * 14f, Space.Self);
+            cam.backgroundColor = Color.Lerp(Color.Lerp(bg, elCol, 0.35f), Color.Lerp(bg, elCol, 0.1f), Mathf.Clamp01(t / 1.2f));
+            if (Rand() < 10f * dt)
+            {
+                float a = Rand() * Mathf.PI * 2f, r = 0.5f + Rand() * 0.7f;
+                Add(new Vector3(Mathf.Cos(a) * r, Rand() * focusY * 1.6f, Mathf.Sin(a) * r * 0.6f), new Vector3(0, 0.4f, 0), Rand() < 0.5f ? elCol : Color.white, 1.4f, 0.06f, -0.1f);
+            }
+        }
+
         void Knock(int k)
         {
             for (int i = 0; i < 10 + 6 * k; i++) SeamSpark(1.4f + 0.3f * k);
@@ -245,6 +358,7 @@ namespace Wildbond
 
         void DoBurst()
         {
+            float cy = Evolving ? focusY : 0.65f;   // the middle of the kin, or of the egg
             topVel = new Vector3((Rand() - 0.5f) * 1.6f, 4.2f, 0.6f);
             topSpin = new Vector3(Rand() * 200f - 100f, Rand() * 100f, 160f + Rand() * 200f);
             Color[] confetti = { new Color(1f, 0.35f, 0.4f), new Color(1f, 0.85f, 0.3f), new Color(0.4f, 0.9f, 0.5f), new Color(0.4f, 0.7f, 1f), new Color(0.85f, 0.5f, 1f) };
@@ -252,19 +366,19 @@ namespace Wildbond
             {
                 Vector3 dir = Random.onUnitSphere; dir.y = Mathf.Abs(dir.y) * 0.9f + 0.15f; dir.z *= 0.6f;
                 Color c = i % 3 == 0 ? Color.white : i % 3 == 1 ? elCol : (shimmer ? new Color(1f, 0.85f, 0.35f) : rarityCol);
-                Add(new Vector3(0f, 0.65f, 0f), dir * (2f + Rand() * 3.2f), c, 0.9f + Rand() * 0.8f, 0.09f + Rand() * 0.09f, 2.5f);
+                Add(new Vector3(0f, cy, 0f), dir * (2f + Rand() * 3.2f), c, 0.9f + Rand() * 0.8f, 0.09f + Rand() * 0.09f, 2.5f);
             }
             for (int i = 0; i < 50; i++)
             {
                 Vector3 dir = Random.onUnitSphere; dir.y = Mathf.Abs(dir.y) + 0.6f; dir.z *= 0.5f;
-                Add(new Vector3(0f, 0.9f, 0f), dir * (1.5f + Rand() * 2f), confetti[i % confetti.Length], 1.6f + Rand(), 0.06f + Rand() * 0.04f, 3.2f);
+                Add(new Vector3(0f, cy + 0.25f, 0f), dir * (1.5f + Rand() * 2f), confetti[i % confetti.Length], 1.6f + Rand(), 0.06f + Rand() * 0.04f, 3.2f);
             }
             if (shimmer) for (int i = 0; i < 60; i++)
             {
                 Vector3 dir = Random.onUnitSphere; dir.z *= 0.5f;
-                Add(new Vector3(0f, 0.7f, 0f), dir * (0.6f + Rand() * 1.4f), new Color(1f, 0.88f, 0.45f), 1.8f + Rand() * 1.2f, 0.07f + Rand() * 0.06f, -0.2f);
+                Add(new Vector3(0f, cy, 0f), dir * (0.6f + Rand() * 1.4f), new Color(1f, 0.88f, 0.45f), 1.8f + Rand() * 1.2f, 0.07f + Rand() * 0.06f, -0.2f);
             }
-            for (int i = 0; i < 22; i++)
+            for (int i = 0; i < (Evolving ? 0 : 22); i++)
             {
                 Vector3 p = SeamPoint(out var n);
                 AddShard(p, n * (1.5f + Rand() * 2.5f) + Vector3.up * (1.5f + Rand() * 2f), 0.05f + Rand() * 0.05f, Rand() < 0.65f ? shellCol : spotCol);

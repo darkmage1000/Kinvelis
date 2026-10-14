@@ -133,6 +133,9 @@ namespace Wildbond
             for (int i = 0; i < renderers.Count; i++) if (renderers[i] != null) renderers[i].SetPropertyBlock(mpb);
         }
 
+        /// <summary>A glow that stays until set back to clear (alpha = how far toward the colour): the evolution show's light.</summary>
+        public Color Hold;
+
         public void Flash(Color c, float duration = 0.12f)
         {
             flashColor = c;
@@ -428,6 +431,7 @@ namespace Wildbond
                 ApplyBlock(col, true);
                 flashing = true;
             }
+            else if (Hold.a > 0.001f) { ApplyBlock(Hold, true); flashing = true; }
             else if (flashing)
             {
                 flashing = false;

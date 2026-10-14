@@ -259,7 +259,7 @@ html: `
 </ul>
 
 <h2 id="evolve">Evolution</h2>
-<p>At <b>level 20</b> a kin can become <b>Ascended</b>, and at <b>level 35</b>, <b>Exalted</b>. Each step makes it bigger, gives it a glow, +15% health, attack and defense, and +10% work speed. It costs ingots and a few materials of the kin's element (the Kin tab shows exactly what); the second step also costs Glimmer.</p>
+<p>At <b>level 20</b> a kin can become <b>Ascended</b>, and at <b>level 35</b>, <b>Exalted</b>. Each step makes it bigger, gives it a glow, more health, attack and defense (+15% of the kin's base each time) and +10% work speed. Evolving plays a short show: the kin glows white and spins faster and faster, flickering between its old and new forms, then bursts into the new one, and a page lists exactly what changed. It costs ingots and a few materials of the kin's element (the Kin tab shows exactly what); the second step also costs Glimmer.</p>
 
 <h2 id="eggs">Eggs</h2>
 <ul>

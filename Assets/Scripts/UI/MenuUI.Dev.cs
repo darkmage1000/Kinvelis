@@ -134,6 +134,7 @@ namespace Wildbond
             var comp = gm.Party.Companion;
             Header(list, comp != null ? $"The kin that is out  <size=22>{comp.Data.DisplayName} Lv {comp.Data.level}, bond {comp.Data.BondLevel}</size>" : "The kin that is out  <size=22>none</size>", 28);
             DevButtons(list, 300, ("+1 LEVEL", () => Dev.LevelCompanion(1)), ("+5 LEVELS", () => Dev.LevelCompanion(5)), ("+20 LEVELS", () => Dev.LevelCompanion(20)), ("MAX BOND", Dev.MaxBond));
+            DevButtons(list, 400, ("EVOLVE IT NOW (FREE)", () => { if (comp != null) EvolveWithShow(comp.Data, true); else GameEvents.Say("No kin is out."); }));
 
             Header(list, "Wild kin within 25 m", 28);
             DevButtons(list, 235, ("HEALTH 8%", () => Dev.NearbyWild(0.08f)), ("HEALTH 50%", () => Dev.NearbyWild(0.5f)), ("DEFEAT", () => Dev.NearbyWild(0f)), ("DROWSY", () => Dev.NearbyWild(1f, StatusType.Drowsy)), ("BURN", () => Dev.NearbyWild(1f, StatusType.Burn)));

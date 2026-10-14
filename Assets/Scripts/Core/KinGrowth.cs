@@ -53,12 +53,16 @@ namespace Wildbond
             return null;
         }
 
-        public static bool Evolve(CreatureData d)
+        /// <summary>quiet = the evolution show tells the player (no toast, sound or sparkle); free = dev mode, no level or cost.</summary>
+        public static bool Evolve(CreatureData d, bool quiet = false, bool free = false)
         {
-            if (WhyNot(d) != null) return false;
+            if (free ? !CanEvolveStage(d) : WhyNot(d) != null) return false;
             var gm = GameManager.I;
-            ItemSources.Consume(EvolveCost(d));
-            gm.Player.Stats.glimmer -= EvolveGlimmer(d);
+            if (!free)
+            {
+                ItemSources.Consume(EvolveCost(d));
+                gm.Player.Stats.glimmer -= EvolveGlimmer(d);
+            }
             float hpFrac = d.CurrentHp / d.MaxHp;
             bool wasOut = gm.Party.Companion != null && gm.Party.Companion.Data == d;
             if (wasOut) gm.Party.Recall(false);
@@ -67,6 +71,9 @@ namespace Wildbond
             var worker = BaseManager.I != null ? BaseManager.I.ActorFor(d) : null;
             if (worker != null) BaseManager.I.RespawnWorker(d);
             if (wasOut) gm.Party.Summon(d);
+            GameEvents.RaiseRosterChanged();
+            GameEvents.RaiseInventoryChanged();
+            if (quiet) return true;
             GameEvents.Good($"{d.Species.displayName} evolved into its {CreatureData.StageName(d.stage)} form! (+15% HP/ATK/DEF, bigger, +10% work)");
             SynthAudio.Play(Sfx.LevelUp, 0.8f);
             Fx.Sparkle(gm.Player.Position + Vector3.up * 1.5f, ElementInfo.Color(d.Element1), 40, 1.4f);

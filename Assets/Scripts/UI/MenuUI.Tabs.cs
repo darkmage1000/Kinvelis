@@ -401,7 +401,7 @@ namespace Wildbond
                 Para(p, $"{UIFactory.Col($"Evolve to {nextName}", new Color(0.75f, 0.6f, 1f))} at Lv {KinGrowth.EvolveLevel(d)}: {Ingredients(KinGrowth.EvolveCost(d))}{(g > 0 ? $"   {UIFactory.Col($"{g} Glimmer", Gold)}" : "")}\n<size=19>+15% HP/ATK/DEF, bigger glowing form, +10% work speed</size>", 22, Color.white);
                 var dd = d;
                 UIFactory.Size(UIFactory.Button(p, why == null ? $"EVOLVE INTO {nextName.ToUpperInvariant()}" : why,
-                    why == null ? () => Confirm("Evolve?", $"Evolve {dd.DisplayName} into its {nextName} form? Materials are used up.", () => { KinGrowth.Evolve(dd); Rebuild(); }) : (System.Action)null,
+                    why == null ? () => Confirm("Evolve?", $"Evolve {dd.DisplayName} into its {nextName} form? Materials are used up.", () => EvolveWithShow(dd, false)) : (System.Action)null,
                     why == null ? new Color(0.5f, 0.35f, 0.75f) : new Color(0.3f, 0.3f, 0.32f), 22), 70);
             }
             else Para(p, UIFactory.Col("Fully evolved (Exalted).", new Color(0.75f, 0.6f, 1f)), 22);
