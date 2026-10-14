@@ -519,7 +519,7 @@ namespace Wildbond
         // ================================================================ MOVEMENT
         float GroundY(Vector3 p)
         {
-            float h = Ground.Height(p.x, p.z);
+            float h = Ground.HeightNear(p.x, p.z, p.y);
             float sea = Tides.Surface(p.x, p.z);
             if (h < sea - 0.4f) h = sea - 0.4f; // float on water
             return h;
@@ -547,9 +547,12 @@ namespace Wildbond
             }
             else if (moving)
             {
-                Vector3 to = moveTarget - pos; to.y = 0f;
+                // round house walls, through doorways and up stairs (Housing.Route): head for the next waypoint
+                Vector3 aim = full && Housing.I != null ? Housing.I.Steer(route ?? (route = new Housing.Route()), pos, moveTarget, BodyRadius * 0.8f) : moveTarget;
+                Vector3 to = aim - pos; to.y = 0f;
+                Vector3 left = moveTarget - pos; left.y = 0f;
                 float d = to.magnitude;
-                if (d > 0.15f) desired = to / d * Mathf.Min(moveSpeed, d / Mathf.Max(dt, 0.001f));
+                if (d > 0.15f) desired = to / d * Mathf.Min(moveSpeed, left.magnitude / Mathf.Max(dt, 0.001f));
             }
             // dashes move at full dash speed immediately (accelerating into them made every dash fall short)
             vel = dashing ? desired : Vector3.MoveTowards(vel, desired, dt * 18f);
@@ -565,7 +568,8 @@ namespace Wildbond
                 if (State == AIState.Wander) SetState(AIState.Idle, 1f);
             }
             if (Time.time < tetherUntil) ClampTether(ref next);
-            if (full && !ignoreObstacles) WorldCollision.PushOut(ref next, BodyRadius * 0.8f);   // a kin climbing onto its nest walks into it
+            if (full && !ignoreObstacles) WorldCollision.PushOut(ref next, BodyRadius * 0.8f);
+            else if (full) Housing.PushOut(ref next, BodyRadius * 0.8f);   // a kin climbing onto its nest walks into it (house walls still stop it)
             next.x = Mathf.Clamp(next.x, -WorldGen.HalfWorld + 10f, WorldGen.HalfWorld - 10f);
             next.z = Mathf.Clamp(next.z, -WorldGen.HalfWorld + 10f, WorldGen.HalfWorld - 10f);
             next.y = Mathf.Lerp(pos.y, GroundY(next), full ? Mathf.Min(1f, dt * 14f) : 1f);
@@ -587,6 +591,7 @@ namespace Wildbond
         }
 
         Vector3 faceTarget;
+        Housing.Route route;
 
         Vector3 RandomPointNear(Vector3 center, float radius)
         {

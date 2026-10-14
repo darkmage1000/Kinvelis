@@ -225,7 +225,8 @@ namespace Wildbond
             {
                 if (State != AIState.Wander) SetState(AIState.Wander, 25f);   // back to bed after a fight or a meal
                 MoveTo(bedPos, WalkSpeed * 1.25f);
-                if (FlatDist(transform.position, bedPos) < (bedOn ? 0.22f : 0.8f) || stateTimer <= 0f) SetState(AIState.Rest, 99999f);
+                bool there = FlatDist(transform.position, bedPos) < (bedOn ? 0.22f : 0.8f) && Mathf.Abs(transform.position.y - bedPos.y) < 1.2f;   // (not under a bed upstairs)
+                if (there || stateTimer <= 0f) SetState(AIState.Rest, 99999f);
                 return true;
             }
             bedFx -= dt;
@@ -286,6 +287,7 @@ namespace Wildbond
             {
                 if (sleeping) return State == AIState.Rest ? "Asleep until dawn" : "Off to bed";
                 if (CampMoodLabel != null) return CampMoodLabel;
+                if (buildSite != null) return State == AIState.Working ? $"Building the {buildSite.Name}" : $"Off to build the {buildSite.Name}";
                 switch (State)
                 {
                     case AIState.Working: return task == null ? "Working" : task.IsProducer ? $"{task.Cur.doing} ({task.Def.displayName})" : $"Working at the {task.Def.displayName}";

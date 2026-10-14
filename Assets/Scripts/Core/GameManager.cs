@@ -658,7 +658,7 @@ namespace Wildbond
             var env = EnvironmentSystem.I;
             if (env == null || Sleeping) return;
             if (!(env.IsNight || env.timeOfDay >= SleepFrom)) { GameEvents.Say("Not sleepy yet - you can sleep here from evening until dawn."); return; }
-            if (!housing.Indoors(bed.pos)) { GameEvents.Warn("You need a roof over the bed to sleep in it."); return; }
+            if (!housing.Indoors(bed.pos)) { GameEvents.Warn("You need a roof (or a floor) over the bed to sleep in it."); return; }
             if (Wardens.I != null && Wardens.I.Active != null) { GameEvents.Warn("Not while a Warden is awake!"); return; }
             foreach (var a in CreatureRegistry.All)
                 if (a != null && a.IsAlive && a.Mode == CreatureMode.Wild && a.Aggro && (a.Position - Player.Position).sqrMagnitude < 30f * 30f) { GameEvents.Warn("You can't sleep with wild kin after you."); return; }

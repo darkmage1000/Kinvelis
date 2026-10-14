@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 
 namespace Wildbond
 {
-    [Serializable] public class SiteSave { public string defId, pieceId; public float x, y, z, rotY, done, depth; public int cx, cz, side, rot; }
+    [Serializable] public class SiteSave { public string defId, pieceId; public float x, y, z, rotY, done, depth; public int cx, cz, side, rot, level; }
 
     /// <summary>
     /// Construction (user, 2026-10-14: "crafting kin could be used to help build placed pieces like palworld"). Placing a
@@ -16,6 +16,10 @@ namespace Wildbond
     /// BUILD (a toggle, like WORK; walking away stops it). Far away and while the game is closed, Crafting kin who
     /// are awake build too (`SimulateAbstract`). The REMOVE tool cancels a site and gives everything back. The
     /// Hearthstone, and worlds with free building, build at once. Saved as `SaveData.sites`.
+    ///
+    /// Building doesn't stall the crafting queue (2026-10-14): a station with a queued order and nobody crafting it
+    /// keeps (or calls back) one Crafting kin (`CraftFirst`); the others build, at most `MaxBuilders` to a site. The far
+    /// and offline simulation makes the same split (`SimulateSites` -> `abstractBuilders`, skipped by SimulateAbstract).
     /// </summary>
     public partial class BaseManager
     {
@@ -38,6 +42,8 @@ namespace Wildbond
         /// <summary>The site you are building at (BUILD toggles it), or null.</summary>
         public Site PlayerBuildSite { get; private set; }
         public const float PlayerBuildRate = 1.2f;
+        /// <summary>Kin building one site at once.</summary>
+        public const int MaxBuilders = 3;
 
         /// <summary>Work a structure needs: more for bigger costs.</summary>
         public static float BuildWork(Ingredient[] cost, bool piece)
@@ -180,6 +186,7 @@ namespace Wildbond
             Site best = null; float bd = reach;
             foreach (var s in Sites)
             {
+                if (Mathf.Abs(s.pos.y - p.y) > 4f) continue;   // a site a storey up (or down) can be built from where you stand
                 Vector3 d = s.pos - p; d.y = 0f;
                 float dist = d.magnitude - s.radius;
                 if (dist < bd) { bd = dist; best = s; }
@@ -187,18 +194,49 @@ namespace Wildbond
             return best;
         }
 
-        /// <summary>The site a Crafting kin should go and build: the nearest.</summary>
-        public Site SiteFor(Vector3 p)
+        /// <summary>The site a Crafting kin should go and build: the nearest with room for another builder.</summary>
+        public Site SiteFor(Vector3 p, CreatureActor self = null)
         {
             Site best = null; float bd = float.MaxValue;
-            foreach (var s in Sites) { float d = (s.pos - p).sqrMagnitude; if (d < bd) { bd = d; best = s; } }
+            foreach (var s in Sites)
+            {
+                if (BuildersAt(s, self) >= MaxBuilders) continue;
+                float d = (s.pos - p).sqrMagnitude; if (d < bd) { bd = d; best = s; }
+            }
+            return best;
+        }
+
+        public int BuildersAt(Site s, CreatureActor except = null)
+        {
+            int n = 0;
+            foreach (var a in workerActors.Values) if (a != null && a != except && a.BuildSite == s) n++;
+            return n;
+        }
+
+        /// <summary>
+        /// Queued orders don't wait for building: the station this Crafting kin should be at instead of a site - the one it
+        /// is crafting at if nobody else is, or one with an order and nobody at it (its own first, then the nearest). Null = build.
+        /// </summary>
+        public Building CraftFirst(CreatureData d, CreatureActor self)
+        {
+            var cur = self != null ? self.CampTask : null;
+            if (cur != null && cur.IsStation && cur.CanWork(d) && HandsAt(cur, self) == 0) return cur;
+            var home = FindBuilding(d.assignedBuilding);
+            Building best = null; float bd = float.MaxValue;
+            foreach (var b in Buildings)
+            {
+                if (b == null || !b.IsStation || b.Def.isCore || b.WorkerSlots <= 0 || !b.CanWork(d) || HandsAt(b, self) > 0) continue;
+                float dist = b == home ? -1f : self != null ? (b.transform.position - self.transform.position).sqrMagnitude : 0f;
+                if (dist < bd) { bd = dist; best = b; }
+            }
             return best;
         }
 
         /// <summary>How fast a kin builds: its Crafting level (at least 1) and its work multipliers.</summary>
         public static float BuildRate(CreatureData d) => Mathf.Max(1, d.JobLevel(WorkType.Crafting)) * d.WorkMul * Dev.WorkMul * WorldRules.Current.workSpeed * CheerMul(d);
 
-        public static bool CanBuild(CreatureData d) => d != null && d.JobOn(WorkType.Crafting) && !d.Fainted;
+        /// <summary>A kin that has the Crafting job, switched on (kin without it never build - you can always BUILD yourself).</summary>
+        public static bool CanBuild(CreatureData d) => d != null && d.WorkLevel(WorkType.Crafting) > 0 && !d.Fainted;
 
         /// <summary>BUILD at a site: start or stop helping.</summary>
         public void TogglePlayerBuild(Site s)
@@ -220,15 +258,33 @@ namespace Wildbond
             AddSiteWork(s, PlayerBuildRate * Dev.WorkMul * dt);
         }
 
-        /// <summary>Far away or closed: awake Crafting kin build the nearest site (called from SimulateAbstract).</summary>
+        readonly HashSet<string> abstractBuilders = new HashSet<string>();
+        readonly HashSet<Building> servedStations = new HashSet<Building>();
+        readonly Dictionary<Site, int> siteHands = new Dictionary<Site, int>();
+
+        /// <summary>
+        /// Far away or closed: awake Crafting kin build, oldest site first, at most MaxBuilders each - after one has gone to
+        /// every station with a queued order (called from SimulateAbstract, which then skips the builders).
+        /// </summary>
         void SimulateSites(float dt)
         {
+            abstractBuilders.Clear();
             if (Sites.Count == 0) return;
+            servedStations.Clear(); siteHands.Clear();
             foreach (var d in GameManager.I.Party.In(KinLocation.Base))
             {
                 if (Sites.Count == 0) return;
                 if (!CanBuild(d) || Asleep(d)) continue;
-                AddSiteWork(Sites[0], BuildRate(d) * dt);
+                Building st = null;
+                foreach (var b in Buildings)
+                    if (b != null && b.IsStation && !b.Def.isCore && b.WorkerSlots > 0 && !servedStations.Contains(b) && b.CanWork(d)) { st = b; break; }
+                if (st != null) { servedStations.Add(st); continue; }   // crafts this round (SimulateAbstract picks its task)
+                Site site = null; int n = 0;
+                foreach (var s in Sites) { siteHands.TryGetValue(s, out n); if (n < MaxBuilders) { site = s; break; } }
+                if (site == null) continue;
+                siteHands[site] = n + 1;
+                abstractBuilders.Add(d.uid);
+                AddSiteWork(site, BuildRate(d) * dt);
             }
         }
 
@@ -238,7 +294,7 @@ namespace Wildbond
             var l = new List<SiteSave>();
             foreach (var s in Sites)
                 l.Add(new SiteSave { defId = s.def != null ? s.def.id : null, pieceId = s.piece != null ? s.piece.id : null, x = s.pos.x, y = s.pos.y, z = s.pos.z, rotY = s.rotY, done = s.done,
-                    cx = s.spot.cx, cz = s.spot.cz, side = s.spot.side, rot = s.spot.rot, depth = s.spot.depth });
+                    cx = s.spot.cx, cz = s.spot.cz, side = s.spot.side, rot = s.spot.rot, level = s.spot.level, depth = s.spot.depth });
             return l;
         }
 
@@ -253,7 +309,7 @@ namespace Wildbond
                 {
                     var piece = Housing.Def(v.pieceId);
                     if (piece == null) continue;
-                    var spot = new Housing.Spot { ok = true, cx = v.cx, cz = v.cz, side = v.side, rot = v.rot, pos = new Vector3(v.x, v.y, v.z), depth = v.depth,
+                    var spot = new Housing.Spot { ok = true, cx = v.cx, cz = v.cz, side = v.side, rot = v.rot, level = v.level, pos = new Vector3(v.x, v.y, v.z), depth = v.depth,
                         q = Quaternion.Euler(0f, v.rotY, 0f) };
                     s = StartSite(piece, spot);
                 }

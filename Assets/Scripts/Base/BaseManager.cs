@@ -732,6 +732,7 @@ namespace Wildbond
             foreach (var d in party.In(KinLocation.Base))
             {
                 if (d.Fainted || Asleep(d)) continue;   // at night only the nocturnal ones are up
+                if (abstractBuilders.Contains(d.uid)) continue;   // building a site this round (SimulateSites)
                 var home = FindBuilding(d.assignedBuilding);
                 // a pylon or larder asking for a top-up comes first, as it does for the actors
                 Building call = null;

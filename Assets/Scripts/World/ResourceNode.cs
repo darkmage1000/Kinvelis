@@ -30,6 +30,8 @@ namespace Wildbond
         public Vector3 pos;
         public float radius;
         public object owner;
+        /// <summary>Only in the way for things between these heights (house furniture: its own storey).</summary>
+        public float yLo = float.NegativeInfinity, yHi = float.PositiveInfinity;
         public Vector3 SpatialPosition => pos;
     }
 
@@ -70,7 +72,7 @@ namespace Wildbond
             }
             obsBuf.Clear();
             Obstacles.Query(pos, r + 6f, obsBuf);
-            for (int i = 0; i < obsBuf.Count; i++) hit |= Resolve(ref pos, obsBuf[i].pos, r + obsBuf[i].radius);
+            for (int i = 0; i < obsBuf.Count; i++) { var o = obsBuf[i]; if (pos.y < o.yLo || pos.y > o.yHi) continue; hit |= Resolve(ref pos, o.pos, r + o.radius); }
             hit |= Housing.PushOut(ref pos, r);   // house walls are segments, not circles
             return hit;
         }

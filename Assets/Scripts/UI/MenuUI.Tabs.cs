@@ -353,7 +353,7 @@ namespace Wildbond
 
             var work = new List<string>();
             foreach (var w in sp.work) work.Add(d.JobOn(w.type) ? $"{w.type} {new string('*', d.JobLevel(w.type))}" : UIFactory.Col($"{w.type} (off)", new Color(0.6f, 0.6f, 0.65f)));
-            Para(p, $"Camp work: {string.Join(",  ", work)}{(d.shimmer && sp.work.Length > 0 ? UIFactory.Col("  (+1 each: Shimmer)", new Color(1f, 0.85f, 0.4f)) : "")}\n{(d.Nocturnal ? UIFactory.Col("Up all night: keeps working at camp after dark.", new Color(0.75f, 0.8f, 1f)) : $"Sleeps at camp from dusk to dawn, in a {BaseManager.BedNeeded(d)} or bigger.")}\n{sp.overworldRole}", 22, UIFactory.Accent);
+            Para(p, $"Camp work: {string.Join(",  ", work)}{(d.shimmer && sp.work.Length > 0 ? UIFactory.Col("  (+1 each: Shimmer)", new Color(1f, 0.85f, 0.4f)) : "")}\n{(d.Nocturnal ? UIFactory.Col("Up all night: keeps working at camp after dark.", new Color(0.75f, 0.8f, 1f)) : $"Sleeps at camp from dusk to dawn, in a {BaseManager.BedNeeded(d)} or bigger." + (d.location == KinLocation.Base && BaseManager.I != null && BaseManager.I.HasBase ? " " + BaseManager.I.SleepsIn(d) + "." : ""))}\n{sp.overworldRole}", 22, UIFactory.Accent);
             if (sp.work.Length > 0)
             {
                 // job switches: what this kin may do at camp (and when it helps you gather)

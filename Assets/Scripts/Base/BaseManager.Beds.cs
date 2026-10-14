@@ -12,10 +12,16 @@ namespace Wildbond
     ///
     /// The best nest also makes its sleepers work faster (`BuildingDef.bedBonus`, Grand Nest +10%, `BedBonusMul`).
     /// Big kin get those places because they need them; any left over go to the best workers in camp.
+    ///
+    /// House beds (2026-10-14): your Bed and Kin Baskets in the house (`Housing.KinBeds`) are beds too, one kin each,
+    /// small kin only (they have to fit through a doorway), and only if a kin can walk to them from the Hearthstone
+    /// (`Housing.ReachableFromCamp`: stairs for one upstairs). Under a roof a sleeper there is snug: +5% work (`SnugBonus`).
     /// </summary>
     public partial class BaseManager
     {
         public const float SmallBed = 1.1f, LargeBed = 1.7f;
+        /// <summary>Work bonus (%) for sleeping in a house bed under a roof.</summary>
+        public const float SnugBonus = 5f;
 
         /// <summary>The biggest kin a nest takes.</summary>
         public static float BedSize(BuildingDef d) => d.bedSize > 0f ? d.bedSize : SmallBed;
@@ -26,7 +32,9 @@ namespace Wildbond
         public static string BedNeeded(CreatureData d) { float s = SleepSize(d); return s <= SmallBed ? "Kin Nest" : s <= LargeBed ? "Large Nest" : "Grand Nest"; }
         static string BedTakes(BuildingDef d) { float s = BedSize(d); return s <= SmallBed ? "small kin" : s <= LargeBed ? "small and medium kin" : "kin of any size"; }
 
-        struct BedSlot { public Building nest; public int place; public float size, bonus; }
+        struct BedSlot { public Building nest; public Housing.Piece hb; public int place; public float size, bonus; }
+        /// <summary>The nest was pulled down, or the house bed taken away.</summary>
+        static bool Gone(BedSlot s) => s.hb != null ? s.hb.removed : s.nest == null;
         readonly Dictionary<string, BedSlot> bedOf = new Dictionary<string, BedSlot>();
         readonly List<CreatureData> bedless = new List<CreatureData>();
         readonly List<CreatureData> planKin = new List<CreatureData>();
@@ -47,6 +55,14 @@ namespace Wildbond
                 if (b == null || b.Def.beds <= 0) continue;
                 for (int i = 0; i < b.Def.beds; i++) { planSlots.Add(new BedSlot { nest = b, place = i, size = BedSize(b.Def), bonus = b.Def.bedBonus }); planTaken.Add(false); }
             }
+            var house = Housing.I;
+            if (house != null)
+                foreach (var pc in house.KinBeds)
+                {
+                    if (!house.ReachableFromCamp(pc)) continue;   // upstairs with no stairs, or walled in
+                    planSlots.Add(new BedSlot { hb = pc, size = pc.def.bedSize, bonus = house.Indoors(pc.pos) ? SnugBonus : 0f });
+                    planTaken.Add(false);
+                }
             // biggest kin first, each into the smallest free bed that fits (both sorts are stable enough: ties keep roster / build order)
             for (int i = 1; i < planKin.Count; i++)
             {
@@ -81,7 +97,7 @@ namespace Wildbond
                 if (pick == null) continue;
                 if (bedOf.TryGetValue(pick.uid, out var old))
                 {
-                    for (int j = 0; j < planSlots.Count; j++) if (planSlots[j].nest == old.nest && planSlots[j].place == old.place) planTaken[j] = false;
+                    for (int j = 0; j < planSlots.Count; j++) if (planSlots[j].nest == old.nest && planSlots[j].hb == old.hb && planSlots[j].place == old.place) planTaken[j] = false;
                 }
                 else bedless.Remove(pick);
                 planTaken[i] = true;
@@ -93,13 +109,13 @@ namespace Wildbond
         public float BedBonusMul(CreatureData d)
         {
             PlanBeds();
-            return bedOf.TryGetValue(d.uid, out var s) && s.nest != null ? 1f + s.bonus / 100f : 1f;
+            return bedOf.TryGetValue(d.uid, out var s) && !Gone(s) ? 1f + s.bonus / 100f : 1f;
         }
 
         /// <summary>How many kin are getting a nest's work bonus right now.</summary>
         public int WellBedded
         {
-            get { PlanBeds(); int n = 0; foreach (var s in bedOf.Values) if (s.bonus > 0f && s.nest != null) n++; return n; }
+            get { PlanBeds(); int n = 0; foreach (var s in bedOf.Values) if (s.bonus > 0f && !Gone(s)) n++; return n; }
         }
 
         /// <summary>Call when nests or the kin at camp change, so the next read plans afresh.</summary>
@@ -113,12 +129,22 @@ namespace Wildbond
             get { PlanBeds(); return bedless.Count == 0 && bedOf.Count > 0 ? 1.15f : 1f; }
         }
 
+        /// <summary>Where a camp kin sleeps tonight, in words (Kin tab).</summary>
+        public string SleepsIn(CreatureData d)
+        {
+            if (d == null || d.Nocturnal) return null;
+            PlanBeds();
+            if (!bedOf.TryGetValue(d.uid, out var s) || Gone(s)) return "Sleeps on the ground by the hearth - no bed that fits";
+            if (s.hb != null) return $"Sleeps in your house ({s.hb.def.name})" + (s.bonus > 0f ? $": snug, +{s.bonus:0}% work" : "");
+            return $"Sleeps in the {s.nest.Def.displayName}" + (s.bonus > 0f ? $": +{s.bonus:0}% work" : "");
+        }
+
         /// <summary>Who sleeps in this nest (for its status line).</summary>
         public void SleepersIn(Building nest, List<CreatureData> into)
         {
             PlanBeds();
             foreach (var d in GameManager.I.Party.In(KinLocation.Base))
-                if (bedOf.TryGetValue(d.uid, out var s) && s.nest == nest) into.Add(d);
+                if (bedOf.TryGetValue(d.uid, out var s) && s.hb == null && s.nest == nest) into.Add(d);
         }
 
         public string BedStatus(Building nest)
@@ -137,8 +163,16 @@ namespace Wildbond
         public bool BedFor(CreatureActor a, out Vector3 pos, out float lift, out float pad)
         {
             PlanBeds();
-            if (bedOf.TryGetValue(a.Data.uid, out var s) && s.nest == null) { BedsChanged(); PlanBeds(); }   // that nest was pulled down
-            if (bedOf.TryGetValue(a.Data.uid, out s) && s.nest != null)
+            if (bedOf.TryGetValue(a.Data.uid, out var s) && Gone(s)) { BedsChanged(); PlanBeds(); }   // that nest was pulled down
+            if (bedOf.TryGetValue(a.Data.uid, out s) && s.hb != null && !Gone(s))
+            {
+                // a bed or basket in the house: in the middle of it, at its storey
+                pos = s.hb.pos;
+                lift = Housing.SleepTop(s.hb.def);
+                pad = 0.45f;
+                return true;
+            }
+            if (bedOf.TryGetValue(a.Data.uid, out s) && !Gone(s))
             {
                 var b = s.nest;
                 pad = b.Def.footprint * 0.9f;

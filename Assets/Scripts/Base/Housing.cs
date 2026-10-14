@@ -5,9 +5,9 @@ using UnityEngine.Rendering;
 
 namespace Wildbond
 {
-    public enum HouseKind { Floor, Wall, Doorway, Window, Roof, RoofSlope, Furniture }
+    public enum HouseKind { Floor, Wall, Doorway, Window, Roof, RoofSlope, Furniture, Stairs }
 
-    [Serializable] public class HouseSave { public string id; public int cx, cz, side, rot; public float x, y, z; }
+    [Serializable] public class HouseSave { public string id; public int cx, cz, side, rot, level; public float x, y, z; }
 
     public class HousePieceDef
     {
@@ -27,6 +27,8 @@ namespace Wildbond
         public bool ground;
         /// <summary>A self-lit glow (lamps, fires): where, how big, what colour.</summary>
         public Vector3 glowAt; public float glowSize; public Color32 glowCol;
+        /// <summary>A camp kin sleeps on it at night (BaseManager.Beds): `bed` is also yours to SLEEP in, `kinBed` is for kin only. `bedSize` = the biggest kin it takes.</summary>
+        public bool kinBed; public float bedSize;
     }
 
     /// <summary>
@@ -34,30 +36,44 @@ namespace Wildbond
     /// thru the night" - chose snap-together pieces). Pieces snap to a world grid of `Cell` 3 m squares inside the
     /// camp ring: floors fill a square (their top becomes the ground there - `FloorAt` feeds `Ground.Height`), walls,
     /// doorways and window walls sit on the edge between two squares (`side` 0 = the north edge of (cx, cz), 1 = its
-    /// east edge) and need a floor beside them, roofs cover a floored square at wall height, furniture snaps to a
-    /// 0.5 m grid on a floor. Collision: wall segments (`PushOut`, called from `WorldCollision.PushOut`; a doorway
-    /// leaves a 1.2 m gap) and furniture circles (ordinary obstacles). While you are under a roof the roofs nearby and
-    /// any wall between the camera and you are hidden, and doors swing open when someone comes near. A bed with a roof
-    /// over it lets you SLEEP (GameManager.Sleep). Saved as `SaveData.house`.
+    /// east edge) and need a floor beside them, roofs cover the top floor of a square at wall height, furniture snaps
+    /// to a 0.5 m grid on a floor. Collision: wall segments (`PushOut`, called from `WorldCollision.PushOut`; a doorway
+    /// leaves a 1.2 m gap) and furniture circles (ordinary obstacles, banded to their storey). While you are under a
+    /// roof or an upper floor, everything above you nearby and any wall between the camera and you are hidden, and
+    /// doors swing open when someone comes near. A bed with a roof over it lets you SLEEP (GameManager.Sleep); camp
+    /// kin sleep in beds and Kin Baskets at night (BaseManager.Beds). Saved as `SaveData.house`.
+    ///
+    /// Storeys (2026-10-14): every piece has a `level` 0-2. A floor laid over a floor (from below or from upstairs)
+    /// is an upper floor `LevelH` higher; walls, furniture and stairs go on the storey you stand on (`LevelAt`).
+    /// Stairs fill a square, rise one storey toward `rot` and leave a stairwell (no floor above them, a railing
+    /// round it). The ground floor is still `FloorAt` for everything; walkers that know their height use
+    /// `SurfaceAt` (`Ground.HeightNear`), which adds upper floors and stair ramps within `StepUp` of their feet.
+    /// Kin find their way round walls, through doorways and up stairs with `Steer` (Housing.Route.cs).
     /// </summary>
-    public class Housing : MonoBehaviour
+    public partial class Housing : MonoBehaviour
     {
         public static Housing I { get; private set; }
         public const float Cell = 3f, WallH = 3f, WallT = 0.22f, DoorGap = 1.2f;
+        /// <summary>One storey: a wall and the floor slab on top of it.</summary>
+        public const float LevelH = WallH + 0.15f, UpperDepth = 0.12f;
+        public const float StairW = 2f, StepUp = 0.7f;
+        public const int MaxLevel = 2;
 
         // ============================================================ PIECES
         static Ingredient[] C(params (string, int)[] c) { var r = new Ingredient[c.Length]; for (int i = 0; i < c.Length; i++) r[i] = new Ingredient(c[i].Item1, c[i].Item2); return r; }
 
         public static readonly List<HousePieceDef> Pieces = new List<HousePieceDef>
         {
-            new HousePieceDef { id = "house_floor", name = "Wooden Floor", kind = HouseKind.Floor, cost = C(("wood", 8), ("stone", 4)), desc = "A 3 m square of planks on a stone footing. Everything else stands on floors." },
+            new HousePieceDef { id = "house_floor", name = "Wooden Floor", kind = HouseKind.Floor, cost = C(("wood", 8), ("stone", 4)), desc = "A 3 m square of planks on a stone footing. Everything else stands on floors. Laid over another floor it makes an upper storey (up to three)." },
             new HousePieceDef { id = "house_wall", name = "Wooden Wall", kind = HouseKind.Wall, cost = C(("wood", 6)), desc = "A plank wall along one edge of a floor." },
             new HousePieceDef { id = "house_wall_stone", name = "Stone Wall", kind = HouseKind.Wall, stone = true, cost = C(("stone", 10), ("wood", 2)), desc = "A sturdier-looking wall of fitted stone." },
             new HousePieceDef { id = "house_door", name = "Doorway", kind = HouseKind.Doorway, cost = C(("wood", 8)), desc = "A wall with a door that swings open as you come near." },
             new HousePieceDef { id = "house_window", name = "Window Wall", kind = HouseKind.Window, cost = C(("wood", 6), ("fiber", 2)), desc = "A wall with a window in it." },
-            new HousePieceDef { id = "house_roof", name = "Flat Roof", kind = HouseKind.Roof, cost = C(("wood", 6), ("fiber", 4)), desc = "A roof over one floor square. A bed needs a roof over it to sleep in." },
+            new HousePieceDef { id = "house_roof", name = "Flat Roof", kind = HouseKind.Roof, cost = C(("wood", 6), ("fiber", 4)), desc = "A roof over the top floor of one square. A bed needs a roof (or a floor) over it to sleep in." },
             new HousePieceDef { id = "house_roof_slope", name = "Sloped Roof", kind = HouseKind.RoofSlope, cost = C(("wood", 6), ("fiber", 4)), desc = "A roof that slopes one way (ROTATE turns it). Two back to back make a ridge." },
-            new HousePieceDef { id = "house_bed", name = "Bed", kind = HouseKind.Furniture, bed = true, radius = 0.75f, cost = C(("wood", 10), ("fiber", 12), ("pelt", 2)), desc = "SLEEP here from evening on to skip to morning (needs a roof over it). The camp keeps working while you sleep." },
+            new HousePieceDef { id = "house_stairs", name = "Wooden Stairs", kind = HouseKind.Stairs, cost = C(("wood", 14), ("stone", 2)), desc = "Stairs up one storey, on a floor; they climb the way you face (ROTATE turns them). Lay floors beside the top for an upstairs. Camp kin use them too." },
+            new HousePieceDef { id = "house_bed", name = "Bed", kind = HouseKind.Furniture, bed = true, bedSize = 1.2f, radius = 0.75f, cost = C(("wood", 10), ("fiber", 12), ("pelt", 2)), desc = "SLEEP here from evening on to skip to morning (needs a roof over it). The camp keeps working while you sleep. At night a small camp kin curls up on it too." },
+            new HousePieceDef { id = "kin_basket", name = "Kin Basket", kind = HouseKind.Furniture, kinBed = true, bedSize = 1.1f, radius = 0.45f, cost = C(("fiber", 8), ("wood", 3), ("pelt", 1)), desc = "A cushioned basket a small camp kin sleeps in at night. Under a roof it sleeps snug and works 5% faster." },
             new HousePieceDef { id = "house_table", name = "Table", kind = HouseKind.Furniture, radius = 0.6f, cost = C(("wood", 6)), desc = "A sturdy table." },
             new HousePieceDef { id = "house_chair", name = "Chair", kind = HouseKind.Furniture, radius = 0.3f, cost = C(("wood", 3)), desc = "A chair." },
             new HousePieceDef { id = "house_lamp", name = "Lamp", kind = HouseKind.Furniture, lamp = true, radius = 0.25f, cost = C(("wood", 2), ("gel", 1)), desc = "A standing lamp that glows.", glowAt = new Vector3(0, 1.48f, 0), glowSize = 0.26f, glowCol = new Color32(255, 235, 160, 0) },
@@ -101,66 +117,159 @@ namespace Wildbond
 
         /// <summary>The kin play pieces in camp (CreatureActor.CampLife sends idle kin to them).</summary>
         public IEnumerable<Piece> PlayPieces { get { foreach (var f in furniture) if (f.def.play) yield return f; } }
+        /// <summary>Beds and baskets camp kin can sleep on (BaseManager.Beds).</summary>
+        public IEnumerable<Piece> KinBeds { get { foreach (var f in furniture) if (f.def.bed || f.def.kinBed) yield return f; } }
+        /// <summary>How high a sleeper lies on it.</summary>
+        public static float SleepTop(HousePieceDef d) => d.bed ? 0.5f : 0.2f;
 
         public static HousePieceDef Def(string id) { foreach (var p in Pieces) if (p.id == id) return p; return null; }
 
         public class Piece
         {
             public HousePieceDef def;
-            public int cx, cz, side, rot;
+            public int cx, cz, side, rot, level;
             public Vector3 pos;
             public GameObject go;
             public Obstacle obs;
             public Transform door;
             public float doorOpen;
             public Renderer[] rends;
-            public bool hidden;
+            public Renderer rail;      // stairs: the railing round the stairwell up top
+            public bool hidden, railHidden, removed;
             public float Y => pos.y;
         }
 
-        readonly Dictionary<long, Piece> floors = new Dictionary<long, Piece>();
-        readonly Dictionary<long, Piece> roofs = new Dictionary<long, Piece>();
-        readonly Dictionary<long, Piece>[] edges = { new Dictionary<long, Piece>(), new Dictionary<long, Piece>() };
+        readonly Dictionary<long, Piece> floors = new Dictionary<long, Piece>();      // LKey(square, storey)
+        readonly Dictionary<long, Piece> roofs = new Dictionary<long, Piece>();       // Key(square): one roof per square, over its top floor
+        readonly Dictionary<long, Piece>[] edges = { new Dictionary<long, Piece>(), new Dictionary<long, Piece>() };   // LKey(square, storey) per side
+        readonly Dictionary<long, Piece> stairs = new Dictionary<long, Piece>();      // LKey(square, storey they start on)
         readonly List<Piece> furniture = new List<Piece>();
-        public int Count => floors.Count + roofs.Count + edges[0].Count + edges[1].Count + furniture.Count;
+        public int Count => floors.Count + roofs.Count + edges[0].Count + edges[1].Count + stairs.Count + furniture.Count;
+        /// <summary>Goes up whenever anything is built or taken down (route and reachability caches watch it).</summary>
+        public int Version { get; private set; }
 
         public static long Key(int cx, int cz) => ((long)cx << 32) ^ (uint)cz;
+        /// <summary>A square on a storey (storey 0 is the same key as the square).</summary>
+        public static long LKey(int cx, int cz, int level) => Key(cx, cz) ^ ((long)level << 58);
         public static int CellOf(float v) => Mathf.FloorToInt(v / Cell);
         public static Vector3 CellCenter(int cx, int cz) => new Vector3((cx + 0.5f) * Cell, 0f, (cz + 0.5f) * Cell);
+        static readonly int[] DX = { 0, 1, 0, -1 }, DZ = { 1, 0, -1, 0 };   // north, east, south, west (= stairs rot)
 
-        // ---- floors as ground: published as a fresh dictionary on every change, so any thread can read it
+        // ---- floors as ground: published as fresh dictionaries on every change, so any thread can read them
+        struct Surf { public float y; public int rot; public bool stair; }
         static volatile Dictionary<long, float> floorSnap = new Dictionary<long, float>();
-        /// <summary>The top of a floor at this point, or -infinity (Ground.Height takes the higher of this and the terrain).</summary>
+        static volatile Dictionary<long, Surf[]> upperSnap = new Dictionary<long, Surf[]>();
+        /// <summary>The top of a ground-floor floor at this point, or -infinity (Ground.Height takes the higher of this and the terrain).</summary>
         public static float FloorAt(float x, float z) => floorSnap.TryGetValue(Key(CellOf(x), CellOf(z)), out var y) ? y : float.NegativeInfinity;
+
+        /// <summary>
+        /// What a walker whose feet are at height y stands on here: the ground floor, or an upper floor or a stair it can
+        /// step onto (no more than `StepUp` above its feet - so someone downstairs walks under the floor above). -infinity = nothing built.
+        /// </summary>
+        public static float SurfaceAt(float x, float z, float y)
+        {
+            int cx = CellOf(x), cz = CellOf(z);
+            long k = Key(cx, cz);
+            float h = floorSnap.TryGetValue(k, out var g) ? g : float.NegativeInfinity;
+            if (!upperSnap.TryGetValue(k, out var arr)) return h;
+            foreach (var s in arr)
+            {
+                float top = s.y;
+                if (s.stair)
+                {
+                    float u = x - (cx + 0.5f) * Cell, v = z - (cz + 0.5f) * Cell;
+                    float along = s.rot == 0 ? v : s.rot == 1 ? u : s.rot == 2 ? -v : -u;
+                    float across = s.rot == 0 || s.rot == 2 ? u : v;
+                    if (Mathf.Abs(across) > StairW * 0.5f) continue;
+                    top = s.y + Mathf.Clamp01(along / Cell + 0.5f) * LevelH;
+                }
+                if (top <= y + StepUp && top > h) h = top;
+            }
+            return h;
+        }
+
         void Publish()
         {
             var d = new Dictionary<long, float>();
-            foreach (var kv in floors) d[kv.Key] = kv.Value.Y;
-            floorSnap = d;
+            var u = new Dictionary<long, List<Surf>>();
+            void Up(long k, Surf s) { if (!u.TryGetValue(k, out var l)) u[k] = l = new List<Surf>(); l.Add(s); }
+            foreach (var f in floors.Values)
+            {
+                if (f.level == 0) d[Key(f.cx, f.cz)] = f.Y;
+                else Up(Key(f.cx, f.cz), new Surf { y = f.Y });
+            }
+            foreach (var s in stairs.Values) Up(Key(s.cx, s.cz), new Surf { y = s.Y, rot = s.rot, stair = true });
+            var arrs = new Dictionary<long, Surf[]>();
+            foreach (var kv in u) arrs[kv.Key] = kv.Value.ToArray();
+            floorSnap = d; upperSnap = arrs;
         }
 
-        // ---- wall segments, indexed by the two squares beside them
-        struct Seg { public Vector2 a, b; public float y0, y1; }
+        // ---- lookups by square and storey
+        public bool FloorTop(int cx, int cz, int level, out float y)
+        {
+            if (floors.TryGetValue(LKey(cx, cz, level), out var f)) { y = f.Y; return true; }
+            y = 0f; return false;
+        }
+        Piece StairsAt(int cx, int cz, int level) => stairs.TryGetValue(LKey(cx, cz, level), out var s) ? s : null;
+        Piece EdgeAt(int cx, int cz, int dir, int level)
+        {
+            // the edge on side `dir` (0 north, 1 east, 2 south, 3 west) of a square
+            var e = dir == 0 ? edges[0] : dir == 1 ? edges[1] : dir == 2 ? edges[0] : edges[1];
+            int x = dir == 3 ? cx - 1 : cx, z = dir == 2 ? cz - 1 : cz;
+            return e.TryGetValue(LKey(x, z, level), out var p) ? p : null;
+        }
+        /// <summary>The edge a direction leads over, as (cx, cz, side) the way walls are keyed.</summary>
+        static void EdgeOf(int cx, int cz, int dir, out int ex, out int ez, out int side)
+        {
+            side = dir == 0 || dir == 2 ? 0 : 1;
+            ex = dir == 3 ? cx - 1 : cx; ez = dir == 2 ? cz - 1 : cz;
+        }
+
+        /// <summary>
+        /// Which storey a point is on: the stairs it is on (the storey they start from), else the highest upper floor
+        /// at or just under its feet, else 0 (the ground floor or open ground).
+        /// </summary>
+        public int LevelAt(Vector3 p)
+        {
+            int cx = CellOf(p.x), cz = CellOf(p.z);
+            for (int l = MaxLevel - 1; l >= 0; l--)
+            {
+                var st = StairsAt(cx, cz, l);
+                if (st != null && p.y > st.Y - 0.6f && p.y < st.Y + LevelH + 0.6f) return l;
+            }
+            for (int l = MaxLevel; l >= 1; l--)
+                if (FloorTop(cx, cz, l, out float y) && y <= p.y + 1f) return l;
+            return 0;
+        }
+
+        // ---- wall segments, indexed by the squares beside them
+        struct Seg { public Vector2 a, b; public float lo, hi; }
         readonly Dictionary<long, List<Seg>> segs = new Dictionary<long, List<Seg>>();
 
-        public void Init() { I = this; floorSnap = new Dictionary<long, float>(); }
+        public void Init() { I = this; floorSnap = new Dictionary<long, float>(); upperSnap = new Dictionary<long, Surf[]>(); }
 
         // ---- construction sites (BaseManager.Construction) hold their slot until they are built
         readonly HashSet<string> pending = new HashSet<string>();
         readonly Dictionary<long, float> pendingFloors = new Dictionary<long, float>();
         static string SlotKey(HousePieceDef d, Spot s) =>
-            d.kind == HouseKind.Floor ? $"F{s.cx},{s.cz}" : d.kind == HouseKind.Roof || d.kind == HouseKind.RoofSlope ? $"R{s.cx},{s.cz}" : d.kind == HouseKind.Furniture ? $"U{s.pos.x:0.0},{s.pos.z:0.0}" : $"E{s.side}:{s.cx},{s.cz}";
-        public void Reserve(HousePieceDef d, Spot s) { pending.Add(SlotKey(d, s)); if (d.kind == HouseKind.Floor) pendingFloors[Key(s.cx, s.cz)] = s.pos.y; }
-        public void Unreserve(HousePieceDef d, Spot s) { pending.Remove(SlotKey(d, s)); if (d.kind == HouseKind.Floor) pendingFloors.Remove(Key(s.cx, s.cz)); }
+            d.kind == HouseKind.Floor ? $"F{s.level}:{s.cx},{s.cz}" : d.kind == HouseKind.Roof || d.kind == HouseKind.RoofSlope ? $"R{s.cx},{s.cz}" :
+            d.kind == HouseKind.Stairs ? $"S{s.level}:{s.cx},{s.cz}" :
+            d.kind == HouseKind.Furniture ? $"U{s.pos.x:0.0},{s.pos.y:0},{s.pos.z:0.0}" : $"E{s.level}:{s.side}:{s.cx},{s.cz}";
+        public void Reserve(HousePieceDef d, Spot s) { pending.Add(SlotKey(d, s)); if (d.kind == HouseKind.Floor) pendingFloors[LKey(s.cx, s.cz, s.level)] = s.pos.y; }
+        public void Unreserve(HousePieceDef d, Spot s) { pending.Remove(SlotKey(d, s)); if (d.kind == HouseKind.Floor) pendingFloors.Remove(LKey(s.cx, s.cz, s.level)); }
         bool Pending(HousePieceDef d, Spot s) => pending.Contains(SlotKey(d, s));
-        bool FloorOrSite(int cx, int cz, out float y)
+        bool FloorOrSite(int cx, int cz, int level, out float y)
         {
-            if (floors.TryGetValue(Key(cx, cz), out var f)) { y = f.Y; return true; }
-            return pendingFloors.TryGetValue(Key(cx, cz), out y);
+            if (floors.TryGetValue(LKey(cx, cz, level), out var f)) { y = f.Y; return true; }
+            return pendingFloors.TryGetValue(LKey(cx, cz, level), out y);
         }
+        bool StairsOrSite(int cx, int cz, int level) => StairsAt(cx, cz, level) != null || pending.Contains($"S{level}:{cx},{cz}");
+        bool RoofOrSite(int cx, int cz) => roofs.ContainsKey(Key(cx, cz)) || pending.Contains($"R{cx},{cz}");
+        /// <summary>The highest storey with a floor (or a floor being built) on this square, or -1.</summary>
+        int TopFloor(int cx, int cz) { int t = -1; for (int l = 0; l <= MaxLevel; l++) if (FloorOrSite(cx, cz, l, out _)) t = l; else break; return t; }
 
         // ============================================================ PLACING
-        public struct Spot { public bool ok; public string reason; public int cx, cz, side, rot; public Vector3 pos; public Quaternion q; public float depth; }
+        public struct Spot { public bool ok; public string reason; public int cx, cz, side, rot, level; public Vector3 pos; public Quaternion q; public float depth; }
 
         /// <summary>Where a piece would go for a player standing at p facing fwd (turn = ROTATE presses).</summary>
         public Spot Snap(HousePieceDef def, Vector3 p, Vector3 fwd, int turn)
@@ -168,10 +277,11 @@ namespace Wildbond
             var s = new Spot { ok = false };
             var bm = BaseManager.I;
             fwd.y = 0f; if (fwd.sqrMagnitude < 0.01f) fwd = Vector3.forward; fwd.Normalize();
-            float reach = def.kind == HouseKind.Floor ? 3.2f : def.kind == HouseKind.Furniture ? 1.7f : def.kind == HouseKind.Roof || def.kind == HouseKind.RoofSlope ? 2.6f : 2.1f;
+            float reach = def.kind == HouseKind.Floor || def.kind == HouseKind.Stairs ? 3.2f : def.kind == HouseKind.Furniture ? 1.7f : def.kind == HouseKind.Roof || def.kind == HouseKind.RoofSlope ? 2.6f : 2.1f;
             Vector3 t = p + fwd * reach;
             int cx = CellOf(t.x), cz = CellOf(t.z);
-            s.cx = cx; s.cz = cz;
+            int lv = LevelAt(p);
+            s.cx = cx; s.cz = cz; s.level = lv;
             s.rot = ((turn % 4) + 4) % 4;
             string Fail(string why) { s.reason = why; return why; }
             if (bm == null || !bm.HasBase) { Fail("Place a Hearthstone first - houses go inside your camp"); }
@@ -180,18 +290,31 @@ namespace Wildbond
                 case HouseKind.Floor:
                 {
                     var c = CellCenter(cx, cz);
+                    // the first storey up from yours with no floor yet: lay it on the ground, or over the floor below
+                    int L = lv;
+                    while (L <= MaxLevel && FloorOrSite(cx, cz, L, out _)) L++;
+                    if (L >= 1)
+                    {
+                        s.level = Mathf.Min(L, MaxLevel);
+                        bool below = FloorOrSite(cx, cz, s.level - 1, out float by);
+                        s.pos = new Vector3(c.x, (below ? by : WorldGen.Height(c.x, c.z)) + LevelH, c.z); s.q = Quaternion.identity; s.depth = UpperDepth;
+                        if (s.reason != null) break;
+                        if (L > MaxLevel) { Fail("A house goes three storeys high at most"); break; }
+                        if (!below) { Fail("Upper floors go over a floor below"); break; }
+                        if (RoofOrSite(cx, cz)) { Fail("Take the roof off first"); break; }
+                        if (StairsOrSite(cx, cz, L - 1)) { Fail("The stairs come up here"); break; }
+                        s.ok = true;
+                        break;
+                    }
                     float hi = float.MinValue, lo = float.MaxValue;
                     for (int i = -1; i <= 1; i++) for (int j = -1; j <= 1; j++) { float h = WorldGen.Height(c.x + i * Cell * 0.5f, c.z + j * Cell * 0.5f); hi = Mathf.Max(hi, h); lo = Mathf.Min(lo, h); }
                     float y = hi + 0.3f;
                     // flush with a neighbouring floor when the ground allows it
                     for (int k = 0; k < 4; k++)
-                    {
-                        int nx = cx + (k == 0 ? 1 : k == 1 ? -1 : 0), nz = cz + (k == 2 ? 1 : k == 3 ? -1 : 0);
-                        if (floors.TryGetValue(Key(nx, nz), out var nb) && nb.Y >= hi + 0.12f && nb.Y - hi < 1.6f) y = Mathf.Max(y, nb.Y);
-                    }
+                        if (floors.TryGetValue(LKey(cx + DX[k], cz + DZ[k], 0), out var nb) && nb.Y >= hi + 0.12f && nb.Y - hi < 1.6f) y = Mathf.Max(y, nb.Y);
+                    s.level = 0;
                     s.pos = new Vector3(c.x, y, c.z); s.q = Quaternion.identity; s.depth = y - lo + 0.5f;
                     if (s.reason != null) break;
-                    if (floors.ContainsKey(Key(cx, cz)) || Pending(def, s)) { Fail("There's a floor here already"); break; }
                     if (hi - lo > 2.2f) { Fail("Too steep here"); break; }
                     if (lo < WorldGen.WaterLevel + 0.15f) { Fail("Too wet here"); break; }
                     if (!bm.IsInsideBase(c, 1.5f)) { Fail("Inside your camp ring only"); break; }
@@ -208,17 +331,18 @@ namespace Wildbond
                     float[] d = { Cell - v, Cell - u, v, u };   // north, east, south, west
                     int best = 0; for (int i = 1; i < 4; i++) if (d[i] < d[best]) best = i;
                     int e = (best + s.rot) % 4;
-                    int ex = cx, ez = cz, side = 0;
-                    if (e == 0) { side = 0; } else if (e == 1) { side = 1; } else if (e == 2) { side = 0; ez = cz - 1; } else { side = 1; ex = cx - 1; }
+                    EdgeOf(cx, cz, e, out int ex, out int ez, out int side);
                     s.cx = ex; s.cz = ez; s.side = side;
                     Vector3 mid = side == 0 ? new Vector3((ex + 0.5f) * Cell, 0f, (ez + 1) * Cell) : new Vector3((ex + 1) * Cell, 0f, (ez + 0.5f) * Cell);
-                    float y = EdgeBase(ex, ez, side);
+                    float y = EdgeBase(ex, ez, side, lv);
                     s.pos = new Vector3(mid.x, float.IsNegativeInfinity(y) ? WorldGen.Height(mid.x, mid.z) : y, mid.z);
                     s.q = Quaternion.Euler(0f, side == 0 ? 0f : 90f, 0f);
                     if (s.reason != null) break;
                     if (float.IsNegativeInfinity(y)) { Fail("Walls go on the edge of a floor"); break; }
-                    if (edges[side].ContainsKey(Key(ex, ez)) || Pending(def, s)) { Fail("There's a wall here already"); break; }
-                    if (FurnitureNearSegment(mid, side, 0.15f)) { Fail("Furniture is in the way"); break; }
+                    if (edges[side].ContainsKey(LKey(ex, ez, lv)) || Pending(def, s)) { Fail("There's a wall here already"); break; }
+                    if (FurnitureNearSegment(mid, side, 0.15f, lv)) { Fail("Furniture is in the way"); break; }
+                    string st = StairEdge(ex, ez, side, lv);
+                    if (st != null) { Fail(st); break; }
                     s.ok = true;
                     break;
                 }
@@ -226,38 +350,65 @@ namespace Wildbond
                 case HouseKind.RoofSlope:
                 {
                     var c = CellCenter(cx, cz);
-                    bool hasFloor = FloorOrSite(cx, cz, out float fy0);
+                    int top = TopFloor(cx, cz);
+                    s.level = Mathf.Max(0, top);
+                    bool hasFloor = FloorOrSite(cx, cz, s.level, out float fy0);
                     s.pos = new Vector3(c.x, (hasFloor ? fy0 : WorldGen.Height(c.x, c.z)) + WallH, c.z);
                     s.q = Quaternion.Euler(0f, s.rot * 90f, 0f);
                     if (s.reason != null) break;
                     if (!hasFloor) { Fail("Roofs go over a floor"); break; }
-                    if (roofs.ContainsKey(Key(cx, cz)) || Pending(def, s)) { Fail("There's a roof here already"); break; }
+                    if (RoofOrSite(cx, cz)) { Fail("There's a roof here already"); break; }
+                    if (StairsOrSite(cx, cz, s.level)) { Fail("Stairs go up here - lay a floor above instead"); break; }
+                    s.ok = true;
+                    break;
+                }
+                case HouseKind.Stairs:
+                {
+                    var c = CellCenter(cx, cz);
+                    // they climb the way you face; ROTATE turns them
+                    int face = Mathf.Abs(fwd.x) > Mathf.Abs(fwd.z) ? (fwd.x > 0f ? 1 : 3) : (fwd.z > 0f ? 0 : 2);
+                    s.rot = (face + s.rot) % 4;
+                    bool hasFloor = FloorOrSite(cx, cz, lv, out float fy);
+                    s.pos = new Vector3(c.x, hasFloor ? fy : WorldGen.Height(c.x, c.z), c.z);
+                    s.q = Quaternion.Euler(0f, s.rot * 90f, 0f);
+                    if (s.reason != null) break;
+                    if (!hasFloor) { Fail("Stairs go on a floor"); break; }
+                    if (lv >= MaxLevel) { Fail("A house goes three storeys high at most"); break; }
+                    if (StairsOrSite(cx, cz, lv)) { Fail("There are stairs here already"); break; }
+                    if (FloorOrSite(cx, cz, lv + 1, out _)) { Fail("There's a floor above - stairs need open space over them"); break; }
+                    if (RoofOrSite(cx, cz)) { Fail("Take the roof off first"); break; }
+                    if (FurnitureInSquare(cx, cz, lv)) { Fail("Furniture is in the way"); break; }
+                    var foot = EdgeAt(cx, cz, (s.rot + 2) % 4, lv);
+                    if (foot != null && foot.def.kind != HouseKind.Doorway) { Fail("A wall is in the way at the foot"); break; }
                     s.ok = true;
                     break;
                 }
                 default:
                 {
                     Vector3 q = new Vector3(Mathf.Round(t.x * 2f) * 0.5f, 0f, Mathf.Round(t.z * 2f) * 0.5f);
-                    float fy = FloorAt(q.x, q.z);
-                    s.cx = CellOf(q.x); s.cz = CellOf(q.z);
-                    s.pos = new Vector3(q.x, float.IsNegativeInfinity(fy) ? WorldGen.Height(q.x, q.z) : fy, q.z);
+                    int fx = CellOf(q.x), fz = CellOf(q.z);
+                    bool onFloor = FloorTop(fx, fz, lv, out float fy);
+                    s.cx = fx; s.cz = fz;
+                    s.pos = new Vector3(q.x, onFloor ? fy : WorldGen.Height(q.x, q.z), q.z);
                     s.q = Quaternion.Euler(0f, s.rot * 90f, 0f);
                     if (s.reason != null) break;
-                    if (float.IsNegativeInfinity(fy))
+                    if (!onFloor)
                     {
-                        if (!def.ground) { Fail("Furniture goes on a floor"); break; }
+                        if (!def.ground || lv > 0) { Fail("Furniture goes on a floor"); break; }
                         // out in the open: inside the camp ring, clear of trees, rocks and structures
                         if (!bm.IsInsideBase(s.pos, 0.5f)) { Fail("Inside your camp ring only"); break; }
                         if (WorldCollision.Overlaps(s.pos, Mathf.Max(0.4f, def.radius), true)) { Fail("Something is in the way"); break; }
                     }
-                    // keep clear of walls and of other furniture
+                    if (StairsOrSite(fx, fz, lv)) { Fail("The stairs are here"); break; }
+                    // keep clear of walls and of other furniture on this storey
                     if (WallClearance(s.pos) < Mathf.Max(0.25f, def.radius * 0.8f)) { Fail("Too close to a wall"); break; }
                     bool hit = false;
                     foreach (var o in furniture)
                     {
+                        if (o.level != lv) continue;
                         if (o.def.radius <= 0f || def.radius <= 0f) { if (o.def.id == def.id && (o.pos - s.pos).sqrMagnitude < 0.3f) hit = true; continue; }
                         float m = o.def.radius + def.radius - 0.1f;
-                        if ((o.pos - s.pos).sqrMagnitude < m * m) hit = true;
+                        if (Flat(o.pos - s.pos) < m) hit = true;
                     }
                     if (hit) { Fail("Something is in the way"); break; }
                     s.ok = true;
@@ -268,25 +419,43 @@ namespace Wildbond
             return s;
         }
 
-        /// <summary>The floor height an edge stands on (the higher floor beside it), or -infinity if neither side has one.</summary>
-        float EdgeBase(int cx, int cz, int side)
+        /// <summary>The floor height an edge stands on at a storey (the higher floor beside it), or -infinity if neither side has one.</summary>
+        float EdgeBase(int cx, int cz, int side, int level)
         {
             float y = float.NegativeInfinity;
-            if (FloorOrSite(cx, cz, out float a)) y = a;   // a floor still being built counts: walls can go up beside it
+            if (FloorOrSite(cx, cz, level, out float a)) y = a;   // a floor still being built counts: walls can go up beside it
             int nx = side == 1 ? cx + 1 : cx, nz = side == 0 ? cz + 1 : cz;
-            if (FloorOrSite(nx, nz, out float b)) y = Mathf.Max(y, b);
+            if (FloorOrSite(nx, nz, level, out float b)) y = Mathf.Max(y, b);
             return y;
         }
 
-        bool FurnitureNearSegment(Vector3 mid, int side, float pad)
+        /// <summary>Why a wall can't go on this edge because of stairs (their foot, or where they arrive up top), or null.</summary>
+        string StairEdge(int ex, int ez, int side, int level)
+        {
+            foreach (var st in stairs.Values)
+            {
+                if (st.level != level && st.level != level - 1) continue;
+                EdgeOf(st.cx, st.cz, st.level == level ? (st.rot + 2) % 4 : st.rot, out int x, out int z, out int sd);
+                if (x == ex && z == ez && sd == side) return st.level == level ? "That's the foot of the stairs" : "That's the top of the stairs";
+            }
+            return null;
+        }
+
+        bool FurnitureNearSegment(Vector3 mid, int side, float pad, int level)
         {
             Vector2 dir = side == 0 ? Vector2.right : Vector2.up;
             Vector2 m = new Vector2(mid.x, mid.z), a = m - dir * Cell * 0.5f, b = m + dir * Cell * 0.5f;
             foreach (var o in furniture)
             {
-                if (o.def.radius <= 0f) continue;
+                if (o.def.radius <= 0f || o.level != level) continue;
                 if (DistSeg(new Vector2(o.pos.x, o.pos.z), a, b) < o.def.radius + WallT * 0.5f + pad) return true;
             }
+            return false;
+        }
+
+        bool FurnitureInSquare(int cx, int cz, int level)
+        {
+            foreach (var f in furniture) if (f.level == level && f.cx == cx && f.cz == cz) return true;
             return false;
         }
 
@@ -295,10 +464,11 @@ namespace Wildbond
             float best = 99f;
             Vector2 q = new Vector2(p.x, p.z);
             int cx = CellOf(p.x), cz = CellOf(p.z);
+            float y = p.y + 0.5f;
             for (int i = -1; i <= 1; i++)
                 for (int j = -1; j <= 1; j++)
                     if (segs.TryGetValue(Key(cx + i, cz + j), out var list))
-                        foreach (var s in list) best = Mathf.Min(best, DistSeg(q, s.a, s.b) - WallT * 0.5f);
+                        foreach (var s in list) if (y >= s.lo && y <= s.hi) best = Mathf.Min(best, DistSeg(q, s.a, s.b) - WallT * 0.5f);
             return best;
         }
 
@@ -311,7 +481,7 @@ namespace Wildbond
 
         public Piece Place(HousePieceDef def, Spot s)
         {
-            var pc = new Piece { def = def, cx = s.cx, cz = s.cz, side = s.side, rot = s.rot, pos = s.pos };
+            var pc = new Piece { def = def, cx = s.cx, cz = s.cz, side = s.side, rot = s.rot, level = s.level, pos = s.pos };
             Build(pc, s.depth);
             Register(pc);
             return pc;
@@ -321,57 +491,101 @@ namespace Wildbond
         {
             switch (pc.def.kind)
             {
-                case HouseKind.Floor: floors[Key(pc.cx, pc.cz)] = pc; Publish(); break;
+                case HouseKind.Floor: floors[LKey(pc.cx, pc.cz, pc.level)] = pc; Publish(); RefreshRails(); break;
                 case HouseKind.Roof: case HouseKind.RoofSlope: roofs[Key(pc.cx, pc.cz)] = pc; break;
+                case HouseKind.Stairs: stairs[LKey(pc.cx, pc.cz, pc.level)] = pc; Publish(); RebuildSegs(); RefreshRails(); break;
                 case HouseKind.Furniture:
                     furniture.Add(pc);
-                    if (pc.def.radius > 0f) pc.obs = WorldCollision.AddObstacle(pc.pos, pc.def.radius, pc.go);
+                    if (pc.def.radius > 0f)
+                    {
+                        pc.obs = WorldCollision.AddObstacle(pc.pos, pc.def.radius, pc.go);
+                        // only in the way on its own storey (a table upstairs doesn't stop you downstairs)
+                        pc.obs.yLo = pc.level == 0 ? float.NegativeInfinity : pc.Y - 0.8f;
+                        pc.obs.yHi = pc.Y + 2.4f;
+                    }
                     break;
-                default: edges[pc.side][Key(pc.cx, pc.cz)] = pc; RebuildSegs(); break;
+                default: edges[pc.side][LKey(pc.cx, pc.cz, pc.level)] = pc; RebuildSegs(); break;
             }
+            RecalcBounds();
+            Version++;
         }
 
         void RebuildSegs()
         {
             segs.Clear();
+            void Add(long k, Vector2 a, Vector2 b, float lo, float hi)
+            {
+                if (!segs.TryGetValue(k, out var l)) segs[k] = l = new List<Seg>();
+                l.Add(new Seg { a = a, b = b, lo = lo, hi = hi });
+            }
             for (int side = 0; side < 2; side++)
                 foreach (var pc in edges[side].Values)
                 {
                     Vector2 dir = side == 0 ? Vector2.right : Vector2.up;
                     Vector2 m = new Vector2(pc.pos.x, pc.pos.z), a = m - dir * Cell * 0.5f, b = m + dir * Cell * 0.5f;
-                    float y0 = pc.Y - 0.5f, y1 = pc.Y + WallH;
-                    var list = new List<Seg>();
-                    if (pc.def.kind == HouseKind.Doorway)
-                    {
-                        float w = (Cell - DoorGap) * 0.5f;
-                        list.Add(new Seg { a = a, b = a + dir * w, y0 = y0, y1 = y1 });
-                        list.Add(new Seg { a = b - dir * w, b = b, y0 = y0, y1 = y1 });
-                    }
-                    else list.Add(new Seg { a = a, b = b, y0 = y0, y1 = y1 });
+                    // blocks from a little under its floor (the ground floor: well under, for slopes) to just under the floor above
+                    float lo = pc.Y - (pc.level == 0 ? 2f : 0.6f), hi = pc.Y + WallH - 0.25f;
                     int nx = side == 1 ? pc.cx + 1 : pc.cx, nz = side == 0 ? pc.cz + 1 : pc.cz;
                     foreach (var k in new[] { Key(pc.cx, pc.cz), Key(nx, nz) })
                     {
-                        if (!segs.TryGetValue(k, out var l)) segs[k] = l = new List<Seg>();
-                        l.AddRange(list);
+                        if (pc.def.kind == HouseKind.Doorway)
+                        {
+                            float w = (Cell - DoorGap) * 0.5f;
+                            Add(k, a, a + dir * w, lo, hi);
+                            Add(k, b - dir * w, b, lo, hi);
+                        }
+                        else Add(k, a, b, lo, hi);
                     }
                 }
+            foreach (var st in stairs.Values)
+            {
+                // the sides of the flight and the solid space under its top end, then a railing round the stairwell up top
+                long k = Key(st.cx, st.cz);
+                Vector2 c = new Vector2((st.cx + 0.5f) * Cell, (st.cz + 0.5f) * Cell), up = new Vector2(DX[st.rot], DZ[st.rot]), rt = new Vector2(up.y, -up.x);
+                float h = Cell * 0.5f, w = StairW * 0.5f, y = st.Y, top = y + LevelH;
+                Add(k, c + rt * w - up * h, c + rt * w + up * h, y - 0.6f, top + 0.9f);
+                Add(k, c - rt * w - up * h, c - rt * w + up * h, y - 0.6f, top + 0.9f);
+                Add(k, c - rt * w + up * h, c + rt * w + up * h, y - 0.6f, top - 0.7f);
+                float rlo = top - 0.6f, rhi = top + 1f;
+                Add(k, c - rt * h - up * h, c + rt * h - up * h, rlo, rhi);
+                Add(k, c - rt * h - up * h, c - rt * h + up * h, rlo, rhi);
+                Add(k, c + rt * h - up * h, c + rt * h + up * h, rlo, rhi);
+                Add(k, c - rt * h + up * h, c - rt * w + up * h, rlo, rhi);
+                Add(k, c + rt * w + up * h, c + rt * h + up * h, rlo, rhi);
+            }
         }
 
-        /// <summary>The piece nearest a point in front of the player (REMOVE A PIECE): furniture first, then walls, roofs, floors.</summary>
+        /// <summary>A stairwell's railing shows once there is an upstairs floor beside it.</summary>
+        void RefreshRails()
+        {
+            foreach (var st in stairs.Values)
+            {
+                if (st.rail == null) continue;
+                bool any = false;
+                for (int k = 0; k < 4 && !any; k++) any = floors.ContainsKey(LKey(st.cx + DX[k], st.cz + DZ[k], st.level + 1));
+                st.rail.gameObject.SetActive(any);
+            }
+        }
+
+        /// <summary>The piece nearest a point in front of the player (REMOVE A PIECE): on your storey furniture, walls, stairs; then the roof or a floor above you; then your floor.</summary>
         public Piece PieceAt(Vector3 p, Vector3 fwd)
         {
             fwd.y = 0f; if (fwd.sqrMagnitude < 0.01f) fwd = Vector3.forward; fwd.Normalize();
             Vector3 t = p + fwd * 1.8f;
+            int lv = LevelAt(p);
             Piece best = null; float bd = 1.6f;
-            foreach (var f in furniture) { float d = Flat(f.pos - t); if (d < bd) { bd = d; best = f; } }
+            foreach (var f in furniture) { if (f.level != lv) continue; float d = Flat(f.pos - t); if (d < bd) { bd = d; best = f; } }
             if (best != null) return best;
             bd = 1.3f;
             for (int side = 0; side < 2; side++)
-                foreach (var w in edges[side].Values) { float d = Flat(w.pos - t); if (d < bd) { bd = d; best = w; } }
+                foreach (var w in edges[side].Values) { if (w.level != lv) continue; float d = Flat(w.pos - t); if (d < bd) { bd = d; best = w; } }
             if (best != null) return best;
             int cx = CellOf(t.x), cz = CellOf(t.z);
+            var st = StairsAt(cx, cz, lv);
+            if (st != null) return st;
             if (roofs.TryGetValue(Key(cx, cz), out var r) && p.y < r.Y) return r;
-            return floors.TryGetValue(Key(cx, cz), out var fl) ? fl : null;
+            for (int l = lv + 1; l <= MaxLevel; l++) if (floors.TryGetValue(LKey(cx, cz, l), out var up)) { for (int m = MaxLevel; m > l; m--) if (floors.TryGetValue(LKey(cx, cz, m), out var higher)) return higher; return up; }
+            return floors.TryGetValue(LKey(cx, cz, lv), out var fl) ? fl : null;
         }
 
         static float Flat(Vector3 v) { v.y = 0f; return v.magnitude; }
@@ -381,15 +595,18 @@ namespace Wildbond
         {
             if (pc == null) return "Nothing here to remove";
             if (pc.def.kind != HouseKind.Floor) return null;
-            if (roofs.ContainsKey(Key(pc.cx, pc.cz))) return "Take the roof off first";
-            foreach (var f in furniture) if (f.cx == pc.cx && f.cz == pc.cz) return "Move the furniture off first";
+            if (floors.ContainsKey(LKey(pc.cx, pc.cz, pc.level + 1))) return "Take down the floor above first";
+            if (roofs.TryGetValue(Key(pc.cx, pc.cz), out var rf) && rf.level == pc.level) return "Take the roof off first";
+            if (StairsAt(pc.cx, pc.cz, pc.level) != null) return "Take the stairs down first";
+            foreach (var f in furniture) if (f.level == pc.level && f.cx == pc.cx && f.cz == pc.cz) return "Move the furniture off first";
             for (int side = 0; side < 2; side++)
                 foreach (var w in edges[side].Values)
                 {
+                    if (w.level != pc.level) continue;
                     bool touches = (w.cx == pc.cx && w.cz == pc.cz) || (side == 0 && w.cx == pc.cx && w.cz + 1 == pc.cz) || (side == 1 && w.cx + 1 == pc.cx && w.cz == pc.cz);
                     if (!touches) continue;
                     int ox = side == 1 ? (w.cx == pc.cx ? w.cx + 1 : w.cx) : w.cx, oz = side == 0 ? (w.cz == pc.cz ? w.cz + 1 : w.cz) : w.cz;
-                    if (!floors.ContainsKey(Key(ox, oz))) return "Take down the walls that stand on it first";
+                    if (!floors.ContainsKey(LKey(ox, oz, pc.level))) return "Take down the walls that stand on it first";
                 }
             return null;
         }
@@ -399,16 +616,20 @@ namespace Wildbond
             if (pc == null) return;
             switch (pc.def.kind)
             {
-                case HouseKind.Floor: floors.Remove(Key(pc.cx, pc.cz)); Publish(); break;
+                case HouseKind.Floor: floors.Remove(LKey(pc.cx, pc.cz, pc.level)); Publish(); RefreshRails(); break;
                 case HouseKind.Roof: case HouseKind.RoofSlope: roofs.Remove(Key(pc.cx, pc.cz)); break;
+                case HouseKind.Stairs: stairs.Remove(LKey(pc.cx, pc.cz, pc.level)); Publish(); RebuildSegs(); break;
                 case HouseKind.Furniture: furniture.Remove(pc); WorldCollision.RemoveObstacle(pc.obs); break;
-                default: edges[pc.side].Remove(Key(pc.cx, pc.cz)); RebuildSegs(); break;
+                default: edges[pc.side].Remove(LKey(pc.cx, pc.cz, pc.level)); RebuildSegs(); break;
             }
+            pc.removed = true;
             if (pc.go != null) Destroy(pc.go);
+            RecalcBounds();
+            Version++;
         }
 
         // ============================================================ COLLISION
-        /// <summary>Pushes a circle out of every wall it overlaps (called from WorldCollision.PushOut).</summary>
+        /// <summary>Pushes a circle out of every wall, stair side and railing it overlaps at its height (called from WorldCollision.PushOut).</summary>
         public static bool PushOut(ref Vector3 pos, float r)
         {
             var h = I;
@@ -422,7 +643,7 @@ namespace Wildbond
                     if (!h.segs.TryGetValue(Key(cx + i, cz + j), out var list)) continue;
                     foreach (var s in list)
                     {
-                        if (pos.y > s.y1 + 0.2f || pos.y < s.y0 - 1.5f) continue;
+                        if (pos.y > s.hi || pos.y < s.lo) continue;
                         Vector2 ab = s.b - s.a;
                         float t = Mathf.Clamp01(Vector2.Dot(p - s.a, ab) / ab.sqrMagnitude);
                         Vector2 q = s.a + ab * t, d = p - q;
@@ -437,11 +658,11 @@ namespace Wildbond
             return hit;
         }
 
-        /// <summary>True if a circle at pos overlaps any house piece (camp structures may not be placed on a house).</summary>
+        /// <summary>True if a circle at pos overlaps any house square (camp structures may not be placed on a house).</summary>
         public bool Occupies(Vector3 pos, float r)
         {
             int c0x = CellOf(pos.x - r), c1x = CellOf(pos.x + r), c0z = CellOf(pos.z - r), c1z = CellOf(pos.z + r);
-            for (int x = c0x; x <= c1x; x++) for (int z = c0z; z <= c1z; z++) if (floors.ContainsKey(Key(x, z))) return true;
+            for (int x = c0x; x <= c1x; x++) for (int z = c0z; z <= c1z; z++) if (floors.ContainsKey(LKey(x, z, 0))) return true;
             return false;
         }
 
@@ -449,22 +670,24 @@ namespace Wildbond
         public Piece BedNear(Vector3 p, float reach)
         {
             Piece best = null; float bd = reach;
-            foreach (var f in furniture) { if (!f.def.bed) continue; float d = Flat(f.pos - p) - f.def.radius; if (d < bd) { bd = d; best = f; } }
+            foreach (var f in furniture) { if (!f.def.bed || Mathf.Abs(f.Y - p.y) > 1.5f) continue; float d = Flat(f.pos - p) - f.def.radius; if (d < bd) { bd = d; best = f; } }
             return best;
         }
 
         public Piece WardrobeNear(Vector3 p, float reach)
         {
             Piece best = null; float bd = reach;
-            foreach (var f in furniture) { if (!f.def.wardrobe) continue; float d = Flat(f.pos - p) - f.def.radius; if (d < bd) { bd = d; best = f; } }
+            foreach (var f in furniture) { if (!f.def.wardrobe || Mathf.Abs(f.Y - p.y) > 1.5f) continue; float d = Flat(f.pos - p) - f.def.radius; if (d < bd) { bd = d; best = f; } }
             return best;
         }
 
-        /// <summary>A floor under it and a roof over it.</summary>
+        /// <summary>Under cover: a roof over this square above you, or a floor of a storey above yours.</summary>
         public bool Indoors(Vector3 p)
         {
-            long k = Key(CellOf(p.x), CellOf(p.z));
-            return floors.ContainsKey(k) && roofs.ContainsKey(k);
+            int cx = CellOf(p.x), cz = CellOf(p.z);
+            if (roofs.TryGetValue(Key(cx, cz), out var r) && r.Y > p.y + 0.5f) return true;
+            for (int l = 1; l <= MaxLevel; l++) if (floors.TryGetValue(LKey(cx, cz, l), out var f) && f.Y > p.y + 1f) return true;
+            return false;
         }
 
         // ============================================================ EVERY FRAME
@@ -474,24 +697,38 @@ namespace Wildbond
             if (gm == null || gm.Player == null || Count == 0) return;
             Vector3 pp = gm.Player.Position;
             var cam = Camera.main;
-            bool inside = Indoors(pp) && pp.y < RoofY(pp) - 0.5f;
+            bool inside = Indoors(pp);
+            float cut = pp.y + 1.2f;   // under cover, everything above your storey nearby is hidden so you can see in
             Vector2 a = new Vector2(pp.x, pp.z), b = cam != null ? new Vector2(cam.transform.position.x, cam.transform.position.z) : a;
-            foreach (var r in roofs.Values) SetHidden(r, inside && Flat(r.pos - pp) < 16f);
+            foreach (var r in roofs.Values) SetHidden(r, inside && r.Y > cut && Flat(r.pos - pp) < 16f);
+            foreach (var f in floors.Values) if (f.level > 0) SetHidden(f, inside && f.Y > cut && Flat(f.pos - pp) < 16f);
+            foreach (var f in furniture) if (f.level > 0) SetHidden(f, inside && f.Y > cut && Flat(f.pos - pp) < 16f);
+            foreach (var s in stairs.Values)
+            {
+                bool near = inside && Flat(s.pos - pp) < 16f;
+                SetHidden(s, near && s.Y > cut);
+                bool rh = near && s.Y + LevelH > cut;
+                if (s.rail != null && s.railHidden != rh) { s.railHidden = rh; s.rail.enabled = !rh; }
+            }
             for (int side = 0; side < 2; side++)
                 foreach (var w in edges[side].Values)
                 {
                     bool hide = false;
                     if (inside && Flat(w.pos - pp) < 14f)
                     {
-                        Vector2 dir = side == 0 ? Vector2.right : Vector2.up, m = new Vector2(w.pos.x, w.pos.z);
-                        hide = SegmentsCross(a, b, m - dir * Cell * 0.5f, m + dir * Cell * 0.5f);
+                        if (w.Y > cut) hide = true;
+                        else if (Mathf.Abs(w.Y - pp.y) < 1.6f)
+                        {
+                            Vector2 dir = side == 0 ? Vector2.right : Vector2.up, m = new Vector2(w.pos.x, w.pos.z);
+                            hide = SegmentsCross(a, b, m - dir * Cell * 0.5f, m + dir * Cell * 0.5f);
+                        }
                     }
                     SetHidden(w, hide);
                     if (w.door != null)
                     {
-                        bool near = Flat(w.pos - pp) < 2.4f;
-                        if (!near && BaseManager.I != null) foreach (var k in BaseManager.I.WorkerActors) if (k != null && Flat(k.Position - w.pos) < 2f) { near = true; break; }
-                        if (!near && gm.Party.Companion != null && Flat(gm.Party.Companion.Position - w.pos) < 2f) near = true;
+                        bool near = Close(w.pos, pp, 2.4f);
+                        if (!near && BaseManager.I != null) foreach (var k in BaseManager.I.WorkerActors) if (k != null && Close(w.pos, k.Position, 2f)) { near = true; break; }
+                        if (!near && gm.Party.Companion != null && Close(w.pos, gm.Party.Companion.Position, 2f)) near = true;
                         float want = near ? 1f : 0f;
                         if (Mathf.Abs(w.doorOpen - want) > 0.001f)
                         {
@@ -504,7 +741,7 @@ namespace Wildbond
                 }
         }
 
-        float RoofY(Vector3 p) => roofs.TryGetValue(Key(CellOf(p.x), CellOf(p.z)), out var r) ? r.Y : float.PositiveInfinity;
+        static bool Close(Vector3 door, Vector3 who, float r) => Flat(door - who) < r && who.y > door.y - 1f && who.y < door.y + 2.2f;
 
         static void SetHidden(Piece pc, bool hide)
         {
@@ -524,9 +761,10 @@ namespace Wildbond
         public List<HouseSave> Save()
         {
             var l = new List<HouseSave>();
-            void Add(Piece p) => l.Add(new HouseSave { id = p.def.id, cx = p.cx, cz = p.cz, side = p.side, rot = p.rot, x = p.pos.x, y = p.pos.y, z = p.pos.z });
+            void Add(Piece p) => l.Add(new HouseSave { id = p.def.id, cx = p.cx, cz = p.cz, side = p.side, rot = p.rot, level = p.level, x = p.pos.x, y = p.pos.y, z = p.pos.z });
             foreach (var p in floors.Values) Add(p);
             for (int s = 0; s < 2; s++) foreach (var p in edges[s].Values) Add(p);
+            foreach (var p in stairs.Values) Add(p);
             foreach (var p in roofs.Values) Add(p);
             foreach (var p in furniture) Add(p);
             return l;
@@ -535,20 +773,24 @@ namespace Wildbond
         public void Load(List<HouseSave> list)
         {
             if (list == null) return;
-            // floors first: everything else stands on them
-            foreach (var pass in new[] { 0, 1 })
+            // floors first, storey by storey: everything else stands on them
+            for (int pass = 0; pass <= MaxLevel + 1; pass++)
                 foreach (var s in list)
                 {
                     var def = Def(s.id);
-                    if (def == null || (def.kind == HouseKind.Floor) != (pass == 0)) continue;
-                    var pc = new Piece { def = def, cx = s.cx, cz = s.cz, side = s.side, rot = s.rot, pos = new Vector3(s.x, s.y, s.z) };
-                    float lo = s.y;
-                    if (def.kind == HouseKind.Floor)
+                    if (def == null) continue;
+                    bool floor = def.kind == HouseKind.Floor;
+                    if (pass <= MaxLevel ? !(floor && s.level == pass) : floor) continue;
+                    var pc = new Piece { def = def, cx = s.cx, cz = s.cz, side = s.side, rot = s.rot, level = s.level, pos = new Vector3(s.x, s.y, s.z) };
+                    float depth = UpperDepth;
+                    if (floor && s.level == 0)
                     {
+                        float lo = s.y;
                         var c = CellCenter(s.cx, s.cz);
                         for (int i = -1; i <= 1; i++) for (int j = -1; j <= 1; j++) lo = Mathf.Min(lo, WorldGen.Height(c.x + i * Cell * 0.5f, c.z + j * Cell * 0.5f));
+                        depth = s.y - lo + 0.5f;
                     }
-                    Build(pc, s.y - lo + 0.5f);
+                    Build(pc, depth);
                     Register(pc);
                 }
         }
@@ -656,6 +898,30 @@ namespace Wildbond
                             float zz = -half + (k + 0.5f) * (h / 3f), hh = rise * (k + 0.5f) / 3f;
                             mb.Box(M(new Vector3(s * (half - 0.05f), hh * 0.5f, zz), new Vector3(0.1f, hh, h / 3f)), PlankDark);
                         }
+                    break;
+                }
+                case HouseKind.Stairs:
+                {
+                    // a solid flight of 12 steps climbing one storey toward +z, with stringers and a handrail each side
+                    int n = 12; float run = h / n, rise = LevelH / n, w = StairW;
+                    for (int i = 0; i < n; i++)
+                    {
+                        float top = (i + 1) * rise;
+                        mb.Box(M(new Vector3(0, top * 0.5f, -half + (i + 0.5f) * run), new Vector3(w - 0.16f, top, run)), PlankDark, i % 2 == 0 ? Plank : PlankLight);
+                    }
+                    float ang = Mathf.Atan2(LevelH, h) * Mathf.Rad2Deg, len = Mathf.Sqrt(LevelH * LevelH + h * h);
+                    for (int s = -1; s <= 1; s += 2)
+                    {
+                        mb.Box(M(new Vector3(s * (w * 0.5f - 0.04f), LevelH * 0.5f + 0.05f, 0), new Vector3(0.1f, 0.34f, len), 0f, -ang), Post);
+                        mb.Box(M(new Vector3(s * (w * 0.5f - 0.04f), LevelH * 0.5f + 0.95f, 0), new Vector3(0.07f, 0.07f, len), 0f, -ang), PlankLight);
+                        mb.Box(M(new Vector3(s * (w * 0.5f - 0.04f), 0.5f, -half + 0.06f), new Vector3(0.1f, 1f, 0.1f)), Post);
+                        mb.Box(M(new Vector3(s * (w * 0.5f - 0.04f), LevelH + 0.5f, half - 0.06f), new Vector3(0.1f, 1f, 0.1f)), Post);
+                        for (int k = 1; k < 4; k++)   // balusters
+                        {
+                            float zz = -half + k * (h / 4f), yy = (zz + half) / h * LevelH;
+                            mb.Box(M(new Vector3(s * (w * 0.5f - 0.04f), yy + 0.5f, zz), new Vector3(0.05f, 0.9f, 0.05f)), PlankDark);
+                        }
+                    }
                     break;
                 }
                 default: Furniture(mb, def); break;
@@ -857,6 +1123,13 @@ namespace Wildbond
                         mb.Sphere(M(new Vector3(x, 0.32f, Mathf.Clamp(z, -0.8f, 0.8f)), Vector3.one * 0.26f), bc, 6, 4);
                     }
                     break;
+                case "kin_basket":
+                    mb.Cylinder(M(new Vector3(0, 0.13f, 0), new Vector3(0.95f, 0.26f, 0.75f)), Col("#b08850"), Col("#c8a060"), 12, 1f, true);
+                    mb.Cylinder(M(new Vector3(0, 0.27f, 0), new Vector3(1.0f, 0.06f, 0.8f)), Col("#8a6438"), 12, 1f, true);
+                    for (int k = 0; k < 6; k++) mb.Box(M(new Vector3(0, 0.08f + k * 0.035f, 0), new Vector3(0.97f, 0.012f, 0.77f)), Col("#9a7444"));   // weave lines
+                    mb.Dome(M(new Vector3(0, 0.24f, 0), new Vector3(0.78f, 0.14f, 0.6f)), Col("#d86a7a"), 10, 3);
+                    mb.Sphere(M(new Vector3(0.2f, 0.33f, 0.14f), new Vector3(0.24f, 0.1f, 0.17f)), Col("#f0e0c0"), 6, 4);
+                    break;
                 case "house_wardrobe":
                     mb.Box(M(new Vector3(0, 1.05f, 0), new Vector3(1.1f, 2.1f, 0.6f)), PlankDark, Plank);
                     mb.Box(M(new Vector3(-0.27f, 1.05f, 0.31f), new Vector3(0.5f, 1.9f, 0.03f)), Plank);
@@ -867,7 +1140,7 @@ namespace Wildbond
             }
         }
 
-        static Mesh doorMesh;
+        static Mesh doorMesh, railMesh;
         static readonly Dictionary<string, Mesh> glowMeshes = new Dictionary<string, Mesh>();
 
         void Build(Piece pc, float depth)
@@ -913,6 +1186,35 @@ namespace Wildbond
                 g.transform.SetParent(go.transform, false);
                 g.AddComponent<MeshFilter>().sharedMesh = gm;
                 var gr = g.AddComponent<MeshRenderer>(); gr.sharedMaterial = RenderAssets.Creature; gr.shadowCastingMode = ShadowCastingMode.Off;
+                rends.Add(gr);
+            }
+            if (pc.def.kind == HouseKind.Stairs)
+            {
+                // the railing round the stairwell one storey up (shown once there is a floor up there: RefreshRails)
+                if (railMesh == null)
+                {
+                    var mb = new MeshBuilder();
+                    float hc = Cell * 0.5f, w = StairW * 0.5f, y = LevelH;
+                    void Rail(Vector3 a, Vector3 b)
+                    {
+                        Vector3 mid = (a + b) * 0.5f, d = b - a;
+                        float yaw = Mathf.Atan2(d.x, d.z) * Mathf.Rad2Deg;
+                        mb.Box(M(mid + Vector3.up * (y + 0.95f), new Vector3(0.08f, 0.08f, d.magnitude), yaw), PlankLight);
+                        mb.Box(M(mid + Vector3.up * (y + 0.5f), new Vector3(0.05f, 0.05f, d.magnitude), yaw), PlankDark);
+                        foreach (var e in new[] { a, b }) mb.Box(M(e + Vector3.up * (y + 0.5f), new Vector3(0.1f, 1f, 0.1f)), Post);
+                    }
+                    Rail(new Vector3(-hc, 0, -hc), new Vector3(hc, 0, -hc));
+                    Rail(new Vector3(-hc, 0, -hc), new Vector3(-hc, 0, hc));
+                    Rail(new Vector3(hc, 0, -hc), new Vector3(hc, 0, hc));
+                    Rail(new Vector3(-hc, 0, hc), new Vector3(-w, 0, hc));
+                    Rail(new Vector3(w, 0, hc), new Vector3(hc, 0, hc));
+                    railMesh = mb.ToMesh("house_stair_rail");
+                }
+                var rg = new GameObject("Rail");
+                rg.transform.SetParent(go.transform, false);
+                rg.AddComponent<MeshFilter>().sharedMesh = railMesh;
+                var rr = rg.AddComponent<MeshRenderer>(); rr.sharedMaterial = RenderAssets.Building;
+                pc.rail = rr;
             }
             pc.go = go;
             pc.rends = rends.ToArray();

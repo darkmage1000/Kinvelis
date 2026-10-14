@@ -74,7 +74,7 @@ namespace Wildbond
             if (dPlayer > (commandTimer > 0f ? 52f : 32f) && CampHelpStatus == null)
             {
                 var p = player.Position - player.Forward * 2f;
-                transform.position = new Vector3(p.x, Ground.Height(p.x, p.z), p.z);
+                transform.position = new Vector3(p.x, Ground.HeightNear(p.x, p.z, player.Position.y), p.z);   // upstairs with you if you are upstairs
                 Target = null;
                 commandSlot = -1;
                 SetState(AIState.Follow);

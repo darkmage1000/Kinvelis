@@ -183,6 +183,7 @@ namespace Wildbond
                 Housing.Piece toy = null; float bd = bm.Radius * 2f;
                 foreach (var t in Housing.I.PlayPieces)
                 {
+                    if (!Housing.I.ReachableFromCamp(t)) continue;
                     float d = FlatDist(transform.position, t.pos) + Random.Range(0f, 6f);
                     if (d < bd) { bd = d; toy = t; }
                 }

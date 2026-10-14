@@ -217,7 +217,7 @@ namespace Wildbond
             cam?.SnapTo(p);
         }
 
-        float GroundHeight(Vector3 p) => Ground.Height(p.x, p.z);
+        float GroundHeight(Vector3 p) => Ground.HeightNear(p.x, p.z, p.y);   // upper storeys and stairs count when they are within a step of your feet
 
         // ================================================================ TICK
         public void Tick(float dt)
