@@ -28,13 +28,13 @@ namespace Wildbond
                 bool ready = KinGrowth.EggReady(e);
                 var card = Card(list, 104, ready ? new Color(0.2f, 0.45f, 0.3f, 0.5f) : (Color?)null);
                 long left = e.readyUnix - Expeditions.Now;
-                var t = UIFactory.Label(card.transform, $"<b>Mystery egg</b>  <size=20>from {e.parents}</size>\n<size=21>{(ready ? UIFactory.Col("Ready to hatch!", Good) : $"hatches in {left / 60}m {left % 60}s")}</size>", 26, Color.white, TextAnchor.UpperLeft);
+                var t = UIFactory.Label(card.transform, $"<b>Mystery egg</b>  <size=20>from {e.parents}</size>\n<size=21>{(ready ? UIFactory.Col("It's wobbling - ready to hatch!", Good) : $"hatches in {left / 60}m {left % 60}s")}</size>", 26, Color.white, TextAnchor.UpperLeft);
                 t.supportRichText = true;
                 t.rectTransform.Place(new Vector2(0, 1), new Vector2(0, 1), new Vector2(18, -10), new Vector2(900, 60));
                 var bar = UIFactory.Bar(card.transform, ready ? Good : new Color(1f, 0.75f, 0.4f), out var fill);
                 bar.rectTransform.Place(new Vector2(0, 0), new Vector2(0, 0), new Vector2(18, 12), new Vector2(620, 20));
                 fill.SetFill(Mathf.Clamp01(1f - left / (KinGrowth.HatchMinutes * 60f)));
-                var hb = UIFactory.Button(card.transform, ready ? "HATCH" : "WARMING", ready ? () => { KinGrowth.Hatch(ee); Rebuild(); } : (System.Action)null,
+                var hb = UIFactory.Button(card.transform, ready ? "HATCH!" : "WARMING", ready ? () => ShowHatch(ee) : (System.Action)null,
                     ready ? new Color(0.3f, 0.6f, 0.4f) : new Color(0.3f, 0.3f, 0.32f), 22);
                 ((RectTransform)hb.transform).Place(new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-14, 0), new Vector2(200, 76));
             }

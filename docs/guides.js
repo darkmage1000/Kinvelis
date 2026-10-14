@@ -263,7 +263,7 @@ html: `
 
 <h2 id="eggs">Eggs</h2>
 <ul>
-<li>Build a <b>Hatchery</b>. Pick two kin and pay two Berry Tarts for an egg. It hatches after ten minutes of real time.</li>
+<li>Build a <b>Hatchery</b>. Pick two kin and pay two Berry Tarts for an egg. It is ready after ten minutes of real time (you get a note when it starts to wobble). Walk up to the Hatchery and tap <b>HATCH!</b> (or Camp &gt; Hatchery): the egg rocks, cracks and bursts, and the kin's page shows its quality grades, traits, looks, skills and camp jobs. Name it there and choose party, camp or box. Tap the picture to hurry the egg along.</li>
 <li>The child is the kind of one parent or the other, starts at level 1, and takes after the better parent in each quality grade, give or take a little. Good traits pass on.</li>
 <li>Out in the world, wild <b>nests</b> appear now and then. A mother guards each one. Take the egg and you get a kin of her kind with better-than-usual grades.</li>
 </ul>

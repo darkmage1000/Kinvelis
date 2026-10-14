@@ -176,6 +176,8 @@ namespace Wildbond
             DevButtons(list, 400, ("FINISH THE CURRENT STEP EVERYWHERE", Dev.FinishSteps), ("CRAFT EVERYTHING QUEUED", Dev.FinishOrders), ("HEARTHSTONE +1 LEVEL", Dev.UpgradeHearth));
             DevButtons(list, 400, ("CHARGE AND COLD: FULL", () => Dev.Power(true)), ("CHARGE AND COLD: EMPTY", () => Dev.Power(false)), ("A DAY OF FOOD SPOILING", Dev.SpoilDay));
             DevButtons(list, 400, ("START A RAID", Dev.Raid), ("SORT ALL STORAGE", () => { if (bm != null && bm.HasBase) bm.SortStorage(); }));
+            Header(list, "Eggs", 28);
+            DevButtons(list, 300, ("EGG, READY NOW", () => Dev.Egg(false)), ("SHIMMER EGG, READY NOW", () => Dev.Egg(true)), ("ALL EGGS READY", Dev.EggsReady), ("HATCH ONE", OpenHatchery));
             Header(list, "Unlock", 28);
             DevButtons(list, 400, ("ALL RESEARCH DONE", Dev.AllResearch), ("ALL BLUEPRINTS LEARNED", Dev.AllBlueprints), ("ALL 8 SIGILS", Dev.AllSigils));
             Header(list, "Time", 28);

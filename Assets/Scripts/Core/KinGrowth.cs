@@ -173,13 +173,49 @@ namespace Wildbond
 
         public static bool EggReady(KinEgg e) => Expeditions.Now >= e.readyUnix;
 
-        public static void Hatch(KinEgg e)
+        /// <summary>The first egg that is ready to hatch, or null.</summary>
+        public static KinEgg FirstReady()
         {
-            if (!EggReady(e)) return;
+            var s = GameManager.I != null ? GameManager.I.Player.Stats : null;
+            if (s == null) return null;
+            foreach (var e in s.eggs) if (EggReady(e)) return e;
+            return null;
+        }
+
+        /// <summary>"Your egg hatches in 4m 10s." / "No eggs." for prompts.</summary>
+        public static string EggLine()
+        {
             var s = GameManager.I.Player.Stats;
-            s.eggs.Remove(e);
+            if (s.eggs.Count == 0) return "No eggs in the Hatchery.";
+            long left = long.MaxValue;
+            foreach (var e in s.eggs) left = System.Math.Min(left, e.readyUnix - Expeditions.Now);
+            return left <= 0 ? "An egg is ready to hatch!" : $"The next egg hatches in {left / 60}m {left % 60}s.";
+        }
+
+        /// <summary>The egg's kin joins the roster. quiet = the hatching show tells the player, so no toasts.</summary>
+        public static CreatureData Hatch(KinEgg e, bool quiet = false)
+        {
+            if (e == null || !EggReady(e)) return null;
+            var s = GameManager.I.Player.Stats;
+            if (!s.eggs.Remove(e)) return null;
             var d = e.child;
-            GameManager.I.OnKinHatched(d);
+            GameManager.I.OnKinHatched(d, quiet);
+            return d;
+        }
+
+        static readonly HashSet<string> told = new HashSet<string>();
+
+        /// <summary>Twice a second (GameManager.UpdateGoals): one note when an egg becomes ready to hatch.</summary>
+        public static void TickReady()
+        {
+            var s = GameManager.I.Player.Stats;
+            foreach (var e in s.eggs)
+            {
+                if (e.child == null || told.Contains(e.child.uid) || !EggReady(e)) continue;
+                told.Add(e.child.uid);
+                GameEvents.Good(WorldRules.Current.simpleControls ? "An egg is wobbling! Go to the Hatchery to see who is inside." : "An egg is wobbling - it's ready to hatch! (the Hatchery, or Camp > Hatchery)");
+                SynthAudio.Play(Sfx.Shake, 1.1f, 0.8f);
+            }
         }
     }
 }

@@ -115,6 +115,19 @@ namespace Wildbond
             Say($"{sp.displayName} Lv {level} joined you.");
         }
 
+        /// <summary>An egg in the Hatchery that is ready now (no Hatchery or egg limit needed): a mystery egg, or a shimmer one.</summary>
+        public static void Egg(bool shimmer)
+        {
+            var e = KinGrowth.MysteryEgg();
+            if (shimmer && !e.child.shimmer) Shimmer.Make(e.child);
+            e.readyUnix = Expeditions.Now;
+            e.parents = "dev mode";
+            S.eggs.Add(e);
+            Say($"An egg is ready: a {e.child.Species.displayName}{(shimmer ? " (shimmer)" : "")}. Hatch it at the Hatchery or Camp > Hatchery.");
+        }
+
+        public static void EggsReady() { foreach (var e in S.eggs) e.readyUnix = Expeditions.Now; Say($"{S.eggs.Count} egg{(S.eggs.Count == 1 ? " is" : "s are")} ready to hatch."); }
+
         public static void LevelCompanion(int levels)
         {
             var c = G.Party.Companion;

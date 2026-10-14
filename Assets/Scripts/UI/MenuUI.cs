@@ -132,6 +132,7 @@ namespace Wildbond
             if (Tab == MenuTab.Camp || Tab == MenuTab.Craft || Tab == MenuTab.Station || Tab == MenuTab.Outpost) LiveRefresh();
             TickGearPreview();
             TickKinCard();
+            TickHatch();
         }
 
         float liveTimer;
@@ -261,6 +262,7 @@ namespace Wildbond
         {
             if (modal != null) Destroy(modal);
             modal = null;
+            hatchStage?.Hide();
         }
 
         void Confirm(string title, string body, Action yes)

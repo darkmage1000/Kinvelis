@@ -734,6 +734,7 @@ namespace Wildbond
             else if (b.Def.isCore) InteractPrompt = "CAMP";
             else if (b.Def.storageSlots > 0) InteractPrompt = "OPEN";
             else if (b.Def.feeds) InteractPrompt = "FEED BOX";
+            else if (b.Def.id == "hatchery") InteractPrompt = KinGrowth.FirstReady() != null ? "HATCH!" : "HATCHERY";
             else if (b.IsStation) InteractPrompt = MenuUI.StationVerb(b.Def.station);
             else InteractPrompt = "INFO";
         }
@@ -744,6 +745,7 @@ namespace Wildbond
             if (b.IsProducer) { baseMgr.TogglePlayerWork(b); return; }
             if (b.IsStation) { menu.OpenStation(b.Def.station); return; }
             if (b.Def.feeds || (b.BoxLen > 0 && !b.Def.isCore)) { menu.OpenBox(b); return; }   // a chest or a feed box: its own contents
+            if (b.Def.id == "hatchery") { menu.OpenHatchery(); return; }   // a ready egg hatches right here
             menu.Open(MenuTab.Camp);
         }
 
@@ -990,7 +992,7 @@ namespace Wildbond
             GameEvents.Say($"Quality: {Aptitude.Summary(d, false)}", Aptitude.GradeColor(d.apt[d.spec]));
         }
 
-        public void OnKinHatched(CreatureData d)
+        public void OnKinHatched(CreatureData d, bool quiet = false)
         {
             var s = Player.Stats;
             bool isNew = !s.registeredSpecies.Contains(d.speciesId);
@@ -998,8 +1000,9 @@ namespace Wildbond
             DexCaught(s, d, true);
             Party.AddCaptured(d);
             AddPlayerXp(20);
-            GameEvents.Good($"{d.RegionalName} hatched! {(d.location == KinLocation.Party ? "It joined your party." : "It's in the Hearth Box.")}");
             Quests.Note("hatch");
+            if (quiet) return;   // the hatching show (MenuUI.Hatch) says all of this itself
+            GameEvents.Good($"{d.RegionalName} hatched! {(d.location == KinLocation.Party ? "It joined your party." : "It's in the Hearth Box.")}");
             GameEvents.Say($"Quality: {Aptitude.Summary(d, false)}", Aptitude.GradeColor(d.apt[d.spec]));
             string tags = d.VariantTags();
             if (tags.Length > 0) GameEvents.Say(tags, new Color(1f, 0.85f, 0.4f));
@@ -1136,6 +1139,7 @@ namespace Wildbond
             if (goalTimer > 0f) return;
             goalTimer = 0.5f;
             Quests.Tick();   // notes where you are, pays out finished quests, opens the next
+            KinGrowth.TickReady();
             if (WorldRules.Current.endlessSeeds && Player.Stats.Bag.Count("tether_seed") < 5) Player.Stats.Bag.Add("tether_seed", 5);   // endless-seed worlds
             string next = Quests.HudLine();
             if (next != currentGoal)
