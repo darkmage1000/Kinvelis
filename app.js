@@ -280,6 +280,10 @@
     fact("Found", src || ((k.wild ? where : "") + (k.when ? " &middot; " + esc(k.when) : "") + (k.water ? " &middot; near water" : "")));
     if (src && where && k.wild) fact("Lands", where);
     fact("Nature", esc(TEMPER[k.temper] || k.temper));
+    fact("Evolves", k.forms && k.forms.length ? k.forms.map(function (f) {
+      return "<b>" + esc(f.name) + "</b> at level " + f.lv + (f.element ? " &middot; gains " + esc(f.element) : "") + (f.skill ? ' &middot; learns <a href="#/skills">' + esc((D.skills.filter(function (s) { return s.id === f.skill; })[0] || { name: f.skill }).name) + "</a>" : "") +
+        (f.blurb ? '<br><span style="color:var(--dim)">' + esc(f.blurb) + "</span>" : "");
+    }).join("<br>") : (k.boss ? "" : "Perfect form: keeps its shape, grows bigger and glows at levels 20 and 35"));
     fact("Moves as", esc(k.moves) + (k.size >= 1.6 ? " &middot; large" : k.size <= 0.75 ? " &middot; small" : ""));
     fact("Travel", [k.mount ? "Can be ridden (needs a Kin Harness)" : "", k.surf ? "Carries you across water" : ""].filter(Boolean).join(" &middot; "));
     fact("Weak to", mu.weak.join(" "));
