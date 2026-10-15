@@ -185,6 +185,9 @@ namespace Wildbond
             }
             Header(list, "Where to get gear", 28);
             Para(list, "Workbench: Explorer set (Lv 2, fluff + fiber), Ironbark set (Lv 5, ingots), Rimecrystal & Emberforge sets (Lv 8, crystal / cinder), plus rings, bracelets and amulets.\n" +
+                       "Alloy Forge: Bogsteel, Sunsteel and Blightsteel armor once you research that metal (Research Bench).\n" +
+                       "Treasure chests: blueprints for each land's own weapon, armor piece and accessory, each with a trick of its own. Gilded chests hold the most.\n" +
+                       "Regional finds: Obsidian Ring, Pearl Amulet and Starmoss Band from the plants of their sub-regions.\n" +
                        "Alphas drop unique trophies (Tamer's Band, Kinbond Ring, Magpie Bracelet, wards...). First defeat of each alpha species is guaranteed.", 22);
         }
 
@@ -193,7 +196,7 @@ namespace Wildbond
             switch (k)
             {
                 case EquipSlot.Head: case EquipSlot.Body: case EquipSlot.Boots: return "Craft armor at a Workbench (its own menu: tap CRAFT at the bench).";
-                default: return "Craft accessories at a Workbench, or defeat alphas for unique trophies.";
+                default: return "Craft accessories at a Workbench, find blueprints in treasure chests, or defeat alphas for unique trophies.";
             }
         }
 

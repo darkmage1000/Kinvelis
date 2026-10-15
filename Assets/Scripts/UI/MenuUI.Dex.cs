@@ -60,6 +60,7 @@ namespace Wildbond
                 if (sp.bossOnly && !known) continue;   // Wardens you can't catch only appear once met
                 bool got = e != null && e.caught > 0;
                 string sid = sp.id;
+                if (dexSel == null && known) dexSel = sid;   // open on the first kin you know rather than an empty page
                 var cell = UIFactory.Panel(list, "Dex", sid == dexSel ? new Color(0.3f, 0.6f, 0.5f, 1f) : new Color(1, 1, 1, got ? 0.1f : 0.05f));
                 cell.gameObject.AddComponent<Button>().onClick.AddListener(() => { dexSel = sid; SynthAudio.Play(Sfx.UiClick); Rebuild(); });
                 var pic = UIFactory.Rect(cell.transform, "Pic").Place(new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -6), new Vector2(118, 118)).gameObject.AddComponent<Image>();
