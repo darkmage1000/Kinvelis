@@ -125,6 +125,13 @@ code, kbd { background: var(--panel2); border: 1px solid var(--line); border-rad
 .evo-step p { margin: 4px 0 0; font-size: .86rem; color: var(--dim); }
 .evo-arrow { display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.6rem; color: var(--dim); }
 .evo-arrow small { font-size: .75rem; }
+.evo-table td { vertical-align: top; }
+.evo-table td:first-child { color: var(--dim); white-space: nowrap; }
+.evo-skills { list-style: none; margin: 0; padding: 0; }
+.evo-skills li { margin: 2px 0; white-space: nowrap; }
+.evo-skills small { color: var(--dim); display: inline-block; min-width: 3.2em; }
+.up { color: var(--good); font-size: .85em; }
+.new { background: var(--gold2); color: #1b1b2e; border-radius: 6px; padding: 0 5px; font-size: .75em; font-weight: 700; text-transform: uppercase; }
 .facts { display: grid; grid-template-columns: max-content 1fr; gap: 5px 14px; margin: 10px 0; }
 .facts dt { color: var(--dim); }
 .facts dd { margin: 0; }

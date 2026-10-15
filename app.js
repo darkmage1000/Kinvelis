@@ -312,6 +312,46 @@
           (s.blurb ? "<p>" + esc(s.blurb) + "</p>" : "") + "</div>";
       }).join("") + "</div>";
     }
+    // what changes at each stage: stats, size, work, elements, skills, cost (every kin evolves; a perfect form keeps its body)
+    if (k.stages && k.stages.length === 3) {
+      var S = k.stages;
+      if (!(k.forms && k.forms.length)) h += "<h2>Evolutions</h2><p>" + esc(k.name) + " is a <b>perfect form</b>: it keeps its shape when it evolves, but grows bigger, glows and gets stronger.</p>";
+      h += "<h3>Stage by stage</h3>";
+      var n1 = function (v) { return Math.round(v * 10) / 10; };
+      var pct = function (m) { var p = Math.round((m - 1) * 100); return p ? ' <span class="up">+' + p + "%</span>" : ""; };
+      var stat = function (key) { return S.map(function (s) { return "<b>" + n1(s[key]) + "</b>" + pct(s.mul); }); };
+      var elCell = function (s, n) {
+        var prev = n ? S[n - 1] : null;
+        return el(s.e1) + (s.e2 ? " " + el(s.e2) + (prev && prev.e2 !== s.e2 ? ' <span class="new">new</span>' : "") : "");
+      };
+      var skillCell = function (s, n) {
+        var prev = n ? S[n - 1].skills : [];
+        var lis = s.skills.map(function (sid, i) {
+          var sk = skillById[sid];
+          var nm = sk ? '<a href="#/skills/' + esc(sid) + '">' + esc(sk.name) + "</a> " + el(sk.element) : esc(sid);
+          return "<li><small>Lv " + [1, 5, 10, 15][i] + "</small> " + nm + (n && prev.indexOf(sid) < 0 ? ' <span class="new">new</span>' : "") + "</li>";
+        }).join("");
+        var gone = prev.filter(function (sid) { return s.skills.indexOf(sid) < 0; }).map(function (sid) { return esc((skillById[sid] || { name: sid }).name); });
+        return '<ul class="evo-skills">' + lis + "</ul>" + (gone.length ? '<small class="sub">replaces ' + gone.join(", ") + "</small>" : "");
+      };
+      var costCell = function (s) {
+        if (!s.stage) return "<span class='sub'>-</span>";
+        return '<span class="chips">' + s.cost.map(function (c) { return c.item === "glimmer" ? '<span class="chip">' + c.n + " Glimmer</span>" : itemChip(c.item, c.n); }).join("") + "</span>";
+      };
+      var head = [""].concat(S.map(function (s, n) { return "<b>" + esc(s.name) + "</b><br><small>" + ["Base form", "Ascended", "Exalted"][n] + " &middot; level " + s.lv + "</small>"; }));
+      h += '<div class="evo-table">' + table(head, [
+        ["Body"].concat(S.map(function (s, n) { return !n ? "Its own" : s.real ? '<span class="new">new body</span>' : "Same shape, glows"; })),
+        ["Health"].concat(stat("hp")),
+        ["Attack"].concat(stat("atk")),
+        ["Defense"].concat(stat("def")),
+        ["Size"].concat(S.map(function (s) { return "&times;" + s.size.toFixed(2); })),
+        ["Camp work speed"].concat(S.map(function (s) { return "&times;" + s.work.toFixed(1) + pct(s.work); })),
+        ["Elements"].concat(S.map(elCell)),
+        ["Skills"].concat(S.map(skillCell)),
+        ["To evolve"].concat(S.map(costCell))
+      ]) + "</div>";
+      h += '<p class="sub" style="color:var(--dim);font-size:.88rem">Stats are the kind\'s base numbers with the stage bonus (+15% health, attack and defense per stage); level, quality grade and traits come on top. Skills are what a typical one knows - one born with a rare move has it in place of one of these. Evolving is done from the Kin tab once it reaches the level; it keeps its level, bond, traits and name.</p>';
+    }
 
     h += "<h2>Base stats</h2>" + [["Health", "hp"], ["Attack", "atk"], ["Defense", "def"], ["Speed", "speed"]].map(function (s) {
       return '<div class="bar"><span>' + s[0] + "</span><b>" + k[s[1]] + '</b><i><u style="width:' + Math.round(100 * k[s[1]] / max[s[1]]) + '%"></u></i></div>';
