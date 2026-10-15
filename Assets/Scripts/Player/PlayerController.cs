@@ -52,6 +52,8 @@ namespace Wildbond
 
         CameraRig cam;
         Vector3 hVel;
+        /// <summary>Ground speed and direction (cave rockfalls aim a step ahead of you).</summary>
+        public Vector3 Velocity => hVel;
         float vVel;
         bool grounded = true;
         bool launched;
@@ -1224,6 +1226,14 @@ namespace Wildbond
                     }
                     mb.Box(MeshBuilder.TRS(new Vector3(0, -0.145f, 0.6f), new Vector3(-4, 0, 0), new Vector3(0.05f, 0.03f, 0.62f)), new Color(1f, 0.5f, 0.12f, 0f));
                     mb.Box(MeshBuilder.TRS(new Vector3(0, 0.07f, 0.62f), Vector3.zero, new Vector3(0.05f, 0.04f, 0.1f)), tintDk);
+                    break;
+                case "abyss_edge":
+                    // black glass, long and keen, a geode core in the guard and violet light along the edge
+                    mb.Cylinder(MeshBuilder.TRS(new Vector3(0, 0f, 0.1f), new Vector3(90, 0, 0), new Vector3(0.05f, 0.22f, 0.05f)), grip, 5, 1f, true);
+                    mb.Sphere(MeshBuilder.TRS(new Vector3(0, 0f, 0.23f), Vector3.zero, new Vector3(0.1f, 0.13f, 0.08f)), new Color(0.7f, 0.5f, 1f, 0f), 7, 5);
+                    mb.Box(MeshBuilder.TRS(new Vector3(0, 0f, 0.23f), Vector3.zero, new Vector3(0.05f, 0.26f, 0.06f)), tintDk);
+                    mb.Crystal(MeshBuilder.TRS(new Vector3(0, 0f, 0.27f), new Vector3(90, 0, 0), new Vector3(0.07f, 1.05f, 0.12f)), new Color(0.12f, 0.08f, 0.18f), new Color(0.35f, 0.25f, 0.5f));
+                    mb.Box(MeshBuilder.TRS(new Vector3(0, -0.035f, 0.72f), Vector3.zero, new Vector3(0.02f, 0.012f, 0.78f)), new Color(0.75f, 0.55f, 1f, 0f));
                     break;
                 case "mirefang":
                     // a wavy knife: the blade snakes side to side as it narrows, a green bead in the pommel

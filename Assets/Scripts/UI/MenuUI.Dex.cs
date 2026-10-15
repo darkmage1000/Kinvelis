@@ -33,14 +33,14 @@ namespace Wildbond
             var mile = UIFactory.Button(left, ready > 0 ? $"MILESTONES ({ready}!)" : "MILESTONES", ShowDexMilestones, ready > 0 ? new Color(0.25f, 0.55f, 0.4f) : new Color(0.32f, 0.34f, 0.4f), 20);
             ((RectTransform)mile.transform).Place(new Vector2(1, 1), new Vector2(1, 1), new Vector2(-4, -4), new Vector2(230, 50));
 
-            var bar = UIFactory.Rect(left, "Filters").Place(new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, -64), new Vector2(900, 56));
+            var bar = UIFactory.Rect(left, "Filters").Place(new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, -64), new Vector2(915, 56));
             var bh = bar.gameObject.AddComponent<HorizontalLayoutGroup>();
             bh.spacing = 4; bh.childControlWidth = true; bh.childControlHeight = true; bh.childForceExpandWidth = false;
-            string[] names = { "ALL", "MEADOW", "BADLAND", "PEAKS", "ISLES", "SWAMP", "DESERT", "BLIGHT", "GLOW", "PARTNER" };
+            string[] names = { "ALL", "MEADOW", "BADLAND", "PEAKS", "ISLES", "SWAMP", "DESERT", "BLIGHT", "GLOW", "PARTNER", "CAVE" };
             for (int i = 0; i < names.Length; i++)
             {
                 int fi = i;
-                UIFactory.Size(UIFactory.Button(bar, names[i], () => { dexFilter = fi; Rebuild(); }, dexFilter == i ? new Color(0.25f, 0.55f, 0.45f) : UIFactory.ButtonCol, 16), 56, 86);
+                UIFactory.Size(UIFactory.Button(bar, names[i], () => { dexFilter = fi; Rebuild(); }, dexFilter == i ? new Color(0.25f, 0.55f, 0.45f) : UIFactory.ButtonCol, 15), 56, 79);
             }
 
             var gridHost = UIFactory.Rect(left, "GridHost");
@@ -105,6 +105,7 @@ namespace Wildbond
             {
                 case 0: return true;
                 case 9: return sp.starter;
+                case 10: return sp.underground;
                 default: return !sp.starter && sp.LivesIn(DexBiomes[Mathf.Clamp(dexFilter - 1, 0, DexBiomes.Length - 1)]);
             }
         }
@@ -150,7 +151,13 @@ namespace Wildbond
             string when = sp.spawnTime == SpawnTime.Night ? "at night" : sp.spawnTime == SpawnTime.Day ? "by day" : "day and night";
             bool hasAlpha = false;
             foreach (var a in Landmarks.AlphaSites) if (a.species == sp.id) hasAlpha = true;
-            if (!sp.starter)
+            if (sp.underground)
+            {
+                int ct = Caves.CaveKinTier(sp.id);
+                string depth = ct == 2 ? "only the deep caves (Lv 30+)" : ct == 1 ? "mid-depth and deep caves (Lv 15+)" : "caves of every depth";
+                Para(right, $"Habitat: {UIFactory.Col("underground only", new Color(0.8f, 0.65f, 1f))} - {depth}. It never comes out into the open.", 22, Color.white);
+            }
+            else if (!sp.starter)
             {
                 Para(right, $"Habitat: {string.Join(", ", biomes)}{(sp.nearWater ? " (near water)" : "")}, {(sp.spawnCondition != SpawnCondition.None ? UIFactory.Col("only " + EnvironmentSystem.ConditionText(sp.spawnCondition), new Color(0.6f, 0.95f, 1f)) : when)}.{(hasAlpha ? UIFactory.Col("  An alpha lairs on the island.", new Color(1f, 0.7f, 0.3f)) : "")}", 22, Color.white);
                 var id = sp;

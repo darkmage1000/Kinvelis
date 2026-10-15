@@ -140,6 +140,7 @@ namespace Wildbond.EditorTools
                 o["mount"] = sp.mountable; o["water"] = sp.nearWater;
                 o["surf"] = sp.nearWater || sp.element1 == Element.Tide || sp.element2 == Element.Tide;
                 o["when"] = sp.spawnCondition != SpawnCondition.None ? EnvironmentSystem.ConditionText(sp.spawnCondition) : sp.spawnTime != SpawnTime.Any ? sp.spawnTime.ToString().ToLowerInvariant() + " only" : null;
+                o["underground"] = sp.underground ? (object)Caves.CaveKinTier(sp.id) : null;
                 o["starter"] = sp.starter; o["boss"] = sp.bossOnly; o["wild"] = sp.spawnWeight > 0f && !sp.starter && !sp.bossOnly;
                 l.Add(o);
             }
@@ -192,7 +193,7 @@ namespace Wildbond.EditorTools
                 {
                     ["makes"] = r.outputItem, ["n"] = r.outputCount, ["at"] = MenuUI.StationName(r.station), ["level"] = r.unlockLevel, ["needs"] = Cost(r.inputs),
                     ["research"] = t != null ? t.name : null,
-                    ["blueprint"] = Chests.IsBlueprint(r.id, out var land) ? BiomeInfo.Name(land) : null,
+                    ["blueprint"] = Chests.IsBlueprint(r.id, out var land) ? (Chests.CaveTierOf(r.id) == 2 ? "deep caves" : Chests.CaveTierOf(r.id) == 1 ? "mid-depth caves" : BiomeInfo.Name(land)) : null,
                 });
             }
             return l;
@@ -275,7 +276,8 @@ namespace Wildbond.EditorTools
                 foreach (var c in Caves.I.Entrances)
                 {
                     var boss = string.IsNullOrEmpty(c.boss) ? null : ContentDB.Sp(c.boss);
-                    caves.Add(new Dictionary<string, object> { ["name"] = c.name, ["kind"] = c.kind.ToString(), ["land"] = c.biome.ToString(), ["min"] = c.minLv, ["max"] = c.maxLv, ["guardian"] = boss != null ? boss.id : null });
+                    caves.Add(new Dictionary<string, object> { ["name"] = c.name, ["kind"] = c.kind.ToString(), ["land"] = c.biome.ToString(), ["min"] = c.minLv, ["max"] = c.maxLv, ["guardian"] = boss != null ? boss.id : null,
+                        ["depth"] = Caves.TierOf(c).ToString() });
                 }
             var stones = L();
             if (Waystones.I != null) foreach (var w in Waystones.I.All) stones.Add(new Dictionary<string, object> { ["name"] = w.name, ["land"] = w.biome.ToString() });

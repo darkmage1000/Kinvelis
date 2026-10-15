@@ -382,6 +382,7 @@ namespace Wildbond
 
         public void Deplete(ResourceNode n)
         {
+            if (n.key < 0) { n.alive = false; Caves.I?.NodeGone(n); return; }   // a cave vein: gone until the cave refreshes
             n.alive = false;
             Depleted[n.key] = GameManager.WorldTime + n.Info.respawn / Mathf.Max(0.1f, WorldRules.Current.resourceRespawnRate);
             if (n.chunk is Chunk c) c.batchesDirty = true;
@@ -428,6 +429,7 @@ namespace Wildbond
         /// <summary>Best alive node near pos, favouring ones in front.</summary>
         public ResourceNode FindNode(Vector3 pos, Vector3 forward, float range)
         {
+            if (Caves.InCave) return Caves.I.FindNode(pos, forward, range);   // a cave's veins are its own
             queryBuf.Clear();
             Nodes.Query(pos, range + 2f, queryBuf);
             ResourceNode best = null;

@@ -49,6 +49,7 @@
   function options(list, cur, all) { return '<option value="">' + esc(all) + "</option>" + list.map(function (o) { var v = o.v || o, t = o.t || o; return '<option value="' + esc(v) + '"' + (v === cur ? " selected" : "") + ">" + esc(t) + "</option>"; }).join(""); }
   function title(t) { document.title = (t ? t + " - " : "") + "Kinvelis Wiki"; }
   function kinSource(k) {
+    if (k.underground != null) return 'Lives only <a href="#/guide/exploring/under">underground</a>: ' + ["caves of every depth", "winding and deep caves (Lv 15+)", "only the deep caves (Lv 30+)"][k.underground] + ".";
     if (k.starter) return 'One of the three partners. Choose it at the start, or <a href="#/quests/PARTNERS">earn it later</a> from a Kinkeeper.';
     var w = D.wardens.filter(function (x) { return x.kin === k.id; })[0];
     var h = D.hunts.filter(function (x) { return x.kin === k.id; })[0];
@@ -118,9 +119,10 @@
     },
     underground: function () {
       var rows = D.places.underground.slice().sort(function (a, b) { return a.min - b.min; }).map(function (c) {
-        return ["<b>" + esc(c.name) + "</b>", c.kind === "Ruin" ? "Ruin" : c.kind, esc(land(c.land)), c.min + " - " + c.max, c.guardian ? '<span class="chips">' + kinChip(c.guardian) + "</span>" : '<span class="sub">a rare kin of the land</span>'];
+        var depth = c.depth === "End" ? "<b>Deep</b>" : c.depth === "Mid" ? "Winding" : "Shallow";
+        return ["<b>" + esc(c.name) + "</b>", c.kind === "Ruin" ? "Ruin" : c.kind, depth, esc(land(c.land)), c.min + " - " + c.max, c.guardian ? '<span class="chips">' + kinChip(c.guardian) + "</span>" : '<span class="sub">a rare kin of the land</span>'];
       });
-      return table(["Place", "Kind", "Land", "Levels", "Guardian"], rows);
+      return table(["Place", "Kind", "Depth", "Land", "Levels", "Main guardian"], rows);
     },
     hunts: function () {
       return table(["Legend", "Land", "Level", "Lair", "Appears", "Its seed"], D.hunts.map(function (h) {
@@ -433,7 +435,7 @@
   }
 
   function recipeRow(r) {
-    return [r.n + "&times; " + '<a href="#/item/' + r.makes + '">' + esc(itemName(r.makes)) + "</a>", cost(r.needs), r.at === "Hand" ? "By hand" : esc(r.at), r.blueprint ? '<a href="#/guide/exploring/chests">Blueprint</a>: chests in ' + esc(r.blueprint) : r.research ? '<a href="#/research">' + esc(r.research) + "</a>" : r.level > 1 ? "Player level " + r.level : "&mdash;"];
+    return [r.n + "&times; " + '<a href="#/item/' + r.makes + '">' + esc(itemName(r.makes)) + "</a>", cost(r.needs), r.at === "Hand" ? "By hand" : esc(r.at), r.blueprint ? (/caves/.test(r.blueprint) ? '<a href="#/guide/exploring/under">Cave blueprint</a>: guardians of ' + esc(r.blueprint) : '<a href="#/guide/exploring/chests">Blueprint</a>: chests in ' + esc(r.blueprint)) : r.research ? '<a href="#/research">' + esc(r.research) + "</a>" : r.level > 1 ? "Player level " + r.level : "&mdash;"];
   }
   function itemPage(id) {
     var it = itemById[id];

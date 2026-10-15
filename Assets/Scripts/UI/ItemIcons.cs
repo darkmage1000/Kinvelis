@@ -551,6 +551,17 @@ namespace Wildbond
                     OreChunk(mb, C("#3a3444"), C("#4a4458"), C("#8a40c8"), C("#b8ff40"), 73u);
                     mb.Sphere(M(-0.1f, 0.2f, -0.37f, 0.1f, 0.22f, 0.08f), C("#b8ff40"), 6, 4);
                     break;
+                case "geode_core":
+                    // half a geode: a rough grey shell, violet crystal packed inside, facing the camera
+                    mb.Sphere(M(0, 0.32f, 0, 0.78f, 0.72f, 0.7f), C("#5a5260"), C("#3e3846"), 9, 6);
+                    mb.Sphere(M(-0.06f, 0.34f, -0.24f, 0.58f, 0.54f, 0.24f), C("#2a1a40"), C("#3a2a54"), 9, 6);
+                    for (int k = 0; k < 7; k++)
+                    {
+                        float a = k * 51f * Mathf.Deg2Rad;
+                        mb.Crystal(M(-0.06f + Mathf.Cos(a) * 0.15f, 0.34f + Mathf.Sin(a) * 0.15f, -0.26f, 0.09f, 0.22f, 0.09f, -70, 0, k * 51f), C("#9a6aff"), C("#f0e0ff"));
+                    }
+                    mb.Crystal(M(-0.06f, 0.34f, -0.28f, 0.12f, 0.26f, 0.12f, -90, 0, 0), C("#b48aff"), C("#ffffff"));
+                    break;
                 case "starcrystal":
                     mb.Rock(M(0, 0.18f, 0, 0.8f, 0.36f, 0.7f), C("#2e2e52"), C("#44447a"), 79u, 7, 5);
                     mb.Crystal(M(0, 0.2f, 0, 0.38f, 0.8f, 0.38f), C("#6a58e8"), C("#c4bcff"));

@@ -38,7 +38,8 @@ namespace Wildbond
         static int Side => Mathf.CeilToInt(WorldGen.HalfWorld * 2f / Cell);
 
         // ---------------------------------------------------------------- blueprints
-        public struct Blueprint { public string recipe; public BiomeId land; }
+        /// <summary>cave 0 = a land's chests; 1 = mid-game caves ("unique"), 2 = end-game caves ("valuable") - never in world chests.</summary>
+        public struct Blueprint { public string recipe; public BiomeId land; public int cave; }
         /// <summary>Chest-only recipes: (recipe id = item id, the land whose chests hold it). Items are in ContentSeed.Chests.cs.</summary>
         public static readonly Blueprint[] Blueprints =
         {
@@ -60,7 +61,16 @@ namespace Wildbond
             B("house:house_floor_sandstone", BiomeId.Desert), B("house:house_tapestry", BiomeId.Desert), B("house:kin_sand_pit", BiomeId.Desert),
             B("house:house_wall_dark", BiomeId.Blight), B("house:house_spooky_lantern", BiomeId.Blight), B("house:kin_climb_tree", BiomeId.Blight),
             B("house:house_window_crystal", BiomeId.Glow), B("house:house_glowshroom", BiomeId.Glow), B("house:kin_ball_pit", BiomeId.Glow),
+            // cave-only (Caves: a mini-boss's chest). Mid caves: unique; end caves: valuable, made with Geode Cores.
+            Cave("delvers_lantern", 1), Cave("spelunker_cap", 1), Cave("house:house_glowstone_lamp", 1),
+            Cave("geode_plate", 2), Cave("abyss_edge", 2), Cave("geode_band", 2), Cave("house:house_geode_fountain", 2),
         };
+        static Blueprint Cave(string r, int tier) => new Blueprint { recipe = r, land = BiomeId.Meadow, cave = tier };
+
+        /// <summary>Where a blueprint is found, for menus: "found in chests in X" or "found deep in mid-game caves".</summary>
+        public static string WhereFound(BiomeId land, int cave) =>
+            cave == 2 ? "found with the guardians of the deepest caves (Lv 30+)" : cave == 1 ? "found with the guardians of mid-depth caves (Lv 15-29)" : $"found in chests in {BiomeInfo.Name(land)}";
+        public static int CaveTierOf(string recipeId) { foreach (var b in Blueprints) if (b.recipe == recipeId) return b.cave; return 0; }
 
         /// <summary>A blueprint's display name: an item's, or a house piece's ("house:" ids).</summary>
         public static string BlueprintName(string id)
@@ -83,12 +93,12 @@ namespace Wildbond
         public static bool Locked(RecipeDef r) => r != null && !Dev.FreeAll && IsBlueprint(r.id, out _) && !S.blueprints.Contains(r.id);
 
         /// <summary>"Blueprint: found in chests in Driftkey Isles." (null if this recipe needs none)</summary>
-        public static string BlueprintNote(RecipeDef r) => r != null && IsBlueprint(r.id, out var land) ? $"Blueprint: found in chests in {BiomeInfo.Name(land)}." : null;
+        public static string BlueprintNote(RecipeDef r) => r != null && IsBlueprint(r.id, out var land) ? $"Blueprint: {WhereFound(land, CaveTierOf(r.id))}." : null;
 
         public static int BlueprintsFound(BiomeId land, out int total)
         {
             int n = 0; total = 0;
-            foreach (var b in Blueprints) if (b.land == land) { total++; if (S.blueprints.Contains(b.recipe)) n++; }
+            foreach (var b in Blueprints) if (b.land == land && b.cave == 0) { total++; if (S.blueprints.Contains(b.recipe)) n++; }
             return n;
         }
 
@@ -394,7 +404,7 @@ namespace Wildbond
             if (forced || UnityEngine.Random.value < (t == 0 ? 0.04f : t == 1 ? 0.15f : 0.65f))
             {
                 var open = new List<string>();
-                foreach (var b in Blueprints) if (b.land == l.biome && !s.blueprints.Contains(b.recipe)) open.Add(b.recipe);
+                foreach (var b in Blueprints) if (b.land == l.biome && b.cave == 0 && !s.blueprints.Contains(b.recipe)) open.Add(b.recipe);
                 if (open.Count > 0) bp = open[UnityEngine.Random.Range(0, open.Count)];
                 else if (t > 0) shards += 2;
             }

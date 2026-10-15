@@ -548,7 +548,7 @@ namespace Wildbond
                     bool locked = Housing.Locked(d);
                     var row = UIFactory.HRow(list, 96, 14);
                     row.childForceExpandHeight = false;
-                    string where = d.blueprint ? UIFactory.Col(locked ? $"  Blueprint: found in chests in {BiomeInfo.Name(d.land)}." : $"  Blueprint from {BiomeInfo.Name(d.land)}.", locked ? new Color(1f, 0.8f, 0.5f) : new Color(0.6f, 0.9f, 1f)) : "";
+                    string where = d.blueprint ? UIFactory.Col(locked ? $"  Blueprint: {Chests.WhereFound(d.land, d.caveTier)}." : d.caveTier > 0 ? "  Blueprint from the caves." : $"  Blueprint from {BiomeInfo.Name(d.land)}.", locked ? new Color(1f, 0.8f, 0.5f) : new Color(0.6f, 0.9f, 1f)) : "";
                     var tx = UIFactory.Label(row.transform, $"<b>{d.name}</b>{(d.ground ? "  <size=19>(floor or open ground)</size>" : "")}\n<size=20>{d.desc}{where}</size>\n<size=20>{Ingredients(d.cost)}</size>", 26, locked ? new Color(0.7f, 0.7f, 0.72f) : Color.white);
                     tx.supportRichText = true;
                     UIFactory.Size(tx, 92, 1090);

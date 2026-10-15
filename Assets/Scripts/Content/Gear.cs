@@ -27,7 +27,8 @@ namespace Wildbond
     {
         None, Mercy, Tamer, Thornweave, Featherstep, Glowstone, Emberward, Frostward, Rimecloak, Kinbond, Magpie, Hearthlink,
         // blueprint gear (ContentSeed.Chests): one trick each. Append only - assets store the number.
-        Bloomwalk, GreenThumb, Buoyant, SeaFriend, Ventwalker, LastEmber, Mentor, NightsFavour, FenLantern, Mirage, SecondWind, LightStep, Venomous, Shimmerlure, Starcaller
+        Bloomwalk, GreenThumb, Buoyant, SeaFriend, Ventwalker, LastEmber, Mentor, NightsFavour, FenLantern, Mirage, SecondWind, LightStep, Venomous, Shimmerlure, Starcaller,
+        Delver   // cave pass: underground +20% catch, +15% attack
     }
 
     /// <summary>Player equipment positions (index into PlayerStats.gear).</summary>
@@ -106,6 +107,7 @@ namespace Wildbond
                 case UniqueEffect.Venomous: return "Venomous";
                 case UniqueEffect.Shimmerlure: return "Shimmerlure";
                 case UniqueEffect.Starcaller: return "Starcaller";
+                case UniqueEffect.Delver: return "Delver";
             }
             return "";
         }
@@ -140,6 +142,7 @@ namespace Wildbond
                 case UniqueEffect.Venomous: return "Hits with a weapon that has no status of its own have a 20% chance to poison.";
                 case UniqueEffect.Shimmerlure: return "Shimmer kin appear 50% more often.";
                 case UniqueEffect.Starcaller: return "Your companion's skills recharge 15% faster.";
+                case UniqueEffect.Delver: return "Underground: +20% catch chance and +15% attack.";
             }
             return "";
         }

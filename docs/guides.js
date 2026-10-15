@@ -600,12 +600,21 @@ html: `
 <h3>Glowdeep</h3><div data-items="Starfall Blade, Starweave Mantle, Starlight Bracelet"></div>
 
 <h2 id="under">Going underground</h2>
-<p>There are 19 underground places, of three kinds. You can't build or fast travel while inside, and they refill about twenty minutes after you clear them.</p>
+<p>There are 19 underground places. Each is the same every time you go in, lit only by its crystals, glowcaps and the odd crack of daylight. You can't build or fast travel while inside. Guardians, chests, eggs and ore veins come back about twenty minutes after you beat the main guardian; the wild kin are always there.</p>
+<p>How much a place holds depends on how deep it is (its top level):</p>
 <ul>
-<li><b>Caves</b>: winding rooms with a guardian at the end. Beat it for a portal out and a sealed chest.</li>
-<li><b>Burrows</b>: three or four small rooms, a pack leader and a small cache. Good early.</li>
-<li><b>Ruins</b>: square halls with spike plates in the corridors (they rise and fall on a timer: wait and walk), one ambush hall, and a guardian with two guards in the vault.</li>
+<li><b>Shallow</b> (up to Lv 14): two or three chambers and one boss - a huge common kin of the land - on a small chest.</li>
+<li><b>Winding</b> (Lv 15-29): a longer main path plus two side passages. One holds a <b>nest of eggs</b> watched by brooders (they rise as you come close, and rage if you take one); the other a <b>mini-boss</b> sitting on a chest with a <b>cave blueprint</b>. Along the way: a <b>nesting colony</b> (take its egg and the whole colony comes for you) and a <b>hoard</b> of ore veins with territorial kin guarding them and a chest among them. An <b>alpha</b> guards the deepest chamber, and its fall opens the way out.</li>
+<li><b>Deep</b> (Lv 30+): four side passages - rare eggs (a Rare kind, better odds of a shimmer), two mini-bosses with valuable blueprints, a second alpha deep in a branch, and a chamber with a rare underground kin. Hoards hold <b>Geode Veins</b>, the only source of <b>Geode Cores</b>, and the roofs, vents and pools want you dead.</li>
 </ul>
+<p><b>Hazards</b> (winding and deep places) all warn first: under a <b>loose roof</b> a shadow grows under you before a rock drops (9% of your health); a <b>vent</b> sputters for a second, then blasts for two (5% every half second, and the land's status - burn, chill, poison, sleep, soaked); a glowing <b>pool</b> of lava, ooze, ice water or spore mud hurts while you stand in it. Ruins add spike plates on the tunnels (they rise and fall on a timer: wait and walk) and one ambush hall.</p>
+<p><b>Caves, burrows and ruins</b> look different - rock and crystal, earth and roots, old halls swallowed by the cave - but follow the same depths.</p>
+<h3>Underground kin</h3>
+<p>Eight kin live nowhere else. Shallow places have the first three; deeper ones add the rest.</p>
+<div data-kin="pebblit, echobat, dripslug, glimcrab, mushmaw, stalagrin, gemhorn, deepcoil"></div>
+<h3>Cave blueprints</h3>
+<p>Mini-bosses (and sometimes a deep alpha) drop blueprints found nowhere else. Winding caves: the unique ones; deep caves: the valuable ones, made with Geode Cores. The <b>Delver</b> trick on several of them gives +20% catch chance and +15% attack while underground.</p>
+<div data-items="Delver's Lantern, Spelunker's Cap, Geodeheart Plate, Abyssal Edge, Geode Band, Geode Core"></div>
 <div data-view="underground"></div>
 
 <h2 id="relics">Relics</h2>

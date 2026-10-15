@@ -11,6 +11,8 @@ namespace Wildbond
         SaltglassVein, BogIronVein, SunsteelVein, BlightVein, StarcrystalVein,   // outer-land ores (keep these five together)
         // one per land, each found only in one named sub-region (see SubRegions) - keep these eight together
         Honeybloom, ObsidianSpire, Frostcap, PearlOyster, Lanternbud, Sunfig, Sporecap, Starmoss,
+        // caves only (Caves places these itself; no chunk ever rolls them)
+        GeodeVein,
         // ground pickups (no tool, one tap): early-game wood & stone before you have tools
         LooseStones, FallenSticks, FiberBundle,
         // decor only
@@ -65,6 +67,8 @@ namespace Wildbond
             // rare: only on the far, high slopes of the Rimefang Peaks; ~2 shards per vein, 20 min regrowth
             Set(PropType.PrismVein, "Prism Vein", Shimmer.ShardItem, "crystal", 0.3f, 10, 3, ToolKind.Pick, 0.6f, 1200f);
             Info[(int)PropType.PrismVein].yieldMul = 0.32f;
+            Set(PropType.GeodeVein, "Geode Vein", Caves.CoreItem, "crystal", 0.5f, 12, 3, ToolKind.Pick, 0.8f, 1e9f);
+            Info[(int)PropType.GeodeVein].yieldMul = 0.3f;
             // wild crops: a few of each plant a Crop Plot
             Set(PropType.GrainStalks, "Goldgrain", "goldgrain", "fiber", 0.3f, 2, 0, ToolKind.Sickle, 0f, 360f);
             Set(PropType.MelonVine, "Dewmelon Vine", "dewmelon", "fiber", 0.3f, 2, 0, ToolKind.Sickle, 0.4f, 420f);
@@ -459,6 +463,14 @@ namespace Wildbond
                 case PropType.SunsteelVein: Vein(mb, low, "#b08a58", "#c8a470", "#f0b830", "#fff0a0", false, 71u); break;
                 case PropType.BlightVein: Vein(mb, low, "#3a3444", "#4a4458", "#7a3aa8", "#b8ff40", false, 73u); break;
                 case PropType.StarcrystalVein: Vein(mb, low, "#2e2e52", "#44447a", "#9a8aff", "#f0f4ff", true, 79u); break;
+                case PropType.GeodeVein:
+                    // a split boulder, violet crystal packed inside
+                    mb.Rock(M(0, 0.45f, 0, 1.7f, 1.0f, 1.6f), C("#4a4450"), C("#625a6a"), 83u, low ? 5 : 7, low ? 4 : 5);
+                    mb.Sphere(M(0, 0.7f, 0.42f, 1.1f, 0.7f, 0.3f), C("#2a1a3a"), C("#3a2a4a"), 8, 5);
+                    mb.Crystal(M(0, 0.4f, 0.5f, 0.3f, 0.9f, 0.3f, 20, 0, 0), C("#b48aff"), C("#f0e0ff"));
+                    mb.Crystal(M(0.3f, 0.4f, 0.48f, 0.22f, 0.6f, 0.22f, 20, 0, -24), C("#9a6aff"), C("#e8d8ff"));
+                    mb.Crystal(M(-0.28f, 0.4f, 0.46f, 0.2f, 0.55f, 0.2f, 20, 0, 26), C("#9a6aff"), C("#e8d8ff"));
+                    break;
                 case PropType.PrismVein:
                     mb.Rock(M(0, 0.2f, 0, 1.5f, 0.55f, 1.5f), C("#3a3644"), C("#55506a"), 53u, 6, 4);
                     mb.Crystal(M(0, 0.2f, 0, 0.6f, 2.0f, 0.6f), C("#ff7ad0"), C("#ff4ab8"));

@@ -202,7 +202,8 @@ namespace Wildbond
         public float BaseAttack => 10f + (level - 1) * 1.6f;
         public float BaseDefense => 8f + (level - 1) * 1.5f;
         public float Attack => (BaseAttack + Gear[StatKind.Attack]) * (HasEffect(UniqueEffect.Kinbond) ? 0.9f : 1f)
-                             * (HasEffect(UniqueEffect.LastEmber) && hp >= 0f && hp < MaxHp * 0.5f ? 1.25f : 1f);
+                             * (HasEffect(UniqueEffect.LastEmber) && hp >= 0f && hp < MaxHp * 0.5f ? 1.25f : 1f)
+                             * (Caves.InCave && HasEffect(UniqueEffect.Delver) ? 1.15f : 1f);
         public float Defense => BaseDefense + Rank(PlayerSkill.Toughness) * 3f + Gear[StatKind.Defense];
         public float CritChance => 0.08f + Gear[StatKind.Crit];
         public float MoveMul => Mathf.Max(0.5f, 1f + Gear[StatKind.MoveSpeed] + 0.02f * RelicCount(RelicType.Windfeather));

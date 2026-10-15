@@ -32,6 +32,7 @@ namespace Wildbond
             BuildFishingItems(b);
             BuildRangedItems(b);
             BuildChestItems(b);
+            BuildCaveItems(b);
             BuildAbilities(b);
             BuildNinjaAbilities(b);
             BuildStyledAbilities(b);
@@ -47,6 +48,7 @@ namespace Wildbond
             BuildEarlyEmber(b);
             BuildNinjas(b);
             BuildStyled(b);
+            BuildCaveKin(b);
             ApplySpawnConditions(b);
             ApplyOuterBiomes(b);
             ApplyEarlyEmber(b);

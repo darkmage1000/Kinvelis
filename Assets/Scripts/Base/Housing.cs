@@ -21,6 +21,8 @@ namespace Wildbond
         /// <summary>Found as a blueprint in this land's chests (Chests.Blueprints, id "house:" + piece id).</summary>
         public bool blueprint;
         public BiomeId land;
+        /// <summary>A cave-only blueprint: 1 = mid caves, 2 = end caves (Chests.Blueprints).</summary>
+        public int caveTier;
         /// <summary>Kin play piece: idle camp kin go and play on it and come back relaxed (CreatureActor.CampLife).</summary>
         public bool play;
         /// <summary>Furniture that may also stand on open ground in the camp ring (play pieces, planters).</summary>
@@ -120,7 +122,12 @@ namespace Wildbond
             BP(BiomeId.Glow, new HousePieceDef { id = "house_window_crystal", name = "Crystal Window", kind = HouseKind.Window, style = "crystal", cost = C(("wood", 5), ("crystal", 2)), desc = "A window glazed with glowing crystal." }),
             BP(BiomeId.Glow, new HousePieceDef { id = "house_glowshroom", name = "Glowshroom Lamp", kind = HouseKind.Furniture, lamp = true, ground = true, radius = 0.3f, cost = C(("wood", 1), ("gel", 3)), desc = "A cluster of glowing mushrooms in a pot.", glowAt = new Vector3(0, 0.85f, 0), glowSize = 0.34f, glowCol = new Color32(110, 240, 255, 0) }),
             BP(BiomeId.Glow, new HousePieceDef { id = "kin_ball_pit", name = "Glow Ball Pit", kind = HouseKind.Furniture, play = true, ground = true, radius = 0.9f, cost = C(("wood", 8), ("gel", 4)), desc = "Kin play piece: a pit of glowing balls to dive into." }),
+            // cave-only blueprints (a cave guardian's chest)
+            CaveBP(1, new HousePieceDef { id = "house_glowstone_lamp", name = "Glowstone Lamp", kind = HouseKind.Furniture, lamp = true, ground = true, radius = 0.35f, cost = C(("stone", 6), ("crystal", 2)), desc = "A cave crystal on a cairn of river stones. It glows the blue of deep water.", glowAt = new Vector3(0, 1.12f, 0), glowSize = 0.34f, glowCol = new Color32(140, 215, 255, 0) }),
+            CaveBP(2, new HousePieceDef { id = "house_geode_fountain", name = "Geode Fountain", kind = HouseKind.Furniture, lamp = true, ground = true, radius = 0.9f, cost = C((Caves.CoreItem, 2), ("stone", 12), ("gel", 4)), desc = "A split geode as big as a bath, water running over violet crystal. It lights a whole room.", glowAt = new Vector3(0, 0.75f, 0), glowSize = 0.55f, glowCol = new Color32(190, 140, 255, 0) }),
         };
+
+        static HousePieceDef CaveBP(int tier, HousePieceDef d) { d.blueprint = true; d.caveTier = tier; return d; }
 
         static HousePieceDef BP(BiomeId land, HousePieceDef d) { d.blueprint = true; d.land = land; return d; }
 
@@ -1180,6 +1187,23 @@ namespace Wildbond
                     mb.Sphere(M(new Vector3(0.4f, 0.15f, 0.3f), Vector3.one * 0.26f), Col("#ff7a4a"), 8, 5);
                     mb.Sphere(M(new Vector3(-0.5f, 0.11f, -0.4f), Vector3.one * 0.2f), Col("#7ae08a"), 8, 5);
                     mb.Sphere(M(new Vector3(-0.2f, 0.09f, 0.55f), Vector3.one * 0.16f), Col("#c08aff"), 8, 5);
+                    break;
+                case "house_glowstone_lamp":
+                    mb.Rock(M(new Vector3(0, 0.16f, 0), new Vector3(0.62f, 0.34f, 0.58f)), Col("#6a6a72"), Col("#8a8a92"), 7u, 6, 4);
+                    mb.Rock(M(new Vector3(0.04f, 0.44f, 0.02f), new Vector3(0.46f, 0.26f, 0.44f), 30f), Col("#5a5a64"), Col("#7a7a84"), 9u, 6, 4);
+                    mb.Rock(M(new Vector3(-0.02f, 0.66f, 0), new Vector3(0.32f, 0.2f, 0.3f), 70f), Col("#6a6a72"), Col("#8a8a92"), 11u, 6, 4);
+                    mb.Crystal(M(new Vector3(0, 0.74f, 0), new Vector3(0.16f, 0.5f, 0.16f)), Col("#8ad8ff"), Col("#e8f8ff"));
+                    mb.Crystal(M(new Vector3(0.1f, 0.72f, 0.04f), new Vector3(0.09f, 0.3f, 0.09f), 0f, 0f, -24f), Col("#8ad8ff"), Col("#e8f8ff"));
+                    break;
+                case "house_geode_fountain":
+                    mb.Sphere(M(new Vector3(0, 0.18f, 0), new Vector3(1.8f, 0.7f, 1.8f)), Col("#6a6070"), Col("#8a8090"), 14, 6);
+                    mb.Cylinder(M(new Vector3(0, 0.48f, 0), new Vector3(1.5f, 0.04f, 1.5f)), Col("#5a8ad8"), Col("#9ac8ff"), 14, 1f, true);
+                    for (int k = 0; k < 9; k++)
+                    {
+                        float a = k * 40f * Mathf.Deg2Rad, rr = 0.58f;
+                        mb.Crystal(M(new Vector3(Mathf.Cos(a) * rr, 0.36f, Mathf.Sin(a) * rr), new Vector3(0.12f, 0.36f + (k % 3) * 0.08f, 0.12f), k * 40f, 0f, 30f), Col("#9a6aff"), Col("#e8d8ff"));
+                    }
+                    mb.Crystal(M(new Vector3(0, 0.4f, 0), new Vector3(0.2f, 0.7f, 0.2f)), Col("#b48aff"), Col("#ffffff"));
                     break;
                 case "house_shell_lamp":
                     mb.Cylinder(M(new Vector3(0, 0.05f, 0), new Vector3(0.4f, 0.1f, 0.4f)), Col("#d8c8a8"), 8, 1f, true);
