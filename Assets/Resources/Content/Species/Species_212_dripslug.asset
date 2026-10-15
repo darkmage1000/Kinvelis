@@ -51,6 +51,8 @@ MonoBehaviour:
     level: 1
   - type: 2
     level: 1
+  - type: 11
+    level: 3
   perk: 8
   overworldRole: 'Companion: slowly restores your HP.'
   mountable: 0
@@ -158,7 +160,250 @@ MonoBehaviour:
     scale: {x: 0.06, y: 0.08, z: 0.06}
     rot: {x: 0, y: 0, z: 0}
   pivots: []
-  forms: []
+  forms:
+  - name: Stalaslug
+    blurb: The stalactite on its back has grown a family.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.166, z: 0}
+      scale: {x: 0.357, y: 0.25199997, z: 0.875}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.103, z: 0}
+      scale: {x: 0.42, y: 0.105, z: 0.925}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.25349998, z: 0.426875}
+      scale: {x: 0.26, y: 0.24, z: 0.26}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 1
+      slot: 0
+      pos: {x: 0.07, y: 0.39349997, z: 0.466875}
+      scale: {x: 0.03, y: 0.18, z: 0.03}
+      rot: {x: -15, y: 0, z: -12}
+    - shape: 2
+      group: 1
+      slot: 0
+      pos: {x: -0.07, y: 0.39349997, z: 0.466875}
+      scale: {x: 0.03, y: 0.18, z: 0.03}
+      rot: {x: -15, y: -0, z: 12}
+    - shape: 0
+      group: 1
+      slot: 5
+      pos: {x: 0.09, y: 0.48349997, z: 0.486875}
+      scale: {x: 0.06, y: 0.06, z: 0.06}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 5
+      pos: {x: -0.09, y: 0.48349997, z: 0.486875}
+      scale: {x: 0.06, y: 0.06, z: 0.06}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 5
+      pos: {x: 0, y: 0.21349998, z: 0.556875}
+      scale: {x: 0.1, y: 0.03, z: 0.03}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: 0, y: 0.523525, z: -0.074999996}
+      scale: {x: 0.27719998, y: 0.65204996, z: 0.32999998}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: 0.116557814, y: 0.40135586, z: -0.25}
+      scale: {x: 0.13859999, y: 0.36854997, z: 0.16499999}
+      rot: {x: 0, y: 0, z: -14}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.691, z: -0.074999996}
+      scale: {x: 0.06299999, y: 0.08399999, z: 0.074999996}
+      rot: {x: 0, y: 0, z: 0}
+    pivots: []
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Grottoslug
+    blurb: 'A slug carrying a whole grotto: stalagmites, pools that glow, and the
+      drip of a cave behind it.'
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.18489999, z: 0}
+      scale: {x: 0.41055, y: 0.28979996, z: 1.00625}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.112449996, z: 0}
+      scale: {x: 0.48299998, y: 0.120749995, z: 1.06375}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.29602498, z: 0.49203125}
+      scale: {x: 0.26, y: 0.24, z: 0.26}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 1
+      slot: 0
+      pos: {x: 0.07, y: 0.43602496, z: 0.53203124}
+      scale: {x: 0.03, y: 0.18, z: 0.03}
+      rot: {x: -15, y: 0, z: -12}
+    - shape: 2
+      group: 1
+      slot: 0
+      pos: {x: -0.07, y: 0.43602496, z: 0.53203124}
+      scale: {x: 0.03, y: 0.18, z: 0.03}
+      rot: {x: -15, y: -0, z: 12}
+    - shape: 0
+      group: 1
+      slot: 5
+      pos: {x: 0.09, y: 0.52602494, z: 0.5520313}
+      scale: {x: 0.06, y: 0.06, z: 0.06}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 5
+      pos: {x: -0.09, y: 0.52602494, z: 0.5520313}
+      scale: {x: 0.06, y: 0.06, z: 0.06}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 5
+      pos: {x: 0, y: 0.25602496, z: 0.6220312}
+      scale: {x: 0.1, y: 0.03, z: 0.03}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: 0, y: 0.5960537, z: -0.08624999}
+      scale: {x: 0.31877998, y: 0.7498574, z: 0.37949997}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: 0.13404149, y: 0.45555922, z: -0.2875}
+      scale: {x: 0.15938999, y: 0.42383245, z: 0.18974999}
+      rot: {x: 0, y: 0, z: -14}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.78865004, z: -0.08624999}
+      scale: {x: 0.07244999, y: 0.09659999, z: 0.08624999}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: 0.114954, y: 0.28530997, z: 0.3521875}
+      scale: {x: 0.089999996, y: 0.22500001, z: 0.089999996}
+      rot: {x: 0, y: 0, z: 15}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: -0.114954, y: 0.28530997, z: 0.3521875}
+      scale: {x: 0.089999996, y: 0.22500001, z: 0.089999996}
+      rot: {x: 0, y: -0, z: -15}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: 0.114954, y: 0.34593177, z: 0.100625}
+      scale: {x: 0.11598076, y: 0.28995192, z: 0.11598076}
+      rot: {x: 0, y: 0, z: 15}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: -0.114954, y: 0.34593177, z: 0.100625}
+      scale: {x: 0.11598076, y: 0.28995192, z: 0.11598076}
+      rot: {x: 0, y: -0, z: -15}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: 0.114954, y: 0.34593174, z: -0.15093751}
+      scale: {x: 0.11598076, y: 0.28995192, z: 0.11598076}
+      rot: {x: 0, y: 0, z: 15}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: -0.114954, y: 0.34593174, z: -0.15093751}
+      scale: {x: 0.11598076, y: 0.28995192, z: 0.11598076}
+      rot: {x: 0, y: -0, z: -15}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: 0.114954, y: 0.28530997, z: -0.4025}
+      scale: {x: 0.089999996, y: 0.22500001, z: 0.089999996}
+      rot: {x: 0, y: 0, z: 15}
+    - shape: 3
+      group: 0
+      slot: 2
+      pos: {x: -0.114954, y: 0.28530997, z: -0.4025}
+      scale: {x: 0.089999996, y: 0.22500001, z: 0.089999996}
+      rot: {x: 0, y: -0, z: -15}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.100000024, z: 0.23183998}
+      scale: {x: 0.07, y: 0.04, z: 0.07}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0.20077933, y: 0.100000024, z: 0.115919985}
+      scale: {x: 0.07, y: 0.04, z: 0.07}
+      rot: {x: 0, y: 60, z: 0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0.20077932, y: 0.100000024, z: -0.11592001}
+      scale: {x: 0.07, y: 0.04, z: 0.07}
+      rot: {x: 0, y: 120, z: 0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: -0.000000020268095, y: 0.100000024, z: -0.23183998}
+      scale: {x: 0.07, y: 0.04, z: 0.07}
+      rot: {x: 0, y: 180, z: 0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: -0.20077933, y: 0.100000024, z: -0.11591997}
+      scale: {x: 0.07, y: 0.04, z: 0.07}
+      rot: {x: 0, y: 240, z: 0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: -0.20077933, y: 0.100000024, z: 0.11591997}
+      scale: {x: 0.07, y: 0.04, z: 0.07}
+      rot: {x: 0, y: 300, z: 0}
+    pivots: []
+    element2: 0
+    skill: stalactite_rain
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

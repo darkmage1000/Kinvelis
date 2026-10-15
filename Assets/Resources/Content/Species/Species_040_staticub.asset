@@ -23,6 +23,7 @@ MonoBehaviour:
   rarity: 0
   starter: 0
   bossOnly: 0
+  underground: 0
   role: 
   biomes: 4
   spawnTime: 0
@@ -211,6 +212,312 @@ MonoBehaviour:
     pivot: {x: 0.12, y: 0.1, z: -0.14}
   - group: 4
     pivot: {x: -0.12, y: 0.1, z: -0.14}
+  forms:
+  - name: Staticlaw
+    blurb: A lynx-legged cub whose fur stands on end in any weather.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.2895, z: 0}
+      scale: {x: 0.44099995, y: 0.399, z: 0.529}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.3948, z: 0.2341}
+      scale: {x: 0.2816, y: 0.264, z: 0.2464}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0.11439999, y: 0.55275995, z: 0.18129998}
+      scale: {x: 0.11439999, y: 0.14871998, z: 0.044}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: -0.11439999, y: 0.55275995, z: 0.18129998}
+      scale: {x: 0.11439999, y: 0.14871998, z: 0.044}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.11439999, y: 0.5448399, z: 0.1989}
+      scale: {x: 0.0616, y: 0.080079995, z: 0.0176}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.11439999, y: 0.5448399, z: 0.1989}
+      scale: {x: 0.0616, y: 0.080079995, z: 0.0176}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 5
+      pos: {x: 0, y: 0.3772, z: 0.35729998}
+      scale: {x: 0.0352, y: 0.0308, z: 0.0264}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.1056, y: 0.35959998, z: 0.30449998}
+      scale: {x: 0.0528, y: 0.0352, z: 0.0264}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.1056, y: 0.35959998, z: 0.30449998}
+      scale: {x: 0.0528, y: 0.0352, z: 0.0264}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0, y: 0.56156, z: 0.2165}
+      scale: {x: 0.0704, y: 0.14871998, z: 0.0704}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.0704, y: 0.43, z: 0.3309}
+      scale: {x: 0.0484, y: 0.05566, z: 0.03388}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.0704, y: 0.43, z: 0.3309}
+      scale: {x: 0.0484, y: 0.05566, z: 0.03388}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.0836, y: 0.4421, z: 0.34542}
+      scale: {x: 0.01694, y: 0.01694, z: 0.01694}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.0836, y: 0.4421, z: 0.34542}
+      scale: {x: 0.01694, y: 0.01694, z: 0.01694}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 3
+      slot: 1
+      pos: {x: 0.12, y: 0.065, z: 0.14}
+      scale: {x: 0.07, y: 0.13, z: 0.07}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 2
+      slot: 1
+      pos: {x: -0.12, y: 0.065, z: 0.14}
+      scale: {x: 0.07, y: 0.13, z: 0.07}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 5
+      slot: 1
+      pos: {x: 0.12, y: 0.065, z: -0.14}
+      scale: {x: 0.07, y: 0.13, z: 0.07}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 4
+      slot: 1
+      pos: {x: -0.12, y: 0.065, z: -0.14}
+      scale: {x: 0.07, y: 0.13, z: 0.07}
+      rot: {x: 0, y: -0, z: -0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.342, z: 0.1725}
+    - group: 3
+      pivot: {x: 0.12, y: 0.13, z: 0.14}
+    - group: 2
+      pivot: {x: -0.12, y: 0.13, z: 0.14}
+    - group: 5
+      pivot: {x: 0.12, y: 0.13, z: -0.14}
+    - group: 4
+      pivot: {x: -0.12, y: 0.13, z: -0.14}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Blizzardclaw
+    blurb: Its back is a ridge of ice that crackles with stored lightning; it hunts
+      in the eye of the storm.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.32904, z: 0}
+      scale: {x: 0.49391994, y: 0.44687998, z: 0.59248}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.437472, z: 0.25110403}
+      scale: {x: 0.264704, y: 0.24816, z: 0.231616}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0.107535996, y: 0.58595437, z: 0.201472}
+      scale: {x: 0.107535996, y: 0.13979678, z: 0.04136}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: -0.107535996, y: 0.58595437, z: 0.201472}
+      scale: {x: 0.107535996, y: 0.13979678, z: 0.04136}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.107535996, y: 0.57850957, z: 0.218016}
+      scale: {x: 0.057904, y: 0.0752752, z: 0.016544}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.107535996, y: 0.57850957, z: 0.218016}
+      scale: {x: 0.057904, y: 0.0752752, z: 0.016544}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 5
+      pos: {x: 0, y: 0.420928, z: 0.366912}
+      scale: {x: 0.033088, y: 0.028952, z: 0.024815999}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.099263996, y: 0.404384, z: 0.31728}
+      scale: {x: 0.049631998, y: 0.033088, z: 0.024815999}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.099263996, y: 0.404384, z: 0.31728}
+      scale: {x: 0.049631998, y: 0.033088, z: 0.024815999}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0, y: 0.5942264, z: 0.23456001}
+      scale: {x: 0.066176, y: 0.13979678, z: 0.066176}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.066176, y: 0.47056, z: 0.34209603}
+      scale: {x: 0.045495998, y: 0.0523204, z: 0.031847198}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.066176, y: 0.47056, z: 0.34209603}
+      scale: {x: 0.045495998, y: 0.0523204, z: 0.031847198}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.078584, y: 0.48193398, z: 0.3557448}
+      scale: {x: 0.015923599, y: 0.015923599, z: 0.015923599}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.078584, y: 0.48193398, z: 0.3557448}
+      scale: {x: 0.015923599, y: 0.015923599, z: 0.015923599}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 3
+      slot: 1
+      pos: {x: 0.12, y: 0.072799996, z: 0.14}
+      scale: {x: 0.07, y: 0.14559999, z: 0.07}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 2
+      slot: 1
+      pos: {x: -0.12, y: 0.072799996, z: 0.14}
+      scale: {x: 0.07, y: 0.14559999, z: 0.07}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 5
+      slot: 1
+      pos: {x: 0.12, y: 0.072799996, z: -0.14}
+      scale: {x: 0.07, y: 0.14559999, z: 0.07}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 4
+      slot: 1
+      pos: {x: -0.12, y: 0.072799996, z: -0.14}
+      scale: {x: 0.07, y: 0.14559999, z: 0.07}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.49879107, z: 0.21759258}
+      scale: {x: 0.052500002, y: 0.16499999, z: 0.052500002}
+      rot: {x: -15, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.51677775, z: 0.12450543}
+      scale: {x: 0.06487437, y: 0.20389087, z: 0.06487437}
+      rot: {x: -15, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.5242281, z: 0.028470097}
+      scale: {x: 0.07, y: 0.22, z: 0.07}
+      rot: {x: -15, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.51677775, z: -0.07173458}
+      scale: {x: 0.06487437, y: 0.20389087, z: 0.06487437}
+      rot: {x: -15, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.49879107, z: -0.17488743}
+      scale: {x: 0.052500002, y: 0.16499999, z: 0.052500002}
+      rot: {x: -15, y: 0, z: 0}
+    - shape: 1
+      group: 1
+      slot: 1
+      pos: {x: 0.063528955, y: 0.506295, z: 0.35698563}
+      scale: {x: 0.06882303, y: 0.015882239, z: 0.02117632}
+      rot: {x: 0, y: 0, z: 22}
+    - shape: 1
+      group: 1
+      slot: 1
+      pos: {x: -0.063528955, y: 0.506295, z: 0.35698563}
+      scale: {x: 0.06882303, y: 0.015882239, z: 0.02117632}
+      rot: {x: 0, y: -0, z: -22}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.38784, z: 0.1932}
+    - group: 3
+      pivot: {x: 0.12, y: 0.14559999, z: 0.14}
+    - group: 2
+      pivot: {x: -0.12, y: 0.14559999, z: 0.14}
+    - group: 5
+      pivot: {x: 0.12, y: 0.14559999, z: -0.14}
+    - group: 4
+      pivot: {x: -0.12, y: 0.14559999, z: -0.14}
+    element2: 0
+    skill: static_blizzard
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

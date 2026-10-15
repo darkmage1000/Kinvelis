@@ -23,6 +23,7 @@ MonoBehaviour:
   rarity: 2
   starter: 1
   bossOnly: 0
+  underground: 0
   role: Builder
   biomes: 0
   spawnTime: 0

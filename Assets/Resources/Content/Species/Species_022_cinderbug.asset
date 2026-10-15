@@ -22,6 +22,8 @@ MonoBehaviour:
   element2: 6
   rarity: 0
   starter: 0
+  bossOnly: 0
+  underground: 0
   role: 
   biomes: 2
   spawnTime: 0
@@ -192,6 +194,269 @@ MonoBehaviour:
     pivot: {x: 0.26, y: 0.18, z: -0.2}
   - group: 4
     pivot: {x: -0.26, y: 0.18, z: -0.2}
+  forms:
+  - name: Cinderbeetle
+    blurb: Its shell has hardened to rock and its horn to a pick.
+    parts:
+    - shape: 7
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.2582, z: 0}
+      scale: {x: 0.7316, y: 0.58239996, z: 0.984}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.2582, z: 0}
+      scale: {x: 0.61359996, y: 0.224, z: 0.8640001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 1
+      group: 0
+      slot: 5
+      pos: {x: 0, y: 0.5382, z: 0}
+      scale: {x: 0.023599999, y: 0.056, z: 0.84000003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 1
+      group: 0
+      slot: 6
+      pos: {x: 0.1416, y: 0.5046, z: 0.120000005}
+      scale: {x: 0.1416, y: 0.0336, z: 0.036000002}
+      rot: {x: 0, y: 30, z: 0}
+    - shape: 1
+      group: 0
+      slot: 6
+      pos: {x: -0.1416, y: 0.5046, z: 0.120000005}
+      scale: {x: 0.1416, y: 0.0336, z: 0.036000002}
+      rot: {x: 0, y: -30, z: -0}
+    - shape: 1
+      group: 0
+      slot: 6
+      pos: {x: 0.1652, y: 0.48219997, z: -0.16800001}
+      scale: {x: 0.11799999, y: 0.0336, z: 0.036000002}
+      rot: {x: 0, y: -25, z: 0}
+    - shape: 1
+      group: 0
+      slot: 6
+      pos: {x: -0.1652, y: 0.48219997, z: -0.16800001}
+      scale: {x: 0.11799999, y: 0.0336, z: 0.036000002}
+      rot: {x: 0, y: 25, z: -0}
+    - shape: 0
+      group: 1
+      slot: 1
+      pos: {x: 0, y: 0.2782, z: 0.52}
+      scale: {x: 0.26, y: 0.2, z: 0.22}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 2
+      pos: {x: 0, y: 0.43676725, z: 0.6659627}
+      scale: {x: 0.069, y: 0.32000002, z: 0.069}
+      rot: {x: 50, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.07, y: 0.3182, z: 0.61}
+      scale: {x: 0.05, y: 0.05, z: 0.04}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.07, y: 0.3182, z: 0.61}
+      scale: {x: 0.05, y: 0.05, z: 0.04}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 3
+      slot: 5
+      pos: {x: 0.26, y: 0.1035, z: 0.2}
+      scale: {x: 0.04, y: 0.207, z: 0.04}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 2
+      slot: 5
+      pos: {x: -0.26, y: 0.1035, z: 0.2}
+      scale: {x: 0.04, y: 0.207, z: 0.04}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 5
+      slot: 5
+      pos: {x: 0.26, y: 0.1035, z: -0.2}
+      scale: {x: 0.04, y: 0.207, z: 0.04}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 4
+      slot: 5
+      pos: {x: -0.26, y: 0.1035, z: -0.2}
+      scale: {x: 0.04, y: 0.207, z: 0.04}
+      rot: {x: 0, y: -0, z: -0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.2582, z: 0.42000002}
+    - group: 3
+      pivot: {x: 0.26, y: 0.207, z: 0.2}
+    - group: 2
+      pivot: {x: -0.26, y: 0.207, z: 0.2}
+    - group: 5
+      pivot: {x: 0.26, y: 0.207, z: -0.2}
+    - group: 4
+      pivot: {x: -0.26, y: 0.207, z: -0.2}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Magmabeetle
+    blurb: Lava glows in the cracks of its shell. When it is angry, the cracks open.
+    parts:
+    - shape: 7
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.298968, z: 0}
+      scale: {x: 0.83402395, y: 0.66393596, z: 1.12176}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.298968, z: 0}
+      scale: {x: 0.69950396, y: 0.25536, z: 0.9849601}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 1
+      group: 0
+      slot: 5
+      pos: {x: 0, y: 0.618168, z: 0}
+      scale: {x: 0.026903998, y: 0.06384, z: 0.9576}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 1
+      group: 0
+      slot: 6
+      pos: {x: 0.161424, y: 0.57986397, z: 0.1368}
+      scale: {x: 0.161424, y: 0.038303997, z: 0.041040003}
+      rot: {x: 0, y: 30, z: 0}
+    - shape: 1
+      group: 0
+      slot: 6
+      pos: {x: -0.161424, y: 0.57986397, z: 0.1368}
+      scale: {x: 0.161424, y: 0.038303997, z: 0.041040003}
+      rot: {x: 0, y: -30, z: -0}
+    - shape: 1
+      group: 0
+      slot: 6
+      pos: {x: 0.188328, y: 0.55432796, z: -0.19152}
+      scale: {x: 0.13452, y: 0.038303997, z: 0.041040003}
+      rot: {x: 0, y: -25, z: 0}
+    - shape: 1
+      group: 0
+      slot: 6
+      pos: {x: -0.188328, y: 0.55432796, z: -0.19152}
+      scale: {x: 0.13452, y: 0.038303997, z: 0.041040003}
+      rot: {x: 0, y: 25, z: -0}
+    - shape: 0
+      group: 1
+      slot: 1
+      pos: {x: 0, y: 0.318968, z: 0.57879996}
+      scale: {x: 0.26, y: 0.2, z: 0.22}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 2
+      pos: {x: 0, y: 0.5032467, z: 0.7554045}
+      scale: {x: 0.0759, y: 0.40000004, z: 0.0759}
+      rot: {x: 50, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.07, y: 0.358968, z: 0.6688}
+      scale: {x: 0.05, y: 0.05, z: 0.04}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.07, y: 0.358968, z: 0.6688}
+      scale: {x: 0.05, y: 0.05, z: 0.04}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 3
+      slot: 5
+      pos: {x: 0.26, y: 0.1035, z: 0.2}
+      scale: {x: 0.04, y: 0.207, z: 0.04}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 2
+      slot: 5
+      pos: {x: -0.26, y: 0.1035, z: 0.2}
+      scale: {x: 0.04, y: 0.207, z: 0.04}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 5
+      slot: 5
+      pos: {x: 0.26, y: 0.1035, z: -0.2}
+      scale: {x: 0.04, y: 0.207, z: 0.04}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 4
+      slot: 5
+      pos: {x: -0.26, y: 0.1035, z: -0.2}
+      scale: {x: 0.04, y: 0.207, z: 0.04}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.59177166, z: 0.44869417}
+      scale: {x: 0.052500002, y: 0.089999996, z: 0.052500002}
+      rot: {x: -10, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.58937097, z: 0.15036324}
+      scale: {x: 0.067655444, y: 0.11598076, z: 0.067655444}
+      rot: {x: -10, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.58937097, z: -0.15022343}
+      scale: {x: 0.067655444, y: 0.11598076, z: 0.067655444}
+      rot: {x: -10, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.59177166, z: -0.45306584}
+      scale: {x: 0.052500002, y: 0.089999996, z: 0.052500002}
+      rot: {x: -10, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0.26688766, y: 0.41100723, z: 0}
+      scale: {x: 0.08, y: 0.05, z: 0.673056}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: -0.26688766, y: 0.41100723, z: 0}
+      scale: {x: 0.08, y: 0.05, z: 0.673056}
+      rot: {x: 0, y: -0, z: -0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.298968, z: 0.4788}
+    - group: 3
+      pivot: {x: 0.26, y: 0.207, z: 0.2}
+    - group: 2
+      pivot: {x: -0.26, y: 0.207, z: 0.2}
+    - group: 5
+      pivot: {x: 0.26, y: 0.207, z: -0.2}
+    - group: 4
+      pivot: {x: -0.26, y: 0.207, z: -0.2}
+    element2: 0
+    skill: eruption
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

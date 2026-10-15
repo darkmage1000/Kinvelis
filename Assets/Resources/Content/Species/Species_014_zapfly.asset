@@ -23,6 +23,7 @@ MonoBehaviour:
   rarity: 0
   starter: 0
   bossOnly: 0
+  underground: 0
   role: 
   biomes: 1
   spawnTime: 0
@@ -161,6 +162,218 @@ MonoBehaviour:
     pivot: {x: -0.05, y: 1.04, z: 0.12}
   - group: 8
     pivot: {x: 0, y: 1, z: 0.05}
+  forms:
+  - name: Zapwing
+    blurb: Its wings crackle when it turns; the hum carries a mile.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 1, z: 0.18}
+      scale: {x: 0.18, y: 0.17, z: 0.275}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 4
+      group: 8
+      slot: 1
+      pos: {x: 0, y: 1, z: -0.41149998}
+      scale: {x: 0.117, y: 0.936, z: 0.117}
+      rot: {x: 90, y: 0, z: 0}
+    - shape: 0
+      group: 8
+      slot: 6
+      pos: {x: 0, y: 1, z: -0.8535}
+      scale: {x: 0.091, y: 0.091, z: 0.091}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 1
+      pos: {x: 0, y: 1.02, z: 0.375}
+      scale: {x: 0.2, y: 0.18, z: 0.18}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.07, y: 1.05, z: 0.425}
+      scale: {x: 0.1, y: 0.11, z: 0.09}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.07, y: 1.05, z: 0.425}
+      scale: {x: 0.1, y: 0.11, z: 0.09}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 1
+      group: 10
+      slot: 2
+      pos: {x: 0.3625, y: 1.0525, z: 0.205}
+      scale: {x: 0.625, y: 0.024999999, z: 0.1625}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 1
+      group: 9
+      slot: 2
+      pos: {x: -0.3625, y: 1.0525, z: 0.205}
+      scale: {x: 0.625, y: 0.024999999, z: 0.1625}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 1
+      group: 10
+      slot: 2
+      pos: {x: 0.32500002, y: 1.04, z: 0.0050000027}
+      scale: {x: 0.55, y: 0.024999999, z: 0.1375}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 1
+      group: 9
+      slot: 2
+      pos: {x: -0.32500002, y: 1.04, z: 0.0050000027}
+      scale: {x: 0.55, y: 0.024999999, z: 0.1375}
+      rot: {x: 0, y: -0, z: -0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 1, z: 0.305}
+    - group: 10
+      pivot: {x: 0.05, y: 1.04, z: 0.105}
+    - group: 9
+      pivot: {x: -0.05, y: 1.04, z: 0.105}
+    - group: 8
+      pivot: {x: 0, y: 1, z: 0.017499998}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Thundrifly
+    blurb: Four wings of light and a tail full of lightning. It rides the storm front.
+      It gains the Gale element.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 1.0085, z: 0.18}
+      scale: {x: 0.19800001, y: 0.187, z: 0.31625}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 4
+      group: 8
+      slot: 1
+      pos: {x: 0, y: 1.0085, z: -0.43587497}
+      scale: {x: 0.117, y: 0.936, z: 0.117}
+      rot: {x: 90, y: 0, z: 0}
+    - shape: 0
+      group: 8
+      slot: 6
+      pos: {x: 0, y: 1.0085, z: -0.877875}
+      scale: {x: 0.091, y: 0.091, z: 0.091}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 1
+      pos: {x: 0, y: 1.0285, z: 0.39375}
+      scale: {x: 0.2, y: 0.18, z: 0.18}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.07, y: 1.0584999, z: 0.44375002}
+      scale: {x: 0.1, y: 0.11, z: 0.09}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.07, y: 1.0584999, z: 0.44375002}
+      scale: {x: 0.1, y: 0.11, z: 0.09}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 1
+      group: 10
+      slot: 2
+      pos: {x: 0.414375, y: 1.0668751, z: 0.20875001}
+      scale: {x: 0.71875, y: 0.028749997, z: 0.18687499}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 1
+      group: 9
+      slot: 2
+      pos: {x: -0.414375, y: 1.0668751, z: 0.20875001}
+      scale: {x: 0.71875, y: 0.028749997, z: 0.18687499}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 1
+      group: 10
+      slot: 2
+      pos: {x: 0.37125, y: 1.0525, z: -0.021249987}
+      scale: {x: 0.6325, y: 0.028749997, z: 0.158125}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 1
+      group: 9
+      slot: 2
+      pos: {x: -0.37125, y: 1.0525, z: -0.021249987}
+      scale: {x: 0.6325, y: 0.028749997, z: 0.158125}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 1
+      group: 10
+      slot: 6
+      pos: {x: 0.414375, y: 1.0368751, z: 0.048750013}
+      scale: {x: 0.589375, y: 0.023574997, z: 0.15323749}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 1
+      group: 9
+      slot: 6
+      pos: {x: -0.414375, y: 1.0368751, z: 0.048750013}
+      scale: {x: 0.589375, y: 0.023574997, z: 0.15323749}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 1
+      group: 10
+      slot: 6
+      pos: {x: 0.37125, y: 1.0225, z: -0.18124998}
+      scale: {x: 0.51865, y: 0.023574997, z: 0.1296625}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 1
+      group: 9
+      slot: 6
+      pos: {x: -0.37125, y: 1.0225, z: -0.18124998}
+      scale: {x: 0.51865, y: 0.023574997, z: 0.1296625}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 5
+      group: 8
+      slot: 6
+      pos: {x: 0, y: 1.47, z: -0.38840383}
+      scale: {x: 0.0375, y: 0.089999996, z: 0.0375}
+      rot: {x: -60, y: 0, z: 0}
+    - shape: 5
+      group: 8
+      slot: 6
+      pos: {x: 0, y: 1.4738972, z: -0.5258205}
+      scale: {x: 0.04832532, y: 0.11598076, z: 0.04832532}
+      rot: {x: -60, y: 0, z: 0}
+    - shape: 5
+      group: 8
+      slot: 6
+      pos: {x: 0, y: 1.4738972, z: -0.6744871}
+      scale: {x: 0.04832532, y: 0.11598076, z: 0.04832532}
+      rot: {x: -60, y: 0, z: 0}
+    - shape: 5
+      group: 8
+      slot: 6
+      pos: {x: 0, y: 1.47, z: -0.8344038}
+      scale: {x: 0.0375, y: 0.089999996, z: 0.0375}
+      rot: {x: -60, y: 0, z: 0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 1.0085, z: 0.32375002}
+    - group: 10
+      pivot: {x: 0.055000003, y: 1.0525, z: 0.09375}
+    - group: 9
+      pivot: {x: -0.055000003, y: 1.0525, z: 0.09375}
+    - group: 8
+      pivot: {x: 0, y: 1.0085, z: -0.0068749934}
+    element2: 7
+    skill: arc_swarm
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

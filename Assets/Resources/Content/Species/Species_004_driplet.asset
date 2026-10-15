@@ -22,6 +22,7 @@ MonoBehaviour:
   rarity: 0
   starter: 0
   bossOnly: 0
+  underground: 0
   role: 
   biomes: 1
   spawnTime: 0

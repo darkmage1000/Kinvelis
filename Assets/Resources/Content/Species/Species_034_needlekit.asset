@@ -23,6 +23,7 @@ MonoBehaviour:
   rarity: 0
   starter: 0
   bossOnly: 0
+  underground: 0
   role: 
   biomes: 4
   spawnTime: 0
@@ -179,6 +180,312 @@ MonoBehaviour:
     pivot: {x: 0.08, y: 0.16, z: 0}
   - group: 2
     pivot: {x: -0.08, y: 0.16, z: 0}
+  forms:
+  - name: Needlequill
+    blurb: A young fir on legs, its needles sharp enough to throw.
+    parts:
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.42450002, z: 0}
+      scale: {x: 0.46, y: 0.525, z: 0.46}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.64949995, z: 0}
+      scale: {x: 0.38, y: 0.425, z: 0.38}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.44950002, z: 0.16}
+      scale: {x: 0.26, y: 0.29999998, z: 0.1}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.8695, z: 0}
+      scale: {x: 0.28, y: 0.28, z: 0.28}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0, y: 0.9894999, z: 0}
+      scale: {x: 0.16, y: 0.08, z: 0.16}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.06, y: 0.58949995, z: 0.2}
+      scale: {x: 0.05, y: 0.0575, z: 0.035}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.06, y: 0.58949995, z: 0.2}
+      scale: {x: 0.05, y: 0.0575, z: 0.035}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.074999996, y: 0.60199994, z: 0.215}
+      scale: {x: 0.0175, y: 0.0175, z: 0.0175}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.074999996, y: 0.60199994, z: 0.215}
+      scale: {x: 0.0175, y: 0.0175, z: 0.0175}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 7
+      slot: 2
+      pos: {x: 0.27199998, y: 0.4275, z: 0.024}
+      scale: {x: 0.036000002, y: 0.24000001, z: 0.036000002}
+      rot: {x: 0, y: 0, z: -40}
+    - shape: 2
+      group: 6
+      slot: 2
+      pos: {x: -0.27199998, y: 0.4275, z: 0.024}
+      scale: {x: 0.036000002, y: 0.24000001, z: 0.036000002}
+      rot: {x: 0, y: -0, z: 40}
+    - shape: 4
+      group: 3
+      slot: 2
+      pos: {x: 0.08, y: 0.096, z: 0}
+      scale: {x: 0.05, y: 0.192, z: 0.05}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 4
+      group: 2
+      slot: 2
+      pos: {x: -0.08, y: 0.096, z: 0}
+      scale: {x: 0.05, y: 0.192, z: 0.05}
+      rot: {x: 0, y: -0, z: -0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.7495, z: 0}
+    - group: 7
+      pivot: {x: 0.2, y: 0.4995, z: 0}
+    - group: 6
+      pivot: {x: -0.2, y: 0.4995, z: 0}
+    - group: 3
+      pivot: {x: 0.08, y: 0.192, z: 0}
+    - group: 2
+      pivot: {x: -0.08, y: 0.192, z: 0}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Frostspine
+    blurb: A snow-laden fir with a star of ice at its tip. It throws its needles
+      like spears.
+    parts:
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.47175002, z: 0}
+      scale: {x: 0.5152, y: 0.6194999, z: 0.5152}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.7372499, z: 0}
+      scale: {x: 0.4256, y: 0.5015, z: 0.4256}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.50125, z: 0.1792}
+      scale: {x: 0.29119998, y: 0.35399997, z: 0.112}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.97524995, z: 0}
+      scale: {x: 0.28, y: 0.28, z: 0.28}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0, y: 1.0952499, z: 0}
+      scale: {x: 0.16, y: 0.08, z: 0.16}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.06, y: 0.6952499, z: 0.2}
+      scale: {x: 0.05, y: 0.0575, z: 0.035}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.06, y: 0.6952499, z: 0.2}
+      scale: {x: 0.05, y: 0.0575, z: 0.035}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.074999996, y: 0.7077499, z: 0.215}
+      scale: {x: 0.0175, y: 0.0175, z: 0.0175}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.074999996, y: 0.7077499, z: 0.215}
+      scale: {x: 0.0175, y: 0.0175, z: 0.0175}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 7
+      slot: 2
+      pos: {x: 0.3068, y: 0.47744998, z: 0.0276}
+      scale: {x: 0.0414, y: 0.276, z: 0.0414}
+      rot: {x: 0, y: 0, z: -40}
+    - shape: 2
+      group: 6
+      slot: 2
+      pos: {x: -0.3068, y: 0.47744998, z: 0.0276}
+      scale: {x: 0.0414, y: 0.276, z: 0.0414}
+      rot: {x: 0, y: -0, z: 40}
+    - shape: 4
+      group: 3
+      slot: 2
+      pos: {x: 0.08, y: 0.096, z: 0}
+      scale: {x: 0.05, y: 0.192, z: 0.05}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 4
+      group: 2
+      slot: 2
+      pos: {x: -0.08, y: 0.096, z: 0}
+      scale: {x: 0.05, y: 0.192, z: 0.05}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0, y: 0.6576, z: 0.20608}
+      scale: {x: 0.13, y: 0.06, z: 0.13}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.16111983, y: 0.6576, z: 0.1284888}
+      scale: {x: 0.13, y: 0.06, z: 0.13}
+      rot: {x: 0, y: 51.42857, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.20091316, y: 0.6576, z: -0.045857094}
+      scale: {x: 0.13, y: 0.06, z: 0.13}
+      rot: {x: 0, y: 102.85714, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.08941474, y: 0.6576, z: -0.18567167}
+      scale: {x: 0.13, y: 0.06, z: 0.13}
+      rot: {x: 0, y: 154.28572, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.08941472, y: 0.6576, z: -0.18567169}
+      scale: {x: 0.13, y: 0.06, z: 0.13}
+      rot: {x: 0, y: 205.71428, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.20091315, y: 0.6576, z: -0.04585713}
+      scale: {x: 0.13, y: 0.06, z: 0.13}
+      rot: {x: 0, y: 257.14285, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.1611198, y: 0.6576, z: 0.12848882}
+      scale: {x: 0.13, y: 0.06, z: 0.13}
+      rot: {x: 0, y: 308.57144, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.08458021, y: 0.42632002, z: 0.23238222}
+      scale: {x: 0.14, y: 0.06, z: 0.14}
+      rot: {x: 0, y: 20, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.22412631, y: 0.42632002, z: 0.104511805}
+      scale: {x: 0.14, y: 0.06, z: 0.14}
+      rot: {x: 0, y: 65, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.23238222, y: 0.42632002, z: -0.08458021}
+      scale: {x: 0.14, y: 0.06, z: 0.14}
+      rot: {x: 0, y: 110, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.10451183, y: 0.42632002, z: -0.2241263}
+      scale: {x: 0.14, y: 0.06, z: 0.14}
+      rot: {x: 0, y: 155, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.08458022, y: 0.42632002, z: -0.23238222}
+      scale: {x: 0.14, y: 0.06, z: 0.14}
+      rot: {x: 0, y: 200, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.22412631, y: 0.42632002, z: -0.10451179}
+      scale: {x: 0.14, y: 0.06, z: 0.14}
+      rot: {x: 0, y: 245, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.23238222, y: 0.42632002, z: 0.084580205}
+      scale: {x: 0.14, y: 0.06, z: 0.14}
+      rot: {x: 0, y: 290, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.10451186, y: 0.42632002, z: 0.22412628}
+      scale: {x: 0.14, y: 0.06, z: 0.14}
+      rot: {x: 0, y: 335, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 0.9879999, z: 0}
+      scale: {x: 0.1, y: 0.24, z: 0.1}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 1.2279999, z: 0.000000010490733}
+      scale: {x: 0.1, y: 0.24, z: 0.1}
+      rot: {x: 180, y: 0, z: 0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.85524994, z: 0}
+    - group: 7
+      pivot: {x: 0.224, y: 0.56025, z: 0}
+    - group: 6
+      pivot: {x: -0.224, y: 0.56025, z: 0}
+    - group: 3
+      pivot: {x: 0.08, y: 0.192, z: 0}
+    - group: 2
+      pivot: {x: -0.08, y: 0.192, z: 0}
+    element2: 0
+    skill: pine_lance
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

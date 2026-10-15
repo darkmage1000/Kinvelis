@@ -23,6 +23,7 @@ MonoBehaviour:
   rarity: 0
   starter: 0
   bossOnly: 0
+  underground: 0
   role: 
   biomes: 128
   spawnTime: 0
@@ -49,6 +50,8 @@ MonoBehaviour:
   - type: 7
     level: 1
   - type: 10
+    level: 1
+  - type: 11
     level: 1
   perk: 4
   overworldRole: 'Companion: +12% run speed.'
@@ -183,6 +186,242 @@ MonoBehaviour:
     pivot: {x: 0, y: 0.8, z: 0.14}
   - group: 8
     pivot: {x: 0, y: 0.7, z: -0.22}
+  forms:
+  - name: Galegull
+    blurb: A broad-winged gull that sleeps on the wind far out at sea.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.72099996, z: 0}
+      scale: {x: 0.374, y: 0.352, z: 0.57199997}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.9062, z: 0.2292}
+      scale: {x: 0.2538, y: 0.2444, z: 0.2538}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.060912002, y: 0.93158, z: 0.33072}
+      scale: {x: 0.056399997, y: 0.06486, z: 0.03948}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.060912002, y: 0.93158, z: 0.33072}
+      scale: {x: 0.056399997, y: 0.06486, z: 0.03948}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.075012, y: 0.94568, z: 0.34764}
+      scale: {x: 0.01974, y: 0.01974, z: 0.01974}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.075012, y: 0.94568, z: 0.34764}
+      scale: {x: 0.01974, y: 0.01974, z: 0.01974}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 1
+      slot: 2
+      pos: {x: 0, y: 0.885896, z: 0.401596}
+      scale: {x: 0.0846, y: 0.18800001, z: 0.0846}
+      rot: {x: 95, y: 0, z: 0}
+    - shape: 0
+      group: 10
+      slot: 1
+      pos: {x: 0.53807503, y: 0.8547228, z: -0.13}
+      scale: {x: 0.78000003, y: 0.065, z: 0.33799997}
+      rot: {x: 0, y: -8, z: 10}
+    - shape: 0
+      group: 9
+      slot: 1
+      pos: {x: -0.53807503, y: 0.8547228, z: -0.13}
+      scale: {x: 0.78000003, y: 0.065, z: 0.33799997}
+      rot: {x: 0, y: 8, z: -10}
+    - shape: 0
+      group: 10
+      slot: 5
+      pos: {x: 0.88199997, y: 0.917, z: -0.103999995}
+      scale: {x: 0.26, y: 0.051999997, z: 0.20799999}
+      rot: {x: 0, y: 0, z: 10}
+    - shape: 0
+      group: 9
+      slot: 5
+      pos: {x: -0.88199997, y: 0.917, z: -0.103999995}
+      scale: {x: 0.26, y: 0.051999997, z: 0.20799999}
+      rot: {x: 0, y: -0, z: -10}
+    - shape: 0
+      group: 8
+      slot: 1
+      pos: {x: 0, y: 0.72099996, z: -0.362}
+      scale: {x: 0.2, y: 0.04, z: 0.24}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0.077, y: 0.534, z: 0.022}
+      scale: {x: 0.055000003, y: 0.088, z: 0.11000001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: -0.077, y: 0.534, z: 0.022}
+      scale: {x: 0.055000003, y: 0.088, z: 0.11000001}
+      rot: {x: 0, y: -0, z: -0}
+    pivots:
+    - group: 10
+      pivot: {x: 0.154, y: 0.787, z: 0}
+    - group: 9
+      pivot: {x: -0.154, y: 0.787, z: 0}
+    - group: 1
+      pivot: {x: 0, y: 0.83100003, z: 0.154}
+    - group: 8
+      pivot: {x: 0, y: 0.72099996, z: -0.242}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Stormbatross
+    blurb: Its wings span a boat. It follows storms out to sea and dives out of the
+      squalls.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.7441, z: 0}
+      scale: {x: 0.41140002, y: 0.3872, z: 0.6292}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.9403, z: 0.24460001}
+      scale: {x: 0.2538, y: 0.2444, z: 0.2538}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.060912002, y: 0.96568, z: 0.34612}
+      scale: {x: 0.056399997, y: 0.06486, z: 0.03948}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.060912002, y: 0.96568, z: 0.34612}
+      scale: {x: 0.056399997, y: 0.06486, z: 0.03948}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.075012, y: 0.97978, z: 0.36304003}
+      scale: {x: 0.01974, y: 0.01974, z: 0.01974}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.075012, y: 0.97978, z: 0.36304003}
+      scale: {x: 0.01974, y: 0.01974, z: 0.01974}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 1
+      slot: 2
+      pos: {x: 0, y: 0.919996, z: 0.416996}
+      scale: {x: 0.0846, y: 0.18800001, z: 0.0846}
+      rot: {x: 95, y: 0, z: 0}
+    - shape: 0
+      group: 10
+      slot: 1
+      pos: {x: 0.6879013, y: 0.90812576, z: -0.17549999}
+      scale: {x: 1.0530001, y: 0.087749995, z: 0.45629996}
+      rot: {x: 0, y: -8, z: 10}
+    - shape: 0
+      group: 9
+      slot: 1
+      pos: {x: -0.6879013, y: 0.90812576, z: -0.17549999}
+      scale: {x: 1.0530001, y: 0.087749995, z: 0.45629996}
+      rot: {x: 0, y: 8, z: -10}
+    - shape: 0
+      group: 10
+      slot: 5
+      pos: {x: 1.1522001, y: 0.99219996, z: -0.14039999}
+      scale: {x: 0.35099998, y: 0.070199996, z: 0.28079998}
+      rot: {x: 0, y: 0, z: 10}
+    - shape: 0
+      group: 9
+      slot: 5
+      pos: {x: -1.1522001, y: 0.99219996, z: -0.14039999}
+      scale: {x: 0.35099998, y: 0.070199996, z: 0.28079998}
+      rot: {x: 0, y: -0, z: -10}
+    - shape: 0
+      group: 8
+      slot: 1
+      pos: {x: 0, y: 0.7441, z: -0.3862}
+      scale: {x: 0.2, y: 0.04, z: 0.24}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0.0847, y: 0.5384, z: 0.0242}
+      scale: {x: 0.060500003, y: 0.0968, z: 0.12100001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: -0.0847, y: 0.5384, z: 0.0242}
+      scale: {x: 0.060500003, y: 0.0968, z: 0.12100001}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 1
+      slot: 1
+      pos: {x: -0.04698463, y: 0.996519, z: 0.15577002}
+      scale: {x: 0.04, y: 0.18, z: 0.03}
+      rot: {x: 0, y: 0, z: 110}
+    - shape: 3
+      group: 1
+      slot: 1
+      pos: {x: -0.04991541, y: 1.0165273, z: 0.15577002}
+      scale: {x: 0.04, y: 0.18, z: 0.03}
+      rot: {x: 0, y: 0, z: 86.666664}
+    - shape: 3
+      group: 1
+      slot: 1
+      pos: {x: -0.044681635, y: 1.03606, z: 0.15577002}
+      scale: {x: 0.04, y: 0.18, z: 0.03}
+      rot: {x: 0, y: 0, z: 63.333332}
+    - shape: 3
+      group: 1
+      slot: 1
+      pos: {x: -0.03213938, y: 1.0519222, z: 0.15577002}
+      scale: {x: 0.04, y: 0.18, z: 0.03}
+      rot: {x: 0, y: 0, z: 40}
+    pivots:
+    - group: 10
+      pivot: {x: 0.1694, y: 0.8167, z: 0}
+    - group: 9
+      pivot: {x: -0.1694, y: 0.8167, z: 0}
+    - group: 1
+      pivot: {x: 0, y: 0.8651, z: 0.1694}
+    - group: 8
+      pivot: {x: 0, y: 0.7441, z: -0.2662}
+    element2: 0
+    skill: squall_dive
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0
