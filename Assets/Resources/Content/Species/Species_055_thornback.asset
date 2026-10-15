@@ -22,6 +22,7 @@ MonoBehaviour:
   element2: 6
   rarity: 2
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 17
   spawnTime: 0
@@ -53,10 +54,10 @@ MonoBehaviour:
     level: 1
   perk: 1
   overworldRole: 'Companion: +50% wood. Camp: master logger.'
-  mountable: 0
-  mountSpeed: 11
+  mountable: 1
+  mountSpeed: 10.5
   mountJump: 8
-  mountSeat: {x: 0, y: 1, z: 0}
+  mountSeat: {x: 0, y: 0, z: 0}
   drops:
   - itemId: fiber
     min: 3
@@ -356,6 +357,7 @@ MonoBehaviour:
     pivot: {x: 0.3, y: 0.3, z: -0.4}
   - group: 4
     pivot: {x: -0.3, y: 0.3, z: -0.4}
+  forms: []
   regional:
     enabled: 0
     biome: 0

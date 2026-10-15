@@ -518,7 +518,8 @@ namespace Wildbond
             var c = Party.Companion;
             if (c == null || !c.IsAlive) { GameEvents.Warn("Summon a kin first (KIN button)."); return; }
             var t = (ICombatant)Player.CombatTarget ?? CreatureRegistry.FindNearestWild(Player.Position, 18f);
-            string why = c.CommandSkill(slot, t);
+            // riding it: it uses the skill from under you (you steer, it doesn't run in)
+            string why = Player.IsMounted && Player.Mount == c ? c.MountedSkill(slot, t) : c.CommandSkill(slot, t);
             if (why != null) GameEvents.Say(why);
             else Quests.Note("skill");
         }

@@ -22,10 +22,12 @@ MonoBehaviour:
   element2: 6
   rarity: 2
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 2
   spawnTime: 0
   nearWater: 0
+  spawnCondition: 0
   spawnWeight: 0.8
   minGroup: 1
   maxGroup: 1
@@ -50,10 +52,10 @@ MonoBehaviour:
     level: 2
   perk: 7
   overworldRole: 'Companion: +50% ore and cinder when mining.'
-  mountable: 0
-  mountSpeed: 11
-  mountJump: 8
-  mountSeat: {x: 0, y: 1, z: 0}
+  mountable: 1
+  mountSpeed: 12
+  mountJump: 8.5
+  mountSeat: {x: 0, y: 0, z: 0}
   drops:
   - itemId: cinder
     min: 1
@@ -75,6 +77,18 @@ MonoBehaviour:
     accent: {r: 0.22745098, g: 0.2901961, b: 0.41568628, a: 1}
     eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
     glow: {r: 0.22745098, g: 0.9411765, b: 1, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
   parts:
   - shape: 0
     group: 0
@@ -203,6 +217,7 @@ MonoBehaviour:
     pivot: {x: -0.32, y: 0.36, z: -0.4}
   - group: 8
     pivot: {x: 0, y: 0.45, z: -0.6}
+  forms: []
   regional:
     enabled: 0
     biome: 0
@@ -214,3 +229,5 @@ MonoBehaviour:
       accent: {r: 0, g: 0, b: 0, a: 0}
       eye: {r: 0, g: 0, b: 0, a: 0}
       glow: {r: 0, g: 0, b: 0, a: 0}
+  extraAnim: 0
+  aura: 0

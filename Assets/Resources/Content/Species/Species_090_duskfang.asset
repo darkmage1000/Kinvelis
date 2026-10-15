@@ -22,6 +22,7 @@ MonoBehaviour:
   element2: 0
   rarity: 2
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 22
   spawnTime: 0
@@ -53,7 +54,7 @@ MonoBehaviour:
   overworldRole: 'Companion: +12% run speed. Swift, silent mount. MOUNT: rideable
     with a Kin Harness.'
   mountable: 1
-  mountSpeed: 14.5
+  mountSpeed: 13
   mountJump: 10.5
   mountSeat: {x: 0, y: 0.98, z: -0.14}
   drops:
@@ -367,6 +368,7 @@ MonoBehaviour:
     pivot: {x: 0.16, y: 0.52, z: -0.4}
   - group: 4
     pivot: {x: -0.16, y: 0.52, z: -0.4}
+  forms: []
   regional:
     enabled: 0
     biome: 0

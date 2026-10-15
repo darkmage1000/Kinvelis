@@ -22,10 +22,12 @@ MonoBehaviour:
   element2: 4
   rarity: 3
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 4
   spawnTime: 0
   nearWater: 0
+  spawnCondition: 0
   spawnWeight: 0.12
   minGroup: 1
   maxGroup: 1
@@ -54,7 +56,7 @@ MonoBehaviour:
   overworldRole: 'Companion: warmth aura + light. Camp: legendary hauler. MOUNT:
     rideable with a Kin Harness.'
   mountable: 1
-  mountSpeed: 11.5
+  mountSpeed: 13.5
   mountJump: 7.5
   mountSeat: {x: 0, y: 1.36, z: -0.08}
   drops:
@@ -78,6 +80,18 @@ MonoBehaviour:
     accent: {r: 1, g: 0.5411765, b: 0.41568628, a: 1}
     eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
     glow: {r: 1, g: 0.8784314, b: 0.4392157, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
   parts:
   - shape: 0
     group: 0
@@ -230,6 +244,7 @@ MonoBehaviour:
     pivot: {x: 0.32, y: 0.4, z: -0.42}
   - group: 4
     pivot: {x: -0.32, y: 0.4, z: -0.42}
+  forms: []
   regional:
     enabled: 0
     biome: 0
@@ -241,3 +256,5 @@ MonoBehaviour:
       accent: {r: 0, g: 0, b: 0, a: 0}
       eye: {r: 0, g: 0, b: 0, a: 0}
       glow: {r: 0, g: 0, b: 0, a: 0}
+  extraAnim: 0
+  aura: 0

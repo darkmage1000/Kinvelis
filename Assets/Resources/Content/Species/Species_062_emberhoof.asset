@@ -22,6 +22,7 @@ MonoBehaviour:
   element2: 0
   rarity: 2
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 2
   spawnTime: 0
@@ -53,7 +54,7 @@ MonoBehaviour:
   overworldRole: 'Companion: +12% run speed. Fast mount with a blazing mane. MOUNT:
     rideable with a Kin Harness.'
   mountable: 1
-  mountSpeed: 14
+  mountSpeed: 12.5
   mountJump: 9.5
   mountSeat: {x: 0, y: 1.2, z: -0.08}
   drops:
@@ -247,6 +248,7 @@ MonoBehaviour:
     pivot: {x: 0.15, y: 0.76, z: -0.4}
   - group: 4
     pivot: {x: -0.15, y: 0.76, z: -0.4}
+  forms: []
   regional:
     enabled: 0
     biome: 0

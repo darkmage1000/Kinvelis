@@ -366,8 +366,17 @@ namespace Wildbond
             var dark = new Color(0.1f, 0.12f, 0.16f, 0.6f);
             RoundButton(actionCluster, "ATTACK", Btn.Attack, new Vector2(-200, 200), 200, new Color(0.85f, 0.35f, 0.3f, 0.75f), out attackLabel, 30);
             RoundButton(actionCluster, "SEED", Btn.Throw, new Vector2(-400, 150), 130, new Color(0.35f, 0.75f, 0.35f, 0.75f), out throwLabel, 22);
+            {
+                // SEED: tap = ready / put away; hold = fan out your seeds and slide onto one to pick it (SeedWheel)
+                var seedGo = actionCluster.Find("Btn_Throw").gameObject;
+                var tb0 = seedGo.GetComponent<TouchButton>();
+                var sw = seedGo.AddComponent<SeedWheel>();
+                sw.image = tb0.image; sw.normal = tb0.normal; sw.pressed = tb0.pressed;
+                Destroy(tb0);
+            }
             RoundButton(actionCluster, "JUMP", Btn.Jump, new Vector2(-110, 420), 120, dark, out jumpLabel, 22);
-            RoundButton(actionCluster, "HOOK", Btn.Grapple, new Vector2(-700, 350), 96, new Color(0.35f, 0.6f, 0.3f, 0.8f), out _, 20);
+            // HOOK: shown only while the grapple has something in its sights, up above JUMP (it used to sit where the thumb drags the camera)
+            RoundButton(actionCluster, "HOOK", Btn.Grapple, new Vector2(-80, 660), 104, new Color(0.35f, 0.6f, 0.3f, 0.85f), out _, 20);
             hookBtn = actionCluster.Find("Btn_Grapple").gameObject;
             RoundButton(actionCluster, "LOCK", Btn.Lock, new Vector2(-545, 250), 104, new Color(0.8f, 0.58f, 0.2f, 0.75f), out lockLabel, 20);
             RoundButton(actionCluster, "ROLL", Btn.Dodge, new Vector2(-250, 400), 110, dark, out _, 22);
@@ -723,8 +732,10 @@ namespace Wildbond
             else if (ammo == 0 && pl.ContextAction == "ATTACK") attackLabel.text = $"{pl.ContextAction}\n<size=17><color=#FF9A8A>no {ContentDB.ItemName(pl.AmmoId).ToLowerInvariant()}s</color></size>";
             else if (ammo > 0 && ammo < 999 && pl.ContextAction == "SHOOT") attackLabel.text = $"SHOOT\n<size=20>{ammo}</size>";
             else attackLabel.text = pl.ContextAction;
-            jumpLabel.text = pl.Gliding ? "DROP" : pl.CanGlideNow ? "GLIDE" : "JUMP";
-            if (hookBtn.activeSelf != pl.HasGrapple) hookBtn.SetActive(pl.HasGrapple);
+            jumpLabel.text = pl.FlyingMount ? "FLY\n<size=15>hold</size>" : pl.Gliding ? "DROP" : pl.CanGlideNow ? "GLIDE" : "JUMP";
+            jumpLabel.supportRichText = true;
+            bool hook = pl.HasGrapple && pl.HasHookTarget;
+            if (hookBtn.activeSelf != hook) hookBtn.SetActive(hook);
             string prompt = gm.InteractPrompt;
             bool showI = !string.IsNullOrEmpty(prompt);
             if (interactBtn.activeSelf != showI) interactBtn.SetActive(showI);

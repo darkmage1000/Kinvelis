@@ -5,14 +5,19 @@ namespace Wildbond
 {
     /// <summary>
     /// Traversal gear. Gale Glider: press JUMP again in mid-air to glide (slow fall, ~9 m/s forward, stamina drain,
-    /// no fall damage). Vine Grapple: the HOOK button pulls you to the ground point the camera is aiming at (up to 30 m,
-    /// cliffs included). Swimming mounts (Tide / water kin) carry you across water instead of throwing you off.
+    /// no fall damage). Vine Grapple (redone 2026-10-15 after the playtest: "it needs be targeted and not just a slight
+    /// hop forward and the button position is awkward"): `TickHookTarget` keeps looking for something to hook where the
+    /// camera points - a tree top within 14 degrees of the centre of the view, or the ground / a ledge the view lands
+    /// on that is worth it (above you, or 10 m+ away), 5-34 m off - and marks it with a ring; the HOOK button only shows
+    /// while there is one. HOOK reels you straight there at `ReelSpeed`: onto a ledge you land, at a tree you are flung
+    /// up and on past it (open the glider for a swing-and-glide). Swimming mounts (Tide / water kin) carry you across
+    /// water instead of throwing you off.
     /// </summary>
     public partial class PlayerController
     {
         public const string GliderId = "gale_glider", GrappleId = "vine_grapple";
         const float GlideSpeed = 9f, GlideFall = 2.2f, GlideDrain = 5f;
-        const float GrappleRange = 30f, GrappleCost = 12f;
+        const float GrappleRange = 34f, GrappleCost = 10f, ReelSpeed = 26f;
 
         public bool Gliding { get; private set; }
         float airTime;
@@ -69,28 +74,107 @@ namespace Wildbond
         float grappleT, grappleDur, grappleCd;
         Transform vine;
 
+        // ---- what the grapple has in its sights
+        public bool HasHookTarget { get; private set; }
+        Vector3 hookPoint;
+        bool hookTree;
+        float hookScan;
+        Transform hookMark;
+        readonly System.Collections.Generic.List<ResourceNode> hookBuf = new System.Collections.Generic.List<ResourceNode>(64);
+
+        void TickHookTarget(float dt)
+        {
+            if (hookMark != null && HasHookTarget)
+            {
+                hookMark.position = hookPoint + Vector3.up * 0.1f;
+                if (cam != null) hookMark.rotation = Quaternion.LookRotation(hookMark.position - cam.Cam.transform.position);
+                hookMark.localScale = Vector3.one * (1f + 0.12f * Mathf.Sin(Time.time * 8f));
+            }
+            hookScan -= dt;
+            if (hookScan > 0f) return;
+            hookScan = 0.12f;
+            bool was = HasHookTarget;
+            HasHookTarget = false;
+            if (HasGrapple && !grappling && !IsSwimming && !IsMounted && !dead && !Caves.InCave && cam != null && cam.Cam != null)
+            {
+                var camT = cam.Cam.transform;
+                Vector3 o = camT.position, d = camT.forward, me = transform.position;
+                float best = float.MaxValue;
+                // a tree top close to the middle of the view
+                if (ChunkManager.I != null)
+                {
+                    hookBuf.Clear();
+                    ChunkManager.I.Nodes.Query(me, GrappleRange, hookBuf);
+                    foreach (var n in hookBuf)
+                    {
+                        if (!n.alive || !PropCatalog.IsTree(n.type)) continue;
+                        Vector3 top = n.pos + Vector3.up * (3.2f * Mathf.Max(0.6f, n.scale));
+                        float dist = Vector3.Distance(top, me);
+                        if (dist < 5f || dist > GrappleRange) continue;
+                        float ang = Vector3.Angle(d, top - o);
+                        if (ang > 14f) continue;
+                        float score = ang + dist * 0.05f;
+                        if (score < best) { best = score; hookPoint = top; hookTree = true; }
+                    }
+                }
+                // or the ground / a ledge where the view lands, if it is above you or a good way off
+                for (float t = 1f; t < GrappleRange + 14f; t += 0.5f)
+                {
+                    var p = o + d * t;
+                    float g = Ground.Height(p.x, p.z);
+                    if (p.y > g) continue;
+                    Vector3 hit = new Vector3(p.x, g, p.z);
+                    float dist = Vector3.Distance(hit, me);
+                    if (dist >= 5f && dist <= GrappleRange && (hit.y > me.y + 1.5f || dist > 10f))
+                    {
+                        float score = 3.5f + dist * 0.05f;   // a tree right in the middle of the view still wins
+                        if (score < best) { best = score; hookPoint = hit; hookTree = false; }
+                    }
+                    break;
+                }
+                HasHookTarget = best < float.MaxValue;
+            }
+            if (HasHookTarget && hookMark == null) BuildHookMark();
+            if (hookMark != null && hookMark.gameObject.activeSelf != HasHookTarget) hookMark.gameObject.SetActive(HasHookTarget);
+            if (HasHookTarget && !was) SynthAudio.Play(Sfx.UiClick, 1.6f, 0.15f);
+        }
+
+        void BuildHookMark()
+        {
+            var mb = new MeshBuilder();
+            Color32 c = new Color32(150, 255, 120, 0);   // alpha 0: self-lit, seen in the dark
+            for (int i = 0; i < 16; i++)
+            {
+                float a = i / 16f * Mathf.PI * 2f;
+                mb.Box(Matrix4x4.TRS(new Vector3(Mathf.Cos(a) * 0.55f, Mathf.Sin(a) * 0.55f, 0f), Quaternion.Euler(0f, 0f, a * Mathf.Rad2Deg), new Vector3(0.08f, 0.24f, 0.04f)), c);
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                float a = i * Mathf.PI * 0.5f;
+                mb.Box(Matrix4x4.TRS(new Vector3(Mathf.Cos(a) * 0.85f, Mathf.Sin(a) * 0.85f, 0f), Quaternion.Euler(0f, 0f, a * Mathf.Rad2Deg), new Vector3(0.3f, 0.07f, 0.04f)), c);
+            }
+            var go = new GameObject("HookMark");
+            go.AddComponent<MeshFilter>().sharedMesh = mb.ToMesh("hook_mark");
+            var mr = go.AddComponent<MeshRenderer>(); mr.sharedMaterial = RenderAssets.Creature; mr.shadowCastingMode = ShadowCastingMode.Off;
+            hookMark = go.transform;
+        }
+
         void TryGrapple()
         {
             if (!HasGrapple || grappling || grappleCd > 0f || IsSwimming || IsMounted || dead) return;
+            if (!HasHookTarget) { GameEvents.Say("Nothing to hook - look at a tree or a ledge (a ring shows on it)."); return; }
             if (Stats.stamina < GrappleCost) { GameEvents.Warn("Too tired to grapple."); return; }
-            // march along the camera's aim until it meets the ground
-            var camT = cam.Cam.transform;
-            Vector3 o = camT.position, d = camT.forward;
-            Vector3 hit = Vector3.zero;
-            bool found = false;
-            for (float t = 1f; t < GrappleRange + 12f; t += 0.5f)
-            {
-                var p = o + d * t;
-                if (p.y <= Ground.Height(p.x, p.z)) { hit = new Vector3(p.x, Ground.Height(p.x, p.z), p.z); found = true; break; }
-            }
-            float dist = found ? Vector3.Distance(hit, transform.position) : 0f;
-            if (!found || dist > GrappleRange || dist < 3f) { GameEvents.Say(found && dist < 3f ? "Too close to hook." : "Nothing in reach to hook onto - aim at ground or a cliff within 30 m."); return; }
+            Vector3 hit = hookPoint;
+            float dist = Vector3.Distance(hit, transform.position);
             Vector3 back = transform.position - hit; back.y = 0f;
-            grappleTo = hit + (back.sqrMagnitude > 0.01f ? back.normalized * 0.6f : Vector3.zero) + Vector3.up * 0.15f;
-            grappleTo.y = Mathf.Max(grappleTo.y, Ground.Height(grappleTo.x, grappleTo.z));
+            grappleTo = hit + (back.sqrMagnitude > 0.01f ? back.normalized * (hookTree ? 0.9f : 0.6f) : Vector3.zero) + Vector3.up * (hookTree ? -0.6f : 0.15f);
+            if (!hookTree) grappleTo.y = Mathf.Max(grappleTo.y, Ground.Height(grappleTo.x, grappleTo.z));
+            grappleSwing = hookTree;
             grappleFrom = transform.position;
             grappleT = 0f;
-            grappleDur = Mathf.Clamp(dist / 24f, 0.3f, 1.1f);
+            grappleDur = Mathf.Clamp(dist / ReelSpeed, 0.25f, 1.4f);
+            HasHookTarget = false;
+            if (hookMark != null) hookMark.gameObject.SetActive(false);
             grappling = true;
             SetGliding(false);
             Stats.stamina -= GrappleCost;
@@ -100,19 +184,31 @@ namespace Wildbond
             ShowVine(true);
         }
 
+        bool grappleSwing;
+
         Vector3 GrappleStep(float dt)
         {
             grappleT += dt / grappleDur;
             float k = Mathf.Clamp01(grappleT);
-            float e = 1f - (1f - k) * (1f - k);
-            var p = Vector3.Lerp(grappleFrom, grappleTo, e) + Vector3.up * Mathf.Sin(k * Mathf.PI) * 2.2f;
+            float e = k * k * (3f - 2f * k);   // reel in hard, ease at the end
+            float lift = grappleSwing ? 0.6f : Mathf.Min(2f, Vector3.Distance(grappleFrom, grappleTo) * 0.06f);
+            var p = Vector3.Lerp(grappleFrom, grappleTo, e) + Vector3.up * Mathf.Sin(k * Mathf.PI) * lift;
             UpdateVine(p);
             if (k >= 1f)
             {
                 grappling = false;
-                grappleCd = 0.8f;
+                grappleCd = 0.5f;
                 ShowVine(false);
                 Fx.Burst(grappleTo + Vector3.up * 0.3f, new Color(0.6f, 0.85f, 0.4f), 10, 3f, 0.3f, 0.4f);
+                if (grappleSwing)
+                {
+                    // flung up and on past the tree: open the glider (JUMP) to keep going
+                    Vector3 on = grappleTo - grappleFrom; on.y = 0f;
+                    hVel = (on.sqrMagnitude > 0.01f ? on.normalized : transform.forward) * 7f;
+                    vVel = 7f;
+                    grounded = false;
+                    airTime = 0.3f;
+                }
             }
             return p;
         }

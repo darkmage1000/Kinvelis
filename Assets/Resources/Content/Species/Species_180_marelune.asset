@@ -53,11 +53,13 @@ MonoBehaviour:
     level: 3
   - type: 7
     level: 3
+  - type: 11
+    level: 4
   perk: 8
   overworldRole: 'Companion: slowly restores your HP. MOUNT: rideable with a Kin
     Harness.'
   mountable: 1
-  mountSpeed: 13.5
+  mountSpeed: 14.5
   mountJump: 9
   mountSeat: {x: 0, y: 1.36, z: -0.34}
   drops:
@@ -879,6 +881,7 @@ MonoBehaviour:
     pivot: {x: 0, y: 1, z: 0.1}
   - group: 11
     pivot: {x: 0, y: 1.3, z: -0.8}
+  forms: []
   regional:
     enabled: 0
     biome: 0

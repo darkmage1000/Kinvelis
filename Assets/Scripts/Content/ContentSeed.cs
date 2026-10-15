@@ -51,6 +51,7 @@ namespace Wildbond
             ApplyOuterBiomes(b);
             ApplyEarlyEmber(b);
             ApplyJobBalance(b);
+            ApplyMountBalance(b);
             BuildEvolutions(b);
             BuildBuildings(b);
             BuildTechBuildings(b);

@@ -23,6 +23,7 @@ MonoBehaviour:
   element2: 7
   rarity: 3
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 255
   spawnTime: 0
@@ -53,10 +54,10 @@ MonoBehaviour:
   perk: 5
   overworldRole: 'Companion: bright lantern light at night. Camp: powers a whole
     base alone.'
-  mountable: 0
-  mountSpeed: 11
-  mountJump: 8
-  mountSeat: {x: 0, y: 1, z: 0}
+  mountable: 1
+  mountSpeed: 14
+  mountJump: 9.5
+  mountSeat: {x: 0, y: 0, z: 0}
   drops:
   - itemId: crystal
     min: 1
@@ -570,6 +571,7 @@ MonoBehaviour:
     pivot: {x: 0, y: 0.94, z: -0.36}
   - group: 11
     pivot: {x: 0, y: 1.9, z: 0.56}
+  forms: []
   regional:
     enabled: 0
     biome: 0

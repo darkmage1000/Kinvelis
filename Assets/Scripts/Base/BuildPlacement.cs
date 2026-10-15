@@ -141,6 +141,7 @@ namespace Wildbond
             if (!s.ok) { GameEvents.Warn(s.reason); SynthAudio.Play(Sfx.Clunk); return; }
             if (!free && !ItemSources.Has(Piece.cost)) { GameEvents.Warn("Missing materials"); SynthAudio.Play(Sfx.Clunk); return; }
             if (!free) ItemSources.Consume(Piece.cost);
+            h.LevelWith(Piece, s);   // a ground floor on higher ground lifts the house beside it to stay level (Housing.Level)
             if (BaseManager.PieceBuildsOverTime) BaseManager.I.StartSite(Piece, s);   // a site Crafting kin (or you) build
             else h.Place(Piece, s);
             Fx.Burst(s.pos + Vector3.up * 0.5f, new Color(0.95f, 0.85f, 0.6f), 16, 4f, 0.35f, 0.6f);

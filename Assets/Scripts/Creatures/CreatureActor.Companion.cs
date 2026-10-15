@@ -191,6 +191,54 @@ namespace Wildbond
         }
 
         /// <summary>
+        /// The kin you are riding uses a skill (user playtest 2026-10-15: "i should be able to control the kin im riding's
+        /// skills"): from where it stands under you - no run-in, you steer. A shot or a burst goes off at once; a melee
+        /// move, a dash or a blink needs the target within reach of the mount (it strikes, it doesn't leave you).
+        /// </summary>
+        public string MountedSkill(int slot, ICombatant target)
+        {
+            if (slot < 0 || slot >= abilities.Length || abilities[slot] == null) return "Not learned yet.";
+            var ab = abilities[slot];
+            bool self = SkillEffects.SelfCast(ab.effect) || (ab.effect == AbilityEffect.Tonic && TonicWantsHeal());
+            if (!self && (target == null || !target.IsAlive)) return "No target in range.";
+            if (cooldowns[slot] > 0f) return $"{ab.displayName} recharging ({cooldowns[slot]:0.0}s).";
+            if (pendingAbility >= 0) return "Busy...";
+            if (!self)
+            {
+                float gap = FlatDist(transform.position, target.Position) - (target.Radius + BodyRadius);
+                float reach = MountedReach(ab);
+                if (gap > reach) return $"Ride closer - {ab.displayName} reaches {reach:0} m.";
+            }
+            StartAbility(slot, self ? (target != null && target.IsAlive ? target : this) : target);
+            return null;
+        }
+
+        static float MountedReach(AbilityDef a) =>
+            a.kind == AbilityKind.Projectile ? a.range : a.kind == AbilityKind.Burst ? a.radius : Mathf.Max(a.range, 1.5f) + 1.4f;
+
+        /// <summary>A mounted kin's skill going off (Update calls this instead of the AI while it is ridden).</summary>
+        void TickMountedAbility(float dt)
+        {
+            var a = abilities[pendingAbility];
+            if (pendingTarget == null || !pendingTarget.IsAlive) { pendingAbility = -1; return; }
+            windup -= dt;
+            if (windup > 0f) return;
+            if (a.kind == AbilityKind.Dash || a.kind == AbilityKind.Blink)
+            {
+                // under a rider a dash is a charging blow: it lands if the target is still in reach
+                Vector3 to = pendingTarget.Position - transform.position; to.y = 0f;
+                if (to.magnitude - (pendingTarget.Radius + BodyRadius) <= MountedReach(a) + 0.6f)
+                    CombatSystem.Apply(this, pendingTarget, a.power, a.element, a.status, a.statusChance, to.normalized * 6f, Data.ElementBoost(a.element), a.effect);
+                else ShowMiss();
+                Rig.Lunge();
+                pendingAbility = -1;
+                return;
+            }
+            TickAbility(dt);   // the wind-up is done, so this releases it at once
+            pendingAbility = -1;
+        }
+
+        /// <summary>
         /// How close (edge to edge) the kin must be before a commanded skill is worth starting: in arm's reach for a
         /// melee move (the wind-up keeps closing), inside its range for a shot, well inside the ring for a burst, and
         /// anywhere its dash can cover for a dash - which is the move's own way of crossing the gap.

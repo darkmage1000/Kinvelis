@@ -472,6 +472,9 @@ namespace Wildbond
 
             if (Mounted)
             {
+                // ridden: no thinking of its own, but its skills recharge and go off when you call them (MountedSkill)
+                for (int i = 0; i < cooldowns.Length; i++) cooldowns[i] -= dt;
+                if (pendingAbility >= 0) TickMountedAbility(dt);
                 if (full) Rig.Animate(dt, mountAnimSpeed, false, false);
                 return;
             }

@@ -16,6 +16,7 @@ namespace Wildbond
     public partial class CreatureActor
     {
         Building helpBuilding;
+        BaseManager.Site helpSite;
         bool helpHauling;
         float helpPick, helpScan;
         bool helpAnnounced;
@@ -29,6 +30,7 @@ namespace Wildbond
             haulCount = 0;
             haulSource = null;
             helpBuilding = null;
+            helpSite = null;
             helpHauling = false;
             CampHelpStatus = null;
         }
@@ -59,6 +61,14 @@ namespace Wildbond
                     if (foe != null) { StopCampHelp(); Target = foe; return false; }
                 }
             }
+
+            // a kin with the Crafting job builds what you have placed first (user playtest 2026-10-15)
+            if (haulCount == 0 && bm.Sites.Count > 0 && BaseManager.CanBuild(Data))
+            {
+                if (helpSite == null || helpSite.finished || !bm.Sites.Contains(helpSite)) helpSite = bm.SiteFor(transform.position);
+                if (helpSite != null) { helpBuilding = null; helpHauling = false; return TickHelpBuild(bm, dt); }
+            }
+            else helpSite = null;
 
             // choose (and keep re-checking) the job
             helpPick -= dt;
@@ -98,6 +108,34 @@ namespace Wildbond
 
             CampHelpStatus = null;
             return false;
+        }
+
+        bool TickHelpBuild(BaseManager bm, float dt)
+        {
+            var s = helpSite;
+            Vector3 away = transform.position - s.pos; away.y = 0f;
+            if (away.sqrMagnitude < 0.01f) away = Vector3.back;
+            float reach = s.radius + BodyRadius + 0.7f;
+            if (away.magnitude > reach + 0.5f)
+            {
+                State = AIState.Follow;
+                Vector3 spot = s.pos + away.normalized * reach; spot.y = Mathf.Min(transform.position.y, s.pos.y);
+                MoveTo(spot, RunSpeed * 0.85f);
+                CampHelpStatus = "To build: " + s.Name;
+                return true;
+            }
+            State = AIState.Working;
+            faceTarget = s.pos;
+            bm.AddSiteWork(s, BaseManager.BuildRate(Data) * dt);
+            CampHelpStatus = $"Building: {s.Name} {Mathf.RoundToInt(s.Progress01 * 100f)}%";
+            emoteTimer -= dt;
+            if (emoteTimer <= 0f)
+            {
+                emoteTimer = Random.Range(0.6f, 1.0f);
+                Fx.Puff(s.pos + Vector3.up * 0.5f + Random.insideUnitSphere * 0.4f, new Color(0.85f, 0.75f, 0.55f), 0.22f, 0.6f);
+            }
+            Announce($"{Data.DisplayName} pitches in building the {s.Name}.");
+            return true;
         }
 
         void Announce(string msg)

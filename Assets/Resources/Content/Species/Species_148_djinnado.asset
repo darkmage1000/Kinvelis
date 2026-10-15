@@ -22,6 +22,7 @@ MonoBehaviour:
   element2: 2
   rarity: 3
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 32
   spawnTime: 0
@@ -53,10 +54,10 @@ MonoBehaviour:
     level: 2
   perk: 6
   overworldRole: 'Companion: warmth aura (slower hunger) + light.'
-  mountable: 0
-  mountSpeed: 11
-  mountJump: 8
-  mountSeat: {x: 0, y: 1, z: 0}
+  mountable: 1
+  mountSpeed: 14
+  mountJump: 9.5
+  mountSeat: {x: 0, y: 0, z: 0}
   drops:
   - itemId: cinder
     min: 2
@@ -288,6 +289,7 @@ MonoBehaviour:
     pivot: {x: 0, y: 0.8, z: 0}
   - group: 11
     pivot: {x: 0, y: 0.5, z: 0}
+  forms: []
   regional:
     enabled: 0
     biome: 0

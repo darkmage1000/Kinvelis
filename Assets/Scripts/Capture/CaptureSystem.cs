@@ -171,7 +171,7 @@ namespace Wildbond
         /// <summary>Launch parameters shared by the real throw and the aim preview.</summary>
         void ComputeThrow(PlayerController player, CreatureActor target, CameraRig cam, out Vector3 origin, out Vector3 v, out float t, out CreatureActor home)
         {
-            origin = player.Position + Vector3.up * 1.6f + player.Forward * 0.3f;
+            origin = player.Position + Vector3.up * (1.6f + player.RiderLift) + player.Forward * 0.3f;   // from the saddle when riding
             Vector3 aim;
             home = null;
             if (target != null && Vector3.Distance(target.Position, player.Position) <= maxThrowRange)

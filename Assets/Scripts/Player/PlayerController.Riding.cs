@@ -15,10 +15,59 @@ namespace Wildbond
         public CreatureActor Mount => mount;
 
         // riders sit on the species' saddle point; kin that are only surfed carry you on their back
-        Vector3 Seat => mount.Sp.mountable ? mount.Sp.mountSeat : new Vector3(0f, DangerSkull.ModelTop(mount.Sp) * 0.82f, 0f);
+        Vector3 Seat => mount.Sp.mountable && mount.Sp.mountSeat != Vector3.zero ? mount.Sp.mountSeat : new Vector3(0f, DangerSkull.ModelTop(mount.Sp) * 0.82f, 0f);   // zero = worked out from the model (newer mounts)
+
+        // ---- flying mounts (user playtest 2026-10-15): every Flyer you ride flies. Hold JUMP to climb (stamina),
+        // let go to glide down slowly; a landing never hurts. Up to FlyCeiling above the ground.
+        public const float FlyClimb = 6.5f, FlySink = 2.6f, FlyDrain = 7f, FlyCeiling = 55f;
+        /// <summary>You are riding a kin that flies.</summary>
+        public bool FlyingMount => IsMounted && mount.Sp.locomotion == Locomotion.Flyer && (mount.Sp.mountable || RideAny);
+
+        /// <summary>Vertical speed for a flying mount this frame (called instead of plain gravity while airborne on one).</summary>
+        void FlyStep(float dt, float groundY, float staMul)
+        {
+            var q = Stats;
+            bool climb = InputHub.Held(Btn.Jump) && q.stamina > 1f && transform.position.y < groundY + FlyCeiling;
+            if (climb)
+            {
+                vVel = Mathf.MoveTowards(vVel, FlyClimb, dt * 22f);
+                q.stamina -= FlyDrain * staMul * dt; staminaDelay = 0.6f;
+            }
+            else vVel = Mathf.Max(vVel - gravity * dt * 0.35f, -FlySink);   // a long glide down
+            if (transform.position.y >= groundY + FlyCeiling) vVel = Mathf.Min(vVel, 0f);
+        }
         // flying mounts hover above the ground: the saddle rides up with them
         float SeatY => Seat.y * mount.Sp.size * mount.Data.SizeScale + mount.Rig.HoverHeight;
         float SeatZ => Seat.z * mount.Sp.size * mount.Data.SizeScale;
+        /// <summary>How much higher the rider sits than someone standing (seeds are thrown from there).</summary>
+        public float RiderLift => IsMounted ? Mathf.Max(0f, SeatY - 0.8f) : 0f;
+        /// <summary>Reach for gathering: a big mount keeps you further from the tree.</summary>
+        float GatherReach => gatherRange + (IsMounted ? mount.BodyRadius : 0f);
+
+        /// <summary>
+        /// Riding a kin that can log, quarry or forage (user playtest 2026-10-15): your swing at a node is its blow too -
+        /// its job level on top of your tool (at least what the job could manage alone), and it works nodes your own
+        /// tool is too weak for if its level is up to them (`GatherLevel` + 1 >= hardness, as for gather assist).
+        /// False = the mount can't help with this one: the rider gathers alone, as usual.
+        /// </summary>
+        bool MountGather(ResourceNode n)
+        {
+            var info = n.Info;
+            int lvl = mount.GatherLevel(info);
+            if (lvl <= 0) return false;
+            if (info.pickup) { PickUp(n); return true; }
+            if (!info.Plant && lvl + 1 < info.hardness) return false;
+            float dmg = info.Plant ? 2f + lvl : 1f + lvl;
+            if (!info.Plant && info.tool != ToolKind.None)
+            {
+                int tool = Stats.BestToolPower(info.tool, out _);
+                if (tool >= info.hardness) dmg += tool;
+            }
+            HitNode(n, dmg, 0.15f * lvl);
+            mount.Rig.Lunge();
+            Fx.Debris(n.pos + Vector3.up * 0.8f, ElementInfo.Color(mount.Data.Element1), 4);
+            return true;
+        }
 
         /// <summary>Any Tide kin, and any kin that lives by the water, can carry you across open water - no harness needed.</summary>
         public static bool CanSurf(CreatureActor c) =>

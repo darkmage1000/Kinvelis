@@ -22,6 +22,7 @@ MonoBehaviour:
   element2: 0
   rarity: 2
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 69
   spawnTime: 0
@@ -53,7 +54,7 @@ MonoBehaviour:
   overworldRole: 'Companion: slowly restores your HP. Graceful mount. MOUNT: rideable
     with a Kin Harness.'
   mountable: 1
-  mountSpeed: 13.5
+  mountSpeed: 12
   mountJump: 10
   mountSeat: {x: 0, y: 1.2, z: -0.08}
   drops:
@@ -337,6 +338,7 @@ MonoBehaviour:
     pivot: {x: 0.14, y: 0.76, z: -0.4}
   - group: 4
     pivot: {x: -0.14, y: 0.76, z: -0.4}
+  forms: []
   regional:
     enabled: 0
     biome: 0

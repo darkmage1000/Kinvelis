@@ -22,6 +22,7 @@ MonoBehaviour:
   element2: 9
   rarity: 2
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 4
   spawnTime: 0
@@ -51,10 +52,10 @@ MonoBehaviour:
     level: 1
   perk: 4
   overworldRole: 'Companion: +12% run speed. Camp: expert hauler.'
-  mountable: 0
-  mountSpeed: 11
-  mountJump: 8
-  mountSeat: {x: 0, y: 1, z: 0}
+  mountable: 1
+  mountSpeed: 12.5
+  mountJump: 9
+  mountSeat: {x: 0, y: 0, z: 0}
   drops:
   - itemId: pelt
     min: 2
@@ -406,6 +407,7 @@ MonoBehaviour:
     pivot: {x: 0, y: 1, z: -1.12}
   - group: 1
     pivot: {x: 0, y: 1.06, z: 0.2}
+  forms: []
   regional:
     enabled: 0
     biome: 0

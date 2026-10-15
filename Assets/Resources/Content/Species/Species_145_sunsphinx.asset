@@ -22,6 +22,7 @@ MonoBehaviour:
   element2: 6
   rarity: 2
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 32
   spawnTime: 0
@@ -55,7 +56,7 @@ MonoBehaviour:
   overworldRole: 'Companion: lights up the night around you. MOUNT: rideable with
     a Kin Harness.'
   mountable: 1
-  mountSpeed: 12.5
+  mountSpeed: 13
   mountJump: 8.5
   mountSeat: {x: 0, y: 1.06, z: -0.1}
   drops:
@@ -379,6 +380,7 @@ MonoBehaviour:
     pivot: {x: 0.24, y: 1, z: 0.1}
   - group: 9
     pivot: {x: -0.24, y: 1, z: 0.1}
+  forms: []
   regional:
     enabled: 0
     biome: 0

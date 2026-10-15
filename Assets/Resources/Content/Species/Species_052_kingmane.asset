@@ -22,6 +22,7 @@ MonoBehaviour:
   element2: 2
   rarity: 2
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 2
   spawnTime: 0
@@ -51,10 +52,10 @@ MonoBehaviour:
     level: 2
   perk: 4
   overworldRole: 'Companion: +12% run speed.'
-  mountable: 0
-  mountSpeed: 11
-  mountJump: 8
-  mountSeat: {x: 0, y: 1, z: 0}
+  mountable: 1
+  mountSpeed: 12.5
+  mountJump: 9
+  mountSeat: {x: 0, y: 0, z: 0}
   drops:
   - itemId: pelt
     min: 2
@@ -336,6 +337,7 @@ MonoBehaviour:
     pivot: {x: 0.18, y: 0.44, z: -0.38}
   - group: 4
     pivot: {x: -0.18, y: 0.44, z: -0.38}
+  forms: []
   regional:
     enabled: 0
     biome: 0

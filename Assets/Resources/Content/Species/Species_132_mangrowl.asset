@@ -22,6 +22,7 @@ MonoBehaviour:
   element2: 6
   rarity: 2
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 8
   spawnTime: 0
@@ -53,10 +54,10 @@ MonoBehaviour:
     level: 2
   perk: 1
   overworldRole: 'Companion: +50% wood.'
-  mountable: 0
-  mountSpeed: 11
-  mountJump: 8
-  mountSeat: {x: 0, y: 1, z: 0}
+  mountable: 1
+  mountSpeed: 12
+  mountJump: 8.5
+  mountSeat: {x: 0, y: 0, z: 0}
   drops:
   - itemId: wood
     min: 2
@@ -440,6 +441,7 @@ MonoBehaviour:
     pivot: {x: -0.24000001, y: 0.56, z: -0.352}
   - group: 8
     pivot: {x: 0, y: 0.8, z: -0.52}
+  forms: []
   regional:
     enabled: 0
     biome: 0

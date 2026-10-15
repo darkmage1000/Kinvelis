@@ -22,10 +22,12 @@ MonoBehaviour:
   element2: 0
   rarity: 2
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 6
   spawnTime: 0
   nearWater: 0
+  spawnCondition: 0
   spawnWeight: 0.5
   minGroup: 1
   maxGroup: 1
@@ -52,7 +54,7 @@ MonoBehaviour:
   overworldRole: 'Companion: +12% run speed. The fastest mount on the island. MOUNT:
     rideable with a Kin Harness.'
   mountable: 1
-  mountSpeed: 15
+  mountSpeed: 13
   mountJump: 10
   mountSeat: {x: 0, y: 0.98, z: -0.22}
   drops:
@@ -76,6 +78,18 @@ MonoBehaviour:
     accent: {r: 0.22745098, g: 0.16470589, b: 0.3529412, a: 1}
     eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
     glow: {r: 1, g: 0.41568628, b: 0.8156863, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
   parts:
   - shape: 4
     group: 0
@@ -312,6 +326,7 @@ MonoBehaviour:
     pivot: {x: 0.16, y: 0.52, z: -0.4}
   - group: 4
     pivot: {x: -0.16, y: 0.52, z: -0.4}
+  forms: []
   regional:
     enabled: 0
     biome: 0

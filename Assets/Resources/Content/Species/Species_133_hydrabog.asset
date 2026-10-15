@@ -52,12 +52,14 @@ MonoBehaviour:
     level: 3
   - type: 2
     level: 1
+  - type: 11
+    level: 4
   perk: 7
   overworldRole: 'Companion: +50% ore, cinder and crystal when mining.'
-  mountable: 0
-  mountSpeed: 11
+  mountable: 1
+  mountSpeed: 13.5
   mountJump: 8
-  mountSeat: {x: 0, y: 1, z: 0}
+  mountSeat: {x: 0, y: 0, z: 0}
   drops:
   - itemId: gel
     min: 2
@@ -477,6 +479,7 @@ MonoBehaviour:
     pivot: {x: 0, y: 0.6, z: -0.64}
   - group: 1
     pivot: {x: 0, y: 0.8, z: 0.4}
+  forms: []
   regional:
     enabled: 0
     biome: 0

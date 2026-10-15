@@ -22,6 +22,7 @@ MonoBehaviour:
   element2: 5
   rarity: 2
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 2
   spawnTime: 0
@@ -55,7 +56,7 @@ MonoBehaviour:
   overworldRole: 'Companion: +50% ore and cinder when mining. Camp: master quarrier.
     MOUNT: rideable with a Kin Harness.'
   mountable: 1
-  mountSpeed: 12
+  mountSpeed: 11.5
   mountJump: 8
   mountSeat: {x: 0, y: 1.14, z: -0.02}
   drops:
@@ -249,6 +250,7 @@ MonoBehaviour:
     pivot: {x: 0.26, y: 0.36, z: -0.35}
   - group: 4
     pivot: {x: -0.26, y: 0.36, z: -0.35}
+  forms: []
   regional:
     enabled: 0
     biome: 0

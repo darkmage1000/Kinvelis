@@ -30,13 +30,13 @@ namespace Wildbond
         void TickThrowInput(float dt)
         {
             // anything that takes your hands puts the seed away
-            if (Aiming && (IsSwimming || dead || IsMounted || dodgeTimer > 0f)) { SetAiming(false); return; }
+            if (Aiming && (IsSwimming || dead || dodgeTimer > 0f)) { SetAiming(false); return; }   // riding is fine: you throw from the saddle
             var cap = GameManager.I.Capture;
             if (WorldRules.Current.simpleControls)
             {
                 // Simple buttons: no ready stance. One tap on SEED throws at the nearest wild kin in reach.
                 if (Aiming) SetAiming(false);
-                if (!InputHub.Down(Btn.Throw) || IsSwimming || IsMounted || dead) return;
+                if (!InputHub.Down(Btn.Throw) || IsSwimming || dead) return;
                 var seedNow = cap.SelectedSeed(Stats);
                 var near = LockTarget != null ? LockTarget : CreatureRegistry.FindNearestWild(transform.position, cap.MaxThrowRange);
                 if (seedNow == null) GameEvents.Warn("No capture seeds! Craft Tether Seeds (Menu > Craft).");
@@ -52,7 +52,7 @@ namespace Wildbond
             if (InputHub.Down(Btn.Throw))
             {
                 if (Aiming) { SetAiming(false); SynthAudio.Play(Sfx.UiClick, 0.9f, 0.5f); }
-                else if (!IsSwimming && !IsMounted && !dead)
+                else if (!IsSwimming && !dead)
                 {
                     if (cap.SelectedSeed(Stats) == null) GameEvents.Warn("No capture seeds! Craft Tether Seeds (Menu > Craft).");
                     else SetAiming(true);

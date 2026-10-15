@@ -22,6 +22,7 @@ MonoBehaviour:
   element2: 7
   rarity: 2
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 34
   spawnTime: 0
@@ -51,10 +52,10 @@ MonoBehaviour:
     level: 2
   perk: 5
   overworldRole: 'Companion: soft light at night.'
-  mountable: 0
-  mountSpeed: 11
-  mountJump: 8
-  mountSeat: {x: 0, y: 1, z: 0}
+  mountable: 1
+  mountSpeed: 13.5
+  mountJump: 9
+  mountSeat: {x: 0, y: 0, z: 0}
   drops:
   - itemId: crystal
     min: 1
@@ -182,6 +183,7 @@ MonoBehaviour:
     pivot: {x: -0.3, y: 1, z: 0}
   - group: 8
     pivot: {x: 0, y: 1, z: -0.42}
+  forms: []
   regional:
     enabled: 0
     biome: 0

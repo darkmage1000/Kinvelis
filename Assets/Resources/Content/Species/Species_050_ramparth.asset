@@ -22,10 +22,12 @@ MonoBehaviour:
   element2: 6
   rarity: 2
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 5
   spawnTime: 0
   nearWater: 0
+  spawnCondition: 0
   spawnWeight: 0.6
   minGroup: 1
   maxGroup: 2
@@ -52,7 +54,7 @@ MonoBehaviour:
   overworldRole: 'Companion: +50% wood. Camp: tireless hauler. MOUNT: rideable with
     a Kin Harness.'
   mountable: 1
-  mountSpeed: 11.5
+  mountSpeed: 11
   mountJump: 8
   mountSeat: {x: 0, y: 1.14, z: -0.14}
   drops:
@@ -76,6 +78,18 @@ MonoBehaviour:
     accent: {r: 1, g: 0.8156863, b: 0.2509804, a: 1}
     eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
     glow: {r: 1, g: 1, b: 1, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
   parts:
   - shape: 0
     group: 0
@@ -300,6 +314,7 @@ MonoBehaviour:
     pivot: {x: 0.24, y: 0.5, z: -0.44}
   - group: 4
     pivot: {x: -0.24, y: 0.5, z: -0.44}
+  forms: []
   regional:
     enabled: 0
     biome: 0

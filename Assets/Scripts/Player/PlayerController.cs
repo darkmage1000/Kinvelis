@@ -217,7 +217,9 @@ namespace Wildbond
             cam?.SnapTo(p);
         }
 
-        float GroundHeight(Vector3 p) => Ground.HeightNear(p.x, p.z, p.y);   // upper storeys and stairs count when they are within a step of your feet
+        float GroundHeight(Vector3 p) => Ground.HeightNear(p.x, p.z, p.y);
+        /// <summary>How high a step onto a floor (or anything built) you take in your stride - no jump needed.</summary>
+        public const float BuiltStepUp = 0.6f;   // upper storeys and stairs count when they are within a step of your feet
 
         // ================================================================ TICK
         public void Tick(float dt)
@@ -322,6 +324,7 @@ namespace Wildbond
             }
             else if (InputHub.Down(Btn.Jump) && (Gliding || CanGlideNow)) ToggleGlide();
             if (grappleCd > 0f) grappleCd -= dt;
+            TickHookTarget(dt);
             if (InputHub.Down(Btn.Grapple)) TryGrapple();
 
             // ---------------- movement ----------------
@@ -347,10 +350,11 @@ namespace Wildbond
             Vector3 next = pos + step;
             if (Time.time < tetherUntil) ClampTether(ref next);   // pinned by a Strings skill
 
-            // slope limit: block steep uphill steps
+            // slope limit: block steep uphill steps - but step up onto a floor or anything else built that is no higher than BuiltStepUp
             float hNow = GroundHeight(pos), hNext = GroundHeight(next);
             float run = new Vector2(step.x, step.z).magnitude;
-            if (grounded && run > 0.0001f && (hNext - hNow) / run > 1.35f + q.ClimbBonus)
+            bool stepUp = hNext - hNow <= BuiltStepUp && hNext > WorldGen.Height(next.x, next.z) + 0.02f;
+            if (grounded && run > 0.0001f && (hNext - hNow) / run > 1.35f + q.ClimbBonus && !stepUp)
             {
                 next.x = pos.x; next.z = pos.z;
                 hNext = hNow;
@@ -378,7 +382,8 @@ namespace Wildbond
             }
             else
             {
-                vVel -= gravity * dt * (Gliding ? 0.15f : 1f);
+                if (FlyingMount && (!grounded || InputHub.Held(Btn.Jump))) { FlyStep(dt, hNext, staMul); grounded = false; }
+                else vVel -= gravity * dt * (Gliding ? 0.15f : 1f);
                 if (Gliding) vVel = Mathf.Max(vVel, -GlideFall * KinAid.GlideFallMul);
                 next.y = pos.y + vVel * dt;
                 if (next.y <= hNext)
@@ -399,7 +404,7 @@ namespace Wildbond
                 }
                 else grounded = false;
             }
-            if (grappling) { next = GrappleStep(dt); vVel = 0f; grounded = false; }
+            if (grappling) { next = GrappleStep(dt); if (grappling) vVel = 0f; grounded = false; }   // (the last step may fling you on)
             airTime = grounded || IsSwimming ? 0f : airTime + dt;
             transform.position = next;
 
@@ -436,7 +441,7 @@ namespace Wildbond
                 bool ranged = HandStyles.IsRanged(heldStyle);
                 if (LockTarget != null) CombatTarget = LockTarget;
                 else CombatTarget = CreatureRegistry.FindTarget(pos, wishMag > 0.1f && !ranged ? wish : fwd, ranged ? Mathf.Max(targetRange, HandStyles.Ranged(heldStyle).range) : targetRange);
-                GatherTarget = ChunkManager.I != null ? ChunkManager.I.FindNode(pos, transform.forward, gatherRange) : null;
+                GatherTarget = ChunkManager.I != null ? ChunkManager.I.FindNode(pos, transform.forward, GatherReach) : null;
                 ContextAction = ComputeContextAction(pos);
                 Stats.ValidateEquipment();
             }
@@ -628,7 +633,7 @@ namespace Wildbond
             if (foeClose) { autoSwapTimer = 0f; return; }
             if (HandStyles.IsRanged(HandStyles.Of(Stats.HeldDef)) && Stats.Bag.Count(Stats.held) > 0 && WantsShot(pos)) { autoSwapTimer = 0f; return; }
             if (!Stats.autoTool) return;
-            var node = GatherTarget != null && GatherTarget.alive ? GatherTarget : (ChunkManager.I != null ? ChunkManager.I.FindNode(pos, transform.forward, gatherRange) : null);
+            var node = GatherTarget != null && GatherTarget.alive ? GatherTarget : (ChunkManager.I != null ? ChunkManager.I.FindNode(pos, transform.forward, GatherReach) : null);
             if (node == null || node.Info.pickup || node.Info.tool == ToolKind.None) return;
             var kind = node.Info.tool;
             int best = Stats.BestToolPower(kind, out string bestId);
@@ -661,7 +666,7 @@ namespace Wildbond
                             Vector3.Distance(CombatTarget.Position, pos) - CombatTarget.Radius < meleeRange + 0.6f + Mathf.Max(0f, HandStyles.Info(swingStyle).reach);
             if (!foeClose && swingAct != SwingAct.Shoot)
             {
-                var node = GatherTarget != null && GatherTarget.alive ? GatherTarget : (ChunkManager.I != null ? ChunkManager.I.FindNode(pos, transform.forward, gatherRange) : null);
+                var node = GatherTarget != null && GatherTarget.alive ? GatherTarget : (ChunkManager.I != null ? ChunkManager.I.FindNode(pos, transform.forward, GatherReach) : null);
                 if (node != null)
                 {
                     var ni = node.Info;
@@ -733,12 +738,13 @@ namespace Wildbond
                 return;
             }
             // no creature => gather the node in front
-            var node = GatherTarget != null && GatherTarget.alive ? GatherTarget : (ChunkManager.I != null ? ChunkManager.I.FindNode(pos, fwd, gatherRange) : null);
+            var node = GatherTarget != null && GatherTarget.alive ? GatherTarget : (ChunkManager.I != null ? ChunkManager.I.FindNode(pos, fwd, GatherReach) : null);
             if (node != null) Gather(node);
         }
 
         void Gather(ResourceNode n)
         {
+            if (IsMounted && MountGather(n)) return;   // the kin under you logs / quarries / forages with you
             var info = n.Info;
             int power;
             if (info.Plant)

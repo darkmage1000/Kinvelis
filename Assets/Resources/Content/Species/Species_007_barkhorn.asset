@@ -22,10 +22,12 @@ MonoBehaviour:
   element2: 6
   rarity: 2
   starter: 0
+  bossOnly: 0
   role: 
   biomes: 1
   spawnTime: 0
   nearWater: 0
+  spawnCondition: 0
   spawnWeight: 0.7
   minGroup: 1
   maxGroup: 1
@@ -52,7 +54,7 @@ MonoBehaviour:
   overworldRole: 'Companion: +50% wood. MOUNT: fastest ground ride, high jumps. Workers:
     master logger.'
   mountable: 1
-  mountSpeed: 13.5
+  mountSpeed: 11
   mountJump: 10.5
   mountSeat: {x: 0, y: 1.36, z: -0.05}
   drops:
@@ -76,6 +78,18 @@ MonoBehaviour:
     accent: {r: 0.72156864, g: 0.6901961, b: 0.627451, a: 1}
     eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
     glow: {r: 1, g: 0.47843137, b: 0.16470589, a: 1}
+  shimmerPalette2:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
+  shimmerPalette3:
+    primary: {r: 0, g: 0, b: 0, a: 0}
+    secondary: {r: 0, g: 0, b: 0, a: 0}
+    accent: {r: 0, g: 0, b: 0, a: 0}
+    eye: {r: 0, g: 0, b: 0, a: 0}
+    glow: {r: 0, g: 0, b: 0, a: 0}
   parts:
   - shape: 4
     group: 0
@@ -264,6 +278,7 @@ MonoBehaviour:
     pivot: {x: -0.18, y: 0.82, z: -0.42}
   - group: 8
     pivot: {x: 0, y: 1.12, z: -0.58}
+  forms: []
   regional:
     enabled: 0
     biome: 0
@@ -275,3 +290,5 @@ MonoBehaviour:
       accent: {r: 0, g: 0, b: 0, a: 0}
       eye: {r: 0, g: 0, b: 0, a: 0}
       glow: {r: 0, g: 0, b: 0, a: 0}
+  extraAnim: 0
+  aura: 0

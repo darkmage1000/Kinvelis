@@ -50,10 +50,12 @@ MonoBehaviour:
     level: 3
   - type: 7
     level: 2
+  - type: 11
+    level: 4
   perk: 4
   overworldRole: 'Companion: +12% run speed. MOUNT: rideable with a Kin Harness.'
   mountable: 1
-  mountSpeed: 12.5
+  mountSpeed: 11.5
   mountJump: 8
   mountSeat: {x: 0, y: 1.08, z: 0.08}
   drops:
@@ -207,6 +209,7 @@ MonoBehaviour:
     pivot: {x: 0, y: 0.8, z: 0.4}
   - group: 8
     pivot: {x: 0, y: 0.8, z: -0.56}
+  forms: []
   regional:
     enabled: 0
     biome: 0
