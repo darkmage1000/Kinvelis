@@ -63,7 +63,7 @@ html: `
 <tbody>
 <tr><td>Left stick</td><td>Move.</td></tr>
 <tr><td>Right side of the screen</td><td>Drag to look. Pinch to zoom. Tap a kin to lock on to it.</td></tr>
-<tr><td><b>ATTACK</b></td><td>Swing or shoot what you are holding. In front of a tree, rock or plant it gathers. Hold it to repeat. With a seed ready it reads <b>THROW</b>; with a ranged weapon it reads <b>SHOOT</b> and shows your ammunition.</td></tr>
+<tr><td><b>ATTACK</b></td><td>Swing or shoot what you are holding. In front of a tree, rock or plant it gathers. Hold it to repeat. With a seed ready it reads <b>THROW</b>; with a ranged weapon and a kin LOCKED on it reads <b>SHOOT</b> and shows your ammunition.</td></tr>
 <tr><td><b>SEED</b></td><td>Tap: hold a seed ready (tap again to put it away). You walk slower and can't sprint while aiming. Hold: pick which seed - slide onto it and let go. Works on a mount too.</td></tr>
 <tr><td><b>JUMP</b></td><td>Jump. In the air with a Gale Glider it opens the glider.</td></tr>
 <tr><td><b>ROLL</b></td><td>Dodge roll. You can't be hit for a moment in the middle of it.</td></tr>
@@ -202,6 +202,7 @@ html: `
 
 <h2 id="ranged">Ranged weapons and ammunition</h2>
 <ul>
+<li><b>Lock on to shoot.</b> A ranged weapon only fires at a kin you have locked on to (LOCK, or tap the kin). Without a lock, ATTACK gathers what is in front of you - so a bow in your hand never wastes an arrow on a kin at the edge of range while you are mining.</li>
 <li>A sling reaches about 20 m, a bow 26 m, a crossbow 30 m. Shots lead a moving target.</li>
 <li><b>Every shot uses one piece of ammunition</b> from your bag: a sling throws plain <b>stones</b>, bows use <b>arrows</b>, crossbows use <b>bolts</b>.</li>
 <li>Arrows are made by hand, ten at a time. Bolts are made at the Workbench, ten at a time.</li>

@@ -298,6 +298,21 @@
       '<div class="tags">' + els(k) + ' <span class="tag ghost r-' + k.rarity + '">' + k.rarity + "</span></div></div><div><h1>" + esc(k.name) + "</h1>" +
       '<p class="lead">' + esc(k.lore) + "</p>" + (k.personality ? "<p><i>" + esc(k.personality) + "</i></p>" : "") + '<dl class="facts">' + facts + "</dl></div></div>";
 
+    // its evolutions, a picture of each stage (kin with a real evolution)
+    if (k.forms && k.forms.length) {
+      var stages = [{ name: k.name, id: k.id, lv: 1 }].concat(k.forms.map(function (f) {
+        return { name: f.name, id: k.id + "_f" + (f.stage || 1), lv: f.lv, blurb: f.blurb, element: f.element, skill: f.skill };
+      }));
+      h += "<h2>Evolutions</h2><div class='evo'>" + stages.map(function (s, n) {
+        var sk = s.skill ? (D.skills.filter(function (x) { return x.id === s.skill; })[0] || { name: s.skill }) : null;
+        return (n ? "<div class='evo-arrow'>&rarr;<small>level " + s.lv + "</small></div>" : "") +
+          "<div class='evo-step'>" + img("kin", s.id, "", s.name) + "<b>" + esc(s.name) + "</b><small>" + ["Base form", "Ascended", "Exalted"][n] + "</small>" +
+          (s.element ? "<span>gains " + el(s.element) + "</span>" : "") +
+          (sk ? '<span>learns <a href="#/skills/' + esc(s.skill) + '">' + esc(sk.name) + "</a></span>" : "") +
+          (s.blurb ? "<p>" + esc(s.blurb) + "</p>" : "") + "</div>";
+      }).join("") + "</div>";
+    }
+
     h += "<h2>Base stats</h2>" + [["Health", "hp"], ["Attack", "atk"], ["Defense", "def"], ["Speed", "speed"]].map(function (s) {
       return '<div class="bar"><span>' + s[0] + "</span><b>" + k[s[1]] + '</b><i><u style="width:' + Math.round(100 * k[s[1]] / max[s[1]]) + '%"></u></i></div>';
     }).join("") + '<p class="sub" style="color:var(--dim);font-size:.88rem">Before level, quality grade, traits and evolution. Bars compare with the highest of any kin.</p>';
