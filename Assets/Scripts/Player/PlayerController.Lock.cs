@@ -263,13 +263,15 @@ namespace Wildbond
                 : "Out of Bolts - make more at a Workbench.");
         }
 
+        /// <summary>
+        /// A ranged weapon only shoots at a kin you have LOCKED on to (user playtest 2026-10-15: a wild kin at the edge of
+        /// range used to win over the rock in front of you). Without a lock ATTACK gathers, or swings the weapon like a club.
+        /// </summary>
         bool WantsShot(Vector3 pos)
         {
-            if (!HasAmmoFor(heldStyle)) return false;   // nothing to shoot with: ATTACK swings it instead
-            if (GatherTarget == null || !GatherTarget.alive) return true;
-            var t = CombatTarget;
-            if (t == null || !t.IsAlive) return false;
-            return t == LockTarget || t.Aggro || Flat(t.Position, pos) - t.Radius < 7f;
+            // the weapon you are holding, not a tool auto-tool has pulled out for the rock in front
+            var st = HandStyles.Of(Stats.HeldDef);
+            return HandStyles.IsRanged(st) && Stats.Bag.Count(Stats.held) > 0 && HasAmmoFor(st) && LockTarget != null && LockTarget.IsAlive;
         }
 
         /// <summary>The release: loose a stone / arrow / bolt at the kin picked when the draw began, or straight ahead.</summary>

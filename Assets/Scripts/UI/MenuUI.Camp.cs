@@ -85,13 +85,6 @@ namespace Wildbond
             return card;
         }
 
-        Image Portrait(Transform parent, CreatureData d, float size)
-        {
-            var ic = UIFactory.Icon(parent, d.Fainted ? new Color(0.35f, 0.35f, 0.38f) : ElementInfo.Color(d.Element1), d.Species.displayName.Substring(0, 2), size, true);
-            ic.raycastTarget = false;
-            return ic;
-        }
-
         // ============================================================ OVERVIEW
         void CampOverview(RectTransform body, List<BaseManager.Alert> alerts)
         {
@@ -307,7 +300,6 @@ namespace Wildbond
             at.rectTransform.Stretch();
         }
 
-        /// <summary>Pick which camp kin works at a building (sorted by suitability).</summary>
         /// <summary>Crop Plot menu: what to grow.</summary>
         void CropPicker(Building b)
         {
@@ -330,44 +322,6 @@ namespace Wildbond
                         can ? () => { string err = Crops.Plant(b, cc.id); if (err != null) GameEvents.Warn(err); CloseModal(); Rebuild(); } : (System.Action)null,
                         cur ? new Color(0.25f, 0.5f, 0.32f) : can ? new Color(0.3f, 0.45f, 0.55f) : new Color(0.3f, 0.3f, 0.32f), 22), 80, 200);
                 }
-            });
-        }
-
-        void AssignPicker(Building b)
-        {
-            var bm = BaseManager.I;
-            ShowModal($"{b.Def.displayName} - {b.Def.workType} ({new List<CreatureData>(bm.WorkersAt(b)).Count}/{b.WorkerSlots})", list =>
-            {
-                var current = new List<CreatureData>(bm.WorkersAt(b));
-                foreach (var d in current)
-                {
-                    var dd = d;
-                    var row = UIFactory.HRow(list, 90, 12);
-                    var p = Portrait(row.transform, d, 70); UIFactory.Size(p, 70, 70);
-                    var t = UIFactory.Label(row.transform, $"<b>{d.DisplayName}</b> Lv{d.level}  <size=20>working here</size>", 26, Color.white); t.supportRichText = true; UIFactory.Size(t, 80, 560);
-                    UIFactory.Size(UIFactory.Button(row.transform, "REMOVE", () => { bm.Assign(dd, null); CloseModal(); Rebuild(); }, new Color(0.45f, 0.25f, 0.25f), 22), 76, 180);
-                }
-                var cands = new List<CreatureData>();
-                foreach (var d in GameManager.I.Party.In(KinLocation.Base)) if (d.assignedBuilding != b.Uid && b.Suitability(d) > 0) cands.Add(d);
-                cands.Sort((x, y) => b.Suitability(y).CompareTo(b.Suitability(x)));
-                if (cands.Count > 0) Header(list, "Available workers", 26);
-                foreach (var d in cands)
-                {
-                    var dd = d;
-                    var cur = bm.FindBuilding(d.assignedBuilding);
-                    int lvl = Mathf.Max(d.WorkLevel(b.Def.workType), d.WorkLevel(b.Def.secondaryWorkType));
-                    var row = UIFactory.HRow(list, 90, 12);
-                    var p = Portrait(row.transform, d, 70); UIFactory.Size(p, 70, 70);
-                    var t = UIFactory.Label(row.transform, $"<b>{d.DisplayName}</b> Lv{d.level}  {UIFactory.Col(new string('*', lvl), new Color(1f, 0.85f, 0.3f))}\n<size=19>Hunger {d.hunger:0}%  ·  now: {(cur != null ? cur.Def.displayName : "unassigned")}</size>", 26, Color.white);
-                    t.supportRichText = true; UIFactory.Size(t, 84, 560);
-                    UIFactory.Size(UIFactory.Button(row.transform, "ASSIGN", () => { if (bm.Assign(dd, b)) { CloseModal(); Rebuild(); } }, new Color(0.25f, 0.5f, 0.42f), 22), 76, 180);
-                }
-                if (current.Count == 0 && cands.Count == 0)
-                    Para(list, $"No camp worker can do {b.Def.workType} work. Send a kin with that skill TO CAMP from the Kin tab.", 24, Color.white);
-                // where kin with this job live, nearest lands first
-                Header(list, "Where to find more", 24);
-                Para(list, JobHint(b.Def.workType), 21, Color.white);
-                if (b.Def.secondaryWorkType != WorkType.None) Para(list, JobHint(b.Def.secondaryWorkType), 21, Color.white);
             });
         }
 
@@ -456,34 +410,11 @@ namespace Wildbond
                 if (workerFilter != WorkType.None && d.WorkLevel(workerFilter) <= 0) continue;
                 shown++;
                 var dd = d;
-                var card = Card(list, 130);
-                var p = Portrait(card.transform, d, 90);
-                p.rectTransform.Place(new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(14, 0), new Vector2(90, 90));
-                var b = bm.FindBuilding(d.assignedBuilding);
-                var actor = bm.ActorFor(d);
-                string job = b != null ? b.Def.displayName : UIFactory.Col("Unassigned", Idle);
-                string state = actor != null ? actor.WorkStatus : (b != null ? "Working (remote)" : "Idle");
-                var skills = new List<string>();
-                foreach (var w in d.Species.work) skills.Add(d.JobOn(w.type) ? $"{WorkInfo.Icon(w.type)} {d.JobLevel(w.type)}" : $"{WorkInfo.Icon(w.type)} off");
-                if (d.shimmer) skills.Add(UIFactory.Col("Shimmer +1", new Color(1f, 0.85f, 0.4f)));
-                int wa = d.Apt(KinPath.Work);
-                skills.Add(UIFactory.Col($"Work {Aptitude.Grade(wa)} x{d.WorkAptMul:0.00}", Aptitude.GradeColor(wa)));
-                var t = UIFactory.Label(card.transform, $"<b>{d.DisplayName}</b>  Lv {d.level}   <size=20>{job} · {state}</size>\n<size=19>{string.Join("   ", skills)}</size>", 26, Color.white, TextAnchor.UpperLeft);
-                t.supportRichText = true;
-                t.rectTransform.Place(new Vector2(0, 1), new Vector2(0, 1), new Vector2(120, -12), new Vector2(900, 70));
-                var hb = UIFactory.Bar(card.transform, d.hunger < 25 ? Bad : new Color(1f, 0.7f, 0.3f), out var hf);
-                hb.rectTransform.Place(new Vector2(0, 0), new Vector2(0, 0), new Vector2(120, 16), new Vector2(300, 16));
-                hf.SetFill(d.hunger / 100f);
-                var hl = UIFactory.Label(card.transform, "Hunger", 16, UIFactory.TextDim); hl.rectTransform.Place(new Vector2(0, 0), new Vector2(0, 0), new Vector2(120, 34), new Vector2(200, 20));
-                var xb = UIFactory.Bar(card.transform, new Color(0.5f, 0.75f, 1f), out var xf);
-                xb.rectTransform.Place(new Vector2(0, 0), new Vector2(0, 0), new Vector2(440, 16), new Vector2(260, 16));
-                xf.SetFill(d.xp / (float)CreatureData.XpToNext(d.level));
-                var xl = UIFactory.Label(card.transform, "XP", 16, UIFactory.TextDim); xl.rectTransform.Place(new Vector2(0, 0), new Vector2(0, 0), new Vector2(440, 34), new Vector2(200, 20));
-                var jb = atCore ? UIFactory.Button(card.transform, "JOB", () => JobPicker(dd), new Color(0.25f, 0.42f, 0.55f), 22)
-                                : UIFactory.Button(card.transform, "JOB", null, new Color(0.3f, 0.3f, 0.32f), 22);
-                ((RectTransform)jb.transform).Place(new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-150, 0), new Vector2(130, 90));
-                var bx = UIFactory.Button(card.transform, "TO BOX", () => { party.Move(dd, KinLocation.Box); Rebuild(); }, new Color(0.35f, 0.32f, 0.4f), 20);
-                ((RectTransform)bx.transform).Place(new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-12, 0), new Vector2(128, 90));
+                // the kin as a card: who it is, its jobs (the filtered one in gold), grade, traits, what it is doing
+                var btns = KinCard(list, d, workerFilter, WorkType.None, 300f);
+                if (atCore) UIFactory.Button(btns, "JOB", () => JobPicker(dd), new Color(0.25f, 0.42f, 0.55f), 22);
+                else UIFactory.Button(btns, "JOB", null, new Color(0.3f, 0.3f, 0.32f), 22);
+                UIFactory.Button(btns, "TO BOX", () => { party.Move(dd, KinLocation.Box); Rebuild(); }, new Color(0.35f, 0.32f, 0.4f), 20);
             }
             if (shown == 0) Para(list, party.CountIn(KinLocation.Base) == 0 ? "No workers yet. In the Kin tab, send kin TO CAMP (stand inside your camp)." : "No workers with that skill.", 24, Color.white);
         }
@@ -568,49 +499,58 @@ namespace Wildbond
                 var iid = id;
                 var cell = UIFactory.Panel(list, "S", id == storageSel ? new Color(0.3f, 0.6f, 0.5f, 1f) : new Color(1, 1, 1, 0.08f));
                 cell.gameObject.AddComponent<Button>().onClick.AddListener(() => { storageSel = iid; SynthAudio.Play(Sfx.UiClick); Rebuild(); });
-                var ic = UIFactory.ItemIcon(cell.transform, d, 100);
-                ic.rectTransform.Place(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 6), new Vector2(100, 100));
+                var ic = UIFactory.ItemIcon(cell.transform, d, 90);
+                ic.rectTransform.Place(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, -8), new Vector2(90, 90));
+                ic.raycastTarget = false;
+                var nm = UIFactory.Label(cell.transform, ContentDB.ItemName(id), 15, new Color(1f, 1f, 1f, 0.85f), TextAnchor.UpperCenter, FontStyle.Bold);
+                nm.rectTransform.Anchors(new Vector2(0, 1), new Vector2(1, 1), new Vector2(4, -26), new Vector2(-4, -2));
+                nm.horizontalOverflow = HorizontalWrapMode.Wrap; nm.resizeTextForBestFit = true; nm.resizeTextMinSize = 10; nm.resizeTextMaxSize = 15; nm.raycastTarget = false;
                 var cnt = UIFactory.Label(cell.transform, "x" + totals[id], 24, Color.white, TextAnchor.LowerRight, FontStyle.Bold);
                 cnt.rectTransform.Stretch(4, 2, 8, 2);
+                cnt.raycastTarget = false;
             }
 
             // right: selection + bulk actions
-            var v = right.gameObject.AddComponent<VerticalLayoutGroup>();
-            v.spacing = 12; v.childControlHeight = true; v.childControlWidth = true; v.childForceExpandHeight = false;
-            if (!inCamp) Para(right, UIFactory.Col("Walk up to a chest or the Hearthstone to take or store things. Each box can also be opened at the box itself.", Idle), 22);
+            // a scrolling column: with many boxes the take / store buttons used to run off the bottom (user, 2026-10-15)
+            var col = SideList(right, "storage", 12f);
+            if (!inCamp) Para(col, UIFactory.Col("Walk up to a chest or the Hearthstone to take or store things. Each box can also be opened at the box itself.", Idle), 22);
+            if (storageSel != null && totals.ContainsKey(storageSel))
+            {
+                var d = ContentDB.Item(storageSel);
+                var srow = UIFactory.HRow(col, 110, 10);
+                UIFactory.Size(UIFactory.ItemIcon(srow.transform, d, 100), 100, 100);
+                var st = UIFactory.Label(srow.transform, $"<b>{ContentDB.ItemName(storageSel)}</b>\n<size=22>x{totals[storageSel]} in camp</size>", 28, Color.white);
+                st.supportRichText = true; UIFactory.Size(st, 100, 300);
+                if (inCamp)
+                {
+                    string sid = storageSel;
+                    var tr = UIFactory.HRow(col, 72, 8);
+                    UIFactory.Size(UIFactory.Button(tr.transform, "TAKE 1", () => TakeFromStorage(sid, 1), new Color(0.25f, 0.5f, 0.42f), 22), 66, 130);
+                    UIFactory.Size(UIFactory.Button(tr.transform, "TAKE 10", () => TakeFromStorage(sid, 10), new Color(0.25f, 0.5f, 0.42f), 22), 66, 130);
+                    UIFactory.Size(UIFactory.Button(tr.transform, "TAKE ALL", () => TakeFromStorage(sid, int.MaxValue), new Color(0.25f, 0.5f, 0.42f), 22), 66, 130);
+                }
+            }
+            else Para(col, "Tap an item to take it.", 22);
+            if (inCamp)
+            {
+                var br = UIFactory.HRow(col, 72, 8);
+                UIFactory.Size(UIFactory.Button(br.transform, "TAKE EVERYTHING", () => { gm.TakeAllFromStorage(); Rebuild(); }, new Color(0.3f, 0.4f, 0.55f), 20), 66, 200);
+                UIFactory.Size(UIFactory.Button(br.transform, "STORE MATERIALS", () => { gm.DepositResources(); Rebuild(); }, new Color(0.3f, 0.4f, 0.55f), 20), 66, 200);
+            }
             // each box has contents of its own: open one to fill or empty that box
-            Header(right, "Boxes", 28);
-            if (inCamp) ActionBtn(right, "SORT EVERYTHING", () => { bm.SortStorage(); GameEvents.Good("Storage sorted: everything is in the box that holds its kind."); Rebuild(); }, new Color(0.25f, 0.5f, 0.42f));
+            Header(col, "Boxes", 28);
+            if (inCamp) ActionBtn(col, "SORT EVERYTHING", () => { bm.SortStorage(); GameEvents.Good("Storage sorted: everything is in the box that holds its kind."); Rebuild(); }, new Color(0.25f, 0.5f, 0.42f));
             foreach (var box in bm.Boxes())
             {
                 var bx = box;
                 var bf = BaseManager.FilterOf(bx);
-                ActionBtn(right, $"{bm.BoxName(bx)}   {bm.BoxUsed(bx)}/{bm.BoxCapacity(bx)}{(bf != BoxFilter.Any ? "   · " + BaseManager.FilterShort[(int)bf] : "")}", () => OpenBox(bx),
+                ActionBtn(col, $"{bm.BoxName(bx)}   {bm.BoxUsed(bx)}/{bm.BoxCapacity(bx)}{(bf != BoxFilter.Any ? "   · " + BaseManager.FilterShort[(int)bf] : "")}", () => OpenBox(bx),
                     BaseManager.IsLarder(bx) ? new Color(0.25f, 0.45f, 0.6f) : new Color(0.3f, 0.36f, 0.5f));
             }
             foreach (var fb in bm.FeedBoxes())
             {
                 var bx = fb;
-                ActionBtn(right, $"{bm.BoxName(bx)}   {bm.FeedCount(bx)} food", () => OpenBox(bx), new Color(0.5f, 0.36f, 0.3f));
-            }
-            if (storageSel != null && totals.ContainsKey(storageSel))
-            {
-                var d = ContentDB.Item(storageSel);
-                var big = UIFactory.ItemIcon(right, d, 150); UIFactory.Size(big, 150);
-                Header(right, $"{ContentDB.ItemName(storageSel)}  <size=24>x{totals[storageSel]}</size>", 32);
-                if (inCamp)
-                {
-                    string sid = storageSel;
-                    ActionBtn(right, "TAKE 1", () => TakeFromStorage(sid, 1));
-                    ActionBtn(right, "TAKE 10", () => TakeFromStorage(sid, 10));
-                    ActionBtn(right, "TAKE ALL", () => TakeFromStorage(sid, int.MaxValue));
-                }
-            }
-            else Para(right, "Tap an item to take it.", 22);
-            if (inCamp)
-            {
-                ActionBtn(right, "TAKE EVERYTHING", () => { gm.TakeAllFromStorage(); Rebuild(); }, new Color(0.3f, 0.4f, 0.55f));
-                ActionBtn(right, "DEPOSIT RESOURCES", () => { gm.DepositResources(); Rebuild(); }, new Color(0.3f, 0.4f, 0.55f));
+                ActionBtn(col, $"{bm.BoxName(bx)}   {bm.FeedCount(bx)} food", () => OpenBox(bx), new Color(0.5f, 0.36f, 0.3f));
             }
         }
 

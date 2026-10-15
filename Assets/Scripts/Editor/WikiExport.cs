@@ -109,7 +109,7 @@ namespace Wildbond.EditorTools
                     var f = sp.FormAt(st);
                     if (f == null) continue;
                     var ab = ContentDB.Ability(f.skill);
-                    forms.Add(new Dictionary<string, object> { ["name"] = f.name, ["lv"] = st == 1 ? KinGrowth.Stage1Level : KinGrowth.Stage2Level, ["blurb"] = f.blurb,
+                    forms.Add(new Dictionary<string, object> { ["name"] = f.name, ["stage"] = st, ["lv"] = st == 1 ? KinGrowth.Stage1Level : KinGrowth.Stage2Level, ["blurb"] = f.blurb,
                         ["element"] = f.element2 != Element.Normal ? f.element2.ToString() : null, ["skill"] = ab != null ? ab.id : null });
                 }
                 o["forms"] = forms;
@@ -302,6 +302,11 @@ namespace Wildbond.EditorTools
         {
             int n = 0;
             foreach (var sp in ContentDB.SpeciesList) if (!sp.custom) n += Save(ItemIcons.Get("kin_" + sp.id), Path.Combine(root, "img", "kin", sp.id + ".png"));
+            // each evolved form's own picture: img/kin/<id>_f1.png, _f2.png
+            foreach (var sp in ContentDB.SpeciesList)
+                if (!sp.custom)
+                    for (int st = 1; st <= 2; st++)
+                        if (sp.FormAt(st) != null) n += Save(ItemIcons.Get(ItemIcons.FormKey(sp.id, st)), Path.Combine(root, "img", "kin", $"{sp.id}_f{st}.png"));
             foreach (var d in ContentDB.Items.Values) n += Save(ItemIcons.Get(d.id), Path.Combine(root, "img", "item", d.id + ".png"));
             foreach (var d in ContentDB.BuildingList) n += Save(ItemIcons.Get("bld_" + d.id), Path.Combine(root, "img", "bld", d.id + ".png"));
             return n;

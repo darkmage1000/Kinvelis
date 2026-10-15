@@ -18,6 +18,16 @@ namespace Wildbond
 
         public static Sprite Get(string id) => id != null && sprites.TryGetValue(id, out var s) ? s : null;
 
+        /// <summary>The key of an evolved form's portrait (kin with a real evolution: "kin_id_f1" / "_f2").</summary>
+        public static string FormKey(string speciesId, int stage) => $"kin_{speciesId}_f{stage}";
+        /// <summary>This kin as it looks now: its evolved form's portrait if it has one, else its kind's.</summary>
+        public static Sprite KinPortrait(CreatureData d)
+        {
+            if (d == null || d.Species == null) return null;
+            if (d.stage > 0 && d.Species.FormAt(d.stage) != null) { var f = Get(FormKey(d.Species.id, d.stage)); if (f != null) return f; }
+            return Get("kin_" + d.Species.id);
+        }
+
         public static void RenderAll(Light sun)
         {
             // icons survive scene changes (menu <-> world); only render once per app run
@@ -30,7 +40,12 @@ namespace Wildbond
                 {
                     // everything is there unless a kin was made since (the kin maker): then only the missing ones are drawn
                     bool missing = false;
-                    foreach (var sp in ContentDB.SpeciesList) if (!sprites.ContainsKey("kin_" + sp.id)) { missing = true; break; }
+                    foreach (var sp in ContentDB.SpeciesList)
+                    {
+                        if (!sprites.ContainsKey("kin_" + sp.id)) { missing = true; break; }
+                        for (int st = 1; st <= 2; st++) if (sp.FormAt(st) != null && !sprites.ContainsKey(FormKey(sp.id, st))) missing = true;
+                        if (missing) break;
+                    }
                     if (!missing) return;
                 }
             }
@@ -95,6 +110,15 @@ namespace Wildbond
             foreach (var sp in ContentDB.SpeciesList)
                 if (sp.parts != null && sp.parts.Length > 0 && !sprites.ContainsKey("kin_" + sp.id))
                     jobs.Add(("kin_" + sp.id, ModelBuilder.BuildStatic(sp.parts, sp.palette, "kinicon_" + sp.id), false));
+            // evolved forms have bodies of their own (Real evolutions): a portrait each, for kin cards and the wiki
+            foreach (var sp in ContentDB.SpeciesList)
+                for (int st = 1; st <= 2; st++)
+                {
+                    var f = sp.FormAt(st);
+                    string key = FormKey(sp.id, st);
+                    if (f == null || f.parts == null || f.parts.Length == 0 || sprites.ContainsKey(key)) continue;
+                    jobs.Add((key, ModelBuilder.BuildStatic(f.parts, f.ownPalette ? f.palette : sp.palette, "kinicon_" + key), false));
+                }
 
             foreach (var job in jobs)
             {

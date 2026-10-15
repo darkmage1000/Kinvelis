@@ -731,6 +731,7 @@ namespace Wildbond
             if (pl.Aiming) attackLabel.text = "THROW";
             else if (ammo == 0 && pl.ContextAction == "ATTACK") attackLabel.text = $"{pl.ContextAction}\n<size=17><color=#FF9A8A>no {ContentDB.ItemName(pl.AmmoId).ToLowerInvariant()}s</color></size>";
             else if (ammo > 0 && ammo < 999 && pl.ContextAction == "SHOOT") attackLabel.text = $"SHOOT\n<size=20>{ammo}</size>";
+            else if (pl.RangedInHand && pl.LockTarget == null && pl.ContextAction == "ATTACK") attackLabel.text = "ATTACK\n<size=16>LOCK on to shoot</size>";
             else attackLabel.text = pl.ContextAction;
             jumpLabel.text = pl.FlyingMount ? "FLY\n<size=15>hold</size>" : pl.Gliding ? "DROP" : pl.CanGlideNow ? "GLIDE" : "JUMP";
             jumpLabel.supportRichText = true;

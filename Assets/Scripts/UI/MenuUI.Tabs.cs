@@ -22,14 +22,29 @@ namespace Wildbond
 
         void RestoreScroll()
         {
-            if (mainScroll == null) return;
             Canvas.ForceUpdateCanvases();
-            mainScroll.verticalNormalizedPosition = savedScroll;
+            if (mainScroll != null) mainScroll.verticalNormalizedPosition = savedScroll;
+            foreach (var kv in sideActive)
+                if (kv.Value != null && sideSaved.TryGetValue(kv.Key, out float v)) kv.Value.verticalNormalizedPosition = v;
         }
 
         void SaveScroll()
         {
             if (mainScroll != null && scrollTab == Tab) savedScroll = mainScroll.verticalNormalizedPosition;
+            foreach (var kv in sideActive) if (kv.Value != null) sideSaved[kv.Key] = kv.Value.verticalNormalizedPosition;
+            sideActive.Clear();
+        }
+
+        // ---- a second scrolling column (a detail or action panel beside the main list) that keeps its place when the
+        // screen is rebuilt after a tap, instead of jumping back to the top (user, 2026-10-15)
+        readonly Dictionary<string, float> sideSaved = new Dictionary<string, float>();
+        readonly List<KeyValuePair<string, ScrollRect>> sideActive = new List<KeyValuePair<string, ScrollRect>>();
+        RectTransform SideList(Transform parent, string key, float spacing = 8f)
+        {
+            var list = UIFactory.ScrollList(parent, out var sr, spacing);
+            ((RectTransform)list.parent).Stretch();
+            sideActive.Add(new KeyValuePair<string, ScrollRect>(Tab + ":" + key, sr));
+            return list;
         }
 
         // ============================================================ BAG
@@ -59,9 +74,15 @@ namespace Wildbond
                 b.onClick.AddListener(() => { selectedSlot = idx; SynthAudio.Play(Sfx.UiClick); Rebuild(); });
                 if (s.Empty) continue;
                 var def = ContentDB.Item(s.id);
-                var icon = UIFactory.ItemIcon(cell.transform, def, 104);
-                icon.rectTransform.Place(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 4), new Vector2(104, 104));
+                var icon = UIFactory.ItemIcon(cell.transform, def, 92);
+                icon.rectTransform.Place(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, -8), new Vector2(92, 92));
                 icon.raycastTarget = false;
+                // its name on the slot: many ores, crystals and bars look alike (menu pass 2026-10-15)
+                var nm = UIFactory.Label(cell.transform, ContentDB.ItemName(s.id), 15, new Color(1f, 1f, 1f, 0.85f), TextAnchor.UpperCenter, FontStyle.Bold);
+                nm.rectTransform.Anchors(new Vector2(0, 1), new Vector2(1, 1), new Vector2(4, -26), new Vector2(-4, -2));
+                nm.horizontalOverflow = HorizontalWrapMode.Wrap;
+                nm.resizeTextForBestFit = true; nm.resizeTextMinSize = 10; nm.resizeTextMaxSize = 15;
+                nm.raycastTarget = false;
                 var cnt = UIFactory.Label(cell.transform, s.count > 1 ? "x" + s.count : "", 24, Color.white, TextAnchor.LowerRight, FontStyle.Bold);
                 cnt.rectTransform.Stretch(4, 2, 8, 2);
                 string tag = s.id == stats.held ? "E" : (stats.HotbarIndex(s.id) >= 0 ? (stats.HotbarIndex(s.id) + 1).ToString() : "");
@@ -277,11 +298,13 @@ namespace Wildbond
                     UIFactory.Size(row, 92);
                     var b = row.gameObject.AddComponent<Button>();
                     b.onClick.AddListener(() => { selectedKin = dd.uid; SynthAudio.Play(Sfx.UiClick); Rebuild(); });
-                    var ic = UIFactory.Icon(row.transform, ElementInfo.Color(d.Element1), d.Species.displayName.Substring(0, 2), 72, true);
-                    ic.rectTransform.Place(new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(10, 0), new Vector2(72, 72));
-                    ic.raycastTarget = false;
+                    var ic = Portrait(row.transform, d, 76);
+                    ic.rectTransform.Place(new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(8, 0), new Vector2(76, 76));
                     string tags = (d.alpha ? " [A]" : "") + (d.shimmer ? " [*]" : "") + (party.Companion != null && party.Companion.Data == d ? UIFactory.Col(" OUT", UIFactory.Accent) : "");
-                    var t = UIFactory.Label(row.transform, $"<b>{d.DisplayName}</b>{tags}\n<size=20>Lv {d.level}  ·  {UIFactory.Col(Aptitude.SpecLabel(d), Aptitude.GradeColor(d.Apt((KinPath)d.spec)))}  ·  {(d.Fainted ? UIFactory.Col("Fainted", new Color(1f, 0.5f, 0.4f)) : $"HP {Mathf.CeilToInt(d.CurrentHp)}/{Mathf.CeilToInt(d.MaxHp)}")}</size>", 26, Color.white);
+                    string els = UIFactory.Col(d.Element1.ToString(), ElementInfo.Color(d.Element1)) + (d.Element2 != Element.Normal && d.Element2 != d.Element1 ? "/" + UIFactory.Col(d.Element2.ToString(), ElementInfo.Color(d.Element2)) : "");
+                    var jobAt = d.location == KinLocation.Base && BaseManager.I != null ? BaseManager.I.FindBuilding(d.assignedBuilding) : null;
+                    string extra = d.location == KinLocation.Base ? "  ·  " + (jobAt != null ? jobAt.Def.displayName : UIFactory.Col("no job", new Color(1f, 0.8f, 0.3f))) : "";
+                    var t = UIFactory.Label(row.transform, $"<b>{d.DisplayName}</b>{tags}\n<size=20>Lv {d.level}  ·  {els}  ·  {UIFactory.Col(Aptitude.SpecLabel(d), Aptitude.GradeColor(d.Apt((KinPath)d.spec)))}  ·  {(d.Fainted ? UIFactory.Col("Fainted", new Color(1f, 0.5f, 0.4f)) : $"HP {Mathf.CeilToInt(d.CurrentHp)}/{Mathf.CeilToInt(d.MaxHp)}")}{extra}</size>", 26, Color.white);
                     t.supportRichText = true;
                     t.rectTransform.Stretch(96, 4, 8, 4);
                 }
@@ -291,10 +314,11 @@ namespace Wildbond
 
             // detail
             var d0 = party.Find(selectedKin);
-            var rl = UIFactory.ScrollList(right, out _);
-            ((RectTransform)rl.parent).Stretch();
+            if (d0 == null && party.All.Count > 0) { d0 = party.All[0]; selectedKin = d0.uid; }   // never an empty page
+            var rl = SideList(right, "kin:" + selectedKin);
             if (d0 == null) { Header(rl, "Select a kin"); return; }
             KinDetail(rl, d0);
+            RestoreScroll();
         }
 
         /// <summary>Shimmer kin: its three colours as swatch buttons. With a Shimmer Prism in the bag, tapping one switches the coat.</summary>
@@ -321,15 +345,31 @@ namespace Wildbond
             var sp = d.Species;
             var party = GameManager.I.Party;
             string el = UIFactory.Col(d.Element1.ToString(), ElementInfo.Color(d.Element1)) + (d.Element2 != Element.Normal ? " / " + UIFactory.Col(d.Element2.ToString(), ElementInfo.Color(d.Element2)) : "");
-            Header(p, $"#{sp.dexNumber:000} {d.DisplayName}  <size=26>Lv {d.level}</size>");
-            Para(p, $"{el}   ·   {(sp.starter ? UIFactory.Col("Partner - " + sp.role, new Color(1f, 0.85f, 0.4f)) : UIFactory.Col(sp.rarity.ToString(), RarityInfo.Color(sp.rarity)))}   ·   {sp.temperament}", 26, Color.white);
+            // ---- who it is, at a glance: its picture, name, level, elements, rarity, the main numbers (2026-10-15 menu pass)
+            var top = UIFactory.Panel(p, "KinTop", new Color(1, 1, 1, 0.05f));
+            UIFactory.Size(top, 236);
+            var pic = Portrait(top.transform, d, 210);
+            pic.rectTransform.Place(new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(12, 0), new Vector2(210, 210));
             string tags = d.VariantTags();
-            if (tags.Length > 0) Para(p, UIFactory.Col(tags, new Color(1f, 0.85f, 0.4f)), 24);
+            var headT = UIFactory.Label(top.transform,
+                $"<size=36><b>{d.DisplayName}</b></size>  <size=26>Lv {d.level}</size>\n"
+                + $"<size=20>#{sp.dexNumber:000} {(d.nickname != null ? d.RegionalName + "  ·  " : "")}{el}  ·  {(sp.starter ? UIFactory.Col("Partner", new Color(1f, 0.85f, 0.4f)) : UIFactory.Col(sp.rarity.ToString(), RarityInfo.Color(sp.rarity)))}  ·  {sp.temperament}</size>\n"
+                + (tags.Length > 0 ? $"<size=19>{UIFactory.Col(tags, new Color(1f, 0.85f, 0.4f))}</size>\n" : "")
+                + $"<size=22>HP {Mathf.CeilToInt(d.CurrentHp)}/{Mathf.CeilToInt(d.MaxHp)}   ATK {d.Atk:0}   DEF {d.Def:0}   SPD x{d.SpeedMul:0.00}</size>\n"
+                + $"<size=19>{Aptitude.Summary(d)}</size>", 26, Color.white, TextAnchor.UpperLeft);
+            headT.supportRichText = true;
+            headT.horizontalOverflow = HorizontalWrapMode.Wrap;
+            headT.rectTransform.Stretch(236, 10, 12, 30);
+            var xpb = UIFactory.Bar(top.transform, new Color(0.5f, 0.75f, 1f), out var xpf);
+            xpb.rectTransform.Anchors(new Vector2(0, 0), new Vector2(1, 0), new Vector2(236, 12), new Vector2(-12, 26));
+            xpf.SetFill(d.xp / (float)CreatureData.XpToNext(d.level));
+            KinMoveButtons(p, d);
             if (d.shimmer) ShimmerSection(p, d);
+            Header(p, "About", 26);
             Para(p, $"<i>{sp.lore}</i>\nPersonality: {sp.personality}", 22);
-            Para(p, $"HP {Mathf.CeilToInt(d.CurrentHp)}/{Mathf.CeilToInt(d.MaxHp)}    ATK {d.Atk:0}    DEF {d.Def:0}    SPD x{d.SpeedMul:0.00}\nXP {d.xp}/{CreatureData.XpToNext(d.level)}", 24, Color.white);
             Para(p, "Looks: " + d.Look.Describe(sp) + "  <size=18>(its own; eggs take after their parents)</size>", 21, Color.white);
             Para(p, "Out with you: " + UIFactory.Col(KinAid.Describe(d.Element1, d.Element2), new Color(0.65f, 0.95f, 0.8f)) + "  <size=18>(travel help from its element)</size>", 21, Color.white);
+            Header(p, "Quality and traits", 26);
             Para(p, "Quality: " + Aptitude.Summary(d) + $"\n<size=19>Combat x{d.CombatAptMul:0.00} stats  ·  Work x{d.WorkAptMul:0.00} speed  ·  Travel x{d.TravelAptMul:0.00} speed, x{d.MountStaminaMul:0.00} riding stamina</size>", 22, Color.white);
 
             var traits = new List<string>();
@@ -349,7 +389,9 @@ namespace Wildbond
                 if (!known) line += UIFactory.Col($"  (learns at Lv {CreatureData.SlotUnlockLevel(si)})", new Color(1f, 0.8f, 0.4f));
                 abil.Add(line);
             }
-            Para(p, $"Skills {d.SkillSlots}/{CreatureData.MaxSkills}:\n  " + string.Join("\n  ", abil), 22, Color.white);
+            Header(p, $"Skills  <size=20>{d.SkillSlots}/{CreatureData.MaxSkills} known</size>", 26);
+            Para(p, "  " + string.Join("\n  ", abil), 22, Color.white);
+            Header(p, "Camp work", 26);
 
             var work = new List<string>();
             foreach (var w in sp.work) work.Add(d.JobOn(w.type) ? $"{w.type} {new string('*', d.JobLevel(w.type))}" : UIFactory.Col($"{w.type} (off)", new Color(0.6f, 0.6f, 0.65f)));
@@ -375,6 +417,7 @@ namespace Wildbond
             }
 
             // bond
+            Header(p, "Bond and name", 26);
             int bl = d.BondLevel;
             float lo = CreatureData.BondThresholds[bl], hi = bl >= CreatureData.MaxBond ? lo : CreatureData.BondThresholds[bl + 1];
             Para(p, $"{UIFactory.Col($"Bond Lv {bl}/{CreatureData.MaxBond}", new Color(1f, 0.6f, 0.78f))}  <size=19>({d.bond:0}/{GameManager.NextBond(d)})  {CreatureData.BondPerks(bl)}</size>", 22, Color.white);
@@ -387,13 +430,13 @@ namespace Wildbond
             UIFactory.Size(UIFactory.Label(nrow.transform, "Name", 24, Color.white), 64, 110);
             var nameIn = UIFactory.Input(nrow.transform, d.nickname ?? "", d.RegionalName, 26);
             UIFactory.Size(nameIn, 64, 360);
-            UIFactory.Size(UIFactory.Button(nrow.transform, "KIN CARD", () => ShowKinCard(d), new Color(0.3f, 0.42f, 0.7f), 22), 64, 200);
             nameIn.characterLimit = 14;
             nameIn.onEndEdit.AddListener(v => { d.nickname = string.IsNullOrWhiteSpace(v) ? null : v.Trim(); GameEvents.RaiseRosterChanged(); });
             if (d.location == KinLocation.Expedition) { Para(p, UIFactory.Col("Away on an expedition (Camp > Expeditions).", Gold), 24); return; }
             if (d.location == KinLocation.Outpost) { Para(p, UIFactory.Col("Stationed at an outpost (Camp > Outposts to recall it).", Gold), 24); return; }
 
             // evolution
+            Header(p, "Evolution", 26);
             if (KinGrowth.CanEvolveStage(d))
             {
                 var nextForm = d.Species.FormAt(d.stage + 1);
@@ -408,18 +451,26 @@ namespace Wildbond
             }
             else Para(p, UIFactory.Col("Fully evolved (Exalted).", new Color(0.75f, 0.6f, 1f)), 22);
 
+            var row2 = UIFactory.HRow(p, 84, 12);
+            UIFactory.Size(UIFactory.Button(row2.transform, "RELEASE", () => Confirm("Release kin?", $"Release {d.DisplayName} back into the wild? This can't be undone.", () => { party.Release(d); selectedKin = null; Rebuild(); }), new Color(0.5f, 0.25f, 0.25f)), 80, 250);
+        }
+
+        /// <summary>SUMMON / RECALL and TO PARTY / CAMP / BOX, just under the kin's picture (they were at the very bottom).</summary>
+        void KinMoveButtons(RectTransform p, CreatureData d)
+        {
+            var party = GameManager.I.Party;
+            if (d.location == KinLocation.Expedition || d.location == KinLocation.Outpost) return;
             bool inCamp = BaseManager.I.HasBase && BaseManager.I.IsInsideBase(GameManager.I.Player.Position, 0f);
-            var row1 = UIFactory.HRow(p, 84, 12);
+            var row1 = UIFactory.HRow(p, 76, 10);
             if (d.location == KinLocation.Party)
             {
                 bool isOut = party.Companion != null && party.Companion.Data == d;
-                UIFactory.Size(UIFactory.Button(row1.transform, isOut ? "RECALL" : "SUMMON", () => { if (isOut) party.Recall(); else party.Summon(d); Rebuild(); }, new Color(0.3f, 0.45f, 0.8f)), 80, 250);
+                UIFactory.Size(UIFactory.Button(row1.transform, isOut ? "RECALL" : "SUMMON", () => { if (isOut) party.Recall(); else party.Summon(d); Rebuild(); }, new Color(0.3f, 0.45f, 0.8f), 22), 72, 190);
             }
-            if (d.location != KinLocation.Party) UIFactory.Size(UIFactory.Button(row1.transform, "TO PARTY", () => MoveKin(d, KinLocation.Party, inCamp)), 80, 250);
-            if (d.location != KinLocation.Base) UIFactory.Size(UIFactory.Button(row1.transform, "TO CAMP", () => MoveKin(d, KinLocation.Base, inCamp)), 80, 250);
-            if (d.location != KinLocation.Box) UIFactory.Size(UIFactory.Button(row1.transform, "TO BOX", () => MoveKin(d, KinLocation.Box, inCamp)), 80, 250);
-            var row2 = UIFactory.HRow(p, 84, 12);
-            UIFactory.Size(UIFactory.Button(row2.transform, "RELEASE", () => Confirm("Release kin?", $"Release {d.DisplayName} back into the wild? This can't be undone.", () => { party.Release(d); selectedKin = null; Rebuild(); }), new Color(0.5f, 0.25f, 0.25f)), 80, 250);
+            if (d.location != KinLocation.Party) UIFactory.Size(UIFactory.Button(row1.transform, "TO PARTY", () => MoveKin(d, KinLocation.Party, inCamp), UIFactory.ButtonCol, 22), 72, 190);
+            if (d.location != KinLocation.Base) UIFactory.Size(UIFactory.Button(row1.transform, "TO CAMP", () => MoveKin(d, KinLocation.Base, inCamp), UIFactory.ButtonCol, 22), 72, 190);
+            if (d.location != KinLocation.Box) UIFactory.Size(UIFactory.Button(row1.transform, "TO BOX", () => MoveKin(d, KinLocation.Box, inCamp), UIFactory.ButtonCol, 22), 72, 190);
+            UIFactory.Size(UIFactory.Button(row1.transform, "KIN CARD", () => ShowKinCard(d), new Color(0.3f, 0.42f, 0.7f), 22), 72, 190);
         }
 
         void MoveKin(CreatureData d, KinLocation to, bool inCamp)

@@ -982,9 +982,12 @@ namespace Wildbond
             Teleport(at, transform.eulerAngles.y);
         }
 
+        /// <summary>A sling, bow or crossbow is in your hand (it shoots only at a locked kin).</summary>
+        public bool RangedInHand => HandStyles.IsRanged(HandStyles.Of(Stats.HeldDef)) && Stats.Bag.Count(Stats.held) > 0;
+
         string ComputeContextAction(Vector3 pos)
         {
-            if (HandStyles.IsRanged(heldStyle) && WantsShot(pos)) return "SHOOT";
+            if (WantsShot(pos)) return "SHOOT";
             if (CombatTarget != null && Vector3.Distance(CombatTarget.Position, pos) - CombatTarget.Radius < meleeRange + 1.5f) return "ATTACK";
             if (GatherTarget != null && GatherTarget.alive)
             {

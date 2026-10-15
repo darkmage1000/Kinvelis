@@ -81,16 +81,19 @@ namespace Wildbond
                 if (s.Empty) continue;
                 cell.gameObject.AddComponent<Button>().onClick.AddListener(() => { boxSel = idx; SynthAudio.Play(Sfx.UiClick); Rebuild(); });
                 var d = ContentDB.Item(s.id);
-                var ic = UIFactory.ItemIcon(cell.transform, d, 92);
-                ic.rectTransform.Place(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 6), new Vector2(92, 92));
+                var ic = UIFactory.ItemIcon(cell.transform, d, 84);
+                ic.rectTransform.Place(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, -8), new Vector2(84, 84));
+                ic.raycastTarget = false;
+                var nm = UIFactory.Label(cell.transform, ContentDB.ItemName(s.id), 15, new Color(1f, 1f, 1f, 0.85f), TextAnchor.UpperCenter, FontStyle.Bold);
+                nm.rectTransform.Anchors(new Vector2(0, 1), new Vector2(1, 1), new Vector2(4, -26), new Vector2(-4, -2));
+                nm.horizontalOverflow = HorizontalWrapMode.Wrap; nm.resizeTextForBestFit = true; nm.resizeTextMinSize = 10; nm.resizeTextMaxSize = 15; nm.raycastTarget = false;
                 var cnt = UIFactory.Label(cell.transform, "x" + s.count, 22, Color.white, TextAnchor.LowerRight, FontStyle.Bold);
                 cnt.rectTransform.Stretch(4, 2, 8, 2);
                 cnt.raycastTarget = false;
             }
 
             // ---------------- right: take out, put in ----------------
-            var rlist = UIFactory.ScrollList(right, out _, 8f);
-            ((RectTransform)rlist.parent).Stretch();
+            var rlist = SideList(right, "box:" + b.Uid);   // keeps its place as you tap +1 / TAKE
             if (!inCamp) Para(rlist, UIFactory.Col($"This is a view. Walk up to this box ({bm.WayTo(b)}) to put things in or take them out.", Idle), 22);
 
             if (feed)

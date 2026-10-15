@@ -247,7 +247,7 @@ namespace Wildbond
             var bg = UIFactory.Panel(panel.transform, "Modal", new Color(0, 0, 0, 0.7f));
             bg.rectTransform.Stretch();
             var box = UIFactory.Panel(bg.transform, "Box", UIFactory.PanelBg2);
-            box.rectTransform.Place(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1100, 800));
+            box.rectTransform.Place(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1460, 930));   // most of the screen: lists in a modal (kin cards) need the room
             var t = UIFactory.Label(box.transform, title, 36, Color.white, TextAnchor.MiddleLeft, FontStyle.Bold);
             t.rectTransform.Place(new Vector2(0, 1), new Vector2(0, 1), new Vector2(24, -12), new Vector2(900, 60));
             var x = UIFactory.Button(box.transform, "X", CloseModal, new Color(0.55f, 0.25f, 0.25f), 30);

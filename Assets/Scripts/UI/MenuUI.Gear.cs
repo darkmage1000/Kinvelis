@@ -266,7 +266,7 @@ namespace Wildbond
         int version = -1;
         bool hat = true;
         string lookKey;
-        float yaw = 200f;
+        float yaw = 20f;   // a little turned, facing you (models look down +z, toward this camera; 200 showed the back)
 
         public GearPreview()
         {

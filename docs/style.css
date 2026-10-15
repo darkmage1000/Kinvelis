@@ -118,6 +118,13 @@ code, kbd { background: var(--panel2); border: 1px solid var(--line); border-rad
 .portrait { background: radial-gradient(circle at 50% 42%, #343c9c, var(--panel) 72%); border: 1px solid var(--line); border-radius: 18px; padding: 16px; text-align: center; }
 .portrait img { width: 100%; max-width: 210px; aspect-ratio: 1; object-fit: contain; }
 .portrait .tags { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+.evo { display: flex; align-items: stretch; gap: 10px; flex-wrap: wrap; margin: 6px 0 14px; }
+.evo-step { flex: 1 1 180px; max-width: 260px; background: radial-gradient(circle at 50% 30%, #343c9c, var(--panel) 75%); border: 1px solid var(--line); border-radius: 16px; padding: 12px; text-align: center; display: flex; flex-direction: column; gap: 4px; align-items: center; }
+.evo-step img { width: 100%; max-width: 170px; aspect-ratio: 1; object-fit: contain; }
+.evo-step small { color: var(--dim); }
+.evo-step p { margin: 4px 0 0; font-size: .86rem; color: var(--dim); }
+.evo-arrow { display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.6rem; color: var(--dim); }
+.evo-arrow small { font-size: .75rem; }
 .facts { display: grid; grid-template-columns: max-content 1fr; gap: 5px 14px; margin: 10px 0; }
 .facts dt { color: var(--dim); }
 .facts dd { margin: 0; }
