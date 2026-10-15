@@ -113,6 +113,30 @@ namespace Wildbond.EditorTools
                         ["element"] = f.element2 != Element.Normal ? f.element2.ToString() : null, ["skill"] = ab != null ? ab.id : null });
                 }
                 o["forms"] = forms;
+                // every kin evolves (a perfect form keeps its body): what each stage is, read from the game's own rules
+                var stages = L();
+                for (int st = 0; st <= 2; st++)
+                {
+                    var d = new CreatureData { speciesId = sp.id, stage = st, level = 50 };
+                    var e2 = d.Element2;
+                    var sk = L(); foreach (var a in d.Learnset) sk.Add(a);
+                    var cost = L();
+                    if (st > 0)
+                    {
+                        var prev = new CreatureData { speciesId = sp.id, stage = st - 1, level = 50 };
+                        foreach (var c in KinGrowth.EvolveCost(prev)) cost.Add(new Dictionary<string, object> { ["item"] = c.itemId, ["n"] = c.count });
+                        int g = KinGrowth.EvolveGlimmer(prev);
+                        if (g > 0) cost.Add(new Dictionary<string, object> { ["item"] = "glimmer", ["n"] = g });
+                    }
+                    stages.Add(new Dictionary<string, object> {
+                        ["stage"] = st, ["name"] = sp.NameAt(st), ["lv"] = st == 0 ? 1 : st == 1 ? KinGrowth.Stage1Level : KinGrowth.Stage2Level,
+                        ["real"] = st > 0 && sp.FormAt(st) != null,
+                        ["mul"] = d.StageMul, ["size"] = 1f + 0.12f * st, ["work"] = 1f + 0.1f * st,
+                        ["hp"] = Mathf.Round(sp.baseHp * d.StageMul * 10f) / 10f, ["atk"] = Mathf.Round(sp.baseAtk * d.StageMul * 10f) / 10f, ["def"] = Mathf.Round(sp.baseDef * d.StageMul * 10f) / 10f,
+                        ["e1"] = d.Element1.ToString(), ["e2"] = e2 != d.Element1 && e2 != Element.Normal ? e2.ToString() : null,
+                        ["skills"] = sk, ["cost"] = cost });
+                }
+                o["stages"] = stages;
                 o["mount"] = sp.mountable; o["water"] = sp.nearWater;
                 o["surf"] = sp.nearWater || sp.element1 == Element.Tide || sp.element2 == Element.Tide;
                 o["when"] = sp.spawnCondition != SpawnCondition.None ? EnvironmentSystem.ConditionText(sp.spawnCondition) : sp.spawnTime != SpawnTime.Any ? sp.spawnTime.ToString().ToLowerInvariant() + " only" : null;
