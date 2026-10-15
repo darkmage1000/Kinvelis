@@ -35,7 +35,7 @@ html: `
 <h2 id="catch">5. Make seeds and catch a kin</h2>
 <p>Kin are caught with thrown seeds. Craft some <span data-items="Tether Seed"></span> by hand, then:</p>
 <ol>
-<li>Tap <b>SEED</b>. You hold a seed ready; an arc shows where it will land and a number shows your chance.</li>
+<li>Tap <b>SEED</b>. You hold a seed ready; an arc shows where it will land and a number shows your chance. <b>Hold</b> SEED to fan out the seeds you carry and slide your thumb onto the one you want.</li>
 <li>Hurt the kin first. A kin at full health is a 20% catch; at a quarter health it is 65%.</li>
 <li>Tap <b>THROW</b> (the ATTACK button changes while a seed is ready). The seed shakes three times. If it holds, the kin is yours.</li>
 </ol>
@@ -64,13 +64,13 @@ html: `
 <tr><td>Left stick</td><td>Move.</td></tr>
 <tr><td>Right side of the screen</td><td>Drag to look. Pinch to zoom. Tap a kin to lock on to it.</td></tr>
 <tr><td><b>ATTACK</b></td><td>Swing or shoot what you are holding. In front of a tree, rock or plant it gathers. Hold it to repeat. With a seed ready it reads <b>THROW</b>; with a ranged weapon it reads <b>SHOOT</b> and shows your ammunition.</td></tr>
-<tr><td><b>SEED</b></td><td>Hold a seed ready (tap again to put it away). You walk slower and can't sprint while aiming.</td></tr>
+<tr><td><b>SEED</b></td><td>Tap: hold a seed ready (tap again to put it away). You walk slower and can't sprint while aiming. Hold: pick which seed - slide onto it and let go. Works on a mount too.</td></tr>
 <tr><td><b>JUMP</b></td><td>Jump. In the air with a Gale Glider it opens the glider.</td></tr>
 <tr><td><b>ROLL</b></td><td>Dodge roll. You can't be hit for a moment in the middle of it.</td></tr>
 <tr><td><b>SNEAK</b></td><td>Crouch. Kin notice you later, and a seed thrown while sneaking is 35% more likely to hold.</td></tr>
 <tr><td><b>RUN</b></td><td>Switch sprinting on or off. Sprinting uses stamina.</td></tr>
 <tr><td><b>LOCK</b></td><td>Lock on to the nearest kin. The arrows on the target frame change target.</td></tr>
-<tr><td><b>HOOK</b></td><td>Fire the Vine Grapple (once you own one).</td></tr>
+<tr><td><b>HOOK</b></td><td>Fire the Vine Grapple at what the green ring marks (a tree top or a ledge in front of the camera). It only shows while there is something to hook.</td></tr>
 <tr><td>Skill chips</td><td>Four chips = your companion's skills. Tap to order one. A grey chip shows the level where it unlocks.</td></tr>
 <tr><td><b>KIN SWAP</b></td><td>Opens the quick bar to send out a different party kin, or call the current one back.</td></tr>
 <tr><td>Stance button</td><td>Passive (never fights), Defensive (fights what attacks you), Aggressive (fights anything hostile nearby).</td></tr>
@@ -277,9 +277,11 @@ html: `
 
 <h2 id="mounts">Riding, gliding and surfing</h2>
 <ul>
-<li><b>Mounts</b>: some kin can be ridden once you have crafted a <span data-items="Kin Harness"></span>. Find them with the "Can be ridden" filter in the <a href="#/kin">Kin Dex</a>.</li>
+<li><b>Mounts</b>: some kin can be ridden once you have crafted a <span data-items="Kin Harness"></span>. Find them with the "Can be ridden" filter in the <a href="#/kin">Kin Dex</a>. How fast one gallops follows where it lives: early mounts (Sunmeadow, the Isles) are the slowest, Epic and Legendary ones the fastest, and a kin's Travel quality moves it up or down a little.</li>
+<li><b>Flying</b>: every flying kin you can ride flies - hold <b>JUMP</b> to climb (it costs stamina), let go to glide down. Landing never hurts. <b>Galewing</b>, a Rare of the Sunmeadow and the Peaks, is the first one you can find.</li>
+<li><b>From the saddle</b>: the kin you ride still uses its skills (the skill buttons; a close-up move needs you to ride up to the target), you can throw seeds, and if it can log, quarry or forage, your swings at trees, rocks and plants are its blows too - it can even work ones your own tool is too weak for.</li>
 <li><b>Surfing</b>: any Tide kin, and any kin that lives by the water, will carry you across water with no harness. This is how you reach the five outer lands.</li>
-<li><b>Gliding</b> and the <b>grapple</b> are items: <span data-items="Gale Glider, Vine Grapple"></span>.</li>
+<li><b>Gliding</b> and the <b>grapple</b> are items: <span data-items="Gale Glider, Vine Grapple"></span>. Look at a tree top or a ledge and a green ring marks it; HOOK reels you there. At a tree you are flung up and on past it - open the glider to keep going.</li>
 </ul>
 
 <h2 id="maker">Dream up a kin</h2>
@@ -321,6 +323,7 @@ html: `
 
 <h2 id="house">Your house</h2>
 <p>Build a home inside the camp ring, a 3 m square at a time: <b>BUILD &gt; HOUSE</b>. Lay <b>floors</b> first (they sit level even on a slope), then <b>walls</b>, a <b>doorway</b> and <b>windows</b> along their edges - stand facing the edge you want, and ROTATE steps round the square's four sides. Put <b>roofs</b> over the floors (two sloped roofs back to back make a ridge). Furniture goes on floors: a bed, table, chair, lamp, rug, bookshelf and a wardrobe where you can change your look. Doors open by themselves when someone walks up, and when you are inside, the roof and the walls in the way fade so you can see in. <b>REMOVE A PIECE</b> gives half its materials back.</p>
+<p><b>Level houses:</b> a house is built level. A floor laid next to your house takes its height and its stone footing reaches down to the ground; where the ground is higher than the house, the whole house is lifted to stay level, with everything on it. Where a floor sits higher than you can step (more than about knee height), put <b>Porch Steps</b> on the outside of the edge by your door - they are as long as the ground needs.</p>
 <p><b>Upstairs:</b> lay a floor over a floor - from below or from the storey above - and it becomes an upper floor one storey up (a house goes four storeys high). <b>Wooden Stairs</b> go on a floor and climb the way you face (ROTATE turns them); they need open space above them, and floors beside their top make the landing. A railing goes round the stairwell once there is an upstairs. Walls, furniture and stairs go on the storey you are standing on. To build higher where there is a roof, take the roof off first. When you are downstairs, everything above you fades so you can still see in.</p>
 <p><b>Kin in the house:</b> camp kin find their way round walls, through doorways and up the stairs. At night they sleep in your <b>Bed</b> and in kin beds, one each: a <b>Kin Basket</b> for a small kin, a <b>Big Kin Bed</b> for a medium one, a <b>Grand Kin Bed</b> for any size. A kin only takes a bed it can walk to from the Hearthstone, so it has to fit through your doors: the <b>Doorway</b> lets small kin in, the <b>Wide Doorway</b> (double doors) medium kin, and the <b>Grand Archway</b> (an open arch two storeys tall) any kin. Under a roof they sleep snug and work 5% faster. The Kin tab says where each camp kin sleeps.</p>
 <p><b>Tall rooms:</b> face a wall that is already there and build another wall: it goes on top. Stack the walls round a room (up to four high) and put a roof or a <b>Flat Ceiling</b> on: it goes up to the top of the room's walls, middle squares too, so ceiling every square and the whole room has one flat ceiling - a hall big kin can stand up in.</p>
