@@ -22,6 +22,8 @@ MonoBehaviour:
   element2: 9
   rarity: 1
   starter: 0
+  bossOnly: 0
+  underground: 0
   role: 
   biomes: 255
   spawnTime: 2
@@ -148,6 +150,204 @@ MonoBehaviour:
     pivot: {x: 0, y: 1.1, z: 0}
   - group: 8
     pivot: {x: 0, y: 0.8, z: 0}
+  forms:
+  - name: Wispflame
+    blurb: A bigger, steadier light. It no longer fades at dawn - only dims.
+    parts:
+    - shape: 2
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.824, z: 0}
+      scale: {x: 0.40800002, y: 0.048, z: 0.40800002}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 1.0400001, z: 0}
+      scale: {x: 0.36, y: 0.43200004, z: 0.36}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 0
+      slot: 0
+      pos: {x: 0.16800001, y: 1.0400001, z: 0}
+      scale: {x: 0.024, y: 0.40800002, z: 0.024}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 0
+      slot: 0
+      pos: {x: -0.16800001, y: 1.0400001, z: 0}
+      scale: {x: 0.024, y: 0.40800002, z: 0.024}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 1.3040001, z: 0}
+      scale: {x: 0.43200004, y: 0.192, z: 0.43200004}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 2
+      pos: {x: 0, y: 1.44, z: 0}
+      scale: {x: 0.12, y: 0.24, z: 0.12}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 5
+      pos: {x: 0.06, y: 1.08, z: 0.14}
+      scale: {x: 0.05, y: 0.07, z: 0.03}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 5
+      pos: {x: -0.06, y: 1.08, z: 0.14}
+      scale: {x: 0.05, y: 0.07, z: 0.03}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 8
+      slot: 2
+      pos: {x: 0, y: 0.66999996, z: -0.025999999}
+      scale: {x: 0.13, y: 0.26, z: 0.13}
+      rot: {x: 180, y: 0, z: 0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 1.1600001, z: 0}
+    - group: 8
+      pivot: {x: 0, y: 0.8, z: 0}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Lanternwraith
+    blurb: A cloaked spirit with a lantern in hand. Lost travellers follow its light
+      home - and its flame burns anything that won't.
+    parts:
+    - shape: 2
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.82592, z: 0}
+      scale: {x: 0.44064003, y: 0.051840004, z: 0.44064003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 1.0592, z: 0}
+      scale: {x: 0.38880002, y: 0.46656007, z: 0.38880002}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 0
+      slot: 0
+      pos: {x: 0.18144003, y: 1.0592, z: 0}
+      scale: {x: 0.025920002, y: 0.44064003, z: 0.025920002}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 0
+      slot: 0
+      pos: {x: -0.18144003, y: 1.0592, z: 0}
+      scale: {x: 0.025920002, y: 0.44064003, z: 0.025920002}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 1.3443202, z: 0}
+      scale: {x: 0.46656007, y: 0.20736001, z: 0.46656007}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 2
+      pos: {x: 0, y: 1.4688001, z: 0}
+      scale: {x: 0.12, y: 0.24, z: 0.12}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 5
+      pos: {x: 0.06, y: 1.1088, z: 0.14}
+      scale: {x: 0.05, y: 0.07, z: 0.03}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 5
+      pos: {x: -0.06, y: 1.1088, z: 0.14}
+      scale: {x: 0.05, y: 0.07, z: 0.03}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 8
+      slot: 2
+      pos: {x: 0, y: 0.66999996, z: -0.025999999}
+      scale: {x: 0.13, y: 0.26, z: 0.13}
+      rot: {x: 180, y: 0, z: 0}
+    - shape: 3
+      group: 0
+      slot: 5
+      pos: {x: 0, y: 0.86, z: 0.19595522}
+      scale: {x: 0.09, y: 0.24, z: 0.09}
+      rot: {x: 165, y: 0, z: 0}
+    - shape: 3
+      group: 0
+      slot: 5
+      pos: {x: 0.15320395, y: 0.86, z: 0.12217609}
+      scale: {x: 0.09, y: 0.24, z: 0.09}
+      rot: {x: 165, y: 51.42857, z: 0}
+    - shape: 3
+      group: 0
+      slot: 5
+      pos: {x: 0.19104221, y: 0.86, z: -0.043604117}
+      scale: {x: 0.09, y: 0.24, z: 0.09}
+      rot: {x: 165, y: 102.85714, z: 0}
+    - shape: 3
+      group: 0
+      slot: 5
+      pos: {x: 0.08502176, y: 0.86, z: -0.17654955}
+      scale: {x: 0.09, y: 0.24, z: 0.09}
+      rot: {x: 165, y: 154.28572, z: 0}
+    - shape: 3
+      group: 0
+      slot: 5
+      pos: {x: -0.08502174, y: 0.86, z: -0.17654957}
+      scale: {x: 0.09, y: 0.24, z: 0.09}
+      rot: {x: 165, y: 205.71428, z: 0}
+    - shape: 3
+      group: 0
+      slot: 5
+      pos: {x: -0.19104221, y: 0.86, z: -0.04360415}
+      scale: {x: 0.09, y: 0.24, z: 0.09}
+      rot: {x: 165, y: 257.14285, z: 0}
+    - shape: 3
+      group: 0
+      slot: 5
+      pos: {x: -0.15320392, y: 0.86, z: 0.122176126}
+      scale: {x: 0.09, y: 0.24, z: 0.09}
+      rot: {x: 165, y: 308.57144, z: 0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0.27060482, y: 1.0640001, z: 0.19328004}
+      scale: {x: 0.12, y: 0.14, z: 0.12}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 0
+      slot: 5
+      pos: {x: 0.27060482, y: 1.184, z: 0.19328004}
+      scale: {x: 0.02, y: 0.1, z: 0.02}
+      rot: {x: 0, y: 0, z: 0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 1.1888001, z: 0}
+    - group: 8
+      pivot: {x: 0, y: 0.8, z: 0}
+    element2: 0
+    skill: guiding_flame
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

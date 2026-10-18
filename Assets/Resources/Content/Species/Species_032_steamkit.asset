@@ -23,6 +23,7 @@ MonoBehaviour:
   rarity: 1
   starter: 0
   bossOnly: 0
+  underground: 0
   role: 
   biomes: 2
   spawnTime: 0
@@ -50,6 +51,8 @@ MonoBehaviour:
     level: 2
   - type: 3
     level: 1
+  - type: 11
+    level: 2
   perk: 8
   overworldRole: 'Companion: slowly restores your HP.'
   mountable: 0
@@ -183,6 +186,290 @@ MonoBehaviour:
     pivot: {x: 0.16, y: 0.14, z: 0.2}
   - group: 2
     pivot: {x: -0.16, y: 0.14, z: 0.2}
+  forms:
+  - name: Steamseal
+    blurb: A sleek hot-spring seal. The water around it is always warm.
+    parts:
+    - shape: 4
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.34100002, z: -0.0024999976}
+      scale: {x: 0.46199998, y: 0.902, z: 0.475}
+      rot: {x: 90, y: 0, z: 0}
+    - shape: 4
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.27499998, z: 0.0975}
+      scale: {x: 0.33, y: 0.66, z: 0.325}
+      rot: {x: 90, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.49700004, z: 0.48049998}
+      scale: {x: 0.306, y: 0.27, z: 0.288}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 1
+      pos: {x: 0, y: 0.46100003, z: 0.60649997}
+      scale: {x: 0.144, y: 0.107999995, z: 0.107999995}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 5
+      pos: {x: 0, y: 0.488, z: 0.6605}
+      scale: {x: 0.044999998, y: 0.036, z: 0.036}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.081, y: 0.53300005, z: 0.5885}
+      scale: {x: 0.063, y: 0.07245, z: 0.044099998}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.081, y: 0.53300005, z: 0.5885}
+      scale: {x: 0.063, y: 0.07245, z: 0.044099998}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.0945, y: 0.54875, z: 0.60740006}
+      scale: {x: 0.022049999, y: 0.022049999, z: 0.022049999}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.0945, y: 0.54875, z: 0.60740006}
+      scale: {x: 0.022049999, y: 0.022049999, z: 0.022049999}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 1
+      slot: 2
+      pos: {x: 0, y: 0.64100003, z: 0.44449997}
+      scale: {x: 0.107999995, y: 0.089999996, z: 0.107999995}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0, y: 0.7490001, z: 0.44449997}
+      scale: {x: 0.162, y: 0.107999995, z: 0.162}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 3
+      slot: 1
+      pos: {x: 0.2, y: 0.07, z: 0.2}
+      scale: {x: 0.18, y: 0.05, z: 0.12}
+      rot: {x: 0, y: -20, z: -20}
+    - shape: 0
+      group: 2
+      slot: 1
+      pos: {x: -0.2, y: 0.07, z: 0.2}
+      scale: {x: 0.18, y: 0.05, z: 0.12}
+      rot: {x: 0, y: 20, z: 20}
+    - shape: 1
+      group: 8
+      slot: 1
+      pos: {x: 0, y: 0.18100002, z: -0.62749994}
+      scale: {x: 0.39999998, y: 0.049999997, z: 0.175}
+      rot: {x: 0, y: 0, z: 0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.40700004, z: 0.3725}
+    - group: 8
+      pivot: {x: 0, y: 0.23100004, z: -0.4775}
+    - group: 3
+      pivot: {x: 0.16, y: 0.14, z: 0.2}
+    - group: 2
+      pivot: {x: -0.16, y: 0.14, z: 0.2}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Geysirus
+    blurb: A tusked walrus with a geyser for a blowhole. When it blows, the spray
+      scalds.
+    parts:
+    - shape: 4
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.40865, z: -0.0043749977}
+      scale: {x: 0.53129995, y: 1.0373, z: 0.54625}
+      rot: {x: 90, y: 0, z: 0}
+    - shape: 4
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.33274996, z: 0.11062499}
+      scale: {x: 0.3795, y: 0.759, z: 0.37374997}
+      rot: {x: 90, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.57455003, z: 0.534875}
+      scale: {x: 0.306, y: 0.27, z: 0.288}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 1
+      pos: {x: 0, y: 0.53855, z: 0.66087496}
+      scale: {x: 0.144, y: 0.107999995, z: 0.107999995}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 5
+      pos: {x: 0, y: 0.56554997, z: 0.714875}
+      scale: {x: 0.044999998, y: 0.036, z: 0.036}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.081, y: 0.61055005, z: 0.642875}
+      scale: {x: 0.063, y: 0.07245, z: 0.044099998}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.081, y: 0.61055005, z: 0.642875}
+      scale: {x: 0.063, y: 0.07245, z: 0.044099998}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.0945, y: 0.6263, z: 0.66177505}
+      scale: {x: 0.022049999, y: 0.022049999, z: 0.022049999}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.0945, y: 0.6263, z: 0.66177505}
+      scale: {x: 0.022049999, y: 0.022049999, z: 0.022049999}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 1
+      slot: 2
+      pos: {x: 0, y: 0.71855, z: 0.49887496}
+      scale: {x: 0.107999995, y: 0.089999996, z: 0.107999995}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0, y: 0.82655007, z: 0.49887496}
+      scale: {x: 0.162, y: 0.107999995, z: 0.162}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 3
+      slot: 1
+      pos: {x: 0.2, y: 0.07, z: 0.2}
+      scale: {x: 0.18, y: 0.05, z: 0.12}
+      rot: {x: 0, y: -20, z: -20}
+    - shape: 0
+      group: 2
+      slot: 1
+      pos: {x: -0.2, y: 0.07, z: 0.2}
+      scale: {x: 0.18, y: 0.05, z: 0.12}
+      rot: {x: 0, y: 20, z: 20}
+    - shape: 1
+      group: 8
+      slot: 1
+      pos: {x: 0, y: 0.23215002, z: -0.70062494}
+      scale: {x: 0.39999998, y: 0.049999997, z: 0.175}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 4
+      pos: {x: 0.05508, y: 0.48815003, z: 0.63567495}
+      scale: {x: 0.05, y: 0.22, z: 0.05}
+      rot: {x: 160, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 4
+      pos: {x: -0.05508, y: 0.48815003, z: 0.63567495}
+      scale: {x: 0.05, y: 0.22, z: 0.05}
+      rot: {x: 160, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0, y: 0.9205501, z: 0.62487495}
+      scale: {x: 0.13, y: 0.1, z: 0.13}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.08559509, y: 0.9205501, z: 0.5626865}
+      scale: {x: 0.13, y: 0.1, z: 0.13}
+      rot: {x: 0, y: 72, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.05290067, y: 0.9205501, z: 0.46206343}
+      scale: {x: 0.13, y: 0.1, z: 0.13}
+      rot: {x: 0, y: 144, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.052900665, y: 0.9205501, z: 0.46206343}
+      scale: {x: 0.13, y: 0.1, z: 0.13}
+      rot: {x: 0, y: 216, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.085595086, y: 0.9205501, z: 0.5626865}
+      scale: {x: 0.13, y: 0.1, z: 0.13}
+      rot: {x: 0, y: 288, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0, y: 1.00055, z: 0.534875}
+      scale: {x: 0.18, y: 0.16, z: 0.18}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.042426404, y: 1.0805501, z: 0.5773014}
+      scale: {x: 0.09, y: 0.08, z: 0.09}
+      rot: {x: 0, y: 45, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.042426404, y: 1.0805501, z: 0.49244857}
+      scale: {x: 0.09, y: 0.08, z: 0.09}
+      rot: {x: 0, y: 135, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.0424264, y: 1.0805501, z: 0.49244857}
+      scale: {x: 0.09, y: 0.08, z: 0.09}
+      rot: {x: 0, y: 225, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.04242641, y: 1.0805501, z: 0.5773014}
+      scale: {x: 0.09, y: 0.08, z: 0.09}
+      rot: {x: 0, y: 315, z: 0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.48455003, z: 0.426875}
+    - group: 8
+      pivot: {x: 0, y: 0.28215003, z: -0.550625}
+    - group: 3
+      pivot: {x: 0.16, y: 0.14, z: 0.2}
+    - group: 2
+      pivot: {x: -0.16, y: 0.14, z: 0.2}
+    element2: 0
+    skill: geyser_burst
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

@@ -23,6 +23,7 @@ MonoBehaviour:
   rarity: 1
   starter: 0
   bossOnly: 0
+  underground: 0
   role: 
   biomes: 2
   spawnTime: 0
@@ -195,6 +196,280 @@ MonoBehaviour:
     pivot: {x: 0.08, y: 0.28, z: 0}
   - group: 2
     pivot: {x: -0.08, y: 0.28, z: 0}
+  forms:
+  - name: Ashraven
+    blurb: A big black raven; the ash never seems to settle on it.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.569, z: 0}
+      scale: {x: 0.448, y: 0.504, z: 0.6272}
+      rot: {x: -15, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.889, z: 0.15799999}
+      scale: {x: 0.2576, y: 0.2392, z: 0.2576}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 5
+      pos: {x: 0, y: 0.8705999, z: 0.35119998}
+      scale: {x: 0.0644, y: 0.184, z: 0.0644}
+      rot: {x: 95, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.08280001, y: 0.92579997, z: 0.25}
+      scale: {x: 0.0552, y: 0.0552, z: 0.0368}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.08280001, y: 0.92579997, z: 0.25}
+      scale: {x: 0.0552, y: 0.0552, z: 0.0368}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 1
+      slot: 6
+      pos: {x: 0, y: 1.0361999, z: 0.112}
+      scale: {x: 0.0552, y: 0.1472, z: 0.0552}
+      rot: {x: -25, y: 0, z: 0}
+    - shape: 0
+      group: 10
+      slot: 1
+      pos: {x: 0.2664, y: 0.5954, z: -0.054}
+      scale: {x: 0.108, y: 0.32400003, z: 0.49680004}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 9
+      slot: 1
+      pos: {x: -0.2664, y: 0.5954, z: -0.054}
+      scale: {x: 0.108, y: 0.32400003, z: 0.49680004}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 1
+      group: 10
+      slot: 6
+      pos: {x: 0.288, y: 0.4658, z: -0.2592}
+      scale: {x: 0.0432, y: 0.108, z: 0.15120001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 1
+      group: 9
+      slot: 6
+      pos: {x: -0.288, y: 0.4658, z: -0.2592}
+      scale: {x: 0.0432, y: 0.108, z: 0.15120001}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 1
+      group: 8
+      slot: 0
+      pos: {x: 0, y: 0.483, z: -0.39000002}
+      scale: {x: 0.2, y: 0.04, z: 0.3}
+      rot: {x: -20, y: 0, z: 0}
+    - shape: 4
+      group: 3
+      slot: 5
+      pos: {x: 0.08, y: 0.161, z: 0}
+      scale: {x: 0.05, y: 0.322, z: 0.05}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 4
+      group: 2
+      slot: 5
+      pos: {x: -0.08, y: 0.161, z: 0}
+      scale: {x: 0.05, y: 0.322, z: 0.05}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 3
+      slot: 5
+      pos: {x: 0.08, y: 0.0345, z: 0.05}
+      scale: {x: 0.055000003, y: 0.07, z: 0.07}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 2
+      slot: 5
+      pos: {x: -0.08, y: 0.0345, z: 0.05}
+      scale: {x: 0.055000003, y: 0.07, z: 0.07}
+      rot: {x: 0, y: -0, z: -0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.8154, z: 0.112}
+    - group: 10
+      pivot: {x: 0.20160002, y: 0.7034, z: 0}
+    - group: 9
+      pivot: {x: -0.20160002, y: 0.7034, z: 0}
+    - group: 8
+      pivot: {x: 0, y: 0.513, z: -0.28}
+    - group: 3
+      pivot: {x: 0.08, y: 0.322, z: 0}
+    - group: 2
+      pivot: {x: -0.08, y: 0.322, z: 0}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Pyreraven
+    blurb: A raven crested with embers. It dives out of the smoke of wildfires and
+      leaves burns where it strikes.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.569, z: 0}
+      scale: {x: 0.448, y: 0.504, z: 0.6272}
+      rot: {x: -15, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.889, z: 0.15799999}
+      scale: {x: 0.2576, y: 0.2392, z: 0.2576}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 5
+      pos: {x: 0, y: 0.8705999, z: 0.35119998}
+      scale: {x: 0.0644, y: 0.184, z: 0.0644}
+      rot: {x: 95, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.08280001, y: 0.92579997, z: 0.25}
+      scale: {x: 0.0552, y: 0.0552, z: 0.0368}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.08280001, y: 0.92579997, z: 0.25}
+      scale: {x: 0.0552, y: 0.0552, z: 0.0368}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 1
+      slot: 6
+      pos: {x: 0, y: 1.0361999, z: 0.112}
+      scale: {x: 0.0552, y: 0.1472, z: 0.0552}
+      rot: {x: -25, y: 0, z: 0}
+    - shape: 0
+      group: 10
+      slot: 1
+      pos: {x: 0.2664, y: 0.5954, z: -0.054}
+      scale: {x: 0.108, y: 0.32400003, z: 0.49680004}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 9
+      slot: 1
+      pos: {x: -0.2664, y: 0.5954, z: -0.054}
+      scale: {x: 0.108, y: 0.32400003, z: 0.49680004}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 1
+      group: 10
+      slot: 6
+      pos: {x: 0.288, y: 0.4658, z: -0.2592}
+      scale: {x: 0.0432, y: 0.108, z: 0.15120001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 1
+      group: 9
+      slot: 6
+      pos: {x: -0.288, y: 0.4658, z: -0.2592}
+      scale: {x: 0.0432, y: 0.108, z: 0.15120001}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 1
+      group: 8
+      slot: 0
+      pos: {x: 0, y: 0.483, z: -0.39000002}
+      scale: {x: 0.2, y: 0.04, z: 0.3}
+      rot: {x: -20, y: 0, z: 0}
+    - shape: 4
+      group: 3
+      slot: 5
+      pos: {x: 0.08, y: 0.161, z: 0}
+      scale: {x: 0.05, y: 0.322, z: 0.05}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 4
+      group: 2
+      slot: 5
+      pos: {x: -0.08, y: 0.161, z: 0}
+      scale: {x: 0.05, y: 0.322, z: 0.05}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 3
+      slot: 5
+      pos: {x: 0.08, y: 0.0345, z: 0.05}
+      scale: {x: 0.055000003, y: 0.07, z: 0.07}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 2
+      slot: 5
+      pos: {x: -0.08, y: 0.0345, z: 0.05}
+      scale: {x: 0.055000003, y: 0.07, z: 0.07}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 1
+      slot: 6
+      pos: {x: -0.043301273, y: 0.99771994, z: 0.10647999}
+      scale: {x: 0.04, y: 0.18, z: 0.03}
+      rot: {x: 0, y: 0, z: 60}
+    - shape: 3
+      group: 1
+      slot: 6
+      pos: {x: -0.025, y: 1.0160213, z: 0.10647999}
+      scale: {x: 0.04, y: 0.18, z: 0.03}
+      rot: {x: 0, y: 0, z: 30}
+    - shape: 3
+      group: 1
+      slot: 6
+      pos: {x: 0, y: 1.02272, z: 0.10647999}
+      scale: {x: 0.04, y: 0.18, z: 0.03}
+      rot: {x: 0, y: 0, z: -0}
+    - shape: 3
+      group: 1
+      slot: 6
+      pos: {x: 0.025, y: 1.0160213, z: 0.10647999}
+      scale: {x: 0.04, y: 0.18, z: 0.03}
+      rot: {x: 0, y: 0, z: -30}
+    - shape: 3
+      group: 1
+      slot: 6
+      pos: {x: 0.043301273, y: 0.99771994, z: 0.10647999}
+      scale: {x: 0.04, y: 0.18, z: 0.03}
+      rot: {x: 0, y: 0, z: -60}
+    - shape: 1
+      group: 1
+      slot: 5
+      pos: {x: 0.061824, y: 0.955976, z: 0.26104}
+      scale: {x: 0.066976, y: 0.015456, z: 0.020608}
+      rot: {x: 0, y: 0, z: 22}
+    - shape: 1
+      group: 1
+      slot: 5
+      pos: {x: -0.061824, y: 0.955976, z: 0.26104}
+      scale: {x: 0.066976, y: 0.015456, z: 0.020608}
+      rot: {x: 0, y: -0, z: -22}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.8154, z: 0.112}
+    - group: 10
+      pivot: {x: 0.20160002, y: 0.7034, z: 0}
+    - group: 9
+      pivot: {x: -0.20160002, y: 0.7034, z: 0}
+    - group: 8
+      pivot: {x: 0, y: 0.513, z: -0.28}
+    - group: 3
+      pivot: {x: 0.08, y: 0.322, z: 0}
+    - group: 2
+      pivot: {x: -0.08, y: 0.322, z: 0}
+    element2: 0
+    skill: ashfall_dive
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

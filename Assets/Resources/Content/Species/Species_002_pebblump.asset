@@ -22,6 +22,8 @@ MonoBehaviour:
   element2: 0
   rarity: 0
   starter: 0
+  bossOnly: 0
+  underground: 0
   role: 
   biomes: 3
   spawnTime: 0
@@ -192,6 +194,299 @@ MonoBehaviour:
     pivot: {x: -0.3, y: 0.21, z: -0.32}
   - group: 8
     pivot: {x: 0, y: 0.2, z: -0.5}
+  forms:
+  - name: Cairnback
+    blurb: Its stones have stacked themselves into a cairn. Travellers add a pebble
+      for luck.
+    parts:
+    - shape: 7
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.30349997, z: 0}
+      scale: {x: 1.18, y: 0.94399995, z: 1.298}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.30349997, z: 0}
+      scale: {x: 1.1328, y: 0.11799999, z: 1.2507999}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 6
+      group: 0
+      slot: 2
+      pos: {x: 0.23599999, y: 0.6810999, z: 0.11799999}
+      scale: {x: 0.2832, y: 0.23599999, z: 0.2832}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 6
+      group: 0
+      slot: 0
+      pos: {x: -0.2124, y: 0.7165, z: -0.1652}
+      scale: {x: 0.30679998, y: 0.25959998, z: 0.30679998}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 6
+      group: 0
+      slot: 2
+      pos: {x: 0.023599999, y: 0.77549994, z: -0.023599999}
+      scale: {x: 0.354, y: 0.2832, z: 0.354}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 1
+      pos: {x: 0, y: 0.43989995, z: 0.6874}
+      scale: {x: 0.31280002, y: 0.27600002, z: 0.33120003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.08280001, y: 0.48589996, z: 0.81619996}
+      scale: {x: 0.0644, y: 0.07406, z: 0.04508}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.08280001, y: 0.48589996, z: 0.81619996}
+      scale: {x: 0.0644, y: 0.07406, z: 0.04508}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.0966, y: 0.502, z: 0.83552}
+      scale: {x: 0.02254, y: 0.02254, z: 0.02254}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.0966, y: 0.502, z: 0.83552}
+      scale: {x: 0.02254, y: 0.02254, z: 0.02254}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 3
+      slot: 1
+      pos: {x: 0.3, y: 0.115, z: 0.32}
+      scale: {x: 0.2, y: 0.253, z: 0.2}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 2
+      slot: 1
+      pos: {x: -0.3, y: 0.115, z: 0.32}
+      scale: {x: 0.2, y: 0.253, z: 0.2}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 5
+      slot: 1
+      pos: {x: 0.3, y: 0.115, z: -0.32}
+      scale: {x: 0.2, y: 0.253, z: 0.2}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 4
+      slot: 1
+      pos: {x: -0.3, y: 0.115, z: -0.32}
+      scale: {x: 0.2, y: 0.253, z: 0.2}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 8
+      slot: 1
+      pos: {x: 0, y: 0.30349997, z: -0.69}
+      scale: {x: 0.1, y: 0.22, z: 0.1}
+      rot: {x: -90, y: 0, z: 0}
+    - shape: 6
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.82829994, z: 0}
+      scale: {x: 0.34, y: 0.22, z: 0.3}
+      rot: {x: 0, y: 0, z: 0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.42149997, z: 0.53099996}
+    - group: 3
+      pivot: {x: 0.3, y: 0.24149999, z: 0.32}
+    - group: 2
+      pivot: {x: -0.3, y: 0.24149999, z: 0.32}
+    - group: 5
+      pivot: {x: 0.3, y: 0.24149999, z: -0.32}
+    - group: 4
+      pivot: {x: -0.3, y: 0.24149999, z: -0.32}
+    - group: 8
+      pivot: {x: 0, y: 0.30349997, z: -0.59}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Monolithe
+    blurb: A tortoise that carries a standing stone grown over with moss. When it
+      stamps, the ground answers. It gains the Flora element.
+    parts:
+    - shape: 7
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.37462994, z: 0}
+      scale: {x: 1.3216, y: 1.05728, z: 1.45376}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.37462994, z: 0}
+      scale: {x: 1.268736, y: 0.13216, z: 1.4008958}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 6
+      group: 0
+      slot: 2
+      pos: {x: 0.26432, y: 0.7975419, z: 0.13216}
+      scale: {x: 0.317184, y: 0.26432, z: 0.317184}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 6
+      group: 0
+      slot: 0
+      pos: {x: -0.23788801, y: 0.83719, z: -0.185024}
+      scale: {x: 0.34361598, y: 0.290752, z: 0.34361598}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 6
+      group: 0
+      slot: 2
+      pos: {x: 0.026431998, y: 0.90326995, z: -0.026431998}
+      scale: {x: 0.39648, y: 0.317184, z: 0.39648}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 1
+      pos: {x: 0, y: 0.52519, z: 0.75112}
+      scale: {x: 0.31280002, y: 0.27600002, z: 0.33120003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.08280001, y: 0.57119, z: 0.87991995}
+      scale: {x: 0.0644, y: 0.07406, z: 0.04508}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.08280001, y: 0.57119, z: 0.87991995}
+      scale: {x: 0.0644, y: 0.07406, z: 0.04508}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.0966, y: 0.58729, z: 0.89924}
+      scale: {x: 0.02254, y: 0.02254, z: 0.02254}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.0966, y: 0.58729, z: 0.89924}
+      scale: {x: 0.02254, y: 0.02254, z: 0.02254}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 3
+      slot: 1
+      pos: {x: 0.3, y: 0.12189999, z: 0.32}
+      scale: {x: 0.2, y: 0.26817998, z: 0.2}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 2
+      slot: 1
+      pos: {x: -0.3, y: 0.12189999, z: 0.32}
+      scale: {x: 0.2, y: 0.26817998, z: 0.2}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 2
+      group: 5
+      slot: 1
+      pos: {x: 0.3, y: 0.12189999, z: -0.32}
+      scale: {x: 0.2, y: 0.26817998, z: 0.2}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 4
+      slot: 1
+      pos: {x: -0.3, y: 0.12189999, z: -0.32}
+      scale: {x: 0.2, y: 0.26817998, z: 0.2}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 8
+      slot: 1
+      pos: {x: 0, y: 0.37462994, z: -0.7608}
+      scale: {x: 0.1, y: 0.22, z: 0.1}
+      rot: {x: -90, y: 0, z: 0}
+    - shape: 6
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.962406, z: 0}
+      scale: {x: 0.3808, y: 0.2464, z: 0.33600003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 6
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 1.2704059, z: -0.04}
+      scale: {x: 0.26, y: 0.72, z: 0.22}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 1
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 1.330406, z: 0.08}
+      scale: {x: 0.05, y: 0.3, z: 0.02}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 7
+      group: 0
+      slot: 2
+      pos: {x: 0, y: 0.8104059, z: 0.502208}
+      scale: {x: 0.16, y: 0.07, z: 0.16}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 7
+      group: 0
+      slot: 2
+      pos: {x: 0.4349249, y: 0.8104059, z: 0.25110397}
+      scale: {x: 0.16, y: 0.07, z: 0.16}
+      rot: {x: 0, y: 60, z: 0}
+    - shape: 7
+      group: 0
+      slot: 2
+      pos: {x: 0.43492487, y: 0.8104059, z: -0.25110403}
+      scale: {x: 0.16, y: 0.07, z: 0.16}
+      rot: {x: 0, y: 120, z: 0}
+    - shape: 7
+      group: 0
+      slot: 2
+      pos: {x: -0.000000043904418, y: 0.8104059, z: -0.502208}
+      scale: {x: 0.16, y: 0.07, z: 0.16}
+      rot: {x: 0, y: 180, z: 0}
+    - shape: 7
+      group: 0
+      slot: 2
+      pos: {x: -0.4349249, y: 0.8104059, z: -0.25110394}
+      scale: {x: 0.16, y: 0.07, z: 0.16}
+      rot: {x: 0, y: 240, z: 0}
+    - shape: 7
+      group: 0
+      slot: 2
+      pos: {x: -0.4349249, y: 0.8104059, z: 0.25110394}
+      scale: {x: 0.16, y: 0.07, z: 0.16}
+      rot: {x: 0, y: 300, z: 0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.50679, z: 0.59471995}
+    - group: 3
+      pivot: {x: 0.3, y: 0.25598997, z: 0.32}
+    - group: 2
+      pivot: {x: -0.3, y: 0.25598997, z: 0.32}
+    - group: 5
+      pivot: {x: 0.3, y: 0.25598997, z: -0.32}
+    - group: 4
+      pivot: {x: -0.3, y: 0.25598997, z: -0.32}
+    - group: 8
+      pivot: {x: 0, y: 0.37462994, z: -0.6608}
+    element2: 1
+    skill: cairn_quake
+    ownPalette: 1
+    palette:
+      primary: {r: 0.56078434, g: 0.5411765, b: 0.5019608, a: 1}
+      secondary: {r: 0.83137256, g: 0.7058824, b: 0.4862745, a: 1}
+      accent: {r: 0.36862746, g: 0.61960787, b: 0.28235295, a: 1}
+      eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+      glow: {r: 0.72156864, g: 0.8784314, b: 1, a: 1}
   regional:
     enabled: 1
     biome: 2

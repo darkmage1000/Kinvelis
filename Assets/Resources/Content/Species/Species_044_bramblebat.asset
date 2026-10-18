@@ -23,6 +23,7 @@ MonoBehaviour:
   rarity: 1
   starter: 0
   bossOnly: 0
+  underground: 0
   role: 
   biomes: 13
   spawnTime: 2
@@ -169,6 +170,220 @@ MonoBehaviour:
     pivot: {x: 0.12, y: 1.05, z: 0}
   - group: 9
     pivot: {x: -0.12, y: 1.05, z: 0}
+  forms:
+  - name: Thornbat
+    blurb: Its leaf-wings have toughened into thorn; berry bushes fear it.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 1.0255, z: 0}
+      scale: {x: 0.345, y: 0.391, z: 0.345}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 1.2205, z: 0.0875}
+      scale: {x: 0.26, y: 0.24, z: 0.24}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 0
+      pos: {x: 0.1, y: 1.4005, z: 0.0575}
+      scale: {x: 0.1, y: 0.2, z: 0.05}
+      rot: {x: 0, y: 0, z: -15}
+    - shape: 3
+      group: 1
+      slot: 0
+      pos: {x: -0.1, y: 1.4005, z: 0.0575}
+      scale: {x: 0.1, y: 0.2, z: 0.05}
+      rot: {x: 0, y: -0, z: 15}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.06, y: 1.2405001, z: 0.1875}
+      scale: {x: 0.05, y: 0.05, z: 0.04}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.06, y: 1.2405001, z: 0.1875}
+      scale: {x: 0.05, y: 0.05, z: 0.04}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 1
+      slot: 4
+      pos: {x: 0.03, y: 1.1205001, z: 0.1875}
+      scale: {x: 0.02, y: 0.05, z: 0.02}
+      rot: {x: 180, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 4
+      pos: {x: -0.03, y: 1.1205001, z: 0.1875}
+      scale: {x: 0.02, y: 0.05, z: 0.02}
+      rot: {x: 180, y: -0, z: -0}
+    - shape: 0
+      group: 10
+      slot: 2
+      pos: {x: 0.43699998, y: 1.0569999, z: -0.025999999}
+      scale: {x: 0.728, y: 0.065, z: 0.468}
+      rot: {x: 0, y: 0, z: -15}
+    - shape: 0
+      group: 9
+      slot: 2
+      pos: {x: -0.43699998, y: 1.0569999, z: -0.025999999}
+      scale: {x: 0.728, y: 0.065, z: 0.468}
+      rot: {x: 0, y: -0, z: 15}
+    - shape: 3
+      group: 10
+      slot: 1
+      pos: {x: 0.762, y: 1.148, z: -0.13}
+      scale: {x: 0.051999997, y: 0.15599999, z: 0.051999997}
+      rot: {x: 0, y: 0, z: -60}
+    - shape: 3
+      group: 9
+      slot: 1
+      pos: {x: -0.762, y: 1.148, z: -0.13}
+      scale: {x: 0.051999997, y: 0.15599999, z: 0.051999997}
+      rot: {x: 0, y: -0, z: 60}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 1.1405001, z: 0.0575}
+    - group: 10
+      pivot: {x: 0.138, y: 1.083, z: 0}
+    - group: 9
+      pivot: {x: -0.138, y: 1.083, z: 0}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Briarwing
+    blurb: A great briar bat with a rose behind its ear. It dives through a thicket
+      and comes out bleeding nothing.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 1.0255, z: 0}
+      scale: {x: 0.345, y: 0.391, z: 0.345}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 1.2205, z: 0.0875}
+      scale: {x: 0.26, y: 0.24, z: 0.24}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 0
+      pos: {x: 0.10776457, y: 1.4294778, z: 0.0575}
+      scale: {x: 0.1, y: 0.26, z: 0.05}
+      rot: {x: 0, y: 0, z: -15}
+    - shape: 3
+      group: 1
+      slot: 0
+      pos: {x: -0.10776457, y: 1.4294778, z: 0.0575}
+      scale: {x: 0.1, y: 0.26, z: 0.05}
+      rot: {x: 0, y: -0, z: 15}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.06, y: 1.2405001, z: 0.1875}
+      scale: {x: 0.05, y: 0.05, z: 0.04}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.06, y: 1.2405001, z: 0.1875}
+      scale: {x: 0.05, y: 0.05, z: 0.04}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 1
+      slot: 4
+      pos: {x: 0.03, y: 1.1205001, z: 0.1875}
+      scale: {x: 0.02, y: 0.05, z: 0.02}
+      rot: {x: 180, y: 0, z: 0}
+    - shape: 3
+      group: 1
+      slot: 4
+      pos: {x: -0.03, y: 1.1205001, z: 0.1875}
+      scale: {x: 0.02, y: 0.05, z: 0.02}
+      rot: {x: 180, y: -0, z: -0}
+    - shape: 0
+      group: 10
+      slot: 2
+      pos: {x: 0.49679995, y: 1.0517999, z: -0.0312}
+      scale: {x: 0.8736, y: 0.078, z: 0.5616}
+      rot: {x: 0, y: 0, z: -15}
+    - shape: 0
+      group: 9
+      slot: 2
+      pos: {x: -0.49679995, y: 1.0517999, z: -0.0312}
+      scale: {x: 0.8736, y: 0.078, z: 0.5616}
+      rot: {x: 0, y: -0, z: 15}
+    - shape: 3
+      group: 10
+      slot: 1
+      pos: {x: 0.88680005, y: 1.161, z: -0.156}
+      scale: {x: 0.0624, y: 0.1872, z: 0.0624}
+      rot: {x: 0, y: 0, z: -60}
+    - shape: 3
+      group: 9
+      slot: 1
+      pos: {x: -0.88680005, y: 1.161, z: -0.156}
+      scale: {x: 0.0624, y: 0.1872, z: 0.0624}
+      rot: {x: 0, y: -0, z: 60}
+    - shape: 0
+      group: 1
+      slot: 2
+      pos: {x: 0.078, y: 1.5394778, z: 0.0875}
+      scale: {x: 0.1, y: 0.08, z: 0.1}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 0
+      slot: 5
+      pos: {x: 0, y: 1.2034502, z: 0.1125}
+      scale: {x: 0.0375, y: 0.105000004, z: 0.0375}
+      rot: {x: -30, y: 0, z: 0}
+    - shape: 3
+      group: 0
+      slot: 5
+      pos: {x: 0, y: 1.232895, z: 0.037499998}
+      scale: {x: 0.04832532, y: 0.13531089, z: 0.04832532}
+      rot: {x: -30, y: 0, z: 0}
+    - shape: 3
+      group: 0
+      slot: 5
+      pos: {x: 0, y: 1.232895, z: -0.037500005}
+      scale: {x: 0.04832532, y: 0.13531089, z: 0.04832532}
+      rot: {x: -30, y: 0, z: 0}
+    - shape: 3
+      group: 0
+      slot: 5
+      pos: {x: 0, y: 1.2034502, z: -0.1125}
+      scale: {x: 0.0375, y: 0.105000004, z: 0.0375}
+      rot: {x: -30, y: 0, z: 0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 1.1405001, z: 0.0575}
+    - group: 10
+      pivot: {x: 0.138, y: 1.083, z: 0}
+    - group: 9
+      pivot: {x: -0.138, y: 1.083, z: 0}
+    element2: 0
+    skill: rosethorn_dive
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

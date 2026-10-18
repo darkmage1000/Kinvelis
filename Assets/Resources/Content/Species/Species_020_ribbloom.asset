@@ -23,6 +23,7 @@ MonoBehaviour:
   rarity: 0
   starter: 0
   bossOnly: 0
+  underground: 0
   role: 
   biomes: 9
   spawnTime: 0
@@ -50,6 +51,8 @@ MonoBehaviour:
     level: 2
   - type: 5
     level: 1
+  - type: 11
+    level: 3
   perk: 8
   overworldRole: 'Companion: slowly restores your HP.'
   mountable: 0
@@ -171,6 +174,260 @@ MonoBehaviour:
   pivots:
   - group: 1
     pivot: {x: 0, y: 0.3, z: 0.1}
+  forms:
+  - name: Lilyrib
+    blurb: Its lily pad has grown into a parasol; dragonflies rest on it.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.28599998, z: -0.0026999973}
+      scale: {x: 0.59, y: 0.4248, z: 0.59}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.227, z: 0.1153}
+      scale: {x: 0.44839996, y: 0.25959998, z: 0.4248}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0.25959998, y: 0.1326, z: -0.1443}
+      scale: {x: 0.18879999, y: 0.1652, z: 0.2832}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: -0.25959998, y: 0.1326, z: -0.1443}
+      scale: {x: 0.18879999, y: 0.1652, z: 0.2832}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0.1196, y: 0.45539993, z: 0.17050001}
+      scale: {x: 0.13800001, y: 0.13800001, z: 0.13800001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: -0.1196, y: 0.45539993, z: 0.17050001}
+      scale: {x: 0.13800001, y: 0.13800001, z: 0.13800001}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.1196, y: 0.47379994, z: 0.2257}
+      scale: {x: 0.069000006, y: 0.07935, z: 0.0483}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.1196, y: 0.47379994, z: 0.2257}
+      scale: {x: 0.069000006, y: 0.07935, z: 0.0483}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.1334, y: 0.49104998, z: 0.24640001}
+      scale: {x: 0.02415, y: 0.02415, z: 0.02415}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.1334, y: 0.49104998, z: 0.24640001}
+      scale: {x: 0.02415, y: 0.02415, z: 0.02415}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 1
+      group: 1
+      slot: 5
+      pos: {x: 0, y: 0.32659996, z: 0.2625}
+      scale: {x: 0.2392, y: 0.0184, z: 0.0184}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 1
+      slot: 2
+      pos: {x: 0, y: 0.54739994, z: 0.041699998}
+      scale: {x: 0.575, y: 0.0276, z: 0.575}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.046, y: 0.58419997, z: 0.041699998}
+      scale: {x: 0.1495, y: 0.092, z: 0.1495}
+      rot: {x: 0, y: 0, z: 0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.34499997, z: 0.1153}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Lilylord
+    blurb: A great bullfrog crowned in water lilies. Its throat swells and it spits
+      a jet that could knock down a door.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.3214, z: -0.0053549986}
+      scale: {x: 0.67849994, y: 0.48852, z: 0.67849994}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.25355, z: 0.13034499}
+      scale: {x: 0.5156599, y: 0.29853997, z: 0.48852}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0.29853997, y: 0.14499, z: -0.168195}
+      scale: {x: 0.21711999, y: 0.18997999, z: 0.32568}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: -0.29853997, y: 0.14499, z: -0.168195}
+      scale: {x: 0.21711999, y: 0.18997999, z: 0.32568}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0.1196, y: 0.4996499, z: 0.185545}
+      scale: {x: 0.13800001, y: 0.13800001, z: 0.13800001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: -0.1196, y: 0.4996499, z: 0.185545}
+      scale: {x: 0.13800001, y: 0.13800001, z: 0.13800001}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: 0.1196, y: 0.51804996, z: 0.240745}
+      scale: {x: 0.069000006, y: 0.07935, z: 0.0483}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 3
+      pos: {x: -0.1196, y: 0.51804996, z: 0.240745}
+      scale: {x: 0.069000006, y: 0.07935, z: 0.0483}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.1334, y: 0.53529996, z: 0.261445}
+      scale: {x: 0.02415, y: 0.02415, z: 0.02415}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.1334, y: 0.53529996, z: 0.261445}
+      scale: {x: 0.02415, y: 0.02415, z: 0.02415}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 1
+      group: 1
+      slot: 5
+      pos: {x: 0, y: 0.37084994, z: 0.27754498}
+      scale: {x: 0.2392, y: 0.0184, z: 0.0184}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 1
+      slot: 2
+      pos: {x: 0, y: 0.5916499, z: 0.056744985}
+      scale: {x: 0.575, y: 0.0276, z: 0.575}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.046, y: 0.6284499, z: 0.056744985}
+      scale: {x: 0.1495, y: 0.092, z: 0.1495}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0, y: 0.71444994, z: 0.325545}
+      scale: {x: 0.1, y: 0.05, z: 0.06}
+      rot: {x: 60, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.109456405, y: 0.71444994, z: 0.2728336}
+      scale: {x: 0.1, y: 0.05, z: 0.06}
+      rot: {x: 60, y: 51.42857, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.13648991, y: 0.71444994, z: 0.15439208}
+      scale: {x: 0.1, y: 0.05, z: 0.06}
+      rot: {x: 60, y: 102.85714, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.060743704, y: 0.71444994, z: 0.05940935}
+      scale: {x: 0.1, y: 0.05, z: 0.06}
+      rot: {x: 60, y: 154.28572, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.060743697, y: 0.71444994, z: 0.059409335}
+      scale: {x: 0.1, y: 0.05, z: 0.06}
+      rot: {x: 60, y: 205.71428, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.13648991, y: 0.71444994, z: 0.15439206}
+      scale: {x: 0.1, y: 0.05, z: 0.06}
+      rot: {x: 60, y: 257.14285, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.10945638, y: 0.71444994, z: 0.2728336}
+      scale: {x: 0.1, y: 0.05, z: 0.06}
+      rot: {x: 60, y: 308.57144, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0, y: 0.7344499, z: 0.185545}
+      scale: {x: 0.08, y: 0.08, z: 0.08}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 1
+      pos: {x: 0, y: 0.4554899, z: 0.226945}
+      scale: {x: 0.22, y: 0.16, z: 0.18}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 1
+      group: 1
+      slot: 5
+      pos: {x: 0.033120003, y: 0.5355299, z: 0.24074501}
+      scale: {x: 0.035880003, y: 0.008280001, z: 0.01104}
+      rot: {x: 0, y: 0, z: 22}
+    - shape: 1
+      group: 1
+      slot: 5
+      pos: {x: -0.033120003, y: 0.5355299, z: 0.24074501}
+      scale: {x: 0.035880003, y: 0.008280001, z: 0.01104}
+      rot: {x: 0, y: -0, z: -22}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.38924995, z: 0.13034499}
+    element2: 0
+    skill: lily_torrent
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0
