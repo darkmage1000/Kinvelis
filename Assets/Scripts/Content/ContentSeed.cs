@@ -39,6 +39,7 @@ namespace Wildbond
             BuildEvoSkills(b);
             BuildEvoSkills2(b);
             BuildEvoSkills3(b);
+            BuildEvoSkills4(b);
             BuildTraits(b);
             BuildSpecies(b);
             BuildStarters(b);
@@ -59,6 +60,7 @@ namespace Wildbond
             BuildEvolutions(b);
             BuildEvolutions2(b);
             BuildEvolutions3(b);
+            BuildEvolutions4(b);
             BuildBuildings(b);
             BuildTechBuildings(b);
             BuildStorageBuildings(b);

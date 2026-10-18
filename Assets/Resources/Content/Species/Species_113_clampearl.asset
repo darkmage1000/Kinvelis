@@ -23,6 +23,7 @@ MonoBehaviour:
   rarity: 1
   starter: 0
   bossOnly: 0
+  underground: 0
   role: 
   biomes: 128
   spawnTime: 0
@@ -50,6 +51,8 @@ MonoBehaviour:
     level: 2
   - type: 4
     level: 1
+  - type: 11
+    level: 3
   perk: 5
   overworldRole: 'Companion: lights up the night around you.'
   mountable: 0
@@ -149,6 +152,186 @@ MonoBehaviour:
     pivot: {x: 0, y: 0.22, z: -0.28}
   - group: 11
     pivot: {x: 0, y: 0.32, z: 0.04}
+  forms:
+  - name: Pearlclam
+    blurb: Its shell has grown fluted and heavy; its pearl, smug.
+    parts:
+    - shape: 7
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.2475, z: 0}
+      scale: {x: 0.775, y: 0.475, z: 0.72499996}
+      rot: {x: 180, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0, y: 0.2475, z: 0}
+      scale: {x: 0.675, y: 0.125, z: 0.625}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 7
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.4125, z: -0.08999999}
+      scale: {x: 0.62, y: 0.4, z: 0.58}
+      rot: {x: -30, y: 0, z: 0}
+    - shape: 7
+      group: 1
+      slot: 1
+      pos: {x: 0, y: 0.4525, z: -0.10999999}
+      scale: {x: 0.4, y: 0.4, z: 0.38}
+      rot: {x: -30, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: 0, y: 0.39749998, z: 0.049999997}
+      scale: {x: 0.312, y: 0.312, z: 0.312}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 3
+      pos: {x: 0.072000004, y: 0.4335, z: 0.182}
+      scale: {x: 0.072000004, y: 0.0828, z: 0.0504}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 3
+      pos: {x: -0.072000004, y: 0.4335, z: 0.182}
+      scale: {x: 0.072000004, y: 0.0828, z: 0.0504}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 11
+      slot: 4
+      pos: {x: 0.089999996, y: 0.45149997, z: 0.2036}
+      scale: {x: 0.0252, y: 0.0252, z: 0.0252}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 4
+      pos: {x: -0.089999996, y: 0.45149997, z: 0.2036}
+      scale: {x: 0.0252, y: 0.0252, z: 0.0252}
+      rot: {x: 0, y: -0, z: -0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.27249998, z: -0.35}
+    - group: 11
+      pivot: {x: 0, y: 0.39749998, z: 0.049999997}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Pearlmonarch
+    blurb: A great fluted clam whose pearl wears a crown of smaller pearls. It shoots
+      them. Hard.
+    parts:
+    - shape: 7
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.28312498, z: 0}
+      scale: {x: 0.89124995, y: 0.54625, z: 0.83374995}
+      rot: {x: 180, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0, y: 0.28312498, z: 0}
+      scale: {x: 0.77625, y: 0.14375, z: 0.71875}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 7
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.451875, z: -0.14249997}
+      scale: {x: 0.62, y: 0.4, z: 0.58}
+      rot: {x: -30, y: 0, z: 0}
+    - shape: 7
+      group: 1
+      slot: 1
+      pos: {x: 0, y: 0.491875, z: -0.16249996}
+      scale: {x: 0.4, y: 0.4, z: 0.38}
+      rot: {x: -30, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: 0, y: 0.455625, z: 0.057499994}
+      scale: {x: 0.312, y: 0.312, z: 0.312}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 3
+      pos: {x: 0.072000004, y: 0.491625, z: 0.18949999}
+      scale: {x: 0.072000004, y: 0.0828, z: 0.0504}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 3
+      pos: {x: -0.072000004, y: 0.491625, z: 0.18949999}
+      scale: {x: 0.072000004, y: 0.0828, z: 0.0504}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 11
+      slot: 4
+      pos: {x: 0.089999996, y: 0.50962496, z: 0.2111}
+      scale: {x: 0.0252, y: 0.0252, z: 0.0252}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 4
+      pos: {x: -0.089999996, y: 0.50962496, z: 0.2111}
+      scale: {x: 0.0252, y: 0.0252, z: 0.0252}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0, y: 0.72187495, z: 0.055900037}
+      scale: {x: 0.06, y: 0.06, z: 0.06}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.17181943, y: 0.72187495, z: -0.043299966}
+      scale: {x: 0.06, y: 0.06, z: 0.06}
+      rot: {x: 0, y: 60, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: 0.17181943, y: 0.72187495, z: -0.24169996}
+      scale: {x: 0.06, y: 0.06, z: 0.06}
+      rot: {x: 0, y: 120, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.000000017344679, y: 0.72187495, z: -0.34089994}
+      scale: {x: 0.06, y: 0.06, z: 0.06}
+      rot: {x: 0, y: 180, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.17181943, y: 0.72187495, z: -0.24169993}
+      scale: {x: 0.06, y: 0.06, z: 0.06}
+      rot: {x: 0, y: 240, z: 0}
+    - shape: 0
+      group: 1
+      slot: 4
+      pos: {x: -0.17181943, y: 0.72187495, z: -0.043299973}
+      scale: {x: 0.06, y: 0.06, z: 0.06}
+      rot: {x: 0, y: 300, z: 0}
+    pivots:
+    - group: 1
+      pivot: {x: 0, y: 0.311875, z: -0.40249997}
+    - group: 11
+      pivot: {x: 0, y: 0.455625, z: 0.057499994}
+    element2: 0
+    skill: pearl_shot
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

@@ -23,6 +23,7 @@ MonoBehaviour:
   rarity: 1
   starter: 0
   bossOnly: 0
+  underground: 0
   role: 
   biomes: 128
   spawnTime: 0
@@ -50,6 +51,8 @@ MonoBehaviour:
     level: 2
   - type: 8
     level: 1
+  - type: 11
+    level: 3
   perk: 8
   overworldRole: 'Companion: slowly restores your HP.'
   mountable: 0
@@ -203,6 +206,338 @@ MonoBehaviour:
     pivot: {x: 0, y: 0.7, z: -0.26}
   - group: 11
     pivot: {x: 0, y: 0.76, z: 0}
+  forms:
+  - name: Bubbleray
+    blurb: Its bubble ring has grown wide enough to swim through.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.748, z: -0.0030100048}
+      scale: {x: 0.48000002, y: 0.57600003, z: 0.696}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.652, z: 0.044989996}
+      scale: {x: 0.384, y: 0.36, z: 0.57600003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0, y: 0.7720001, z: -0.07501001}
+      scale: {x: 0.504, y: 0.6, z: 0.14400001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 5
+      pos: {x: 0.14400001, y: 0.83056, z: 0.32411}
+      scale: {x: 0.120000005, y: 0.13800001, z: 0.08400001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 5
+      pos: {x: -0.14400001, y: 0.83056, z: 0.32411}
+      scale: {x: 0.120000005, y: 0.13800001, z: 0.08400001}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.16200002, y: 0.86056, z: 0.36011}
+      scale: {x: 0.042000003, y: 0.042000003, z: 0.042000003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.16200002, y: 0.86056, z: 0.36011}
+      scale: {x: 0.042000003, y: 0.042000003, z: 0.042000003}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0.15840003, y: 0.74896, z: 0.28091}
+      scale: {x: 0.09600001, y: 0.0624, z: 0.048000004}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: -0.15840003, y: 0.74896, z: 0.28091}
+      scale: {x: 0.09600001, y: 0.0624, z: 0.048000004}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0, y: 0.676, z: 0.33899}
+      scale: {x: 0.120000005, y: 0.072000004, z: 0.060000002}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 10
+      slot: 2
+      pos: {x: 0.36259204, y: 0.6466449, z: 0.020989995}
+      scale: {x: 0.312, y: 0.060000002, z: 0.24000001}
+      rot: {x: 0, y: -0, z: -20}
+    - shape: 0
+      group: 9
+      slot: 2
+      pos: {x: -0.36259204, y: 0.6466449, z: 0.020989995}
+      scale: {x: 0.312, y: 0.060000002, z: 0.24000001}
+      rot: {x: 0, y: 0, z: 20}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0, y: 1.0840001, z: -0.051010005}
+      scale: {x: 0.060000002, y: 0.28800002, z: 0.36}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 8
+      slot: 2
+      pos: {x: 0, y: 0.748, z: -0.47501}
+      scale: {x: 0.05, y: 0.46, z: 0.3}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: 0, y: 0.82, z: 0.64698994}
+      scale: {x: 0.1375, y: 0.1375, z: 0.1375}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: 0.56291646, y: 0.82, z: -0.32801002}
+      scale: {x: 0.1375, y: 0.1375, z: 0.1375}
+      rot: {x: 0, y: 120, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: -0.5629165, y: 0.82, z: -0.32800993}
+      scale: {x: 0.1375, y: 0.1375, z: 0.1375}
+      rot: {x: 0, y: 240, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: 0.25, y: 1.2950001, z: 0.24699}
+      scale: {x: 0.0875, y: 0.0875, z: 0.0875}
+      rot: {x: 0, y: 0, z: 0}
+    pivots:
+    - group: 10
+      pivot: {x: 0.21600002, y: 0.70000005, z: 0.020989995}
+    - group: 9
+      pivot: {x: -0.21600002, y: 0.70000005, z: 0.020989995}
+    - group: 8
+      pivot: {x: 0, y: 0.748, z: -0.31501}
+    - group: 11
+      pivot: {x: 0, y: 0.82, z: -0.0030100048}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Tidebell
+    blurb: A reef fish wearing a bell of coral, a crown of bubbles that never pop.
+      It fires them like cannonballs.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.77680004, z: -0.0048160087}
+      scale: {x: 0.52800006, y: 0.63360006, z: 0.76559997}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.67120004, z: 0.047983993}
+      scale: {x: 0.42240003, y: 0.39600003, z: 0.63360006}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0, y: 0.8032001, z: -0.08401602}
+      scale: {x: 0.5544, y: 0.66, z: 0.15840001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 5
+      pos: {x: 0.15840001, y: 0.86761606, z: 0.355016}
+      scale: {x: 0.13200001, y: 0.15180002, z: 0.09240001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 5
+      pos: {x: -0.15840001, y: 0.86761606, z: 0.355016}
+      scale: {x: 0.13200001, y: 0.15180002, z: 0.09240001}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.17820002, y: 0.90061605, z: 0.394616}
+      scale: {x: 0.046200003, y: 0.046200003, z: 0.046200003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.17820002, y: 0.90061605, z: 0.394616}
+      scale: {x: 0.046200003, y: 0.046200003, z: 0.046200003}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0.17424004, y: 0.777856, z: 0.30749598}
+      scale: {x: 0.105600014, y: 0.06864, z: 0.052800007}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: -0.17424004, y: 0.777856, z: 0.30749598}
+      scale: {x: 0.105600014, y: 0.06864, z: 0.052800007}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0, y: 0.6976, z: 0.371384}
+      scale: {x: 0.13200001, y: 0.07920001, z: 0.06600001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 10
+      slot: 2
+      pos: {x: 0.38419205, y: 0.67064494, z: 0.021583993}
+      scale: {x: 0.312, y: 0.060000002, z: 0.24000001}
+      rot: {x: 0, y: -0, z: -20}
+    - shape: 0
+      group: 9
+      slot: 2
+      pos: {x: -0.38419205, y: 0.67064494, z: 0.021583993}
+      scale: {x: 0.312, y: 0.060000002, z: 0.24000001}
+      rot: {x: 0, y: 0, z: 20}
+    - shape: 0
+      group: 0
+      slot: 2
+      pos: {x: 0, y: 1.1464002, z: -0.05761601}
+      scale: {x: 0.06600001, y: 0.31680003, z: 0.39600003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 8
+      slot: 2
+      pos: {x: 0, y: 0.77680004, z: -0.55601597}
+      scale: {x: 0.065, y: 0.598, z: 0.39000002}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: 0, y: 0.856, z: 0.6451839}
+      scale: {x: 0.1375, y: 0.1375, z: 0.1375}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: 0.56291646, y: 0.856, z: -0.329816}
+      scale: {x: 0.1375, y: 0.1375, z: 0.1375}
+      rot: {x: 0, y: 120, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: -0.5629165, y: 0.856, z: -0.32981592}
+      scale: {x: 0.1375, y: 0.1375, z: 0.1375}
+      rot: {x: 0, y: 240, z: 0}
+    - shape: 0
+      group: 11
+      slot: 6
+      pos: {x: 0.25, y: 1.3310001, z: 0.24518399}
+      scale: {x: 0.0875, y: 0.0875, z: 0.0875}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 2
+      group: 0
+      slot: 2
+      pos: {x: 0, y: 1.0419201, z: 0.11518399}
+      scale: {x: 0.035, y: 0.2, z: 0.035}
+      rot: {x: 30, y: 0, z: 0}
+    - shape: 2
+      group: 0
+      slot: 2
+      pos: {x: 0.10392305, y: 1.0419201, z: 0.055183984}
+      scale: {x: 0.035, y: 0.2, z: 0.035}
+      rot: {x: 30, y: 60, z: 0}
+    - shape: 2
+      group: 0
+      slot: 2
+      pos: {x: 0.103923045, y: 1.0419201, z: -0.06481601}
+      scale: {x: 0.035, y: 0.2, z: 0.035}
+      rot: {x: 30, y: 120, z: 0}
+    - shape: 2
+      group: 0
+      slot: 2
+      pos: {x: -0.000000010490733, y: 1.0419201, z: -0.12481601}
+      scale: {x: 0.035, y: 0.2, z: 0.035}
+      rot: {x: 30, y: 180, z: 0}
+    - shape: 2
+      group: 0
+      slot: 2
+      pos: {x: -0.10392305, y: 1.0419201, z: -0.064816}
+      scale: {x: 0.035, y: 0.2, z: 0.035}
+      rot: {x: 30, y: 240, z: 0}
+    - shape: 2
+      group: 0
+      slot: 2
+      pos: {x: -0.10392305, y: 1.0419201, z: 0.055183977}
+      scale: {x: 0.035, y: 0.2, z: 0.035}
+      rot: {x: 30, y: 300, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0, y: 1.18192, z: 0.15518399}
+      scale: {x: 0.07, y: 0.07, z: 0.07}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.13856407, y: 1.18192, z: 0.07518398}
+      scale: {x: 0.07, y: 0.07, z: 0.07}
+      rot: {x: 0, y: 60, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.13856407, y: 1.18192, z: -0.084816016}
+      scale: {x: 0.07, y: 0.07, z: 0.07}
+      rot: {x: 0, y: 120, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.000000013987644, y: 1.18192, z: -0.164816}
+      scale: {x: 0.07, y: 0.07, z: 0.07}
+      rot: {x: 0, y: 180, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.13856407, y: 1.18192, z: -0.084815994}
+      scale: {x: 0.07, y: 0.07, z: 0.07}
+      rot: {x: 0, y: 240, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.13856407, y: 1.18192, z: 0.07518397}
+      scale: {x: 0.07, y: 0.07, z: 0.07}
+      rot: {x: 0, y: 300, z: 0}
+    pivots:
+    - group: 10
+      pivot: {x: 0.23760003, y: 0.7240001, z: 0.021583993}
+    - group: 9
+      pivot: {x: -0.23760003, y: 0.7240001, z: 0.021583993}
+    - group: 8
+      pivot: {x: 0, y: 0.77680004, z: -0.34801602}
+    - group: 11
+      pivot: {x: 0, y: 0.856, z: -0.0048160087}
+    element2: 0
+    skill: bubble_barrage
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0
