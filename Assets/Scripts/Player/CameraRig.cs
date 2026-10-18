@@ -19,6 +19,7 @@ namespace Wildbond
         Vector3 focus;
         float shake;
         float targetDistance;
+        float caveBoom = 99f;
 
         public Vector3 Forward { get { var f = Quaternion.Euler(0, Yaw, 0) * Vector3.forward; return f; } }
         public Vector3 Right => Quaternion.Euler(0, Yaw, 0) * Vector3.right;
@@ -104,6 +105,16 @@ namespace Wildbond
                 float h = Mathf.Max(Ground.Height(p.x, p.z), Tides.Surface(p.x, p.z) - 0.2f) + minClear;
                 if (p.y < h) { pos.y += (h - p.y); }
             }
+
+            // underground: the boom shortens instead of going into the rock or through the roof (eases back out)
+            if (Caves.InCave)
+            {
+                float len = (pos - focus).magnitude;
+                float room = Caves.CameraRoom(focus, pos);
+                caveBoom = room < caveBoom ? room : Mathf.Lerp(caveBoom, room, 1f - Mathf.Exp(-2.5f * dt));
+                if (caveBoom < len && len > 0.01f) pos = focus + (pos - focus) / len * caveBoom;
+            }
+            else caveBoom = 99f;
 
             if (shake > 0f)
             {

@@ -34,7 +34,7 @@ namespace Wildbond
             var e = r.e;
             float u() => (float)rng.NextDouble();
             int count(Role role) => r.tier == CaveTier.Mid ? (role == Role.Pass || role == Role.Hoard || role == Role.Colony || role == Role.Mini ? 1 : 0)
-                                  : role == Role.Hazard ? 4 + rng.Next(0, 2) : role == Role.Entrance || role == Role.Eggs ? 0 : 1 + (u() < 0.4f ? 1 : 0);
+                                  : role == Role.Hazard ? 4 + rng.Next(0, 2) : role == Role.Entrance || role == Role.Eggs || role == Role.Landing || role == Role.Descent || role == Role.Secret || role == Role.Puzzle || role == Role.Vault ? 0 : 1 + (u() < 0.4f ? 1 : 0);
             Element el; StatusType st; Color col; bool pools;
             switch (e.biome)
             {
@@ -49,7 +49,10 @@ namespace Wildbond
             }
             bool TooClose(Vector3 p)
             {
-                if (Flat2(p, r.startPos) < 10f * 10f) return true;
+                if (Flat2(p, r.startPos) < 10f * 10f || Flat2(p, r.exitPos) < 6f * 6f) return true;
+                if (r.hasDescent && Flat2(p, r.descentPos) < 9f * 9f) return true;
+                foreach (var sc in r.secrets) if (Flat2(sc.pos, p) < 6f * 6f) return true;
+                foreach (var pz in r.puzzles) { if (Flat2(pz.gatePos, p) < 6f * 6f) return true; foreach (var q in pz.spots) if (Flat2(q, p) < 4f * 4f) return true; }
                 foreach (var c in r.chests) if (Flat2(c.pos, p) < 4f * 4f) return true;
                 foreach (var n in r.nests) if (Flat2(n.pos, p) < 3.5f * 3.5f) return true;
                 foreach (var n in r.nodes) if (Flat2(n.pos, p) < 3f * 3f) return true;

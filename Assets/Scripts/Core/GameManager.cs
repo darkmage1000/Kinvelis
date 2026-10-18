@@ -681,7 +681,7 @@ namespace Wildbond
             float skip = Mathf.Repeat(WakeAt - env.timeOfDay, 1f) * dayLen;
             env.timeOfDay = WakeAt;
             WorldTime += skip;
-            baseMgr.SimulateOffline(skip);
+            baseMgr.SimulateOffline(skip, slept: true);
             var s = Player.Stats;
             s.hp = s.MaxHp; s.stamina = s.MaxStamina;
             s.hunger = Mathf.Max(5f, s.hunger - 15f);
@@ -1133,6 +1133,15 @@ namespace Wildbond
         void Respawn()
         {
             hud.ShowDeath(false);
+            if (caves.CheckpointRespawn(out var checkpoint))
+            {
+                // a deep cave's lower level: back up by the rope
+                projectiles.ClearAll();
+                Player.Revive(checkpoint);
+                CameraRig.SnapTo(checkpoint);
+                GameEvents.Say("You come round at the checkpoint, by the rope.", new Color(0.6f, 1f, 0.75f));
+                return;
+            }
             caves.Abort();   // fainting underground drags you back out
             tamers.Abort();
             wardens.Abort();

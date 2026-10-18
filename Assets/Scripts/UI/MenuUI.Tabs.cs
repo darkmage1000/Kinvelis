@@ -491,15 +491,17 @@ namespace Wildbond
             var bm = BaseManager.I;
             var list = TrackedList(content);
             var lvl = GameManager.I.Player.Stats.level;
-            Header(list, "Build");
             if (bm.HasBase)
             {
-                // camp structures, or your house piece by piece (Housing)
-                var sw = UIFactory.HRow(list, 76, 12);
-                UIFactory.Size(UIFactory.Button(sw.transform, "CAMP STRUCTURES", () => { buildHouse = false; Rebuild(); }, !buildHouse ? new Color(0.25f, 0.55f, 0.45f) : UIFactory.ButtonCol, 24), 70, 380);
-                UIFactory.Size(UIFactory.Button(sw.transform, "HOUSE", () => { buildHouse = true; Rebuild(); }, buildHouse ? new Color(0.25f, 0.55f, 0.45f) : UIFactory.ButtonCol, 24), 70, 380);
+                // camp structures, or your house piece by piece (Housing): a switch fixed at the top, the camp's category tabs under it
+                var sw = FixedBar(list, 70, "BuildSwitch");
+                var swRow = sw.gameObject.AddComponent<HorizontalLayoutGroup>();
+                swRow.spacing = 10; swRow.childControlHeight = true; swRow.childControlWidth = true; swRow.childForceExpandHeight = true; swRow.childForceExpandWidth = true;
+                UIFactory.Button(sw, "CAMP STRUCTURES", () => { buildHouse = false; mainScroll = null; Rebuild(); }, !buildHouse ? new Color(0.62f, 0.48f, 0.22f) : new Color(0.3f, 0.3f, 0.34f), 26);
+                UIFactory.Button(sw, "HOUSE", () => { buildHouse = true; mainScroll = null; Rebuild(); }, buildHouse ? new Color(0.62f, 0.48f, 0.22f) : new Color(0.3f, 0.3f, 0.34f), 26);
                 if (buildHouse) { BuildHouseList(list); RestoreScroll(); return; }
             }
+            else Header(list, "Build");
             Para(list, bm.HasBase ? "Structures must be placed inside your camp ring." : UIFactory.Col("Start by placing a Hearthstone - it founds your camp.", UIFactory.Accent));
             var defs = ContentDB.BuildingList.FindAll(x => x.isCore != bm.HasBase);
             // split into category tabs once the camp exists (MenuUI.Categories)
@@ -566,18 +568,35 @@ namespace Wildbond
             var s = GameManager.I.Player.Stats;
             var list = TrackedList(content);
             Header(list, $"Explorer Lv {s.level}  <size=26>XP {s.xp}/{PlayerStats.XpToNext(s.level)}  ·  Skill points: {UIFactory.Col(s.skillPoints.ToString(), UIFactory.Accent)}</size>");
-            Para(list, "Earn XP by capturing (new species give double), defeating kin, gathering, crafting and building.");
+            // how far to the next level, as a bar
+            var xpRow = UIFactory.HRow(list, 26, 0);
+            var xpBg = UIFactory.Panel(xpRow.transform, "XpBar", new Color(0.12f, 0.14f, 0.18f, 1f));
+            UIFactory.Size(xpBg, 22, 900);
+            var xpFill = UIFactory.Panel(xpBg.transform, "Fill", new Color(0.45f, 0.8f, 1f, 1f));
+            xpFill.rectTransform.anchorMin = Vector2.zero;
+            xpFill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01(s.xp / (float)Mathf.Max(1, PlayerStats.XpToNext(s.level))), 1f);
+            xpFill.rectTransform.offsetMin = xpFill.rectTransform.offsetMax = Vector2.zero;
+            Para(list, s.skillPoints > 0 ? UIFactory.Col($"You have {s.skillPoints} skill point{(s.skillPoints == 1 ? "" : "s")} to spend - tap + on a skill.", UIFactory.Accent)
+                                         : "Earn XP by capturing (new species give double), defeating kin, gathering, crafting and building. Each level gives a skill point.");
             foreach (PlayerSkill sk in PlayerStats.ActiveSkills)
             {
                 var k = sk;
                 var row = UIFactory.HRow(list, 96, 14);
                 int r = s.Rank(sk);
-                var t = UIFactory.Label(row.transform, $"<b>{PlayerStats.SkillName(sk)}</b>  {r}/{PlayerStats.MaxSkillRank}  {new string('#', r)}{new string('-', PlayerStats.MaxSkillRank - r)}\n<size=21>{PlayerStats.SkillDesc(sk)}</size>", 28, Color.white);
+                var t = UIFactory.Label(row.transform, $"<b>{PlayerStats.SkillName(sk)}</b>  {r}/{PlayerStats.MaxSkillRank}\n<size=21>{PlayerStats.SkillDesc(sk)}</size>", 28, Color.white);
                 t.supportRichText = true;
                 UIFactory.Size(t, 90, 900);
+                // a pip per rank, filled up to the rank you have
+                for (int i = 0; i < PlayerStats.MaxSkillRank; i++)
+                {
+                    var pip = UIFactory.Panel(t.transform, "Pip", i < r ? new Color(0.45f, 0.85f, 0.55f, 1f) : new Color(1f, 1f, 1f, 0.12f));
+                    pip.raycastTarget = false;
+                    pip.rectTransform.Place(new Vector2(0, 1), new Vector2(0, 1), new Vector2(330 + i * 30, -24), new Vector2(24, 14));
+                }
                 bool can = s.skillPoints > 0 && r < PlayerStats.MaxSkillRank;
-                var b = UIFactory.Button(row.transform, "+", can ? () => { if (s.TrySpend(k)) { SynthAudio.Play(Sfx.LevelUp, 1.2f, 0.6f); GameEvents.RaiseInventoryChanged(); } } : (System.Action)null,
-                    can ? new Color(0.25f, 0.55f, 0.4f) : new Color(0.3f, 0.3f, 0.32f), 40);
+                var b = UIFactory.Button(row.transform, r >= PlayerStats.MaxSkillRank ? "MAX" : "+", can ? () => { if (s.TrySpend(k)) { SynthAudio.Play(Sfx.LevelUp, 1.2f, 0.6f); GameEvents.RaiseInventoryChanged(); } } : (System.Action)null,
+                    can ? new Color(0.25f, 0.55f, 0.4f) : new Color(0.24f, 0.25f, 0.28f), r >= PlayerStats.MaxSkillRank ? 26 : 40);
+                if (!can) b.GetComponentInChildren<Text>().color = new Color(1f, 1f, 1f, 0.3f);
                 UIFactory.Size(b, 90, 120);
             }
 
@@ -597,6 +616,7 @@ namespace Wildbond
         // ============================================================ MAP
         void BuildMap()
         {
+            if (Caves.InCave && Caves.I.MapTexture != null) { BuildCaveMap(); return; }
             var ws = Waystones.I;
             var map = MapView.Create(content, new Vector2(900, 900), ConfirmTravel);
             map.GetComponent<RectTransform>().Place(new Vector2(0.4f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(900, 900));
@@ -693,6 +713,10 @@ namespace Wildbond
             Para(list, $"Spawns x{w.wildSpawnRate:0.##} · Capture x{w.captureRate:0.##} · Shimmer x{w.shimmerRate:0.##} · XP x{w.expRate:0.##} · Gather x{w.gatherRate:0.##} · Regrowth x{w.resourceRespawnRate:0.##}\n" +
                        $"Damage taken x{w.wildDamage:0.##} · dealt x{w.playerDamage:0.##} · Hunger x{w.hungerRate:0.##} · Stamina x{w.staminaDrain:0.##} · Day {w.dayLengthMinutes:0} min\n" +
                        $"Camp workers {w.campWorkersBase} (+{w.campWorkersPerLevel}/upgrade) · Work x{w.workSpeed:0.##} · Alpha respawn {w.alphaRespawnMinutes:0} min · Fast travel {(w.fastTravel ? "on" : "off")} · Offline progress {(w.offlineProgress ? "on" : "off")}", 20, Color.white);
+            var offRow = UIFactory.HRow(list, 76, 12);
+            UIFactory.Size(UIFactory.Button(offRow.transform, "CAMP WORKS WHILE THE GAME IS CLOSED: " + (w.offlineProgress ? "ON" : "OFF"), () => { w.offlineProgress = !w.offlineProgress; Rebuild(); },
+                w.offlineProgress ? new Color(0.5f, 0.38f, 0.25f) : new Color(0.3f, 0.36f, 0.42f), 22), 72, 760);
+            Para(list, "<size=19>" + UIFactory.Col("Off = your camp only works while you play (sleeping in a bed still lets it work through the night).", UIFactory.TextDim) + "</size>", 19);
             Para(list, $"Autosaves every {gm.AutosaveInterval:0}s and when the app is paused.\nSave file: {SaveSystem.FilePath}", 20);
             Para(list, "Controls (keyboard): WASD move · Right-mouse look · Wheel zoom · F/Click attack · G seed · E use · Space jump · Q roll · C sneak · Shift hold-sprint · Pad L3 run toggle · 1-4 hotbar · R kin · K kin bar · Y companion behavior · T kin skill · B build · Tab menu · X rotate · Enter place", 20);
         }

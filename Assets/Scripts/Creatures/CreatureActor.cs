@@ -824,15 +824,24 @@ namespace Wildbond
             if (Target == null || !Target.IsAlive) { Target = null; return false; }
             float d = FlatDist(transform.position, Target.Position);
             int idx = ReadyAbility(d, Target, out bool inRange);
-            if (idx >= 0 && inRange)
+            // a crowd of wild kin takes turns on the player (Combat/AttackGate)
+            bool waiting = AttackGate.Gated(this) && !(idx >= 0 && inRange && AttackGate.Allow(this)) && (idx < 0 || inRange);
+            if (idx >= 0 && inRange && !waiting)
             {
                 StartAbility(idx, Target);
                 return true;
             }
-            // approach: melee range for melee, keep some distance for ranged
+            // approach: melee range for melee, keep some distance for ranged; one waiting its turn hangs back
             AbilityDef a = idx >= 0 ? abilities[idx] : null;
             float want = a != null && a.kind == AbilityKind.Projectile ? a.range * 0.7f : 1.2f + Target.Radius + BodyRadius;
-            if (d > want) MoveTo(Target.Position, RunSpeed);
+            if (waiting) want = Mathf.Max(want, 4.5f + Target.Radius + BodyRadius);
+            if (waiting && d < want - 1.2f)
+            {
+                Vector3 back = transform.position - Target.Position; back.y = 0f;
+                MoveTo(transform.position + (back.sqrMagnitude > 0.01f ? back.normalized : transform.forward) * 2.5f, WalkSpeed * 1.3f);
+                faceTarget = Target.Position;
+            }
+            else if (d > want) MoveTo(Target.Position, RunSpeed);
             else
             {
                 // circle-strafe a little while waiting for cooldowns

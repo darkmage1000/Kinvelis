@@ -460,6 +460,8 @@ namespace Wildbond
             else if (fpsText.text.Length > 0) fpsText.text = "";
         }
 
+        readonly List<Caves.CaveMark> caveMarks = new List<Caves.CaveMark>();
+
         void UpdateMinimap(PlayerController pl)
         {
             if (Caves.InCave && Caves.I.MapTexture != null)
@@ -470,8 +472,16 @@ namespace Wildbond
                 float cw = 120f / Caves.ZoneSize;
                 minimap.uvRect = new Rect(cuv.x - cw * 0.5f, cuv.y - cw * 0.5f, cw, cw);
                 minimapArrow.localRotation = Quaternion.Euler(0, 0, -pl.transform.eulerAngles.y);
-                locationText.text = $"{Caves.I.CurrentName}\nUnderground";
-                foreach (var m in markers) if (m.gameObject.activeSelf) m.gameObject.SetActive(false);
+                locationText.text = $"{Caves.I.CurrentName}\n{(Caves.I.OnLowerLevel ? "Lower level" : "Underground")}";
+                // the way out, chests, eggs, guardians, the chasm / rope - the way out always on the rim
+                int ci2 = 0;
+                Caves.I.MapMarks(caveMarks);
+                foreach (var cm in caveMarks)
+                {
+                    bool way = cm.icon == MapIcon.Arch || cm.icon == MapIcon.Waystone || (cm.icon == MapIcon.Cave && Caves.I.OnLowerLevel);
+                    PlaceMarker(ref ci2, cm.pos - pl.Position, 250f / 120f, cm.col, cm.icon, way, way ? float.MaxValue : 0f);
+                }
+                for (int i = ci2; i < markers.Count; i++) markers[i].gameObject.SetActive(false);
                 return;
             }
             if (minimap.texture != MapTexture.Texture) minimap.texture = MapTexture.Texture;

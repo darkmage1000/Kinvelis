@@ -43,7 +43,7 @@ namespace Wildbond
 
         [Header("Toggles")]
         public bool fastTravel = true;
-        public bool offlineProgress = true;
+        public bool offlineProgress = false;   // camp work while the game is closed: off by default since 2026-10-18 (user: "practically cheating")
 
         // Young players (user request 2026-10-10: a 5-year-old who likes adventure and action, a 7-year-old who loves
         // settings). Each is its own switch, read where it applies; the Explorer preset turns the kid ones on together.

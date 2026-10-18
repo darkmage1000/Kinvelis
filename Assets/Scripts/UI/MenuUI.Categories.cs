@@ -75,13 +75,24 @@ namespace Wildbond
         }
 
         /// <summary>A row of tabs fixed above a scroll list (the list is pushed down to make room for it).</summary>
-        void TabStrip(RectTransform list, List<string> labels, List<int> counts, int selected, Action<int> pick)
+        /// <summary>
+        /// A bar fixed above a scroll list (it doesn't scroll away): takes `height` off the top of the list's view and
+        /// returns the space. Bars stack - each goes under the ones already there.
+        /// </summary>
+        RectTransform FixedBar(RectTransform list, float height, string name)
         {
             var view = (RectTransform)list.parent;
-            view.offsetMax = new Vector2(view.offsetMax.x, view.offsetMax.y - TabStripHeight - 8f);
-            var bar = UIFactory.Rect(view.parent, "TabStrip");
+            float top = view.offsetMax.y;
+            view.offsetMax = new Vector2(view.offsetMax.x, top - height - 8f);
+            var bar = UIFactory.Rect(view.parent, name);
             bar.anchorMin = new Vector2(0, 1); bar.anchorMax = new Vector2(1, 1); bar.pivot = new Vector2(0.5f, 1);
-            bar.offsetMin = new Vector2(view.offsetMin.x, -TabStripHeight); bar.offsetMax = new Vector2(view.offsetMax.x, 0);
+            bar.offsetMin = new Vector2(view.offsetMin.x, top - height); bar.offsetMax = new Vector2(view.offsetMax.x, top);
+            return bar;
+        }
+
+        void TabStrip(RectTransform list, List<string> labels, List<int> counts, int selected, Action<int> pick)
+        {
+            var bar = FixedBar(list, TabStripHeight, "TabStrip");
             var row = bar.gameObject.AddComponent<HorizontalLayoutGroup>();
             row.spacing = 6;
             row.childControlHeight = true; row.childControlWidth = true;

@@ -25,7 +25,7 @@ namespace Wildbond
         public static CaveTier TierOf(Entrance e) => e.maxLv >= 30 ? CaveTier.End : e.maxLv >= 15 ? CaveTier.Mid : CaveTier.Early;
         public static string TierWord(CaveTier t) => t == CaveTier.End ? "deep" : t == CaveTier.Mid ? "winding" : "shallow";
 
-        enum Role { Entrance, Pass, Colony, Hoard, Eggs, Hazard, Rare, Mini, Alpha, Boss }
+        enum Role { Entrance, Pass, Colony, Hoard, Eggs, Hazard, Rare, Mini, Alpha, Boss, Descent, Landing, Secret, Puzzle, Vault }
 
         class Room
         {
@@ -56,6 +56,11 @@ namespace Wildbond
                 case Role.Mini: return 9f + u;
                 case Role.Alpha: return 11f + u * 1.5f;
                 case Role.Boss: return 9.5f + u;
+                case Role.Descent: return 8f + u;
+                case Role.Landing: return 7.5f + u;
+                case Role.Secret: return 5f + u;
+                case Role.Puzzle: return 8.5f + u;
+                case Role.Vault: return 5.5f + u * 0.8f;
                 default: return 7.5f + u * 1.5f;
             }
         }
@@ -64,7 +69,9 @@ namespace Wildbond
         {
             var e = r.e;
             float sc = e.kind == CaveKind.Burrow ? 0.8f : 1f;
-            // main path
+            // main path. A deep cave has two levels (`Caves.Levels`): the first ends at a chasm going down, the second
+            // starts at the foot of the rope (the checkpoint) and ends at the guardian.
+            bool lower = r.level > 0, twoLevels = r.levels > 1;
             var main = new List<Role>();
             switch (r.tier)
             {
@@ -77,11 +84,14 @@ namespace Wildbond
                     main.Add(Role.Entrance); main.Add(rng.NextDouble() < 0.5 ? Role.Colony : Role.Pass); main.Add(Role.Hoard); main.Add(Role.Alpha);
                     break;
                 default:
-                    main.Add(Role.Entrance); main.Add(Role.Colony); main.Add(Role.Hoard); main.Add(Role.Hazard); main.Add(Role.Alpha);
+                    if (!twoLevels) { main.Add(Role.Entrance); main.Add(Role.Colony); main.Add(Role.Hoard); main.Add(Role.Hazard); main.Add(Role.Alpha); }
+                    else if (!lower) { main.Add(Role.Entrance); main.Add(Role.Colony); main.Add(Role.Hoard); main.Add(Role.Descent); }
+                    else { main.Add(Role.Landing); main.Add(Role.Hazard); main.Add(Role.Pass); main.Add(Role.Alpha); }
                     break;
             }
-            // the mouth chamber sits by the west edge
-            var start = new Room { role = Role.Entrance, r = RoleRadius(Role.Entrance, rng) * sc };
+            Role goal = main[main.Count - 1];
+            // the first chamber sits by the west edge
+            var start = new Room { role = main[0], r = RoleRadius(main[0], rng) * sc };
             start.c = new Vector2(Origin.x + 8f + start.r * 1.25f, Origin.y + 46f + (float)rng.NextDouble() * 92f);
             r.rooms.Add(Shape(start, e, rng));
             Vector2 dir = Vector2.right;
@@ -91,31 +101,51 @@ namespace Wildbond
                 int got = PlaceRoom(r, prev, main[i], -1, dir, sc, rng);
                 if (got < 0)
                 {
-                    // boxed in: the guardian's chamber still has to fit, so drop to it straight away
-                    if (main[i] != Role.Alpha && main[i] != Role.Boss) { got = PlaceRoom(r, prev, main[main.Count - 1], -1, dir, sc, rng); if (got >= 0) break; }
+                    // boxed in: the last chamber (guardian or chasm) still has to fit, so drop to it straight away
+                    if (main[i] != goal) { got = PlaceRoom(r, prev, goal, -1, dir, sc, rng); if (got >= 0) break; }
                     if (got < 0) break;
                 }
                 var d = r.rooms[got].c - r.rooms[prev].c;
                 dir = (d.normalized + Vector2.right * 0.8f).normalized;   // wander, but keep heading in
             }
-            // a guardian chamber is required: if planning failed to reach one, the last chamber becomes it
+            // the last chamber is required: if planning failed to reach one, the last chamber becomes it
             var last = r.rooms[r.rooms.Count - 1];
-            if (last.role != Role.Alpha && last.role != Role.Boss && r.rooms.Count > 1) last.role = r.tier == CaveTier.Early ? Role.Boss : Role.Alpha;
+            if (last.role != goal && r.rooms.Count > 1) last.role = goal;
             int mainCount = r.rooms.Count;
 
             // branches: (parent index on the main path, chambers along it)
             var branches = new List<(int, Role[])>();
-            if (r.tier == CaveTier.Mid)
+            int SomeRoom() => rng.Next(0, Mathf.Max(1, mainCount - 1));   // any chamber but the last
+            if (r.tier == CaveTier.Early)
+            {
+                if (rng.NextDouble() < 0.5) branches.Add((SomeRoom(), new[] { Role.Secret }));
+            }
+            else if (r.tier == CaveTier.Mid)
             {
                 branches.Add((1, new[] { Role.Eggs }));
                 branches.Add((Mathf.Min(2, mainCount - 1), new[] { Role.Mini }));
+                branches.Add((Mathf.Min(2, mainCount - 1), new[] { Role.Puzzle, Role.Vault }));
+                if (rng.NextDouble() < 0.75) branches.Add((SomeRoom(), new[] { Role.Secret }));
             }
-            else if (r.tier == CaveTier.End)
+            else if (!twoLevels)
             {
                 branches.Add((1, new[] { Role.Eggs }));
                 branches.Add((Mathf.Min(2, mainCount - 1), new[] { Role.Pass, Role.Mini }));
                 branches.Add((Mathf.Min(3, mainCount - 1), new[] { Role.Hazard, Role.Mini }));
                 branches.Add((mainCount - 1, new[] { Role.Rare, Role.Alpha }));
+            }
+            else if (!lower)
+            {
+                branches.Add((1, new[] { Role.Eggs }));
+                branches.Add((Mathf.Min(2, mainCount - 1), new[] { Role.Pass, Role.Mini }));
+                branches.Add((Mathf.Min(2, mainCount - 1), new[] { Role.Puzzle, Role.Vault }));
+                branches.Add((rng.Next(0, 2), new[] { Role.Secret }));
+            }
+            else
+            {
+                branches.Add((1, new[] { Role.Hazard, Role.Mini }));
+                branches.Add((mainCount - 1, new[] { Role.Rare, Role.Alpha }));
+                branches.Add((Mathf.Min(2, mainCount - 1), new[] { Role.Secret }));
             }
             int bi = 0;
             foreach (var br in branches)
@@ -193,7 +223,7 @@ namespace Wildbond
             rm.rz = rm.r * (0.74f + u() * 0.24f);
             rm.ang = u() * Mathf.PI;
             rm.p1 = u() * 6.28f; rm.p2 = u() * 6.28f; rm.p3 = u() * 6.28f;
-            rm.hall = e.kind == CaveKind.Ruin && rm.role != Role.Colony && rm.role != Role.Eggs && rm.role != Role.Hoard;
+            rm.hall = e.kind == CaveKind.Ruin && rm.role != Role.Colony && rm.role != Role.Eggs && rm.role != Role.Hoard && rm.role != Role.Secret;
             if (!rm.hall)
             {
                 int lobes = rm.r > 8.5f ? 1 + rng.Next(0, 3) : rng.Next(0, 2);
@@ -386,6 +416,35 @@ namespace Wildbond
         /// <summary>The cave floor's height here (Ground.Height in the cave zone).</summary>
         public static float FloorAt(float x, float z) => I != null && I.run != null && I.run.Flo != null ? FloorY + Sample(I.run.Flo, x, z) : FloorY;
         static float CeilAt(Run r, float x, float z) => FloorY + Sample(r.C, x, z);
+
+        /// <summary>
+        /// How far along the camera boom (focus -> want) the camera can sit without going into the rock or through the
+        /// roof. The rock face leans out over the floor toward the top (`BuildWalls`), so the clearance needed grows with
+        /// height. Starts counting once the boom is in the clear, so a player hugging a wall doesn't pin it to the head.
+        /// </summary>
+        public static float CameraRoom(Vector3 focus, Vector3 want)
+        {
+            var d = want - focus; float len = d.magnitude;
+            if (I == null || I.run == null || len < 0.01f || !InZone(focus.x, focus.z)) return len;
+            var r = I.run;
+            var dir = d / len;
+            bool clear = false;
+            for (float s = 0.25f; s <= len; s += 0.2f)
+            {
+                bool blocked = CamBlocked(r, focus + dir * s);
+                if (!blocked) clear = true;
+                else if (clear) return Mathf.Max(0.7f, s - 0.3f);
+            }
+            return clear ? len : 0.8f;
+        }
+
+        static bool CamBlocked(Run r, Vector3 p)
+        {
+            float fl = FloorAt2(r, p.x, p.z), ce = CeilAt(r, p.x, p.z);
+            if (p.y > ce - 0.45f || p.y < fl + 0.3f) return true;
+            float t = Mathf.Clamp01((p.y - fl) / Mathf.Max(0.5f, ce - fl));
+            return Sample(r.F, p.x, p.z) < 0.45f + 1.6f * Mathf.Clamp01((t - 0.35f) / 0.65f);
+        }
 
         /// <summary>Unit direction toward open space (up the field).</summary>
         static Vector2 Grad(Run r, float x, float z)

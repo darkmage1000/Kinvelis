@@ -311,7 +311,7 @@ html: `
 
 { id: "camp", group: "Camp", title: "Camp and jobs", blurb: "The Hearthstone, workers, food, storage, defense, farming and automation.",
 html: `
-<p class="lead">Your camp is the ring around a Hearthstone. Everything in it can be run by your kin while you are out exploring, and it keeps going while the game is closed.</p>
+<p class="lead">Your camp is the ring around a Hearthstone. Everything in it can be run by your kin while you are out exploring. New worlds don't work while the game is closed (a setting: Settings > CAMP WORKS WHILE THE GAME IS CLOSED); sleeping in a bed lets the camp work through the night either way.</p>
 
 <h2 id="walk">Working your camp</h2>
 <p>Camp work is done <b>at the structure</b>. Walk up to it and use its button (CRAFT, COOK, OPEN, FEED BOX, PLANT, WORK, HATCH!...), or tap <b>MANAGE</b> next to it to choose who works there, change a crop, collect what it made or take it down. The Camp menu, opened from anywhere, is a view of the whole camp: what every structure is doing, what it needs, and how far away it is.</p>
@@ -491,7 +491,7 @@ html: `
 </ul>
 
 <h2 id="away">While you are away</h2>
-<p>The camp keeps producing while the game is closed, as long as there is food. <b>Expeditions</b> send kin off for 15 minutes, 1 hour or 4 hours of real time and they come back with finds. <b>Outposts</b> (from research) station two kin on an outer land to gather its ore, with a caravan to your storage every ten minutes.</p>
+<p>With <b>offline progress</b> switched on (off by default in new worlds; Settings or the New World screen), the camp keeps producing while the game is closed, as long as there is food - up to two hours' worth. <b>Expeditions</b> send kin off for 15 minutes, 1 hour or 4 hours of real time and they come back with finds. <b>Outposts</b> (from research) station two kin on an outer land to gather its ore, with a caravan to your storage every ten minutes.</p>
 ` },
 
 { id: "research", group: "Camp", title: "Research and metals", blurb: "The Research Bench, the five outer metals and what the Warden Sigils unlock.",
@@ -603,11 +603,18 @@ html: `
 <p>There are 19 underground places. Each is the same every time you go in, lit only by its crystals, glowcaps and the odd crack of daylight. You can't build or fast travel while inside. Guardians, chests, eggs and ore veins come back about twenty minutes after you beat the main guardian; the wild kin are always there.</p>
 <p>How much a place holds depends on how deep it is (its top level):</p>
 <ul>
-<li><b>Shallow</b> (up to Lv 14): two or three chambers and one boss - a huge common kin of the land - on a small chest.</li>
-<li><b>Winding</b> (Lv 15-29): a longer main path plus two side passages. One holds a <b>nest of eggs</b> watched by brooders (they rise as you come close, and rage if you take one); the other a <b>mini-boss</b> sitting on a chest with a <b>cave blueprint</b>. Along the way: a <b>nesting colony</b> (take its egg and the whole colony comes for you) and a <b>hoard</b> of ore veins with territorial kin guarding them and a chest among them. An <b>alpha</b> guards the deepest chamber, and its fall opens the way out.</li>
-<li><b>Deep</b> (Lv 30+): four side passages - rare eggs (a Rare kind, better odds of a shimmer), two mini-bosses with valuable blueprints, a second alpha deep in a branch, and a chamber with a rare underground kin. Hoards hold <b>Geode Veins</b>, the only source of <b>Geode Cores</b>, and the roofs, vents and pools want you dead.</li>
+<li><b>Shallow</b> (up to Lv 14): two or three chambers and one boss - a huge common kin of the land - on a small chest. Half of them hide a secret room.</li>
+<li><b>Winding</b> (Lv 15-29): a longer main path plus two side passages. One holds a <b>nest of eggs</b> watched by brooders (they rise as you come close, and rage if you take one); the other a <b>mini-boss</b> sitting on a chest with a <b>cave blueprint</b>. Along the way: a <b>nesting colony</b> (take its egg and the whole colony comes for you) and a <b>hoard</b> of ore veins with territorial kin guarding them and a chest among them. A <b>vault</b> behind a barred gate (a puzzle opens it) and often a <b>secret room</b>. An <b>alpha</b> guards the deepest chamber, and its fall opens the way out.</li>
+<li><b>Deep</b> (Lv 30+): <b>two levels</b>. The upper one ends at a chasm - CLIMB DOWN - and the foot of the rope below is a <b>checkpoint</b>: faint on the lower level and you wake there instead of outside (everything that was hunting you calms down and heals; nothing you took comes back). Climb the rope to go back up; what you took on either level stays taken. Between them: four side passages - rare eggs (a Rare kind, better odds of a shimmer), two mini-bosses with valuable blueprints, a second alpha deep in a branch, and a chamber with a rare underground kin. Hoards hold <b>Geode Veins</b>, the only source of <b>Geode Cores</b>, and the roofs, vents and pools want you dead.</li>
 </ul>
 <p><b>Hazards</b> (winding and deep places) all warn first: under a <b>loose roof</b> a shadow grows under you before a rock drops (9% of your health); a <b>vent</b> sputters for a second, then blasts for two (5% every half second, and the land's status - burn, chill, poison, sleep, soaked); a glowing <b>pool</b> of lava, ooze, ice water or spore mud hurts while you stand in it. Ruins add spike plates on the tunnels (they rise and fall on a timer: wait and walk) and one ambush hall.</p>
+<h3>Secrets and puzzles</h3>
+<p><b>Secret rooms</b>: a side chamber walled off by a heap of cracked rock with light seeping through. You'll feel a draught when you are close. SMASH WALL three times; inside is a secret chest (Glimmer, Prism Shards, often gear or a blueprint). It doesn't show on the map until it is open.</p>
+<p><b>Vault gates</b> come in two kinds. <b>Rune plates</b>: step on every plate before their glow fades (15 seconds from the first; 30 in worlds with simple buttons) - your kin standing on one counts. <b>Levers</b>: four lamps over the gate and four levers; each lever flips two lamps (the two gems on it show which) - light all four. Behind the gate is a vault chest.</p>
+<h3>Finding your way</h3>
+<p>The map underground is the cave's own: where you have been is bright, the rest dim. It marks the way out, chests, eggs, guardians, gates, the chasm and the rope as you find them. The Map tab shows the whole cave with a list of what is left, and <b>BACK TO THE CAVE MOUTH</b> (or the checkpoint) takes you to the start of the level when nothing is hunting you. The camera stays inside the cave - it pulls in rather than going through the rock.</p>
+<h3>Crowds take turns</h3>
+<p>Wild kin take turns on you: only two attack at once and the rest hang back until a turn frees up (bosses, alphas, tamers and Wardens excepted). A colony wakes two or three at a time, not all at once.</p>
 <p><b>Caves, burrows and ruins</b> look different - rock and crystal, earth and roots, old halls swallowed by the cave - but follow the same depths.</p>
 <h3>Underground kin</h3>
 <p>Eight kin live nowhere else. Shallow places have the first three; deeper ones add the rest.</p>

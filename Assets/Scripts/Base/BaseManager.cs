@@ -795,10 +795,10 @@ namespace Wildbond
         float haulBudget;
         readonly Dictionary<Building, int> abstractHands = new Dictionary<Building, int>();
 
-        /// <summary>Catch-up simulation for time spent away from the game (capped).</summary>
-        public void SimulateOffline(float seconds)
+        /// <summary>Catch-up simulation for time spent away from the game (capped). 'slept' = a night skipped in bed, which is game time and always counts.</summary>
+        public void SimulateOffline(float seconds, bool slept = false)
         {
-            if (!HasBase || seconds <= 1f || !WorldRules.Current.offlineProgress) return;
+            if (!HasBase || seconds <= 1f || (!slept && !WorldRules.Current.offlineProgress)) return;
             seconds = Mathf.Min(seconds, 2f * 3600f);
             const float step = 5f;
             int steps = Mathf.CeilToInt(seconds / step);

@@ -33,6 +33,8 @@ namespace Wildbond
         public bool kinBed; public float bedSize;
         /// <summary>A doorway's opening (0 = the ordinary 1.2 m door): wider ones let bigger kin in. `tall` = it fills two storeys of its edge.</summary>
         public float gap; public bool tall;
+        /// <summary>How many storeys an edge piece fills (0 = one, or two when `tall`; the Great Archway is three).</summary>
+        public int span;
     }
 
     /// <summary>
@@ -79,6 +81,7 @@ namespace Wildbond
             new HousePieceDef { id = "house_door", name = "Doorway", kind = HouseKind.Doorway, cost = C(("wood", 8)), desc = "A wall with a door that swings open as you come near. Small kin fit through." },
             new HousePieceDef { id = "house_door_wide", name = "Wide Doorway", kind = HouseKind.Doorway, gap = 1.6f, cost = C(("wood", 12), ("fiber", 2)), desc = "Double doors almost a storey tall: medium-sized kin fit through." },
             new HousePieceDef { id = "house_arch_grand", name = "Grand Archway", kind = HouseKind.Doorway, gap = 2.7f, tall = true, cost = C(("wood", 16), ("stone", 16)), desc = "An open arch two storeys tall that fills a whole edge: any kin fits through. Stack walls on walls beside it for a hall big kin can stand up in." },
+            new HousePieceDef { id = "house_arch_great", name = "Great Archway", kind = HouseKind.Doorway, gap = 2.7f, tall = true, span = 3, cost = C(("wood", 24), ("stone", 26), ("ingot", 4)), desc = "An arch three storeys tall for the very biggest kin - the legendaries stand up under it. Stack walls three high beside it and lay a Flat Ceiling over the hall." },
             new HousePieceDef { id = "house_window", name = "Window Wall", kind = HouseKind.Window, cost = C(("wood", 6), ("fiber", 2)), desc = "A wall with a window in it." },
             new HousePieceDef { id = "house_roof", name = "Flat Roof", kind = HouseKind.Roof, cost = C(("wood", 6), ("fiber", 4)), desc = "A roof over the top floor of one square. A bed needs a roof (or a floor) over it to sleep in." },
             new HousePieceDef { id = "house_ceiling", name = "Flat Ceiling", kind = HouseKind.Roof, style = "ceiling", cost = C(("wood", 6)), desc = "A flat plank ceiling with beams under it. It goes up to the top of the room's walls however high you stacked them, so laid over every square of a room it makes one flat ceiling." },
@@ -146,7 +149,9 @@ namespace Wildbond
         /// <summary>The widest walker (its collision radius) that gets through.</summary>
         public static float MaxRadius(HousePieceDef d) => GapOf(d) * 0.5f - WallT * 0.5f - 0.04f;
         /// <summary>The top of an edge piece (a Grand Archway is two storeys).</summary>
-        public static float PieceTop(Piece p) => p.Y + (p.def.tall ? LevelH : 0f) + WallH;
+        public static float PieceTop(Piece p) => p.Y + (Span(p.def) - 1) * LevelH + WallH;
+        /// <summary>Storeys an edge piece fills (archways two or three).</summary>
+        public static int Span(HousePieceDef d) => d.span > 1 ? d.span : d.tall ? 2 : 1;
 
         public static HousePieceDef Def(string id) { foreach (var p in Pieces) if (p.id == id) return p; return null; }
 
@@ -252,7 +257,8 @@ namespace Wildbond
         Piece EdgePiece(int ex, int ez, int side, int level)
         {
             if (edges[side].TryGetValue(LKey(ex, ez, level), out var p)) return p;
-            if (level > 0 && edges[side].TryGetValue(LKey(ex, ez, level - 1), out p) && p.def.tall) return p;
+            for (int k = 1; k <= 2 && level - k >= 0; k++)
+                if (edges[side].TryGetValue(LKey(ex, ez, level - k), out p) && Span(p.def) > k) return p;
             return null;
         }
         bool EdgeTaken(int ex, int ez, int side, int level) => EdgePiece(ex, ez, side, level) != null || pending.Contains($"E{level}:{side}:{ex},{ez}");
@@ -393,7 +399,10 @@ namespace Wildbond
                     if (s.reason != null) break;
                     if (L > MaxLevel) { Fail("Walls go four storeys high at most"); break; }
                     if (float.IsNegativeInfinity(y)) { Fail("Walls go on the edge of a floor, or on top of a wall"); break; }
-                    if (def.tall && (s.level >= MaxLevel || EdgeTaken(ex, ez, side, s.level + 1))) { Fail("No room above for an archway two storeys tall"); break; }
+                    int span = Span(def);
+                    bool roomAbove = s.level + span - 1 <= MaxLevel;
+                    for (int k = 1; k < span && roomAbove; k++) if (EdgeTaken(ex, ez, side, s.level + k)) roomAbove = false;
+                    if (!roomAbove) { Fail($"No room above for an archway {(span == 3 ? "three" : "two")} storeys tall"); break; }
                     if (s.level == lv && FurnitureNearSegment(mid, side, 0.15f, lv)) { Fail("Furniture is in the way"); break; }
                     string st = StairEdge(ex, ez, side, s.level);
                     if (st != null) { Fail(st); break; }
@@ -407,12 +416,14 @@ namespace Wildbond
                     int top = TopFloor(cx, cz);
                     s.level = Mathf.Max(0, top);
                     bool hasFloor = FloorOrSite(cx, cz, s.level, out float fy0);
-                    s.pos = new Vector3(c.x, hasFloor ? RoomRoofY(cx, cz, s.level, fy0) : WorldGen.Height(c.x, c.z) + WallH, c.z);
+                    float ry = hasFloor ? RoomRoofY(cx, cz, s.level, fy0) : WorldGen.Height(c.x, c.z) + WallH;
+                    // over a stairwell the roof goes up a storey, level with the roof of the room the stairs lead to
+                    if (hasFloor && StairsOrSite(cx, cz, s.level)) ry = Mathf.Max(fy0 + LevelH + WallH, StairwellRoofY(cx, cz, s.level));
+                    s.pos = new Vector3(c.x, ry, c.z);
                     s.q = Quaternion.Euler(0f, s.rot * 90f, 0f);
                     if (s.reason != null) break;
                     if (!hasFloor) { Fail("Roofs go over a floor"); break; }
                     if (RoofOrSite(cx, cz)) { Fail("There's a roof here already"); break; }
-                    if (StairsOrSite(cx, cz, s.level)) { Fail("Stairs go up here - lay a floor above instead"); break; }
                     s.ok = true;
                     break;
                 }
@@ -505,7 +516,7 @@ namespace Wildbond
                     for (int l = top; l <= MaxLevel; l++)
                     {
                         var p = EdgeAt(x, z, k, l);
-                        if (p != null && (p.level == top || p.def.tall || Stacked(p))) y = Mathf.Max(y, PieceTop(p));
+                        if (p != null && (p.level == top || Span(p.def) > 1 || Stacked(p))) y = Mathf.Max(y, PieceTop(p));
                     }
                     if (EdgeAt(x, z, k, top) != null) continue;   // a wall: the room ends here
                     int nx = x + DX[k], nz = z + DZ[k];
@@ -515,6 +526,15 @@ namespace Wildbond
                 }
             }
             return y;
+        }
+
+        /// <summary>The roof height of the upstairs room a flight of stairs arrives in (or -infinity if there is none yet).</summary>
+        float StairwellRoofY(int cx, int cz, int level)
+        {
+            var st = StairsAt(cx, cz, level);
+            if (st == null) return float.NegativeInfinity;
+            int lx = cx + DX[st.rot], lz = cz + DZ[st.rot];
+            return FloorOrSite(lx, lz, level + 1, out float ly) && TopFloor(lx, lz) == level + 1 ? RoomRoofY(lx, lz, level + 1, ly) : float.NegativeInfinity;
         }
 
         /// <summary>Why a wall can't go on this edge because of stairs (their foot, or where they arrive up top), or null.</summary>
@@ -675,7 +695,7 @@ namespace Wildbond
                 // a stack of walls comes down from the top
                 while (true)
                 {
-                    int up = best.level + (best.def.tall ? 2 : 1);
+                    int up = best.level + Span(best.def);
                     if (up > MaxLevel || !edges[best.side].TryGetValue(LKey(best.cx, best.cz, up), out var above) || !Stacked(above)) break;
                     best = above;
                 }
@@ -697,7 +717,7 @@ namespace Wildbond
             if (pc == null) return "Nothing here to remove";
             if (pc.def.kind == HouseKind.Wall || pc.def.kind == HouseKind.Doorway || pc.def.kind == HouseKind.Window)
             {
-                int up = pc.level + (pc.def.tall ? 2 : 1);
+                int up = pc.level + Span(pc.def);
                 if (up <= MaxLevel && edges[pc.side].TryGetValue(LKey(pc.cx, pc.cz, up), out var above) && Stacked(above)) return "Take down the wall on top of it first";
                 return null;
             }
@@ -965,8 +985,8 @@ namespace Wildbond
                     break;
                 case HouseKind.Doorway when def.tall:
                 {
-                    // two stone pillars two storeys tall, a great beam with brackets and a carved cap
-                    float H = LevelH + WallH, pw = (h - GapOf(def)) * 0.5f;
+                    // two stone pillars two (or three) storeys tall, a great beam with brackets and a carved cap
+                    float H = LevelH * (Span(def) - 1) + WallH, pw = (h - GapOf(def)) * 0.5f;
                     for (int s = -1; s <= 1; s += 2)
                     {
                         float x = s * (half - pw * 0.5f);

@@ -42,11 +42,15 @@ namespace Wildbond
             public Chest chest; public bool down, woke, main;
         }
 
-        class Watch { public Vector3 pos; public float radius; public readonly List<CreatureActor> who = new List<CreatureActor>(); public bool woke; public string warn; }
+        /// <summary>
+        /// Kin that wake together when you come near. 'max' wakes only the nearest few at once (a colony comes at you in
+        /// waves, not all at the same time); the rest wake 'gap' seconds later if you are still about.
+        /// </summary>
+        class Watch { public Vector3 pos; public float radius; public readonly List<CreatureActor> who = new List<CreatureActor>(); public bool woke; public string warn; public int max = 99; public float gap = 7f, rearmAt; public bool warned; }
 
         class EggNest { public Vector3 pos; public GameObject egg; public SpeciesDef sp; public bool rare, taken; public Watch watch; }
 
-        enum ChestKind { Small, Guarded, Blueprint, Big, Boss }
+        enum ChestKind { Small, Guarded, Blueprint, Big, Boss, Secret, Vault }
 
         class Chest { public Vector3 pos; public GameObject go; public Transform lid; public bool opened, sealedUntilDown; public ChestKind kind; public Guardian guard; }
 
@@ -149,9 +153,9 @@ namespace Wildbond
                     {
                         // a crowd of one small kind, roosting round their nests
                         var sp = Cave("echobat", "pebblit") ?? Pick(s => s.rarity == Rarity.Common);
-                        var w = new Watch { pos = rm.Center, radius = rm.r * 0.45f, warn = $"The {sp.displayName} colony stirs - there are a lot of them!" };
-                        int n = r.tier == CaveTier.End ? 7 + rng.Next(0, 3) : 5 + rng.Next(0, 3);
-                        for (int k = 0; k < n; k++) w.who.Add(Wild(sp, Mathf.Max(1, e.minLv - 1 + rng.Next(0, 3)), OpenSpot(r, rm.c, rm.r * 0.75f, 1.2f, rng)));
+                        var w = new Watch { pos = rm.Center, radius = rm.r * 0.45f, warn = $"The {sp.displayName} colony stirs!", max = r.tier == CaveTier.End ? 3 : 2 };
+                        int n = r.tier == CaveTier.End ? 6 + rng.Next(0, 2) : 4 + rng.Next(0, 2);
+                        for (int k = 0; k < n; k++) w.who.Add(Wild(sp, Mathf.Max(1, e.minLv - 2 + rng.Next(0, 3)), OpenSpot(r, rm.c, rm.r * 0.75f, 1.2f, rng)));
                         r.watches.Add(w);
                         if (!quiet) for (int k = 0; k < 2; k++) AddNest(r, OpenSpot(r, rm.c, rm.r * 0.55f, 2f, rng), sp, false, k == 0 ? w : null, k == 0);
                         break;
@@ -205,6 +209,15 @@ namespace Wildbond
                     }
                     case Role.Hazard:
                         Group(rm, Pick(), 1 + (u() < 0.5f ? 1 : 0));
+                        break;
+                    case Role.Descent:
+                        Group(rm, Pick(), 1);
+                        break;
+                    case Role.Secret:
+                        if (!quiet) AddChest(r, Nudge(r, rm.Center), ChestKind.Secret, null);
+                        break;
+                    case Role.Vault:
+                        if (!quiet) AddChest(r, Nudge(r, rm.Center), ChestKind.Vault, null);
                         break;
                     case Role.Rare:
                     {
@@ -357,6 +370,7 @@ namespace Wildbond
             if (i < 0) return;
             if (run.nodeGo[i] != null) run.nodeGo[i].SetActive(false);
             run.pillars[run.nodePillar[i]] = new Vector4(1e6f, 1e6f, 0f, 0f);
+            run.done.Add(Key(run, "v", i));
         }
 
         // ================================================================ EGGS
@@ -417,6 +431,7 @@ namespace Wildbond
             for (int i = 0; i < 3; i++) child.apt[i] = Mathf.Min(100, child.apt[i] + lift);
             s.eggs.Add(new KinEgg { child = child, readyUnix = Expeditions.Now + KinGrowth.HatchMinutes * 60L, parents = n.rare ? "a rare cave nest" : "a cave nest" });
             n.taken = true;
+            run.done.Add(Key(run, "n", run.nests.IndexOf(n)));
             if (n.egg != null) n.egg.SetActive(false);
             gm.AddPlayerXp(n.rare ? 60 : 25);
             Fx.Burst(n.pos + Vector3.up * 0.6f, n.rare ? new Color(1f, 0.85f, 0.4f) : Color.Lerp(n.sp.palette.glow, Color.white, 0.4f), 16, 4f, 0.25f, 0.6f, true);
@@ -429,6 +444,7 @@ namespace Wildbond
                 foreach (var a in n.watch.who)
                 {
                     if (a == null || !a.gameObject.activeSelf || !a.IsAlive || a.Mode != CreatureMode.Wild) continue;
+                    if ((a.Position - n.pos).sqrMagnitude > 13f * 13f) continue;   // the ones close enough to see
                     a.BossAtkMul = Mathf.Max(a.BossAtkMul, 1.25f);
                     a.Provoke(gm.Player);
                     any = true;
@@ -442,10 +458,10 @@ namespace Wildbond
         // ================================================================ CHESTS
         Chest AddChest(Run r, Vector3 p, ChestKind kind, Guardian g)
         {
-            bool big = kind == ChestKind.Big || kind == ChestKind.Blueprint;
+            bool big = kind == ChestKind.Big || kind == ChestKind.Blueprint || kind == ChestKind.Vault || kind == ChestKind.Secret;
             float s = big ? 1.4f : 1f;
             var mb = new MeshBuilder();
-            Color32 wood = new Color(0.45f, 0.3f, 0.18f), band = kind == ChestKind.Blueprint ? new Color(0.55f, 0.85f, 1f) : big ? new Color(1f, 0.82f, 0.35f) : new Color(0.7f, 0.7f, 0.75f);
+            Color32 wood = new Color(0.45f, 0.3f, 0.18f), band = kind == ChestKind.Blueprint ? new Color(0.55f, 0.85f, 1f) : kind == ChestKind.Secret ? new Color(0.8f, 0.6f, 1f) : big ? new Color(1f, 0.82f, 0.35f) : new Color(0.7f, 0.7f, 0.75f);
             mb.Box(Matrix4x4.TRS(new Vector3(0, 0.3f * s, 0), Quaternion.identity, new Vector3(1.1f * s, 0.6f * s, 0.75f * s)), wood, new Color(0.55f, 0.38f, 0.22f));
             mb.Box(Matrix4x4.TRS(new Vector3(-0.38f * s, 0.3f * s, 0), Quaternion.identity, new Vector3(0.1f * s, 0.62f * s, 0.78f * s)), band);
             mb.Box(Matrix4x4.TRS(new Vector3(0.38f * s, 0.3f * s, 0), Quaternion.identity, new Vector3(0.1f * s, 0.62f * s, 0.78f * s)), band);
@@ -474,12 +490,14 @@ namespace Wildbond
         {
             if (c.opened) return;
             c.opened = true;
+            run.done.Add(Key(run, "c", run.chests.IndexOf(c)));
             var gm = GameManager.I;
             var e = run.e;
             var tier = run.tier;
             var drop = c.pos + Vector3.up;
             bool big = c.kind == ChestKind.Big, early = tier == CaveTier.Early;
-            int mul = big ? 2 : 1;
+            bool hidden = c.kind == ChestKind.Secret || c.kind == ChestKind.Vault;   // behind a cracked wall or a puzzle gate
+            int mul = big || hidden ? 2 : 1;
             int glim = 0;
             var got = new List<string>();
             void Give(string id, int n) { if (n <= 0 || ContentDB.Item(id) == null) return; gm.GiveItem(id, n, drop); got.Add($"{n} {ContentDB.ItemName(id)}"); }
@@ -500,21 +518,23 @@ namespace Wildbond
             // the deep places' own treasure
             if (tier == CaveTier.End && (big || c.kind == ChestKind.Blueprint || c.kind == ChestKind.Guarded))
                 Give(CoreItem, big ? Random.Range(3, 6) : Random.Range(1, 3));
-            if (big || (tier == CaveTier.End && c.kind == ChestKind.Blueprint)) Give(Shimmer.ShardItem, Random.Range(2, 5));
+            if (big || c.kind == ChestKind.Secret || (tier == CaveTier.End && c.kind == ChestKind.Blueprint)) Give(Shimmer.ShardItem, Random.Range(2, 5));
+            if (hidden && early) Give("tether_seed", Random.Range(3, 6));
             // a blueprint from a mini-boss (and sometimes the deep alpha)
             string bp = null;
-            if (c.kind == ChestKind.Blueprint || (big && tier == CaveTier.End && c.guard != null && !c.guard.main && Random.value < 0.5f))
+            if (c.kind == ChestKind.Blueprint || (big && tier == CaveTier.End && c.guard != null && !c.guard.main && Random.value < 0.5f)
+                || (hidden && !early && Random.value < (c.kind == ChestKind.Vault ? 0.5f : 0.35f)))
             {
                 bp = PickBlueprint(tier == CaveTier.End ? 2 : 1, e.biome);
                 if (bp == null) Give(Shimmer.ShardItem, 4);
             }
             // gear: guaranteed from a guardian's big chest, sometimes otherwise
-            if (big || Random.value < (c.kind == ChestKind.Boss ? 0.3f : c.kind == ChestKind.Guarded ? 0.25f : 0.12f))
+            if (big || Random.value < (c.kind == ChestKind.Boss ? 0.3f : c.kind == ChestKind.Vault ? 0.4f : c.kind == ChestKind.Secret ? 0.3f : c.kind == ChestKind.Guarded ? 0.25f : 0.12f))
             {
                 string g = GearForTier(e.biome);
                 if (g != null) { gm.GiveItem(g, 1, drop); GameEvents.Good($"Found gear: {ContentDB.ItemName(g)}!"); }
             }
-            float gmul = big ? 3f : c.kind == ChestKind.Blueprint ? 2f : c.kind == ChestKind.Guarded ? 1.5f : c.kind == ChestKind.Boss ? 1.5f : 1f;
+            float gmul = big ? 3f : hidden ? 2.5f : c.kind == ChestKind.Blueprint ? 2f : c.kind == ChestKind.Guarded ? 1.5f : c.kind == ChestKind.Boss ? 1.5f : 1f;
             glim = Mathf.RoundToInt(glim * gmul * (early ? 0.7f : 1f) * Random.Range(0.8f, 1.25f));
             gm.Player.Stats.glimmer += glim;
             got.Add($"{glim} Glimmer");
@@ -525,7 +545,7 @@ namespace Wildbond
                 GameEvents.Say(bp.StartsWith("house:") ? $"Cave blueprint: {Chests.BlueprintName(bp)}! Build it from BUILD > HOUSE." : $"Cave blueprint: {ContentDB.ItemName(bp)}! Make it at the Workbench.", new Color(0.6f, 0.9f, 1f));
                 gm.Confetti(drop);
             }
-            gm.AddPlayerXp(big ? 80 : c.kind == ChestKind.Blueprint ? 60 : 25);
+            gm.AddPlayerXp(big ? 80 : hidden ? 60 : c.kind == ChestKind.Blueprint ? 60 : 25);
             Fx.Burst(drop, big ? new Color(1f, 0.85f, 0.35f) : c.kind == ChestKind.Blueprint ? new Color(0.6f, 0.9f, 1f) : new Color(0.9f, 0.9f, 1f), big ? 30 : 16, 5f, 0.3f, 0.7f, true);
             SynthAudio.Play(Sfx.CaptureSuccess, big ? 0.9f : 1.2f);
             GameEvents.RaiseInventoryChanged();
@@ -590,6 +610,7 @@ namespace Wildbond
         void GuardianDown(Run r, Guardian g)
         {
             g.down = true;
+            r.done.Add(Key(r, "g", r.guards.IndexOf(g)));
             if (g.chest != null && g.chest.sealedUntilDown)
             {
                 g.chest.sealedUntilDown = false;
@@ -602,28 +623,40 @@ namespace Wildbond
                 var rec = Record(r.e.id);
                 rec.clearedAt = GameManager.WorldTime;
                 Bounties.OnCaveCleared(r.e.id);
-                // a step from its chest, toward the middle of the chamber
-                var p = g.chest != null ? g.chest.pos + Vector3.ProjectOnPlane(g.home - g.chest.pos, Vector3.up).normalized * 3f : g.home;
-                p = Nudge(r, p);
-                r.bossPortal = p;
-                BuildPortal(p, r.e.glow);
+                OpenGuardianPortal(r, g);
                 GameEvents.Good(g.role == Role.Boss ? "The boss is down! Its chest is open and a way out appears." : "The guardian falls! Its sealed chest opens, and a portal out appears.");
             }
             else GameEvents.Good(g.role == Role.Mini ? "The mini-boss is down - its hoard is yours." : "The deep alpha falls! Its chest is unsealed.");
             SynthAudio.Play(Sfx.LevelUp, 0.9f);
         }
 
+        /// <summary>The way out behind a beaten main guardian: a step from its chest, toward the middle of the chamber.</summary>
+        void OpenGuardianPortal(Run r, Guardian g)
+        {
+            var p = g.chest != null ? g.chest.pos + Vector3.ProjectOnPlane(g.home - g.chest.pos, Vector3.up).normalized * 3f : g.home;
+            p = Nudge(r, p);
+            r.bossPortal = p;
+            BuildPortal(p, r.e.glow);
+        }
+
         void TickWatches(Run r, PlayerController pl)
         {
             if (!pl.IsAlive) return;
+            var sleepers = new List<CreatureActor>();
             foreach (var w in r.watches)
             {
+                if (w.woke && w.rearmAt > 0f && Time.time > w.rearmAt) { w.woke = false; w.rearmAt = 0f; }
                 if (w.woke || (w.pos - pl.Position).sqrMagnitude > w.radius * w.radius) continue;
                 w.woke = true;
-                bool any = false;
+                sleepers.Clear();
                 foreach (var a in w.who)
-                    if (a != null && a.gameObject.activeSelf && a.IsAlive && a.Mode == CreatureMode.Wild && !a.Aggro) { a.Provoke(pl); any = true; }
-                if (any && !string.IsNullOrEmpty(w.warn)) GameEvents.Warn(w.warn);
+                    if (a != null && a.gameObject.activeSelf && a.IsAlive && a.Mode == CreatureMode.Wild && !a.Aggro) sleepers.Add(a);
+                var pp = pl.Position;
+                sleepers.Sort((x, y) => (x.Position - pp).sqrMagnitude.CompareTo((y.Position - pp).sqrMagnitude));
+                int n = Mathf.Min(w.max, sleepers.Count);
+                for (int k = 0; k < n; k++) sleepers[k].Provoke(pl);
+                if (sleepers.Count > n) w.rearmAt = Time.time + w.gap;   // the rest come later, if you stay
+                if (n > 0 && !w.warned) { w.warned = true; if (!string.IsNullOrEmpty(w.warn)) GameEvents.Warn(w.warn); }
             }
         }
     }

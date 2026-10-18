@@ -34,7 +34,9 @@ namespace Wildbond
             // decor first: it decides where the light comes from
             var deco = new MeshBuilder();
             var lamps = new List<Lamp>();
+            r.lamps = lamps;
             Decorate(r, deco, lamps, rng);
+            DecorateSpecial(r, deco, lamps, rng);
 
             var walls = new MeshBuilder();
             BuildWalls(r, walls);
@@ -43,12 +45,13 @@ namespace Wildbond
             Light(walls, lamps, r, 0.6f);
             Light(ceil, lamps, r, 0.5f);
             Light(deco, lamps, r, 0.75f);
-            Part(r, "Floor", floor, RenderAssets.Building);
-            Part(r, "Walls", walls, RenderAssets.Building);
-            Part(r, "Ceiling", ceil, RenderAssets.Building);
-            Part(r, "Decor", deco, RenderAssets.Creature);
+            // in tiles, so the camera only draws the part of the cave in front of it
+            PartTiled(r, "Floor", floor, RenderAssets.Building);
+            PartTiled(r, "Walls", walls, RenderAssets.Building);
+            PartTiled(r, "Ceiling", ceil, RenderAssets.Building);
+            PartTiled(r, "Decor", deco, RenderAssets.Creature);
 
-            BuildPortal(r.exitPos, new Color(0.75f, 0.95f, 1f));
+            if (r.level == 0) BuildPortal(r.exitPos, new Color(0.75f, 0.95f, 1f));
             BuildMap(r);
         }
 
@@ -61,6 +64,37 @@ namespace Wildbond
             var mr = go.AddComponent<MeshRenderer>();
             mr.sharedMaterial = mat;
             mr.shadowCastingMode = ShadowCastingMode.Off;
+        }
+
+        const float Tile = 46f;
+
+        /// <summary>Splits a big mesh into square tiles by triangle (each tile is culled on its own).</summary>
+        static void PartTiled(Run r, string name, MeshBuilder mb, Material mat)
+        {
+            if (mb.VertexCount == 0) return;
+            int tn = Mathf.CeilToInt(ZoneSize / Tile) + 1;
+            var subs = new Dictionary<int, MeshBuilder>();
+            var maps = new Dictionary<int, Dictionary<int, int>>();
+            for (int t = 0; t + 2 < mb.tris.Count; t += 3)
+            {
+                Vector3 c = (mb.verts[mb.tris[t]] + mb.verts[mb.tris[t + 1]] + mb.verts[mb.tris[t + 2]]) / 3f;
+                int ti = Mathf.Clamp(Mathf.FloorToInt((c.x - Origin.x) / Tile), 0, tn - 1), tj = Mathf.Clamp(Mathf.FloorToInt((c.z - Origin.y) / Tile), 0, tn - 1);
+                int key = tj * tn + ti;
+                if (!subs.TryGetValue(key, out var sub)) { sub = new MeshBuilder(); subs[key] = sub; maps[key] = new Dictionary<int, int>(); }
+                var map = maps[key];
+                for (int q = 0; q < 3; q++)
+                {
+                    int v = mb.tris[t + q];
+                    if (!map.TryGetValue(v, out int nv))
+                    {
+                        nv = sub.verts.Count;
+                        sub.verts.Add(mb.verts[v]); sub.norms.Add(mb.norms[v]); sub.cols.Add(mb.cols[v]);
+                        map[v] = nv;
+                    }
+                    sub.tris.Add(nv);
+                }
+            }
+            foreach (var kv in subs) Part(r, name + kv.Key, kv.Value, mat);
         }
 
         // ---------------------------------------------------------------- marching squares
@@ -661,17 +695,19 @@ namespace Wildbond
             var e = r.e;
             r.map = new Texture2D(N, N, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp, name = "cave_map" };
             var px = new Color32[N * N];
+            r.hidden = HiddenCells(r);
             Color32 fl = Color.Lerp(e.floor, Color.white, 0.4f), edge = Color.Lerp(e.rock, Color.white, 0.15f), bg = new Color(0.03f, 0.03f, 0.05f, 1f);
             for (int j = 0; j < N; j++)
             for (int i = 0; i < N; i++)
             {
                 float f = Sample(r.F, Origin.x + (i + 0.5f) * Res, Origin.y + (j + 0.5f) * Res);
-                px[j * N + i] = f > 0.6f ? fl : f > 0f ? edge : bg;
+                px[j * N + i] = r.hidden[j * N + i] ? bg : f > 0.6f ? fl : f > 0f ? edge : bg;
             }
             // guardian chambers in red, egg nests in gold
             foreach (var rm in r.rooms)
             {
-                Color32 tint = rm.role == Role.Alpha || rm.role == Role.Boss ? new Color(0.8f, 0.35f, 0.3f) : rm.role == Role.Mini ? new Color(0.85f, 0.5f, 0.35f) : rm.role == Role.Eggs ? new Color(0.9f, 0.78f, 0.4f) : default;
+                Color32 tint = rm.role == Role.Alpha || rm.role == Role.Boss ? new Color(0.8f, 0.35f, 0.3f) : rm.role == Role.Mini ? new Color(0.85f, 0.5f, 0.35f) : rm.role == Role.Eggs ? new Color(0.9f, 0.78f, 0.4f)
+                    : rm.role == Role.Puzzle || rm.role == Role.Vault ? new Color(0.45f, 0.8f, 0.9f) : rm.role == Role.Secret ? new Color(0.75f, 0.55f, 0.95f) : rm.role == Role.Descent || rm.role == Role.Landing ? new Color(0.6f, 0.9f, 0.65f) : default;
                 if (tint.a == 0) continue;
                 int i0 = Mathf.Max(0, Mathf.FloorToInt((rm.c.x - rm.r * 1.4f - Origin.x) / Res)), i1 = Mathf.Min(N - 1, Mathf.CeilToInt((rm.c.x + rm.r * 1.4f - Origin.x) / Res));
                 int j0 = Mathf.Max(0, Mathf.FloorToInt((rm.c.y - rm.r * 1.4f - Origin.y) / Res)), j1 = Mathf.Min(N - 1, Mathf.CeilToInt((rm.c.y + rm.r * 1.4f - Origin.y) / Res));
@@ -679,10 +715,15 @@ namespace Wildbond
                 for (int i = i0; i <= i1; i++)
                 {
                     float x = Origin.x + (i + 0.5f) * Res, z = Origin.y + (j + 0.5f) * Res;
-                    if (Sample(r.F, x, z) > 0.6f && (new Vector2(x, z) - rm.c).magnitude < rm.r * 1.2f) px[j * N + i] = tint;
+                    if (!r.hidden[j * N + i] && Sample(r.F, x, z) > 0.6f && (new Vector2(x, z) - rm.c).magnitude < rm.r * 1.2f) px[j * N + i] = tint;
                 }
             }
-            r.map.SetPixels32(px);
+            // what you haven't been near yet is drawn dim (Caves.Secrets: RevealAround)
+            r.mapBase = px;
+            if (r.seen == null) r.seen = new bool[N * N];
+            r.mapPx = new Color32[N * N];
+            for (int k = 0; k < px.Length; k++) r.mapPx[k] = r.seen[k] ? px[k] : Dim(px[k]);
+            r.map.SetPixels32(r.mapPx);
             r.map.Apply(false, false);
         }
     }

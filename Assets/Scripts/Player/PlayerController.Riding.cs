@@ -15,7 +15,47 @@ namespace Wildbond
         public CreatureActor Mount => mount;
 
         // riders sit on the species' saddle point; kin that are only surfed carry you on their back
-        Vector3 Seat => mount.Sp.mountable && mount.Sp.mountSeat != Vector3.zero ? mount.Sp.mountSeat : new Vector3(0f, DangerSkull.ModelTop(mount.Sp) * 0.82f, 0f);   // zero = worked out from the model (newer mounts)
+        Vector3 Seat => mount.Sp.mountable && mount.Sp.mountSeat != Vector3.zero ? mount.Sp.mountSeat : AutoSeat(mount.Sp);   // zero = worked out from the model (newer mounts)
+
+        static readonly Dictionary<string, Vector3> autoSeats = new Dictionary<string, Vector3>();
+
+        /// <summary>
+        /// A saddle worked out from the model: on top of its biggest Body part, a touch behind its middle. The hand-set
+        /// seats of the older mounts sit 0-0.2 above that same point; the top of the whole model (manes, crests, spines,
+        /// a raised head) put riders in the air (checked 2026-10-18, Previews/Mounts).
+        /// </summary>
+        public static Vector3 AutoSeat(SpeciesDef sp)
+        {
+            if (autoSeats.TryGetValue(sp.id, out var s)) return s;
+            int bi = -1; float bv = 0f;
+            for (int i = 0; i < sp.parts.Length; i++)
+            {
+                var p = sp.parts[i];
+                if (p.group != BodyGroup.Body) continue;
+                float v = p.scale.x * p.scale.y * p.scale.z;
+                if (v > bv) { bv = v; bi = i; }
+            }
+            if (bi < 0) s = new Vector3(0f, DangerSkull.ModelTop(sp) * 0.82f, 0f);
+            else
+            {
+                var b = sp.parts[bi];
+                var q = Quaternion.Euler(b.rot);
+                float up = Mathf.Abs((q * Vector3.right).y) * b.scale.x + Mathf.Abs((q * Vector3.up).y) * b.scale.y + Mathf.Abs((q * Vector3.forward).y) * b.scale.z;
+                s = new Vector3(0f, b.pos.y + up * 0.5f + 0.04f, b.pos.z - 0.06f);
+                // something big growing on the back (a mound of leaves, a shell) lifts the saddle onto it; thin spines don't
+                for (int i = 0; i < sp.parts.Length; i++)
+                {
+                    var p = sp.parts[i];
+                    if (i == bi || p.group != BodyGroup.Body || Mathf.Min(p.scale.x, p.scale.z) < 0.3f) continue;
+                    var pq = Quaternion.Euler(p.rot);
+                    float pu = Mathf.Abs((pq * Vector3.right).y) * p.scale.x + Mathf.Abs((pq * Vector3.up).y) * p.scale.y + Mathf.Abs((pq * Vector3.forward).y) * p.scale.z;
+                    float reach = Mathf.Max(p.scale.x, p.scale.z) * 0.45f;
+                    if (new Vector2(p.pos.x, p.pos.z - s.z).magnitude < reach && p.pos.y + pu * 0.5f > s.y) s.y = p.pos.y + pu * 0.5f + 0.02f;
+                }
+            }
+            autoSeats[sp.id] = s;
+            return s;
+        }
 
         // ---- flying mounts (user playtest 2026-10-15): every Flyer you ride flies. Hold JUMP to climb (stamina),
         // let go to glide down slowly; a landing never hurts. Up to FlyCeiling above the ground.

@@ -370,7 +370,25 @@ namespace Wildbond
             public Vector3 ambushPos;
             public SpeciesDef ambushSp;
             public bool ambushSet, ambushDone;
+            // two-level caves, secrets, puzzles, the explored map (Caves.Secrets)
+            public int level, levels = 1;
+            public HashSet<string> done = new HashSet<string>();   // what has been taken on every level this visit
+            public List<Lamp> lamps;
+            public bool hasDescent;
+            public Vector3 descentPos, descentArrive;
+            public readonly List<Secret> secrets = new List<Secret>();
+            public readonly List<Puzzle> puzzles = new List<Puzzle>();
+            public bool[] seen, hidden;
+            public Color32[] mapBase, mapPx;
+            public float revealTimer;
+            public bool checkpointTold;
+            public Dictionary<int, bool[]> seenAll;   // the explored map of each level, kept while you go up and down
         }
+
+        /// <summary>Deep caves have a second level below the first (a chasm and a rope); the others are one level.</summary>
+        public static int LevelsOf(Entrance e) => TierOf(e) == CaveTier.End ? 2 : 1;
+        /// <summary>A key for something taken on this level (chest, egg, guardian, vein, wall, puzzle), kept while you switch levels.</summary>
+        static string Key(Run r, string what, int i = 0) => r.level + ":" + what + i;
 
         class Trap { public Vector3 pos; public Transform spikes; public float phase, cool; public bool wasUp; }
 
@@ -416,6 +434,7 @@ namespace Wildbond
             }
             var r = run;
             TickTraps(r, dt, pl);
+            TickSpecial(r, dt, pl);
             if (r.ambushSet && !r.ambushDone && pl.IsAlive && Flat2(r.ambushPos, pl.Position) < 7f * 7f) SpringAmbush(r, pl);
             TickWatches(r, pl);
             TickGuardians(r, pl);
@@ -496,11 +515,23 @@ namespace Wildbond
                 }
                 return null;
             }
-            if (Flat2(run.exitPos, p) < 3.2f * 3.2f || (run.bossPortal.HasValue && Flat2(run.bossPortal.Value, p) < 3.2f * 3.2f))
+            if (run.level > 0 && Flat2(run.exitPos, p) < 3f * 3f)
+            {
+                act = () => ChangeLevel(run.level - 1);
+                return "CLIMB UP";
+            }
+            if ((run.level == 0 && Flat2(run.exitPos, p) < 3.2f * 3.2f) || (run.bossPortal.HasValue && Flat2(run.bossPortal.Value, p) < 3.2f * 3.2f))
             {
                 act = Leave;
                 return "LEAVE";
             }
+            if (run.hasDescent && Flat2(run.descentPos, p) < 4.2f * 4.2f)
+            {
+                act = () => ChangeLevel(run.level + 1);
+                return "CLIMB DOWN";
+            }
+            var special = SpecialPrompt(run, p, out act);
+            if (special != null) return special;
             foreach (var c in run.chests)
             {
                 if (c.opened || Flat2(c.pos, p) > 2.6f * 2.6f) continue;
@@ -560,31 +591,15 @@ namespace Wildbond
             ProjectileSystem.I.ClearAll();
             gm.Capture.Cancel();
 
-            int seed = WorldGen.Seed * 31;
-            foreach (char ch in e.id) seed = seed * 17 + ch;   // stable across runtimes
-            run = new Run { e = e, tier = TierOf(e), seed = seed & 0x7FFFFFF };
-            var rng = new System.Random(seed);
-            PlanLayout(run, rng);
-            BuildField(run);
-            var mouth = run.rooms[0];
-            // the way out stands to one side of where you arrive, so the camera behind you looks into the cave, not at it
-            run.exitPos = Nudge(run, new Vector3(mouth.c.x - mouth.r * 0.45f, 0f, mouth.c.y + mouth.r * 0.45f));
-            if (Open(run.exitPos) < 1.5f) run.exitPos = Nudge(run, new Vector3(mouth.c.x - mouth.r * 0.45f, 0f, mouth.c.y - mouth.r * 0.45f));
-            run.startPos = Nudge(run, new Vector3(mouth.c.x - mouth.r * 0.05f, 0f, mouth.c.y));
-            BuildGeometry(run, rng);
-            if (e.kind == CaveKind.Ruin) BuildTraps(run, rng);
-            BuildShaft(run);
             var rec = Record(e.id);
-            run.quiet = GameManager.WorldTime - rec.clearedAt < RefreshSeconds;
-
+            BuildRun(e, 0, new HashSet<string>(), GameManager.WorldTime - rec.clearedAt < RefreshSeconds);
+            var mouth = run.rooms[0];
             var look = run.rooms.Count > 1 ? run.rooms[1].Center : mouth.Center + Vector3.right * 5f;
             pl.Teleport(run.startPos, YawToward(run.startPos, look));
             gm.CameraRig.Init(gm.CameraRig.Cam, pl.Position, pl.transform.eulerAngles.y);
             var comp = gm.Party.Companion;
             if (comp != null && comp.gameObject.activeSelf) { var cp = Nudge(run, run.startPos + pl.Right * 1.8f); comp.transform.position = cp; comp.Home = cp; }
             EnvironmentSystem.I?.SetIndoor(true, e.glow);
-            SpawnContents(run, rng);
-            PlaceHazards(run, rng);
             yield return null;
             yield return Fade(false, 0.5f);
 
@@ -603,8 +618,132 @@ namespace Wildbond
                         ? $"A winding {word}. Its side passages hide a nest of eggs and a mini-boss on a blueprint; an alpha guards the deepest chamber."
                         : $"A shallow {word}. One big kin lives at the back with a little treasure.";
                 if (e.kind == CaveKind.Ruin) say += " Old halls: spikes rise from the dark plates - cross when they drop.";
+                if (run.levels > 1) say += " A chasm leads down to a second level - a checkpoint waits at the foot of the rope.";
                 GameEvents.Say(say, new Color(1f, 0.85f, 0.5f));
             }
+            busy = false;
+        }
+
+        /// <summary>Generates one level of a cave and makes it the current run (the same level every time: seeded by the world, the cave and the level).</summary>
+        Run BuildRun(Entrance e, int level, HashSet<string> done, bool quiet, Dictionary<int, bool[]> seenAll = null)
+        {
+            int seed = WorldGen.Seed * 31;
+            foreach (char ch in e.id) seed = seed * 17 + ch;   // stable across runtimes
+            var r = new Run { e = e, tier = TierOf(e), seed = seed & 0x7FFFFFF, level = level, levels = LevelsOf(e), done = done, quiet = quiet };
+            if (level > 0) r.seed = (r.seed + level * 104729) & 0x7FFFFFF;
+            r.seenAll = seenAll ?? new Dictionary<int, bool[]>();
+            if (!r.seenAll.TryGetValue(level, out var seen)) { seen = new bool[N * N]; r.seenAll[level] = seen; }
+            r.seen = seen;
+            run = r;
+            var rng = new System.Random(level == 0 ? seed : r.seed);
+            PlanLayout(r, rng);
+            BuildField(r);
+            var mouth = r.rooms[0];
+            // the way out (or the rope up) stands to one side of where you arrive, so the camera behind you looks into the cave, not at it
+            r.exitPos = Nudge(r, new Vector3(mouth.c.x - mouth.r * 0.45f, 0f, mouth.c.y + mouth.r * 0.45f));
+            if (Open(r.exitPos) < 1.5f) r.exitPos = Nudge(r, new Vector3(mouth.c.x - mouth.r * 0.45f, 0f, mouth.c.y - mouth.r * 0.45f));
+            r.startPos = Nudge(r, new Vector3(mouth.c.x - mouth.r * 0.05f, 0f, mouth.c.y));
+            BuildGeometry(r, rng);
+            if (e.kind == CaveKind.Ruin) BuildTraps(r, rng);
+            BuildShaft(r);
+            BuildSpecial(r, rng);
+            SpawnContents(r, rng);
+            PlaceHazards(r, rng);
+            ApplyDone(r);
+            return r;
+        }
+
+        /// <summary>Down the chasm or up the rope: the level you leave is torn down, what you took on it is remembered.</summary>
+        public void ChangeLevel(int to)
+        {
+            if (busy || run == null || to < 0 || to >= run.levels || to == run.level) return;
+            StartCoroutine(LevelRoutine(to));
+        }
+
+        IEnumerator LevelRoutine(int to)
+        {
+            busy = true;
+            var gm = GameManager.I;
+            var pl = gm.Player;
+            pl.CancelAim();
+            if (pl.IsMounted) pl.Dismount(true);
+            SynthAudio.Play(Sfx.Whoosh, 0.5f, 0.7f);
+            yield return Fade(true, 0.45f);
+            var old = run;
+            bool down = to > old.level;
+            TearDown(old);
+            var r = BuildRun(old.e, to, old.done, old.quiet, old.seenAll);
+            r.cleared = old.cleared || r.cleared;
+            r.checkpointTold = old.checkpointTold;
+            var at = down ? r.startPos : r.descentArrive;
+            var look = down ? (r.rooms.Count > 1 ? r.rooms[1].Center : at + Vector3.right * 5f) : r.rooms[0].Center;
+            pl.Teleport(at, YawToward(at, look));
+            gm.CameraRig.Init(gm.CameraRig.Cam, pl.Position, pl.transform.eulerAngles.y);
+            var comp = gm.Party.Companion;
+            if (comp != null && comp.gameObject.activeSelf) { var cp = Nudge(r, at + pl.Right * 1.8f); comp.transform.position = cp; comp.Home = cp; }
+            yield return null;
+            yield return Fade(false, 0.5f);
+            if (down)
+            {
+                GameEvents.Good($"{r.e.name} - the lower level");
+                if (!r.checkpointTold)
+                {
+                    r.checkpointTold = true;
+                    GameEvents.Say("A checkpoint: if you faint down here you wake at the foot of the rope, not outside. Climb the rope to go back up.", new Color(0.6f, 1f, 0.75f));
+                }
+            }
+            else GameEvents.Say("Back on the upper level.", new Color(0.8f, 0.85f, 1f));
+            busy = false;
+        }
+
+        /// <summary>
+        /// Fainting on a lower level: back up at its checkpoint (the foot of the rope) instead of outside. Everything
+        /// that was hunting you calms down and heals, so it's a fresh try - nothing you took comes back.
+        /// </summary>
+        public bool CheckpointRespawn(out Vector3 at)
+        {
+            at = default;
+            if (run == null || run.level == 0) return false;
+            foreach (var k in run.kin) if (k != null && k.gameObject.activeSelf && k.IsAlive && k.Mode == CreatureMode.Wild) { k.HealFull(); k.Migrate(k.Home); }
+            foreach (var g in run.guards)
+            {
+                if (g.down || g.a == null || !g.a.gameObject.activeSelf || g.a.Data != g.d) continue;
+                g.a.HealFull(); g.a.Migrate(g.home); g.woke = false;
+            }
+            foreach (var w in run.watches) w.woke = false;
+            if (bossBar && HUD.I != null) { HUD.I.SetBoss(null, 0f, Color.white); bossBar = false; }
+            at = run.startPos;
+            return true;
+        }
+
+        /// <summary>Lost? Back to where this level starts (the mouth, or the foot of the rope), if nothing is hunting you.</summary>
+        public void ReturnToStart()
+        {
+            if (busy || run == null) return;
+            var pl = GameManager.I.Player;
+            foreach (var k in run.kin)
+                if (k != null && k.gameObject.activeSelf && k.IsAlive && k.Aggro && (k.Position - pl.Position).sqrMagnitude < 25f * 25f) { GameEvents.Warn("Not while something is hunting you."); return; }
+            foreach (var g in run.guards)
+                if (!g.down && g.woke && g.a != null && g.a.gameObject.activeSelf && (g.a.Position - pl.Position).sqrMagnitude < 30f * 30f) { GameEvents.Warn("Not while a guardian is after you."); return; }
+            StartCoroutine(ReturnRoutine());
+        }
+
+        IEnumerator ReturnRoutine()
+        {
+            busy = true;
+            var gm = GameManager.I;
+            var pl = gm.Player;
+            if (pl.IsMounted) pl.Dismount(true);
+            yield return Fade(true, 0.35f);
+            var r = run;
+            var look = r.rooms.Count > 1 ? r.rooms[1].Center : r.startPos + Vector3.right * 5f;
+            pl.Teleport(r.startPos, YawToward(r.startPos, look));
+            gm.CameraRig.Init(gm.CameraRig.Cam, pl.Position, pl.transform.eulerAngles.y);
+            var comp = gm.Party.Companion;
+            if (comp != null && comp.gameObject.activeSelf) { var cp = Nudge(r, r.startPos + pl.Right * 1.8f); comp.transform.position = cp; comp.Home = cp; }
+            yield return null;
+            yield return Fade(false, 0.4f);
+            GameEvents.Say(r.level > 0 ? "Back at the checkpoint by the rope." : "Back at the cave mouth.", new Color(0.8f, 0.85f, 1f));
             busy = false;
         }
 
@@ -642,6 +781,13 @@ namespace Wildbond
         {
             var r = run;
             run = null;
+            TearDown(r);
+            EnvironmentSystem.I?.SetIndoor(false, Color.white);
+        }
+
+        /// <summary>Removes one level: its kin, guardians, shots, meshes and map.</summary>
+        void TearDown(Run r)
+        {
             foreach (var k in r.kin) if (k != null && k.gameObject.activeSelf && k.Mode == CreatureMode.Wild) k.Despawn();
             foreach (var g in r.guards) if (g.a != null && g.a.gameObject.activeSelf && g.a.Data == g.d) g.a.Despawn();
             CreatureSpawner.I.DespawnAllWild();
@@ -649,7 +795,6 @@ namespace Wildbond
             if (bossBar && HUD.I != null) { HUD.I.SetBoss(null, 0f, Color.white); bossBar = false; }
             if (r.root != null) Destroy(r.root);
             if (r.map != null) Destroy(r.map);
-            EnvironmentSystem.I?.SetIndoor(false, Color.white);
         }
 
         static float YawToward(Vector3 from, Vector3 to) { var d = to - from; return Mathf.Atan2(d.x, d.z) * Mathf.Rad2Deg; }

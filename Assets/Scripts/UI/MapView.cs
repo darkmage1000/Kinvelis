@@ -232,6 +232,42 @@ namespace Wildbond
             arrow.rectTransform.Stretch();
         }
 
+        readonly List<int> labelOrder = new List<int>();
+        readonly List<Rect> labelRects = new List<Rect>();
+
+        /// <summary>
+        /// Names never sit on top of each other (menu pass 2): bigger markers (camp, villages, Wardens) keep their names
+        /// first, then the rest in the order they were added; a name that would overlap one already shown is hidden
+        /// until you zoom in far enough for it to fit. The zoom readout's corner is kept clear too.
+        /// </summary>
+        void Declutter(Rect r)
+        {
+            labelOrder.Clear();
+            for (int i = 0; i < markers.Count; i++)
+            {
+                var m = markers[i];
+                if (m.label != null && m.label.enabled && m.rt.gameObject.activeSelf) labelOrder.Add(i);
+            }
+            labelOrder.Sort((a, b) =>
+            {
+                int c = markers[b].rt.sizeDelta.x.CompareTo(markers[a].rt.sizeDelta.x);
+                return c != 0 ? c : a.CompareTo(b);
+            });
+            labelRects.Clear();
+            labelRects.Add(new Rect(0f, r.height - 44f, 300f, 44f));
+            foreach (int i in labelOrder)
+            {
+                var m = markers[i];
+                Vector2 p = m.rt.anchoredPosition;
+                float half = m.rt.sizeDelta.x * 0.5f;
+                var box = new Rect(p.x + half + 4f, p.y - 12f, Mathf.Min(320f, m.label.preferredWidth), 24f);
+                bool hit = false;
+                foreach (var t in labelRects) if (t.Overlaps(box)) { hit = true; break; }
+                if (hit) { m.label.enabled = false; continue; }
+                labelRects.Add(box);
+            }
+        }
+
         Marker AddMarker(Vector3 world, Color c, string label, float size, Action onTap, MapIcon icon = MapIcon.Dot)
         {
             var img = UIFactory.Panel(markerLayer, "M", c, icon == MapIcon.Dot ? UIFactory.Circle : MapIcons.Get(icon));
@@ -410,6 +446,7 @@ namespace Wildbond
                 if (m.rotateWithPlayer) m.rt.localRotation = Quaternion.Euler(0, 0, -pl.transform.eulerAngles.y);
                 if (m.label != null) m.label.enabled = zoom >= 2f || m.rt.sizeDelta.x >= 26f;
             }
+            Declutter(r);
 
             float meters = WorldGen.HalfWorld * 2f / zoom;
             zoomLabel.text = $"{zoom:0.#}x  ·  view {meters:0} m";
