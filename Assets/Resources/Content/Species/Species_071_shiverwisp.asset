@@ -22,6 +22,8 @@ MonoBehaviour:
   element2: 8
   rarity: 1
   starter: 0
+  bossOnly: 0
+  underground: 0
   role: 
   biomes: 4
   spawnTime: 2
@@ -198,6 +200,320 @@ MonoBehaviour:
     pivot: {x: -0.26, y: 0.9, z: 0}
   - group: 11
     pivot: {x: 0, y: 0.95, z: 0}
+  forms:
+  - name: Shiverwraith
+    blurb: A colder breath; its shards circle wider and faster.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 1, z: -0.0008000019}
+      scale: {x: 0.55200005, y: 0.6, z: 0.528}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 8
+      slot: 0
+      pos: {x: 0, y: 0.604, z: -0.0728}
+      scale: {x: 0.43200004, y: 0.6, z: 0.40800002}
+      rot: {x: 170, y: 0, z: 0}
+    - shape: 3
+      group: 8
+      slot: 1
+      pos: {x: 0, y: 0.36399993, z: -0.1448}
+      scale: {x: 0.192, y: 0.36, z: 0.192}
+      rot: {x: 160, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 1.24, z: -0.0008000019}
+      scale: {x: 0.16800001, y: 0.36, z: 0.16800001}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0.12, y: 1.1752924, z: -0.0008000019}
+      scale: {x: 0.120000005, y: 0.28800002, z: 0.120000005}
+      rot: {x: 0, y: 0, z: -30}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: -0.12, y: 1.1752924, z: -0.0008000019}
+      scale: {x: 0.120000005, y: 0.28800002, z: 0.120000005}
+      rot: {x: 0, y: -0, z: 30}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0.120000005, y: 1.036, z: 0.2272}
+      scale: {x: 0.096, y: 0.1104, z: 0.0672}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: -0.120000005, y: 1.036, z: 0.2272}
+      scale: {x: 0.096, y: 0.1104, z: 0.0672}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.13800001, y: 1.06, z: 0.256}
+      scale: {x: 0.0336, y: 0.0336, z: 0.0336}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.13800001, y: 1.06, z: 0.256}
+      scale: {x: 0.0336, y: 0.0336, z: 0.0336}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 7
+      slot: 1
+      pos: {x: 0.35200003, y: 0.9, z: 0.039199997}
+      scale: {x: 0.14, y: 0.1, z: 0.12}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 6
+      slot: 1
+      pos: {x: -0.35200003, y: 0.9, z: 0.039199997}
+      scale: {x: 0.14, y: 0.1, z: 0.12}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 5
+      group: 11
+      slot: 6
+      pos: {x: 0, y: 0.84303707, z: 0.70714194}
+      scale: {x: 0.125, y: 0.325, z: 0.125}
+      rot: {x: 15, y: 0, z: 0}
+    - shape: 5
+      group: 11
+      slot: 6
+      pos: {x: 0.6732928, y: 0.84303707, z: 0.21796606}
+      scale: {x: 0.125, y: 0.325, z: 0.125}
+      rot: {x: 15, y: 72, z: 0}
+    - shape: 5
+      group: 11
+      slot: 6
+      pos: {x: 0.41611776, y: 0.84303707, z: -0.5735371}
+      scale: {x: 0.125, y: 0.325, z: 0.125}
+      rot: {x: 15, y: 144, z: 0}
+    - shape: 5
+      group: 11
+      slot: 6
+      pos: {x: -0.41611773, y: 0.84303707, z: -0.5735371}
+      scale: {x: 0.125, y: 0.325, z: 0.125}
+      rot: {x: 15, y: 216, z: 0}
+    - shape: 5
+      group: 11
+      slot: 6
+      pos: {x: -0.67329276, y: 0.84303707, z: 0.21796617}
+      scale: {x: 0.125, y: 0.325, z: 0.125}
+      rot: {x: 15, y: 288, z: 0}
+    pivots:
+    - group: 8
+      pivot: {x: 0, y: 0.82, z: -0.0008000019}
+    - group: 7
+      pivot: {x: 0.312, y: 0.93999994, z: -0.0008000019}
+    - group: 6
+      pivot: {x: -0.312, y: 0.93999994, z: -0.0008000019}
+    - group: 11
+      pivot: {x: 0, y: 1, z: -0.0008000019}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Rimewraith
+    blurb: A wraith of frost with a crown of ice flowers and a dozen shards orbiting
+      it. It leaves frost flowers on you, too.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 1.024, z: -0.001184003}
+      scale: {x: 0.59616005, y: 0.64800006, z: 0.57024}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 3
+      group: 8
+      slot: 0
+      pos: {x: 0, y: 0.61359996, z: -0.073184006}
+      scale: {x: 0.43200004, y: 0.6, z: 0.40800002}
+      rot: {x: 170, y: 0, z: 0}
+    - shape: 3
+      group: 8
+      slot: 1
+      pos: {x: 0, y: 0.37359992, z: -0.14518401}
+      scale: {x: 0.192, y: 0.36, z: 0.192}
+      rot: {x: 160, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0, y: 1.2832, z: -0.001184003}
+      scale: {x: 0.18144003, y: 0.38880002, z: 0.18144003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: 0.1296, y: 1.2133157, z: -0.001184003}
+      scale: {x: 0.1296, y: 0.31104004, z: 0.1296}
+      rot: {x: 0, y: 0, z: -30}
+    - shape: 5
+      group: 0
+      slot: 6
+      pos: {x: -0.1296, y: 1.2133157, z: -0.001184003}
+      scale: {x: 0.1296, y: 0.31104004, z: 0.1296}
+      rot: {x: 0, y: -0, z: 30}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: 0.1296, y: 1.06288, z: 0.245056}
+      scale: {x: 0.10368001, y: 0.11923201, z: 0.072576}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 6
+      pos: {x: -0.1296, y: 1.06288, z: 0.245056}
+      scale: {x: 0.10368001, y: 0.11923201, z: 0.072576}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: 0.14904001, y: 1.0888, z: 0.27616003}
+      scale: {x: 0.036288, y: 0.036288, z: 0.036288}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 4
+      pos: {x: -0.14904001, y: 1.0888, z: 0.27616003}
+      scale: {x: 0.036288, y: 0.036288, z: 0.036288}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 0
+      group: 7
+      slot: 1
+      pos: {x: 0.37696004, y: 0.91919994, z: 0.038815998}
+      scale: {x: 0.14, y: 0.1, z: 0.12}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 6
+      slot: 1
+      pos: {x: -0.37696004, y: 0.91919994, z: 0.038815998}
+      scale: {x: 0.14, y: 0.1, z: 0.12}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 5
+      group: 11
+      slot: 6
+      pos: {x: 0, y: 0.8670371, z: 0.70675796}
+      scale: {x: 0.125, y: 0.325, z: 0.125}
+      rot: {x: 15, y: 0, z: 0}
+    - shape: 5
+      group: 11
+      slot: 6
+      pos: {x: 0.6732928, y: 0.8670371, z: 0.21758206}
+      scale: {x: 0.125, y: 0.325, z: 0.125}
+      rot: {x: 15, y: 72, z: 0}
+    - shape: 5
+      group: 11
+      slot: 6
+      pos: {x: 0.41611776, y: 0.8670371, z: -0.5739211}
+      scale: {x: 0.125, y: 0.325, z: 0.125}
+      rot: {x: 15, y: 144, z: 0}
+    - shape: 5
+      group: 11
+      slot: 6
+      pos: {x: -0.41611773, y: 0.8670371, z: -0.5739211}
+      scale: {x: 0.125, y: 0.325, z: 0.125}
+      rot: {x: 15, y: 216, z: 0}
+    - shape: 5
+      group: 11
+      slot: 6
+      pos: {x: -0.67329276, y: 0.8670371, z: 0.21758217}
+      scale: {x: 0.125, y: 0.325, z: 0.125}
+      rot: {x: 15, y: 288, z: 0}
+    - shape: 5
+      group: 11
+      slot: 6
+      pos: {x: -0, y: 0.86146677, z: -0.7404044}
+      scale: {x: 0.1, y: 0.26, z: 0.1}
+      rot: {x: 15, y: 0, z: 0}
+    - shape: 5
+      group: 11
+      slot: 6
+      pos: {x: -0.7052925, y: 0.86146677, z: -0.22797939}
+      scale: {x: 0.1, y: 0.26, z: 0.1}
+      rot: {x: 15, y: 72, z: 0}
+    - shape: 5
+      group: 11
+      slot: 6
+      pos: {x: -0.43589467, y: 0.86146677, z: 0.60114163}
+      scale: {x: 0.1, y: 0.26, z: 0.1}
+      rot: {x: 15, y: 144, z: 0}
+    - shape: 5
+      group: 11
+      slot: 6
+      pos: {x: 0.43589464, y: 0.86146677, z: 0.60114163}
+      scale: {x: 0.1, y: 0.26, z: 0.1}
+      rot: {x: 15, y: 216, z: 0}
+    - shape: 5
+      group: 11
+      slot: 6
+      pos: {x: 0.70529246, y: 0.86146677, z: -0.22797951}
+      scale: {x: 0.1, y: 0.26, z: 0.1}
+      rot: {x: 15, y: 288, z: 0}
+    - shape: 5
+      group: 0
+      slot: 4
+      pos: {x: 0, y: 1.3683181, z: 0.09515522}
+      scale: {x: 0.05, y: 0.16, z: 0.05}
+      rot: {x: 30, y: 0, z: 0}
+    - shape: 5
+      group: 0
+      slot: 4
+      pos: {x: 0.07894274, y: 1.3683181, z: 0.04957761}
+      scale: {x: 0.05, y: 0.16, z: 0.05}
+      rot: {x: 30, y: 60, z: 0}
+    - shape: 5
+      group: 0
+      slot: 4
+      pos: {x: 0.07894272, y: 1.3683181, z: -0.0415776}
+      scale: {x: 0.05, y: 0.16, z: 0.05}
+      rot: {x: 30, y: 120, z: 0}
+    - shape: 5
+      group: 0
+      slot: 4
+      pos: {x: -0.000000007969041, y: 1.3683181, z: -0.0871552}
+      scale: {x: 0.05, y: 0.16, z: 0.05}
+      rot: {x: 30, y: 180, z: 0}
+    - shape: 5
+      group: 0
+      slot: 4
+      pos: {x: -0.07894273, y: 1.3683181, z: -0.041577585}
+      scale: {x: 0.05, y: 0.16, z: 0.05}
+      rot: {x: 30, y: 240, z: 0}
+    - shape: 5
+      group: 0
+      slot: 4
+      pos: {x: -0.07894273, y: 1.3683181, z: 0.0495776}
+      scale: {x: 0.05, y: 0.16, z: 0.05}
+      rot: {x: 30, y: 300, z: 0}
+    pivots:
+    - group: 8
+      pivot: {x: 0, y: 0.8296, z: -0.001184003}
+    - group: 7
+      pivot: {x: 0.33696002, y: 0.9591999, z: -0.001184003}
+    - group: 6
+      pivot: {x: -0.33696002, y: 0.9591999, z: -0.001184003}
+    - group: 11
+      pivot: {x: 0, y: 1.024, z: -0.001184003}
+    element2: 0
+    skill: frost_flowers
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0

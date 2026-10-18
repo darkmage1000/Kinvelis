@@ -22,6 +22,8 @@ MonoBehaviour:
   element2: 8
   rarity: 1
   starter: 0
+  bossOnly: 0
+  underground: 0
   role: 
   biomes: 34
   spawnTime: 2
@@ -166,6 +168,240 @@ MonoBehaviour:
     pivot: {x: 0, y: 0.2, z: -0.65}
   - group: 1
     pivot: {x: 0, y: 0.28, z: 0.12}
+  forms:
+  - name: Duneshroud
+    blurb: Its hood has spread wide; only its eyes show above the sand.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.22346, z: 0.03619498}
+      scale: {x: 0.391, y: 0.35972002, z: 0.4301}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.20782, z: -0.26280499}
+      scale: {x: 0.35189998, y: 0.323748, z: 0.38709}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.19218001, z: -0.561805}
+      scale: {x: 0.31280002, y: 0.28777602, z: 0.34408003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 8
+      slot: 1
+      pos: {x: 0, y: 0.17449999, z: -0.867305}
+      scale: {x: 0.2856, y: 0.26275203, z: 0.31416005}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 8
+      slot: 0
+      pos: {x: 0, y: 0.15818, z: -1.1793051}
+      scale: {x: 0.2448, y: 0.22521602, z: 0.26928002}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 8
+      slot: 1
+      pos: {x: 0, y: 0.14186001, z: -1.4913051}
+      scale: {x: 0.20400003, y: 0.18768004, z: 0.22440003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 8
+      slot: 0
+      pos: {x: 0, y: 0.12554, z: -1.8033051}
+      scale: {x: 0.16320002, y: 0.15014403, z: 0.17952003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.46245998, z: 0.363195}
+      scale: {x: 0.294, y: 0.25199997, z: 0.357}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 2
+      pos: {x: 0, y: 0.50446, z: 0.25819498}
+      scale: {x: 0.54599994, y: 0.378, z: 0.08399999}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.0945, y: 0.52546, z: 0.51019496}
+      scale: {x: 0.06299999, y: 0.0525, z: 0.041999996}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.0945, y: 0.52546, z: 0.51019496}
+      scale: {x: 0.06299999, y: 0.0525, z: 0.041999996}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 1
+      slot: 5
+      pos: {x: 0, y: 0.39946002, z: 0.573195}
+      scale: {x: 0.020999998, y: 0.105, z: 0.020999998}
+      rot: {x: 90, y: 0, z: 0}
+    pivots:
+    - group: 8
+      pivot: {x: 0, y: 0.22346, z: -0.71130496}
+    - group: 1
+      pivot: {x: 0, y: 0.31546, z: 0.17419499}
+    element2: 0
+    skill: 
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
+  - name: Moonhood
+    blurb: A hooded serpent with a crescent of light over its brow. It strikes by
+      moonlight and you sleep through the rest.
+    parts:
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.23784882, z: 0.05839458}
+      scale: {x: 0.42228, y: 0.38849765, z: 0.464508}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 1
+      pos: {x: 0, y: 0.2209576, z: -0.26452538}
+      scale: {x: 0.380052, y: 0.34964785, z: 0.4180572}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 0
+      slot: 0
+      pos: {x: 0, y: 0.20406641, z: -0.58744544}
+      scale: {x: 0.33782405, y: 0.3107981, z: 0.37160644}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 8
+      slot: 1
+      pos: {x: 0, y: 0.1888888, z: -0.90490544}
+      scale: {x: 0.2856, y: 0.26275203, z: 0.31416005}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 8
+      slot: 0
+      pos: {x: 0, y: 0.17256881, z: -1.2169056}
+      scale: {x: 0.2448, y: 0.22521602, z: 0.26928002}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 8
+      slot: 1
+      pos: {x: 0, y: 0.15624882, z: -1.5289056}
+      scale: {x: 0.20400003, y: 0.18768004, z: 0.22440003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 8
+      slot: 0
+      pos: {x: 0, y: 0.13992882, z: -1.8409057}
+      scale: {x: 0.16320002, y: 0.15014403, z: 0.17952003}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 0
+      pos: {x: 0, y: 0.4842088, z: 0.39643463}
+      scale: {x: 0.294, y: 0.25199997, z: 0.357}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 2
+      pos: {x: 0, y: 0.52620876, z: 0.29143462}
+      scale: {x: 0.54599994, y: 0.378, z: 0.08399999}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.0945, y: 0.5472088, z: 0.5434346}
+      scale: {x: 0.06299999, y: 0.0525, z: 0.041999996}
+      rot: {x: 0, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.0945, y: 0.5472088, z: 0.5434346}
+      scale: {x: 0.06299999, y: 0.0525, z: 0.041999996}
+      rot: {x: 0, y: -0, z: -0}
+    - shape: 3
+      group: 1
+      slot: 5
+      pos: {x: 0, y: 0.42120883, z: 0.6064346}
+      scale: {x: 0.020999998, y: 0.105, z: 0.020999998}
+      rot: {x: 90, y: 0, z: 0}
+    - shape: 0
+      group: 1
+      slot: 1
+      pos: {x: 0.1764, y: 0.4842088, z: 0.28933463}
+      scale: {x: 0.06, y: 0.37799996, z: 0.357}
+      rot: {x: 0, y: 0, z: -15}
+    - shape: 0
+      group: 1
+      slot: 1
+      pos: {x: -0.1764, y: 0.4842088, z: 0.28933463}
+      scale: {x: 0.06, y: 0.37799996, z: 0.357}
+      rot: {x: 0, y: -0, z: 15}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.121243566, y: 0.68020874, z: 0.28933463}
+      scale: {x: 0.05, y: 0.05, z: 0.04}
+      rot: {x: 0, y: 0, z: 60}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.08999026, y: 0.71745497, z: 0.28933463}
+      scale: {x: 0.05, y: 0.05, z: 0.04}
+      rot: {x: 0, y: 0, z: 40}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: -0.047882818, y: 0.74176574, z: 0.28933463}
+      scale: {x: 0.05, y: 0.05, z: 0.04}
+      rot: {x: 0, y: 0, z: 20}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0, y: 0.75020874, z: 0.28933463}
+      scale: {x: 0.05, y: 0.05, z: 0.04}
+      rot: {x: 0, y: 0, z: -0}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.047882818, y: 0.74176574, z: 0.28933463}
+      scale: {x: 0.05, y: 0.05, z: 0.04}
+      rot: {x: 0, y: 0, z: -20}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.08999026, y: 0.71745497, z: 0.28933463}
+      scale: {x: 0.05, y: 0.05, z: 0.04}
+      rot: {x: 0, y: 0, z: -40}
+    - shape: 0
+      group: 1
+      slot: 6
+      pos: {x: 0.121243566, y: 0.68020874, z: 0.28933463}
+      scale: {x: 0.05, y: 0.05, z: 0.04}
+      rot: {x: 0, y: 0, z: -60}
+    pivots:
+    - group: 8
+      pivot: {x: 0, y: 0.23784882, z: -0.7489054}
+    - group: 1
+      pivot: {x: 0, y: 0.3372088, z: 0.20743462}
+    element2: 0
+    skill: moonlight_strike
+    ownPalette: 0
+    palette:
+      primary: {r: 0, g: 0, b: 0, a: 0}
+      secondary: {r: 0, g: 0, b: 0, a: 0}
+      accent: {r: 0, g: 0, b: 0, a: 0}
+      eye: {r: 0, g: 0, b: 0, a: 0}
+      glow: {r: 0, g: 0, b: 0, a: 0}
   regional:
     enabled: 0
     biome: 0
