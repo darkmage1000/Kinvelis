@@ -61,7 +61,7 @@ namespace Wildbond
         {
             switch (SigFor(w.id))
             {
-                case WardenSig.Blooms: return "Flowers grow round the ring and heal it while they stand - run through them to trample them.";
+                case WardenSig.Blooms: return "Now and then a flower grows in the ring and heals it while it stands - run through it to trample it (they wilt by themselves after a while).";
                 case WardenSig.Tide: return "Coral islands rise, then the tide floods the ring - be standing on the coral when the water comes.";
                 case WardenSig.SunBeam: return "A line marks where its sun beam starts, then the beam sweeps round it - keep running ahead of it, or get behind it.";
                 case WardenSig.Heads: return "Its three heads strike three lanes one after another - watch the order and step into a lane that has already struck.";
@@ -211,17 +211,23 @@ namespace Wildbond
         // ============================================================ 1 BLOOMWYRM - healing blooms
         const float BloomHeal = 0.004f;   // of its max health per second, per bloom
         const float BloomSize = 2f;       // a flower you can spot from across the ring
+        // calmer after the first playtest (2026-10-19, user: "spawns those flowers too fast, I'm sprinting the whole fight
+        // to trample them"): every 24 s (was 15), one bloom then two (was two then three), at most three standing (was
+        // five), grown nearer the middle, easier to step on, and each wilts by itself after BloomLife - ignoring one costs
+        // the boss about 5% healed, not the fight
+        const float BloomEvery = 24f, BloomLife = 14f, BloomTrample = 2.4f;
+        const int BloomMax = 3;
 
         void TickBlooms(float dt, Warden w, PlayerController pl)
         {
-            if (Ready && sigProps.Count < 4)
+            if (Ready)
             {
-                sigTimer = Every(15f);
+                sigTimer = Every(BloomEvery);
                 Explain(w);
-                int n = phase >= 3 ? 3 : 2 + (phase >= 2 ? 1 : 0);
-                for (int i = 0; i < n && sigProps.Count < 5; i++)
+                int n = phase >= 2 ? 2 : 1;
+                for (int i = 0; i < n && sigProps.Count < BloomMax; i++)
                 {
-                    var t = Prop(bloomMesh, RingSpot(w, 7f, ArenaRadius - 3f));
+                    var t = Prop(bloomMesh, RingSpot(w, 6f, 14f));
                     t.localScale = Vector3.one * 0.05f;
                     Fx.Sparkle(t.position + Vector3.up * 0.5f, new Color(1f, 0.7f, 0.9f), 12, 0.8f);
                 }
@@ -235,9 +241,16 @@ namespace Wildbond
                 var t = sigProps[i];
                 sigPropAge[i] += dt;
                 float grow = Mathf.Clamp01(sigPropAge[i] / 1.2f);
-                t.localScale = Vector3.one * (BloomSize * Mathf.Max(0.05f, grow) * (1f + Mathf.Sin(Time.time * 3f + i) * 0.05f));
+                float wilt = Mathf.Clamp01((BloomLife - sigPropAge[i]) / 1.2f);   // shrinks away over its last second
+                if (wilt <= 0f)
+                {
+                    Fx.Burst(t.position + Vector3.up * 0.4f, new Color(0.6f, 0.5f, 0.4f), 10, 2f, 0.2f, 0.5f);
+                    DropProp(i);
+                    continue;
+                }
+                t.localScale = Vector3.one * (BloomSize * Mathf.Max(0.05f, Mathf.Min(grow, wilt)) * (1f + Mathf.Sin(Time.time * 3f + i) * 0.05f));
                 t.Rotate(0f, 20f * dt, 0f);
-                if (Flat(pl.Position, t.position) < 1.9f && grow > 0.3f)
+                if (Flat(pl.Position, t.position) < BloomTrample && grow > 0.3f)
                 {
                     Fx.Burst(t.position + Vector3.up * 0.6f, new Color(1f, 0.6f, 0.85f), 24, 4f, 0.25f, 0.6f, true);
                     Fx.Burst(t.position + Vector3.up * 0.3f, new Color(0.4f, 0.8f, 0.3f), 10, 3f, 0.2f, 0.5f);
@@ -245,7 +258,7 @@ namespace Wildbond
                     DropProp(i);
                     continue;
                 }
-                if (grow >= 1f)
+                if (grow >= 1f && wilt >= 1f)
                 {
                     boss.BossHeal(boss.MaxHp * BloomHeal * dt);
                     if (pulse)
