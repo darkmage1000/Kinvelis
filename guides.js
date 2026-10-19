@@ -103,7 +103,7 @@ html: `
 
 { id: "catching", group: "Start here", title: "Catching kin", blurb: "The real odds, the three seeds, and what makes a catch easier.",
 html: `
-<p class="lead">A thrown seed shakes three times. The number shown while you aim is the true chance that all three hold.</p>
+<p class="lead">A seed that hits draws the kin inside, drops to the ground and shakes three times. If one shake fails the seed bursts and the kin pops back out, angry; if all three hold, the seed clicks shut and flies back to you. The number shown while you aim is the true chance that all three hold.</p>
 
 <h2 id="health">Health is what matters most</h2>
 <div class="scroll"><table>
