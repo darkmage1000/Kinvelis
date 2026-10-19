@@ -89,12 +89,18 @@ namespace Wildbond
         float thaw;
         CreatureActor frozen;
 
-        float Every(float baseSeconds) => baseSeconds * (phase <= 1 ? 1.15f : phase == 2 ? 1f : 0.75f);
+        /// <summary>
+        /// How long until a signature comes again: its own base x `SigPace` x the phase (slower first, a little quicker
+        /// at the end). One knob for every Warden - raised to 1.4 after the first playtest (2026-10-19, user: "probably
+        /// safer to nerf those timers on all"), and the last phase speeds up by 15% instead of 25%.
+        /// </summary>
+        const float SigPace = 1.4f, FirstSig = 10f;
+        float Every(float baseSeconds) => baseSeconds * SigPace * (phase <= 1 ? 1.15f : phase == 2 ? 1f : 0.85f);
 
         void SigStart(Warden w)
         {
             sig = SigFor(w.id);
-            sigTimer = 7f; sigStage = 0; sigClock = 0f; sigExplained = false; thaw = 0f; frozen = null;
+            sigTimer = FirstSig; sigStage = 0; sigClock = 0f; sigExplained = false; thaw = 0f; frozen = null;
             MakeSigMeshes(w);
         }
 
@@ -215,7 +221,7 @@ namespace Wildbond
         // to trample them"): every 24 s (was 15), one bloom then two (was two then three), at most three standing (was
         // five), grown nearer the middle, easier to step on, and each wilts by itself after BloomLife - ignoring one costs
         // the boss about 5% healed, not the fight
-        const float BloomEvery = 24f, BloomLife = 14f, BloomTrample = 2.4f;
+        const float BloomEvery = 17f, BloomLife = 14f, BloomTrample = 2.4f;   // x SigPace 1.4 = about 24 s
         const int BloomMax = 3;
 
         void TickBlooms(float dt, Warden w, PlayerController pl)
