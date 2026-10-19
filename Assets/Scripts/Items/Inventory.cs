@@ -77,6 +77,32 @@ namespace Wildbond
             return count;
         }
 
+        /// <summary>
+        /// Drag and drop between two slots: into an empty slot it moves, onto the same item it stacks (what does not fit
+        /// stays behind), onto a different item the two swap. Returns false if nothing changed.
+        /// </summary>
+        public bool MoveSlot(int from, int to)
+        {
+            if (from == to || from < 0 || to < 0 || from >= slots.Count || to >= slots.Count) return false;
+            var a = slots[from];
+            var b = slots[to];
+            if (a.Empty) return false;
+            if (!b.Empty && b.id == a.id)
+            {
+                var def = ContentDB.Item(a.id);
+                int stack = def != null ? def.maxStack : 99;
+                int move = Math.Min(stack - b.count, a.count);
+                if (move <= 0) { slots[from] = b; slots[to] = a; return true; }   // full stack: just swap places
+                b.count += move;
+                a.count -= move;
+                if (a.count <= 0) { a.id = ""; a.count = 0; }
+                return true;
+            }
+            slots[from] = b;
+            slots[to] = a;
+            return true;
+        }
+
         /// <summary>Removes up to count, returns amount actually removed.</summary>
         public int Remove(string id, int count)
         {

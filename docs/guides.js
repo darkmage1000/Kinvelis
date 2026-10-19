@@ -75,6 +75,7 @@ html: `
 <tr><td><b>KIN SWAP</b></td><td>Opens the quick bar to send out a different party kin, or call the current one back.</td></tr>
 <tr><td>Stance button</td><td>Passive (never fights), Defensive (fights what attacks you), Aggressive (fights anything hostile nearby).</td></tr>
 <tr><td>Hotbar</td><td>Six slots (keys 1-6). A tool or weapon on it goes into your hand when tapped; food or a heal (a Salve, say) is used at once, and its slot shows how many you have left. Put things on it from MENU &gt; Bag.</td></tr>
+<tr><td>Bag and boxes</td><td>Hold a slot until it lights up, then drag the item: onto an empty slot it moves, onto the same item it stacks, onto a different item the two swap. A quick swipe still scrolls. Camp boxes work the same way while you stand at them.</td></tr>
 <tr><td>The prompt button</td><td>Changes with what is in front of you: PICK UP, USE, OPEN, TALK, RIDE, SURF, PET, FISH, WORK, CHALLENGE and so on.</td></tr>
 <tr><td><b>BUILD</b></td><td>Place structures. ROTATE turns the piece, PLACE confirms.</td></tr>
 <tr><td><b>CAMP</b></td><td>Appears inside your camp ring. Opens the camp screens.</td></tr>

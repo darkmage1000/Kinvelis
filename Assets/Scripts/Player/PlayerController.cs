@@ -249,7 +249,7 @@ namespace Wildbond
                 if (SprintToggled) IsCrouching = false;
             }
             if (wishMag < 0.1f) { stillTime += dt; if (stillTime > 0.6f) SprintToggled = false; } else stillTime = 0f;
-            if (IsSwimming || IsCrouching) SprintToggled = false;
+            if ((IsSwimming && !(IsMounted && MountSwims)) || IsCrouching) SprintToggled = false;   // swimming cancels RUN; surfing keeps it
             if (q.stamina <= 0.5f && !Exhausted) { Exhausted = true; SprintToggled = false; }
             if (Exhausted && q.stamina >= q.MaxStamina * 0.25f) Exhausted = false;
             bool wantSprint = (InputHub.Held(Btn.Sprint) || SprintToggled || WorldRules.Current.simpleControls) && !IsCrouching && !Exhausted && !Aiming;

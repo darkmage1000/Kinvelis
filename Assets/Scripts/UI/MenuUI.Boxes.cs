@@ -78,6 +78,20 @@ namespace Wildbond
                 var s = slots[i];
                 int idx = i;
                 var cell = UIFactory.Panel(list, "Slot", i == boxSel ? new Color(0.3f, 0.6f, 0.5f, 1f) : new Color(1, 1, 1, s.Empty ? 0.04f : 0.09f));
+                if (inCamp)
+                {
+                    // hold and drag to rearrange the box (standing at it)
+                    var drag = cell.gameObject.AddComponent<SlotDrag>();
+                    drag.index = i; drag.filled = !s.Empty; drag.group = "box";
+                    if (!s.Empty) { drag.icon = ItemIcons.Get(s.id); var dd = ContentDB.Item(s.id); if (dd != null) drag.iconColor = dd.iconColor; }
+                    drag.onMove = (a, c) =>
+                    {
+                        if (!bm.BoxMove(b, a, c)) return;
+                        if (boxSel == a) boxSel = c; else if (boxSel == c) boxSel = a;
+                        SynthAudio.Play(Sfx.Pickup, 1.1f, 0.5f);
+                        BoxChanged();
+                    };
+                }
                 if (s.Empty) continue;
                 cell.gameObject.AddComponent<Button>().onClick.AddListener(() => { boxSel = idx; SynthAudio.Play(Sfx.UiClick); Rebuild(); });
                 var d = ContentDB.Item(s.id);

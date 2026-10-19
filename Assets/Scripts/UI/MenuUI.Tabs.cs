@@ -72,6 +72,18 @@ namespace Wildbond
                 var cell = UIFactory.Panel(list, "Slot", i == selectedSlot ? new Color(0.3f, 0.6f, 0.5f, 1f) : new Color(1, 1, 1, 0.08f));
                 var b = cell.gameObject.AddComponent<Button>();
                 b.onClick.AddListener(() => { selectedSlot = idx; SynthAudio.Play(Sfx.UiClick); Rebuild(); });
+                // hold a slot, then drag: move, stack or swap (SlotDrag); a quick swipe still scrolls
+                var drag = cell.gameObject.AddComponent<SlotDrag>();
+                drag.index = i; drag.filled = !s.Empty; drag.group = "bag";
+                if (!s.Empty) { drag.icon = ItemIcons.Get(s.id); var dd = ContentDB.Item(s.id); if (dd != null) drag.iconColor = dd.iconColor; }
+                drag.onMove = (a, c) =>
+                {
+                    if (!stats.Bag.MoveSlot(a, c)) return;
+                    if (selectedSlot == a) selectedSlot = c; else if (selectedSlot == c) selectedSlot = a;
+                    SynthAudio.Play(Sfx.Pickup, 1.1f, 0.5f);
+                    GameEvents.RaiseInventoryChanged();
+                    Rebuild();
+                };
                 if (s.Empty) continue;
                 var def = ContentDB.Item(s.id);
                 var icon = UIFactory.ItemIcon(cell.transform, def, 92);

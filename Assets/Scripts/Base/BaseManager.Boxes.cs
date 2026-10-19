@@ -92,6 +92,15 @@ namespace Wildbond
             return l;
         }
 
+        /// <summary>Drag and drop inside one box: positions as `BoxSlots` lists them (feed box, the box's own slots, then the Hearthstone's overflow).</summary>
+        public bool BoxMove(Building b, int from, int to)
+        {
+            if (b == null) return false;
+            if (b.Def.feeds) return b.Feed.MoveSlot(from, to);
+            int Map(int i) => i < b.BoxLen ? b.BoxStart + i : BoxTotal + (i - b.BoxLen);
+            return Storage.MoveSlot(Map(from), Map(to));
+        }
+
         public int BoxUsed(Building b) { int n = 0; foreach (var s in BoxSlots(b)) if (!s.Empty) n++; return n; }
         public int BoxCapacity(Building b) => b.Def.feeds ? b.Feed.Capacity : b.BoxLen;
         public int BoxCount(Building b, string id) { int n = 0; foreach (var s in BoxSlots(b)) if (s.id == id) n += s.count; return n; }
