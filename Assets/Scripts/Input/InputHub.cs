@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 namespace Wildbond
 {
-    public enum Btn { Attack, Interact, Throw, Jump, Dodge, Sneak, Sprint, Summon, KinSkill, Build, Menu, Rotate, Confirm, Cancel, CycleSeed, Map, Stance, KinPanel, Hot1, Hot2, Hot3, Hot4, Ride, SprintToggle, Grapple, Lock, NextTarget, PrevTarget, Count }
+    public enum Btn { Attack, Interact, Throw, Jump, Dodge, Sneak, Sprint, Summon, KinSkill, Build, Menu, Rotate, Confirm, Cancel, CycleSeed, Map, Stance, KinPanel, Hot1, Hot2, Hot3, Hot4, Hot5, Hot6, Ride, SprintToggle, Grapple, Lock, NextTarget, PrevTarget, Count }
 
     /// <summary>
     /// Unified input: on-screen touch controls (joystick, look pad, buttons) + keyboard/mouse/gamepad fallback.
@@ -109,6 +109,8 @@ namespace Wildbond
                 Key(kb.digit2Key, Btn.Hot2);
                 Key(kb.digit3Key, Btn.Hot3);
                 Key(kb.digit4Key, Btn.Hot4);
+                Key(kb.digit5Key, Btn.Hot5);
+                Key(kb.digit6Key, Btn.Hot6);
             }
             if (mouse != null && !overUI && mouse.leftButton.wasPressedThisFrame) down[(int)Btn.Attack] = true;
             if (mouse != null && !overUI && mouse.leftButton.isPressed) held[(int)Btn.Attack] = true;

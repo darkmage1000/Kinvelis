@@ -129,8 +129,13 @@ namespace Wildbond
             switch (d.category)
             {
                 case ItemCategory.Food:
-                    ActionBtn(right, "EAT", () => gm.UseItem(d.id)); break;
+                    ActionBtn(right, "EAT", () => gm.UseItem(d.id));
+                    HotbarRow(right, stats, d);
+                    break;
                 case ItemCategory.Consumable:
+                    ActionBtn(right, "USE", () => gm.UseItem(d.id));
+                    HotbarRow(right, stats, d);
+                    break;
                 case ItemCategory.Upgrade:
                     ActionBtn(right, "USE", () => gm.UseItem(d.id)); break;
                 case ItemCategory.Weapon:
@@ -138,19 +143,7 @@ namespace Wildbond
                 {
                     var pl = gm.Player;
                     ActionBtn(right, stats.held == d.id ? "PUT AWAY (bare hands)" : "HOLD IN HAND", () => pl.ToggleHold(d.id));
-                    int hi = stats.HotbarIndex(d.id);
-                    if (hi >= 0) ActionBtn(right, $"REMOVE FROM HOTBAR ({hi + 1})", () => { stats.hotbar[hi] = null; GameEvents.RaiseInventoryChanged(); }, new Color(0.35f, 0.35f, 0.4f));
-                    else
-                    {
-                        var row = UIFactory.HRow(right, 84, 10);
-                        var lbl = UIFactory.Label(row.transform, "HOTBAR:", 24, Color.white); UIFactory.Size(lbl, 80, 130);
-                        for (int k = 0; k < PlayerStats.HotbarSize; k++)
-                        {
-                            int slot = k;
-                            string cur = stats.hotbar[k];
-                            UIFactory.Size(UIFactory.Button(row.transform, string.IsNullOrEmpty(cur) ? $"{k + 1}" : $"{k + 1}*", () => { stats.SetHotbar(slot, d.id); GameEvents.RaiseInventoryChanged(); }, new Color(0.25f, 0.42f, 0.5f), 26), 80, 90);
-                        }
-                    }
+                    HotbarRow(right, stats, d);
                     if (d.category == ItemCategory.Tool) Para(right, stats.autoTool ? "Auto-tool is ON: gathering picks your best tool automatically." : "Auto-tool is OFF: hold this tool to use it.", 20);
                     break;
                 }
@@ -200,6 +193,21 @@ namespace Wildbond
         {
             var b = UIFactory.Button(parent, label, a, c ?? new Color(0.25f, 0.5f, 0.42f), 30);
             UIFactory.Size(b, 84);
+        }
+
+        /// <summary>Put an item on hotbar slot 1-6 (a slot already in use is marked *), or take it off.</summary>
+        void HotbarRow(Transform right, PlayerStats stats, ItemDef d)
+        {
+            int hi = stats.HotbarIndex(d.id);
+            if (hi >= 0) { ActionBtn(right, $"REMOVE FROM HOTBAR ({hi + 1})", () => { stats.hotbar[hi] = null; GameEvents.RaiseInventoryChanged(); }, new Color(0.35f, 0.35f, 0.4f)); return; }
+            var row = UIFactory.HRow(right, 84, 8);
+            var lbl = UIFactory.Label(row.transform, "HOTBAR:", 24, Color.white); UIFactory.Size(lbl, 80, 120);
+            for (int k = 0; k < PlayerStats.HotbarSize; k++)
+            {
+                int slot = k;
+                string cur = stats.hotbar[k];
+                UIFactory.Size(UIFactory.Button(row.transform, string.IsNullOrEmpty(cur) ? $"{k + 1}" : $"{k + 1}*", () => { stats.SetHotbar(slot, d.id); GameEvents.RaiseInventoryChanged(); }, new Color(0.25f, 0.42f, 0.5f), 26), 80, 66);
+            }
         }
 
         // ============================================================ CRAFT

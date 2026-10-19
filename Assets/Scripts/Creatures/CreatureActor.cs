@@ -887,6 +887,12 @@ namespace Wildbond
                 return;
             }
 
+            // a move fired at empty ground still lands on a wild kin that happens to be standing there
+            if (pendingTarget is AimPoint aimed && a.kind != AbilityKind.Projectile)
+            {
+                var there = CreatureRegistry.FindNearestWild(aimed.Position, Mathf.Max(2.5f, a.radius));
+                if (there != null) pendingTarget = there;
+            }
             Vector3 origin = transform.position + Vector3.up * (BodyRadius * 1.3f + Rig.HoverHeight);
             Vector3 to = pendingTarget.Position - transform.position; to.y = 0;
             Vector3 dir = to.sqrMagnitude > 0.001f ? to.normalized : transform.forward;

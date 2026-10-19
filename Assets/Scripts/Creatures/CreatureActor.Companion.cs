@@ -174,9 +174,15 @@ namespace Wildbond
             var ab = abilities[slot];
             // a skill it uses on itself or on you needs no target and no run-up
             bool self = SkillEffects.SelfCast(ab.effect) || (ab.effect == AbilityEffect.Tonic && TonicWantsHeal());
-            if (!self && (target == null || !target.IsAlive)) return "No target in range.";
             if (cooldowns[slot] > 0f) return $"{abilities[slot].displayName} recharging ({cooldowns[slot]:0.0}s).";
             if (pendingAbility >= 0 || busyTimer > 0f) return "Busy...";
+            // nothing to aim at: it goes off anyway, at the ground ahead in the direction you are looking
+            if (!self && (target == null || !target.IsAlive))
+            {
+                commandSlot = -1;
+                StartAbility(slot, AimAhead(ab));
+                return null;
+            }
             if (self)
             {
                 commandSlot = -1;
@@ -200,9 +206,9 @@ namespace Wildbond
             if (slot < 0 || slot >= abilities.Length || abilities[slot] == null) return "Not learned yet.";
             var ab = abilities[slot];
             bool self = SkillEffects.SelfCast(ab.effect) || (ab.effect == AbilityEffect.Tonic && TonicWantsHeal());
-            if (!self && (target == null || !target.IsAlive)) return "No target in range.";
             if (cooldowns[slot] > 0f) return $"{ab.displayName} recharging ({cooldowns[slot]:0.0}s).";
             if (pendingAbility >= 0) return "Busy...";
+            if (!self && (target == null || !target.IsAlive)) { StartAbility(slot, AimAhead(ab)); return null; }   // fired ahead, at nothing
             if (!self)
             {
                 float gap = FlatDist(transform.position, target.Position) - (target.Radius + BodyRadius);
@@ -211,6 +217,31 @@ namespace Wildbond
             }
             StartAbility(slot, self ? (target != null && target.IsAlive ? target : this) : target);
             return null;
+        }
+
+        /// <summary>
+        /// Where a skill used with nothing targeted goes: along the camera's view (flattened), from this kin, as far as the
+        /// move naturally reaches - so it starts at once with no run-in.
+        /// </summary>
+        AimPoint AimAhead(AbilityDef a)
+        {
+            var cam = Camera.main;
+            Vector3 dir = cam != null ? cam.transform.forward : transform.forward;
+            dir.y = 0f;
+            dir = dir.sqrMagnitude > 0.01f ? dir.normalized : transform.forward;
+            float dist = a.kind switch
+            {
+                AbilityKind.Melee => BodyRadius + 0.3f + a.range * 0.5f,
+                AbilityKind.Projectile => Mathf.Max(6f, a.range * 0.9f),
+                AbilityKind.Dash => Mathf.Max(3f, a.range),
+                AbilityKind.Blink => Mathf.Max(3f, a.range * 0.7f),
+                _ => BodyRadius + 1f,
+            };
+            Vector3 p = transform.position + dir * dist;
+            p.y = Ground.Height(p.x, p.z);
+            transform.rotation = Quaternion.LookRotation(dir);
+            faceTarget = p;
+            return new AimPoint(p);
         }
 
         static float MountedReach(AbilityDef a) =>

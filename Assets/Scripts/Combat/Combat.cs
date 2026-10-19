@@ -18,6 +18,28 @@ namespace Wildbond
         void ReceiveHit(in HitInfo hit);
     }
 
+    /// <summary>
+    /// A spot a kin skill is aimed at when nothing is targeted (user, 2026-10-18: "let me use kin skills anytime, target or
+    /// not"): shots fly at it, dashes and blinks go to it, a melee move hits a wild kin standing there if there is one.
+    /// Hits on it do nothing (`CombatSystem.Apply` skips it), and it lapses after a few seconds so nothing keeps chasing it.
+    /// </summary>
+    public sealed class AimPoint : ICombatant
+    {
+        readonly Vector3 pos;
+        readonly float until;
+        public AimPoint(Vector3 p, float life = 3f) { pos = p; until = Time.time + life; }
+        public Vector3 Position => pos;
+        public float Radius => 0.3f;
+        public bool IsAlive => Time.time < until;
+        public Team Team => Team.Player;
+        public int Level => 1;
+        public float AttackStat => 1f;
+        public float DefenseStat => 1f;
+        public Element Element1 => Element.Normal;
+        public Element Element2 => Element.Normal;
+        public void ReceiveHit(in HitInfo hit) { }
+    }
+
     public struct HitInfo
     {
         public ICombatant attacker;
@@ -153,7 +175,7 @@ namespace Wildbond
         public static void Apply(ICombatant attacker, ICombatant target, float power, Element elem, StatusType st, float stChance, Vector3 knock, float elementBoost = 1f,
             AbilityEffect fx = AbilityEffect.None)
         {
-            if (target == null || !target.IsAlive) return;
+            if (target == null || !target.IsAlive || target is AimPoint) return;   // a skill fired at empty ground
             if (fx != AbilityEffect.None) power *= SkillEffects.PowerMul(fx, target);   // Reap, Sear
             var rules = WorldRules.Current;
             if (attacker != null && attacker.Team == Team.Wild) power *= rules.wildDamage;

@@ -493,7 +493,7 @@ namespace Wildbond
             if (InputHub.Down(Btn.Stance)) Party.CycleStance();
             if (InputHub.Down(Btn.KinPanel)) hud.ToggleKinPanel();
             for (int i = 0; i < PlayerStats.HotbarSize; i++)
-                if (InputHub.Down(Btn.Hot1 + i) && !string.IsNullOrEmpty(Player.Stats.hotbar[i])) Player.ToggleHold(Player.Stats.hotbar[i]);
+                if (InputHub.Down(Btn.Hot1 + i) && !string.IsNullOrEmpty(Player.Stats.hotbar[i])) UseHotbar(i);
             if (InputHub.Down(Btn.CycleSeed)) Capture.CycleSeed(Player.Stats);
             if (InputHub.Down(Btn.KinSkill))
             {
@@ -924,6 +924,21 @@ namespace Wildbond
             }
             if (left > 0) GameEvents.Warn("Bag full! Build storage or drop items.");
             GameEvents.RaiseInventoryChanged();
+        }
+
+        /// <summary>A hotbar slot: a tool or weapon goes in (or out of) your hand; food or a heal is used at once.</summary>
+        public void UseHotbar(int slot)
+        {
+            var s = Player.Stats;
+            if (slot < 0 || slot >= s.hotbar.Length || string.IsNullOrEmpty(s.hotbar[slot])) return;
+            string id = s.hotbar[slot];
+            var d = ContentDB.Item(id);
+            if (PlayerStats.IsUsable(d))
+            {
+                if (s.Bag.Count(id) <= 0) { GameEvents.Warn($"No {d.displayName} left."); return; }
+                UseItem(id);
+            }
+            else Player.ToggleHold(id);
         }
 
         public void UseItem(string id)

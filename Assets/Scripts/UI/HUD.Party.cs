@@ -92,7 +92,7 @@ namespace Wildbond
         // ============================================================ HOTBAR
         void BuildHotbar()
         {
-            const float slot = 104f, gap = 10f;
+            const float slot = 92f, gap = 8f;
             float width = PlayerStats.HotbarSize * (slot + gap) + 120f;
             hotbarRoot = UIFactory.Rect(safe, "Hotbar").Place(new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(-40f, 18f), new Vector2(width, slot + 26f));
             for (int i = 0; i < PlayerStats.HotbarSize; i++)
@@ -103,7 +103,7 @@ namespace Wildbond
                 var btn = bg.gameObject.AddComponent<Button>();
                 btn.onClick.AddListener(() => OnHotbar(idx));
                 var icon = UIFactory.Panel(bg.transform, "Icon", Color.white);
-                icon.rectTransform.Place(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 10), new Vector2(76, 76));
+                icon.rectTransform.Place(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 9), new Vector2(66, 66));
                 icon.raycastTarget = false;
                 var glyph = UIFactory.Label(icon.transform, "", 26, Color.white, TextAnchor.MiddleCenter, FontStyle.Bold);
                 glyph.rectTransform.Stretch();
@@ -126,8 +126,8 @@ namespace Wildbond
         {
             var s = GameManager.I.Player.Stats;
             string id = s.hotbar[i];
-            if (string.IsNullOrEmpty(id)) { GameEvents.Say("Empty slot - assign tools/weapons from MENU > Bag."); MenuUI.I.Open(MenuTab.Bag); return; }
-            GameManager.I.Player.ToggleHold(id);
+            if (string.IsNullOrEmpty(id)) { GameEvents.Say("Empty slot - put tools, weapons, food or heals on it from MENU > Bag."); MenuUI.I.Open(MenuTab.Bag); return; }
+            GameManager.I.UseHotbar(i);
         }
 
         public void ToggleAutoTool()
@@ -148,6 +148,8 @@ namespace Wildbond
                 string id = s.hotbar[i];
                 var d = string.IsNullOrEmpty(id) ? null : ContentDB.Item(id);
                 bool held = d != null && s.held == id;
+                bool usable = PlayerStats.IsUsable(d);
+                int count = usable ? s.Bag.Count(id) : 0;
                 bool auto = d != null && !held && shown == id;
                 hotSlotBg[i].color = held ? new Color(0.25f, 0.6f, 0.48f, 0.95f) : (auto ? new Color(0.55f, 0.45f, 0.2f, 0.9f) : new Color(0.08f, 0.1f, 0.14f, 0.72f));
                 hotSlotIcon[i].enabled = d != null;
@@ -157,10 +159,10 @@ namespace Wildbond
                     hotSlotIcon[i].sprite = spr != null ? spr : UIFactory.Rounded;
                     hotSlotIcon[i].type = spr != null ? Image.Type.Simple : Image.Type.Sliced;
                     hotSlotIcon[i].preserveAspect = spr != null;
-                    hotSlotIcon[i].color = spr != null ? Color.white : d.iconColor;
+                    hotSlotIcon[i].color = (spr != null ? Color.white : d.iconColor) * (usable && count <= 0 ? new Color(1f, 1f, 1f, 0.35f) : Color.white);
                     hotSlotGlyph[i].text = spr != null ? "" : d.iconGlyph;
                     hotSlotGlyph[i].color = UIFactory.Luma(d.iconColor) > 0.6f ? new Color(0.1f, 0.1f, 0.12f) : Color.white;
-                    hotSlotName[i].text = held ? "IN HAND" : (auto ? "AUTO" : ShortName(d));
+                    hotSlotName[i].text = usable ? (count > 0 ? $"x{count}" : "none") : held ? "IN HAND" : (auto ? "AUTO" : ShortName(d));
                 }
                 else { hotSlotGlyph[i].text = ""; hotSlotName[i].text = "+"; }
             }

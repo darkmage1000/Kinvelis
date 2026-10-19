@@ -42,7 +42,7 @@ namespace Wildbond
         public float stamina = -1f;
         public float hunger = 100f;
 
-        public const int HotbarSize = 4;
+        public const int HotbarSize = 6;   // 4 until 2026-10-18 (user: room for each tool, a melee, a ranged and a heal)
 
         [Tooltip("Legacy (pre-hotbar saves). Migrated into 'held' on load.")]
         public string weapon = "";
@@ -361,6 +361,9 @@ namespace Wildbond
 
         // ------------------------------------------------------------------ EQUIPMENT
         public static bool IsEquippable(ItemDef d) => d != null && (d.category == ItemCategory.Tool || d.category == ItemCategory.Weapon);
+        /// <summary>Food and consumables (salves, treats...) can sit on the hotbar too: a tap uses one.</summary>
+        public static bool IsUsable(ItemDef d) => d != null && (d.category == ItemCategory.Food || d.category == ItemCategory.Consumable);
+        public static bool IsHotbarItem(ItemDef d) => IsEquippable(d) || IsUsable(d);
 
         public ItemDef HeldDef => string.IsNullOrEmpty(held) ? null : ContentDB.Item(held);
 
@@ -369,7 +372,7 @@ namespace Wildbond
         {
             if (!string.IsNullOrEmpty(held) && Bag.Count(held) <= 0) held = "";
             for (int i = 0; i < hotbar.Length; i++)
-                if (!string.IsNullOrEmpty(hotbar[i]) && Bag.Count(hotbar[i]) <= 0) hotbar[i] = null;
+                if (!string.IsNullOrEmpty(hotbar[i]) && Bag.Count(hotbar[i]) <= 0 && !IsUsable(ContentDB.Item(hotbar[i]))) hotbar[i] = null;   // a food / heal slot stays put at 0, ready for the next batch
         }
 
         /// <summary>Puts a newly acquired tool/weapon on a free hotbar slot. Returns true if added.</summary>
