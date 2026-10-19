@@ -198,6 +198,7 @@ namespace Wildbond
             var tip = vitalsTip = UIFactory.Label(p.transform, "HP   ·   STAMINA   ·   FOOD", 18, UIFactory.TextDim);
             tip.supportRichText = true;
             tip.rectTransform.Place(new Vector2(0, 1), new Vector2(0, 1), new Vector2(16, -126), new Vector2(440, 40));
+            BuildSkillPoints();
         }
 
         void BuildMinimap()
@@ -452,6 +453,7 @@ namespace Wildbond
             UpdateKinWidgets(gm);
             UpdateRideButton(pl);
             UpdateCampButton(pl);
+            UpdateSkillPoints(pl, Time.unscaledDeltaTime);
             UpdateRunButton(pl);
             UpdateToasts(dt);
             UpdateDamageNumbers(dt, gm.CameraRig.Cam);
