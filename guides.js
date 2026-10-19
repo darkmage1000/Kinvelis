@@ -103,7 +103,7 @@ html: `
 
 { id: "catching", group: "Start here", title: "Catching kin", blurb: "The real odds, the three seeds, and what makes a catch easier.",
 html: `
-<p class="lead">A seed that hits draws the kin inside, drops to the ground and shakes three times. If one shake fails the seed bursts and the kin pops back out, angry; if all three hold, the seed clicks shut and flies back to you. The number shown while you aim is the true chance that all three hold.</p>
+<p class="lead">A seed that hits draws the kin inside, drops to the ground and shakes three times. If one shake fails the seed bursts and the kin pops back out, angry; if all three hold, the seed clicks shut and flies back to you. The number shown while you aim is the true chance that all three hold. A wild kin's panel says <b>NEW</b> if you have never had its kind, and shows a small seed (with how many you have caught) once you have caught one.</p>
 
 <h2 id="health">Health is what matters most</h2>
 <div class="scroll"><table>
@@ -179,7 +179,7 @@ html: `
 <li>Tap a skill chip to order that skill. The kin runs into range first, then uses it.</li>
 <li>Left alone it picks its own skills according to its <b>stance</b>: Passive, Defensive or Aggressive.</li>
 <li>Many kin have a <b>signature skill</b> that does something no other move does. The <a href="#/skills">skills page</a> lists all of them.</li>
-<li>A fainted kin rests for a while before it can come out again. A Kin Clinic at camp shortens that.</li>
+<li>A fainted kin rests for a while before it can come out again. A Kin Clinic at camp shortens that for camp kin; a <b>Healing Spring</b> (camp, Lv 3) puts your whole party back on its feet at full health the moment you tap HEAL PARTY at it.</li>
 </ul>
 
 <h2 id="lock">Lock-on</h2>
