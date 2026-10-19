@@ -52,7 +52,13 @@ namespace Wildbond
             End(true, null);
             caughtNow = false;
         }
-        const float HpMul = 2f, BaseAtk = 0.55f, EnrageAtk = 0.8f;   // 0.75 / 1.1 until 2026-10-18 (Warden hits took a fifth to half of a kin at its level)
+        const float HpMul = 2f, BaseAtk = 0.55f, EnrageAtk = 0.8f;
+        /// <summary>
+        /// The shared phase pieces slowed to match the signatures (2026-10-19, user: "what about other phases" after the
+        /// signatures were slowed by 1.4): guards come back every 25 s (was 18), pools every 8.5 s / 6.5 s in phase 3
+        /// (was 6 / 4.5), marked strikes every 8.5 s / 6.5 s (was 6 / 4.5; 4.5 s while it is shielded, was 3.2).
+        /// </summary>
+        const float GuardEvery = 25f, PoolEvery = 8.5f, PoolEveryLate = 6.5f, StrikeEvery = 8.5f, StrikeEveryLate = 6.5f, StrikeEveryShielded = 4.5f;   // 0.75 / 1.1 until 2026-10-18 (Warden hits took a fifth to half of a kin at its level)
 
         public class Warden
         {
@@ -523,7 +529,7 @@ namespace Wildbond
             if ((mech & WardenMech.Adds) != 0)
             {
                 addTimer -= dt;
-                if (addTimer <= 0f && adds.Count < 2 && addsSpawned < 7) { addTimer = 18f; SpawnGuard(pl); }
+                if (addTimer <= 0f && adds.Count < 2 && addsSpawned < 7) { addTimer = GuardEvery; SpawnGuard(pl); }
             }
             if ((mech & WardenMech.Regen) != 0 && adds.Count > 0) boss.BossHeal(boss.MaxHp * 0.008f * dt);
 
@@ -533,7 +539,7 @@ namespace Wildbond
                 poolTimer -= dt;
                 if (poolTimer <= 0f)
                 {
-                    poolTimer = phase >= 3 ? 4.5f : 6f;
+                    poolTimer = phase >= 3 ? PoolEveryLate : PoolEvery;
                     AddZone(pp, 3.2f, 1.1f, true);
                     if (compUp && phase >= 3) AddZone(comp.Position, 3f, 1.1f, true);
                 }
@@ -543,7 +549,7 @@ namespace Wildbond
                 barrageTimer -= dt;
                 if (barrageTimer <= 0f)
                 {
-                    barrageTimer = boss.Invulnerable ? 3.2f : (phase >= 3 ? 4.5f : 6f);
+                    barrageTimer = boss.Invulnerable ? StrikeEveryShielded : (phase >= 3 ? StrikeEveryLate : StrikeEvery);
                     AddZone(pp + pl.transform.forward * Random.Range(0f, 1.5f), 2.8f, 1.5f, false);
                     if (compUp) AddZone(comp.Position, 2.6f, 1.5f, false);
                     Vector2 r = Random.insideUnitCircle * 7f;
@@ -580,11 +586,11 @@ namespace Wildbond
                 {
                     shieldOnGuards = true;
                     SpawnGuard(GameManager.I.Player); SpawnGuard(GameManager.I.Player);
-                    addTimer = 18f;
+                    addTimer = GuardEvery;
                 }
                 else shieldTimer = 9f;
             }
-            else if ((m & WardenMech.Adds) != 0) { SpawnGuard(GameManager.I.Player); if (p >= 3) SpawnGuard(GameManager.I.Player); addTimer = 18f; }
+            else if ((m & WardenMech.Adds) != 0) { SpawnGuard(GameManager.I.Player); if (p >= 3) SpawnGuard(GameManager.I.Player); addTimer = GuardEvery; }
             Fx.Burst(boss.Position + Vector3.up * boss.Radius, w.color, 50, 10f, 0.5f, 1f, true);
             SynthAudio.Play(Sfx.HitHeavy, 0.6f, 0.9f);
             SynthAudio.Play(Sfx.Burst, 0.7f, 0.8f);
