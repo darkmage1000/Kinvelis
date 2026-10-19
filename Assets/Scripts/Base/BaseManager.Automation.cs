@@ -100,6 +100,7 @@ namespace Wildbond
                     else { h = BuildingHealth.Good; text = $"{b.StageText(true)} · {ContentDB.ItemName(b.OutputItem)}, tending itself"; }
                     return true;
                 case "kin_clinic": h = BuildingHealth.Good; text = "Fainted kin recover 3x sooner"; return true;
+                case GameManager.HealingSpring: h = BuildingHealth.Good; text = "Tap HEAL PARTY here: your whole party back to full"; return true;
                 case "training_yard": h = BuildingHealth.Good; text = "Camp kin learn twice as fast"; return true;
                 case "waypad": h = BuildingHealth.Good; text = "Outposts are fast-travel destinations"; return true;
                 case "research_bench":

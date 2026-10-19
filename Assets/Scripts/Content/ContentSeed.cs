@@ -377,6 +377,26 @@ namespace Wildbond
                 P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Accent, 0.2f, 0.62f, 0.1f, 0.3f, 0.25f, 0.3f),
             };
 
+            // party healing at camp (GameManager.HealAtSpring): walk up, tap HEAL PARTY, everyone in the party is back to full
+            var spring = Bld(b, "healing_spring", "Healing Spring", "A spring of clear, glowing water. Walk up and tap HEAL PARTY: every kin in your party is back to full health and on its feet again, fainted ones included, and burns, poison and the like are washed off. As often as you like.", 3, 1.35f,
+                ("stone", 20), ("wood", 8), ("gel", 4), ("berry", 10));
+            spring.category = BuildCategory.KinCare;
+            spring.palette = Pal(Hex("#9a96a0"), Hex("#6f9a52"), Hex("#4ab0e0"), Hex("#8af5e0"));
+            spring.parts = new[]
+            {
+                P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Primary, 0, 0.25f, 0, 2.4f, 0.5f, 2.4f),
+                P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Secondary, 0, 0.52f, 0, 2.5f, 0.08f, 2.5f),
+                P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Accent, 0, 0.53f, 0, 2.05f, 0.08f, 2.05f),
+                P(PartShape.Cylinder, BodyGroup.Body, ColorSlot.Glow, 0, 0.56f, 0, 1.3f, 0.06f, 1.3f),
+                P(PartShape.Rock, BodyGroup.Body, ColorSlot.Primary, 0, 0.72f, 0, 0.7f, 0.55f, 0.7f),
+                P(PartShape.Crystal, BodyGroup.Body, ColorSlot.Glow, 0, 0.8f, 0, 0.26f, 0.95f, 0.26f),
+                P(PartShape.Crystal, BodyGroup.Body, ColorSlot.Glow, 0.18f, 0.78f, 0.08f, 0.16f, 0.6f, 0.16f, 0, 0, -22),
+                P(PartShape.Crystal, BodyGroup.Body, ColorSlot.Glow, -0.16f, 0.78f, -0.1f, 0.15f, 0.55f, 0.15f, 0, 0, 20),
+                P(PartShape.Rock, BodyGroup.Body, ColorSlot.Secondary, 1.15f, 0.5f, 0.3f, 0.5f, 0.38f, 0.45f),
+                P(PartShape.Rock, BodyGroup.Body, ColorSlot.Primary, -1.05f, 0.5f, 0.6f, 0.45f, 0.32f, 0.4f),
+                P(PartShape.Rock, BodyGroup.Body, ColorSlot.Secondary, -0.4f, 0.5f, -1.15f, 0.42f, 0.3f, 0.42f),
+            };
+
             // ---- automation tier 2 ----
             var pylon = Bld(b, "volt_pylon", "Volt Pylon", "Powers the whole camp (Conveyor Hub, Auto-Assembler, Sprinklers, Turrets). A Charging kin fills it like a battery, then is free for other work and comes back to top it up at half charge and before nightfall. Holds a fifth of a day; build Volt Batteries to store more.", 12, 1.0f,
                 ("ingot", 6), ("crystal", 2), ("stone", 10));

@@ -21,6 +21,7 @@ namespace Wildbond
         // target
         RectTransform targetFrame;
         Text targetName, targetInfo, targetCatch;
+        Image targetSeed; Text targetSeedCount;
         Image targetHp;
         // companion
         RectTransform compFrame;
@@ -312,7 +313,16 @@ namespace Wildbond
             targetFrame = f.rectTransform.Place(new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -20), new Vector2(600, 150));
             targetName = UIFactory.Label(f.transform, "", 30, Color.white, TextAnchor.UpperLeft, FontStyle.Bold);
             targetName.supportRichText = true;
-            targetName.rectTransform.Place(new Vector2(0, 1), new Vector2(0, 1), new Vector2(18, -10), new Vector2(565, 40));
+            targetName.rectTransform.Place(new Vector2(0, 1), new Vector2(0, 1), new Vector2(18, -10), new Vector2(455, 40));
+            // caught-before badge: a seed in the corner once this kind has been caught, with how many times
+            targetSeed = UIFactory.Panel(f.transform, "CaughtSeed", Color.white, ItemIcons.Get("tether_seed"));
+            targetSeed.type = Image.Type.Simple;
+            targetSeed.preserveAspect = true;
+            targetSeed.raycastTarget = false;
+            targetSeed.rectTransform.Place(new Vector2(1, 1), new Vector2(1, 1), new Vector2(-14, -6), new Vector2(46, 46));
+            targetSeedCount = UIFactory.Label(f.transform, "", 19, new Color(0.75f, 1f, 0.7f), TextAnchor.MiddleRight, FontStyle.Bold);
+            targetSeedCount.rectTransform.Place(new Vector2(1, 1), new Vector2(1, 1), new Vector2(-62, -16), new Vector2(84, 26));
+            targetSeed.gameObject.SetActive(false); targetSeedCount.gameObject.SetActive(false);
             UIFactory.Bar(f.transform, new Color(0.95f, 0.4f, 0.35f), out targetHp).rectTransform.Place(new Vector2(0, 1), new Vector2(0, 1), new Vector2(18, -54), new Vector2(565, 22));
             targetInfo = UIFactory.Label(f.transform, "", 20, UIFactory.TextDim, TextAnchor.UpperLeft);
             targetInfo.supportRichText = true;
@@ -604,6 +614,16 @@ namespace Wildbond
             if (d.shimmer) name = UIFactory.Col("* ", new Color(1f, 0.95f, 0.5f)) + name;
             if (locked) name = UIFactory.Col("LOCKED  ", new Color(1f, 0.78f, 0.25f)) + name;
             bool owned = pl.Stats.registeredSpecies.Contains(sp.id);
+            var dex = pl.Stats.DexFor(sp.id, false);
+            int caught = dex != null ? dex.caught : 0;
+            bool showSeed = caught > 0 && t.Mode == CreatureMode.Wild;
+            if (targetSeed.gameObject.activeSelf != showSeed) { targetSeed.gameObject.SetActive(showSeed); targetSeedCount.gameObject.SetActive(showSeed); }
+            if (showSeed)
+            {
+                var icon = ItemIcons.Get("tether_seed");   // icons may be rendered after the HUD is built
+                if (icon != null && targetSeed.sprite != icon) targetSeed.sprite = icon;
+                targetSeedCount.text = caught > 1 ? $"x{caught}" : "caught";
+            }
             bool danger = t.Mode == CreatureMode.Wild && DangerSkull.IsDanger(d);
             string lvText = danger ? UIFactory.Col($"Lv {d.level}  DANGER", new Color(1f, 0.3f, 0.25f)) : $"Lv {d.level}";
             targetName.text = $"{name}  <size=24>{lvText}</size>{(owned ? "" : UIFactory.Col("  NEW", new Color(0.5f, 1f, 1f)))}";

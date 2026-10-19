@@ -817,6 +817,7 @@ namespace Wildbond
             else if (b.Def.storageSlots > 0) InteractPrompt = "OPEN";
             else if (b.Def.feeds) InteractPrompt = "FEED BOX";
             else if (b.Def.id == "hatchery") InteractPrompt = KinGrowth.FirstReady() != null ? "HATCH!" : "HATCHERY";
+            else if (b.Def.id == HealingSpring) InteractPrompt = Party.AnyPartyKinHurt() ? "HEAL\nPARTY" : "SPRING";
             else if (b.IsStation) InteractPrompt = MenuUI.StationVerb(b.Def.station);
             else InteractPrompt = "INFO";
         }
@@ -828,7 +829,34 @@ namespace Wildbond
             if (b.IsStation) { menu.OpenStation(b.Def.station); return; }
             if (b.Def.feeds || (b.BoxLen > 0 && !b.Def.isCore)) { menu.OpenBox(b); return; }   // a chest or a feed box: its own contents
             if (b.Def.id == "hatchery") { menu.OpenHatchery(); return; }   // a ready egg hatches right here
+            if (b.Def.id == HealingSpring) { HealAtSpring(b); return; }
             menu.Open(MenuTab.Camp);
+        }
+
+        public const string HealingSpring = "healing_spring";
+
+        /// <summary>HEAL PARTY at a Healing Spring: the whole party back to full, as often as you like - the trip home is the cost.</summary>
+        void HealAtSpring(Building b)
+        {
+            Vector3 at = b.transform.position + Vector3.up * 0.6f;
+            if (!Party.AnyPartyKinHurt() && (Party.Companion == null || !Party.Companion.Status.Active))
+            {
+                GameEvents.Say("Your party is already in full health.", new Color(0.7f, 0.95f, 1f));
+                Fx.Sparkle(at, new Color(0.6f, 1f, 0.95f), 6, 0.6f);
+                return;
+            }
+            int n = Party.HealPartyFull();
+            Fx.Ring(b.transform.position + Vector3.up * 0.1f, new Color(0.55f, 1f, 0.9f), 3.2f, 30);
+            Fx.Burst(at, new Color(0.6f, 1f, 0.95f), 26, 4.5f, 0.24f, 0.8f, true, -2f);
+            var c = Party.Companion;
+            if (c != null && c.IsAlive)
+            {
+                Fx.Sparkle(c.Position + Vector3.up * c.Radius, new Color(0.7f, 1f, 0.8f), 16, c.Radius + 0.4f);
+                Fx.Ring(c.Position + Vector3.up * 0.1f, new Color(0.55f, 1f, 0.75f), c.Radius + 1.2f, 20);
+                c.Rig.Squash();
+            }
+            SynthAudio.Play(Sfx.Summon, 1.25f, 0.8f);
+            GameEvents.Good(n == 1 ? "The spring heals 1 kin in your party." : $"The spring heals {n} kin in your party - all back to full.");
         }
 
         public void CollectBuffer(Building b)

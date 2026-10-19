@@ -185,6 +185,29 @@ namespace Wildbond
             GameEvents.RaiseRosterChanged();
         }
 
+        /// <summary>
+        /// The Healing Spring: every party kin back to full health, fainted ones woken, statuses washed off.
+        /// Returns how many needed it.
+        /// </summary>
+        public int HealPartyFull()
+        {
+            int n = 0;
+            foreach (var d in In(KinLocation.Party))
+            {
+                if (Companion != null && Companion.Data == d)
+                {
+                    if (Companion.Hp < Companion.MaxHp - 0.5f || Companion.Status.Active) n++;
+                    Companion.HealFull();
+                    continue;
+                }
+                if (d.Fainted || d.CurrentHp < d.MaxHp - 0.5f) n++;
+                d.hp = -1f;
+                faintRest.Remove(d.uid);
+            }
+            GameEvents.RaiseRosterChanged();
+            return n;
+        }
+
         readonly Dictionary<string, float> faintRest = new Dictionary<string, float>();
         public const float PartyReviveSeconds = 60f, CampReviveSeconds = 30f;
 
