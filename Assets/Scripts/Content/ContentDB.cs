@@ -115,7 +115,7 @@ namespace Wildbond
                 foreach (var sp in Species.Values)
                     if (sp.forms != null) foreach (var f in sp.forms) if (f != null && !string.IsNullOrEmpty(f.skill)) formSkills.Add(f.skill);
             }
-            return id != null && formSkills.Contains(id);
+            return id != null && (formSkills.Contains(id) || ContentSeed.IsWardenSkill(id));   // a Warden's own moves too
         }
         public static TraitDef Trait(string id) => id != null && Traits.TryGetValue(id, out var d) ? d : null;
         public static BuildingDef Building(string id) => id != null && Buildings.TryGetValue(id, out var d) ? d : null;

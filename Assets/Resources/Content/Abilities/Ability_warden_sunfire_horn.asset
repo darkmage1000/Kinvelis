@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0446a714cb702e6468aaca33e373d97a, type: 3}
+  m_Name: Ability_warden_sunfire_horn
+  m_EditorClassIdentifier: 
+  id: warden_sunfire_horn
+  displayName: Sunfire Horn
+  element: 2
+  kind: 0
+  effect: 0
+  power: 30
+  range: 3
+  cooldown: 3.5
+  status: 1
+  statusChance: 0.3
+  projectileSpeed: 16
+  radius: 3
+  windup: 0.45
+  color: {r: 1, g: 0.45, b: 0.18, a: 1}

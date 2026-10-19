@@ -17,7 +17,7 @@ namespace Wildbond
     /// an enrage, and healing while guards stand. A first win earns that land's Sigil; all eight open Stormcrest's
     /// Aerie. The Kraken on its lone rock is optional. Wardens can't be caught and nothing wild wanders into an arena.
     /// </summary>
-    public class Wardens : MonoBehaviour
+    public partial class Wardens : MonoBehaviour
     {
         public static Wardens I { get; private set; }
         public const int RematchSeconds = 30 * 60;
@@ -97,27 +97,28 @@ namespace Wildbond
         {
             All.Clear();
             const WardenMech A = WardenMech.Adds, P = WardenMech.Pools, B = WardenMech.Barrage, S = WardenMech.Shield, E = WardenMech.Enrage, R = WardenMech.Regen;
-            Def("meadow", "Bloomwyrm Grove", "Sunmeadow Vale", BiomeId.Meadow, "bloomwyrm", "sproutle", 13, 0, "#7ad06a", A, P | A, StatusType.Drowsy,
+            // one shared piece per phase (2026-10-19); each Warden's own mechanic is its signature (Wardens.Signature.cs)
+            Def("meadow", "Bloomwyrm Grove", "Sunmeadow Vale", BiomeId.Meadow, "bloomwyrm", "sproutle", 13, 0, "#7ad06a", A, P, StatusType.Drowsy,
                 "The grove stirs. Petals lift off the ground.", new Vector3(-700f, 0, -200f));
-            Def("isles", "Coral Throne", "Driftkey Isles", BiomeId.Isles, "reefwarden", "cocorab", 15, 3, "#ff7a8a", A, B, StatusType.Soaked,
+            Def("isles", "Coral Throne", "Driftkey Isles", BiomeId.Isles, "reefwarden", "cocorab", 15, 3, "#ff7a8a", B, S, StatusType.Soaked,
                 "The reef rises to its feet.", LandCenter(BiomeId.Isles));
-            Def("badlands", "Solarion's Caldera", "Cinderreach Badlands", BiomeId.Badlands, "solarion", "emberkit", 22, 1, "#ff8a3a", B, P | E, StatusType.Burn,
+            Def("badlands", "Solarion's Caldera", "Cinderreach Badlands", BiomeId.Badlands, "solarion", "emberkit", 22, 1, "#ff8a3a", P, E, StatusType.Burn,
                 "The air shimmers with heat.", new Vector3(1450f, 0, 250f));
-            Def("swamp", "Sunken Heart", "Mirefen", BiomeId.Swamp, "hydrabog", "leechlash", 23, 4, "#8ac86a", A | R, P | A | R, StatusType.Poison,
+            Def("swamp", "Sunken Heart", "Mirefen", BiomeId.Swamp, "hydrabog", "leechlash", 23, 4, "#8ac86a", A | R, B, StatusType.Poison,
                 "Three heads turn towards you at once.", LandCenter(BiomeId.Swamp));
-            var k = Def("kraken", "Kraken's Rock", "the open sea", BiomeId.Isles, "krakolos", "krakling", 28, 8, "#b07ad0", B, A | P, StatusType.Drowsy,
+            var k = Def("kraken", "Kraken's Rock", "the open sea", BiomeId.Isles, "krakolos", "krakling", 28, 8, "#b07ad0", S, P, StatusType.Drowsy,
                 "The sea around the rock goes black.", new Vector3(WorldGen.KrakenIsle.x, 0, WorldGen.KrakenIsle.y));
             k.optional = true;
             k.pos = new Vector3(WorldGen.KrakenIsle.x, WorldGen.Height(WorldGen.KrakenIsle.x, WorldGen.KrakenIsle.y), WorldGen.KrakenIsle.y);
-            Def("peaks", "Aurora Glacier", "Rimefang Peaks", BiomeId.Peaks, "aurorox", "chillpip", 30, 2, "#9ae0ff", P, B | S, StatusType.Chill,
+            Def("peaks", "Aurora Glacier", "Rimefang Peaks", BiomeId.Peaks, "aurorox", "chillpip", 30, 2, "#9ae0ff", B, E, StatusType.Chill,
                 "Light ripples across the ice.", new Vector3(-1250f, 0, 1150f));
-            Def("desert", "Sun Temple", "Sunscour Dunes", BiomeId.Desert, "djinnado", "dunelet", 32, 5, "#f0c040", S | B, E | B, StatusType.Burn,
+            Def("desert", "Sun Temple", "Sunscour Dunes", BiomeId.Desert, "djinnado", "dunelet", 32, 5, "#f0c040", A, E, StatusType.Burn,
                 "The wind laughs, low and long.", LandCenter(BiomeId.Desert));
-            Def("blight", "Blight Crater", "Blightmoor", BiomeId.Blight, "venomarch", "stingnat", 41, 6, "#b8ff40", P, A | P | E, StatusType.Poison,
+            Def("blight", "Blight Crater", "Blightmoor", BiomeId.Blight, "venomarch", "stingnat", 41, 6, "#b8ff40", P, A, StatusType.Poison,
                 "Something heavy uncoils in the crater.", LandCenter(BiomeId.Blight));
-            Def("glow", "Star Hollow", "Glowdeep", BiomeId.Glow, "astralisk", "prismfox", 48, 7, "#b0a0ff", B, S | A | B, StatusType.Drowsy,
+            Def("glow", "Star Hollow", "Glowdeep", BiomeId.Glow, "astralisk", "prismfox", 48, 7, "#b0a0ff", S, A, StatusType.Drowsy,
                 "Every light in the hollow turns to look.", LandCenter(BiomeId.Glow));
-            var f = Def("stormcrest", "Stormcrest's Aerie", "the heart of the island", WorldGen.Biome(-150f, 320f), "stormcrest", "voltbeak", 52, 9, "#ffe060", B | A, S | B | E,
+            var f = Def("stormcrest", "Stormcrest's Aerie", "the heart of the island", WorldGen.Biome(-150f, 320f), "stormcrest", "voltbeak", 52, 9, "#ffe060", A | S, B | E,
                 StatusType.Shock, "Thunder answers from a clear sky.", new Vector3(-150f, 0, 320f));
             f.final = true;
             foreach (var w in All) w.shrine = w.pos + new Vector3(0, 0, ArenaRadius - 3f);
@@ -346,7 +347,18 @@ namespace Wildbond
         int addsSpawned;
         readonly List<CreatureActor> adds = new List<CreatureActor>();
 
-        class Zone { public Vector3 pos; public float r, fuse, life, tick; public bool pool; public Transform disc; }
+        class Zone
+        {
+            public Vector3 pos; public float r, fuse, life, tick; public bool pool; public Transform disc;
+            // a lane (heads, tentacles, rods): a strip from start along dir; and what a strike does (shares of max health)
+            public bool lane; public Vector3 start, dir; public float len;
+            public float pf = 0.16f, kf = 0.14f, knock = 5f, stChance = 0.6f; public StatusType st = StatusType.None;
+            public bool Inside(Vector3 p, float extra)
+            {
+                if (!lane) { Vector3 d = p - pos; d.y = 0; return d.magnitude < r + extra; }
+                return InLane(p, start, dir, len, r + extra);
+            }
+        }
         readonly List<Zone> zones = new List<Zone>();
         readonly Stack<Transform> discPool = new Stack<Transform>();
         Mesh warnMesh, poolMesh;
@@ -379,6 +391,7 @@ namespace Wildbond
             bool giant = sp.size >= 2f;
             var d = CreatureFactory.RollWild(sp, w.level, w.biome, !giant);
             d.shimmer = false; d.traits.Remove("radiant");
+            if (ContentSeed.WardenMoves.TryGetValue(sp.id, out var moves)) { d.abilities = (string[])moves.Clone(); d.ResetLearnset(); }   // its own four moves, nothing shared
             Vector3 p = w.pos; p.y = Ground.Height(p.x, p.z);
             boss = CreatureSpawner.I.SpawnActor(d, CreatureMode.Wild, p);
             var comp = gm.Party.Companion;
@@ -387,6 +400,7 @@ namespace Wildbond
             boss.Invulnerable = true;
             boss.BossAtkMul = BaseAtk;
             MakeDiscs(w);
+            SigStart(w);
             Fx.Burst(p + Vector3.up * 2f, w.color, 60, 9f, 0.5f, 1.2f, true);
             SynthAudio.Play(Sfx.Summon, 0.6f);
             SynthAudio.Play(Sfx.HitHeavy, 0.7f, 0.8f);
@@ -423,19 +437,21 @@ namespace Wildbond
                 t = go.transform;
             }
             t.GetComponent<MeshFilter>().sharedMesh = m;
+            t.rotation = Quaternion.identity;
             t.gameObject.SetActive(true);
             return t;
         }
 
-        void AddZone(Vector3 at, float r, float fuse, bool pool)
+        Zone AddZone(Vector3 at, float r, float fuse, bool pool, Mesh look = null)
         {
             Vector3 d = at - Active.pos; d.y = 0;
             if (d.magnitude > ArenaRadius - 1.5f) at = Active.pos + d.normalized * (ArenaRadius - 1.5f);
             at.y = Ground.Height(at.x, at.z) + 0.06f;
-            var z = new Zone { pos = at, r = r, fuse = fuse, life = pool ? 11f : 0.25f, pool = pool, disc = Disc(pool ? poolMesh : warnMesh) };
+            var z = new Zone { pos = at, r = r, fuse = fuse, life = pool ? 11f : 0.25f, pool = pool, disc = Disc(look != null ? look : pool ? poolMesh : warnMesh) };
             z.disc.position = at;
             z.disc.localScale = new Vector3(r * 2f, 1f, r * 2f);
             zones.Add(z);
+            return z;
         }
 
         // ============================================================ TICK
@@ -456,7 +472,7 @@ namespace Wildbond
 
             // ---- phases ----
             if (phase == 1 && frac <= 0.66f) EnterPhase(2, w.phase2);
-            else if (phase == 2 && frac <= 0.33f) EnterPhase(3, w.phase3 | w.phase2 & ~(WardenMech.Shield | WardenMech.Adds));
+            else if (phase == 2 && frac <= 0.33f) EnterPhase(3, w.phase3);   // its own piece only - the signature carries on
 
             // ---- a Warden holds its ground: dragged too far from the ring, it shrugs off the fight and walks back ----
             Vector3 stray = boss.Position - w.pos; stray.y = 0;
@@ -537,9 +553,12 @@ namespace Wildbond
                 }
             }
             TickZones(dt, w, pl, comp, compUp);
+            TickSignature(dt, w, pl, comp, compUp);
 
             // ---- HUD ----
+            string sigState = SigState();
             string state = returning ? UIFactory.Col("  RETURNING TO ITS RING", new Color(0.7f, 0.9f, 1f))
+                         : sigState != null ? sigState
                          : boss.Invulnerable ? UIFactory.Col("  SHIELDED", new Color(0.7f, 0.9f, 1f))
                          : (mech & WardenMech.Regen) != 0 && adds.Count > 0 ? UIFactory.Col("  HEALING - drop its guards", new Color(0.6f, 1f, 0.6f))
                          : (mech & WardenMech.Enrage) != 0 ? UIFactory.Col("  ENRAGED", new Color(1f, 0.5f, 0.4f)) : "";
@@ -601,16 +620,17 @@ namespace Wildbond
                 {
                     z.fuse -= dt;
                     float k = 1f + Mathf.Sin(Time.time * 18f) * 0.05f;
-                    z.disc.localScale = new Vector3(z.r * 2f * k, 1f, z.r * 2f * k);
+                    z.disc.localScale = new Vector3(z.r * 2f * k, 1f, z.lane ? z.len : z.r * 2f * k);
                     if (z.fuse > 0f) continue;
                     if (!z.pool)
                     {
                         // the strike lands
-                        Fx.Burst(z.pos + Vector3.up * 0.4f, hz, 26, 7f, 0.4f, 0.6f, true);
+                        if (z.lane) for (float s = 0.5f; s < z.len; s += 2f) Fx.Burst(z.start + z.dir * s + Vector3.up * 0.4f, hz, 6, 5f, 0.35f, 0.5f, true);
+                        else Fx.Burst(z.pos + Vector3.up * 0.4f, hz, 26, 7f, 0.4f, 0.6f, true);
                         SynthAudio.Play(Sfx.Burst, 0.9f, 0.7f);
-                        HitInside(z, w, pl, comp, compUp, 0.16f, 0.14f, 0.6f, 5f);
+                        HitInside(z, w, pl, comp, compUp, z.pf, z.kf, z.stChance, z.knock);
                     }
-                    z.disc.localScale = new Vector3(z.r * 2f, 1f, z.r * 2f);
+                    z.disc.localScale = new Vector3(z.r * 2f, 1f, z.lane ? z.len : z.r * 2f);
                     continue;
                 }
                 z.life -= dt;
@@ -632,14 +652,20 @@ namespace Wildbond
         void HitInside(Zone z, Warden w, PlayerController pl, CreatureActor comp, bool compUp, float playerFrac, float kinFrac, float statusChance, float knock)
         {
             var el = w.Sp != null ? w.Sp.element1 : Element.Normal;
+            var st = z.st != StatusType.None ? z.st : w.hazard;
             Vector3 d = pl.Position - z.pos; d.y = 0;
-            if (pl.IsAlive && d.magnitude < z.r + 0.3f)
-                pl.ReceiveHit(new HitInfo { attacker = boss, damage = pl.Stats.MaxHp * playerFrac, element = el, status = w.hazard, statusChance = statusChance,
+            if (z.lane)
+            {
+                // thrown out of the lane sideways
+                Vector3 side = Vector3.Cross(Vector3.up, z.dir);
+                d = side * (Vector3.Dot(pl.Position - z.start, side) >= 0f ? 1f : -1f);
+            }
+            if (pl.IsAlive && z.Inside(pl.Position, 0.3f))
+                pl.ReceiveHit(new HitInfo { attacker = boss, damage = pl.Stats.MaxHp * playerFrac, element = el, status = st, statusChance = statusChance,
                     knockback = knock > 0f ? (d.sqrMagnitude > 0.01f ? d.normalized : Vector3.forward) * knock : Vector3.zero, effectiveness = 1f });
             if (!compUp) return;
-            d = comp.Position - z.pos; d.y = 0;
-            if (d.magnitude < z.r + comp.Radius * 0.5f)
-                comp.ReceiveHit(new HitInfo { attacker = boss, damage = comp.MaxHp * kinFrac, element = el, status = w.hazard, statusChance = statusChance, effectiveness = 1f });
+            if (z.Inside(comp.Position, comp.Radius * 0.5f))
+                comp.ReceiveHit(new HitInfo { attacker = boss, damage = comp.MaxHp * kinFrac, element = el, status = st, statusChance = statusChance, effectiveness = 1f });
         }
 
         void Release(Zone z)
@@ -656,6 +682,7 @@ namespace Wildbond
             if (seedBefore != null) { S.selectedSeed = seedBefore; seedBefore = null; }
             foreach (var z in zones) Release(z);
             zones.Clear();
+            SigEnd();
             foreach (var a in adds) if (a != null && a.gameObject.activeSelf && a.State != AIState.Dead) a.Despawn();
             adds.Clear();
             if (boss != null && !won && boss.gameObject.activeSelf && boss.State != AIState.Dead) boss.Despawn();

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0446a714cb702e6468aaca33e373d97a, type: 3}
+  m_Name: Ability_warden_tempest
+  m_EditorClassIdentifier: 
+  id: warden_tempest
+  displayName: Tempest
+  element: 7
+  kind: 2
+  effect: 0
+  power: 30
+  range: 6
+  cooldown: 9
+  status: 0
+  statusChance: 0
+  projectileSpeed: 16
+  radius: 7
+  windup: 0.7
+  color: {r: 0.7, g: 0.95, b: 0.8, a: 1}

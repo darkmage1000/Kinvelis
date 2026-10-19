@@ -232,6 +232,15 @@ namespace Wildbond.EditorTools
             return l;
         }
 
+        /// <summary>The four moves a Warden fights with (ContentSeed.WardenMoves), by name.</summary>
+        static List<object> WardenMoveNames(Wardens.Warden w)
+        {
+            var l = L();
+            if (ContentSeed.WardenMoves.TryGetValue(w.species, out var ids))
+                foreach (var id in ids) { var a = ContentDB.Ability(id); if (a != null) l.Add(a.displayName); }
+            return l;
+        }
+
         static object WardenList()
         {
             var l = L();
@@ -239,7 +248,9 @@ namespace Wildbond.EditorTools
                 l.Add(new Dictionary<string, object>
                 {
                     ["id"] = w.id, ["name"] = w.Name, ["kin"] = w.species, ["place"] = w.place, ["land"] = w.land, ["level"] = w.level, ["optional"] = w.optional, ["final"] = w.final,
-                    ["phase2"] = Wardens.Describe(w.phase2, w), ["phase3"] = Wardens.Describe(w.phase3 | w.phase2 & ~(WardenMech.Shield | WardenMech.Adds), w),
+                    ["phase2"] = Wardens.Describe(w.phase2, w), ["phase3"] = Wardens.Describe(w.phase3, w),
+                    ["signature"] = Wardens.SignatureName(w), ["signatureText"] = Wardens.SignatureText(w),
+                    ["moves"] = WardenMoveNames(w),
                     ["purse"] = Wardens.Purse(w),
                 });
             return l;

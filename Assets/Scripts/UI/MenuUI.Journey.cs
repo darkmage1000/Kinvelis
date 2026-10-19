@@ -88,8 +88,9 @@ namespace Wildbond
                        "Step outside the standing stones for long (about 60 m) or get knocked out and it goes back to sleep - nothing is lost.", 21, Color.white);
             if (w.optional) Para(list, UIFactory.Col($"The Kraken alone can be bound. A {ContentDB.ItemName(Wardens.KrakenSeed)} (Workbench, and it leaves some behind when beaten) takes hold once it is at {CaptureSystem.BossSeedHp * 100f:0}% health or less: SEED, then THROW.", Gold), 21);
             Para(list, $"<b>Above 66% health:</b> fights like a very strong {(sp != null ? sp.displayName : "kin")}.", 22, Color.white);
+            Para(list, $"<b>{Wardens.SignatureName(w)} (all fight):</b> {Wardens.SignatureText(w)}", 22, Color.white);
             Para(list, $"<b>Below 66%:</b> {Wardens.Describe(w.phase2, w)}", 22, Color.white);
-            Para(list, $"<b>Below 33%:</b> {Wardens.Describe(w.phase3 | w.phase2 & ~(WardenMech.Shield | WardenMech.Adds), w)}", 22, Color.white);
+            Para(list, $"<b>Below 33%:</b> {Wardens.Describe(w.phase3, w)}", 22, Color.white);
             Header(list, "Reward", 28);
             Para(list, $"{UIFactory.Col($"{Wardens.Purse(w)} Glimmer", Gold)}, {Wardens.Hearts(w)}x Warden Heart, Starbloom Seeds and Kin Treats" +
                        (wins == 0 ? (w.final ? ", and Stormcrest itself." : w.optional ? "." : $", and the {UIFactory.Col("Sigil of " + w.land, w.color)}.") : "  <size=19>(rematch)</size>"), 24, Color.white);

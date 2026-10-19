@@ -117,14 +117,22 @@ namespace Wildbond
         {
             float m = Single(atk, def1);
             if (def2 != Element.Normal && def2 != def1) m *= Single(atk, def2);
-            return Mathf.Clamp(m, 0.45f, 2.25f);
+            return Mathf.Clamp(m, 0.35f, 2.25f);
         }
+
+        /// <summary>
+        /// The chart's three numbers (user, 2026-10-19: "should same type do reduced damage, and countered elements do very
+        /// little to things that counter them?"): x1.5 into what it beats, x0.5 into what beats it (was 0.67), x0.75 into
+        /// its own element (was 1). Normal neither gives nor takes. Two elements multiply, within 0.35-2.25.
+        /// </summary>
+        public const float Strong_ = 1.5f, Countered = 0.5f, SameType = 0.75f;
 
         static float Single(Element atk, Element def)
         {
             if (atk == Element.Normal || def == Element.Normal) return 1f;
-            if (IsStrong(atk, def)) return 1.5f;
-            if (IsStrong(def, atk)) return 0.67f;
+            if (IsStrong(atk, def)) return Strong_;
+            if (IsStrong(def, atk)) return Countered;
+            if (atk == def) return SameType;   // a kin shrugs off its own element
             return 1f;
         }
 

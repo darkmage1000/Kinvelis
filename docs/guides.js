@@ -168,7 +168,7 @@ html: `
 <li><b>Power</b> of the skill or weapon.</li>
 <li><b>Level</b>. Kin damage and kin health both grow 12% a level, so an even fight lasts about the same at level 5 as at level 50. A gap compounds fast: three levels up is roughly two and a half times the exchange, and ten levels up takes about a third of your health per hit.</li>
 <li><b>Attack against defense</b>.</li>
-<li><b>Element</b>. Strong is &times;1.5, weak is &times;0.67, and a move of the user's own element gets +20%. See the <a href="#/elements">element chart</a>.</li>
+<li><b>Element</b>. Strong is &times;1.5, a move into the element that counters it is &times;0.5, and a move into its own element is &times;0.75 (a kin shrugs off its own kind). A move of the user's own element still gets +20%. See the <a href="#/elements">element chart</a>.</li>
 </ul>
 <p>A critical hit does half again as much. Kin crit about one hit in twelve.</p>
 <div class="note">A red <b>skull</b> over a wild kin means it is ten or more levels above you. Walk away.</div>

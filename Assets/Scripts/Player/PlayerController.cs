@@ -59,6 +59,8 @@ namespace Wildbond
         bool launched;
         /// <summary>Set every frame by Hazards (quicksand, icy water): 1 = normal.</summary>
         [System.NonSerialized] public float SlowMul = 1f;
+        /// <summary>Something pushing you along this frame (m/s), e.g. Djinnado's whirlwind; used up by the next move.</summary>
+        [System.NonSerialized] public Vector3 Drift;
         public bool Grounded => grounded;
 
         /// <summary>Thrown into the air (geysers). The landing that follows does no fall damage.</summary>
@@ -345,7 +347,8 @@ namespace Wildbond
             if (Gliding) desired = (wishMag > 0.1f ? wish : transform.forward) * GlideSpeed * q.MoveMul;
             float accel = grounded ? 40f : IsSwimming && IsMounted && MountSwims ? SurfAccel : 12f;   // surfing steers nearly as sharply as the ground
             hVel = Vector3.MoveTowards(hVel, desired, accel * dt);
-            Vector3 step = hVel * dt;
+            Vector3 step = hVel * dt + Drift * dt;
+            Drift = Vector3.zero;
             if (dodgeTimer > 0f) { dodgeTimer -= dt; step = dodgeDir * dodgeSpeed * dt; }
 
             Vector3 pos = transform.position;

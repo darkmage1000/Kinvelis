@@ -123,6 +123,9 @@ namespace Wildbond
         public bool TakeCrit() { if (!CritPrimed) return false; critUntil = 0f; return true; }
 
         /// <summary>Knocked reeling: no moving or attacking, and whatever it was winding up is lost. Wardens and alphas shrug off half of it.</summary>
+        /// <summary>Ends a stun early (a kin thawed out of a Warden's ice).</summary>
+        public void ClearStun() => stunTimer = 0f;
+
         public void Stun(float seconds)
         {
             if (!IsAlive || Invulnerable) return;
