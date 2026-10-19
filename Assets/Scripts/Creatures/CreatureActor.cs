@@ -138,6 +138,8 @@ namespace Wildbond
         float windup;
         ICombatant pendingTarget;
         float dashTime;
+        /// <summary>Gap a dash aims to close to (m past touching), and the speed it keeps once it ends or lands.</summary>
+        const float DashContact = 0.5f, DashStopSpeed = 2.5f;
         Vector3 dashVel;
         bool dashHit;
         float deathTimer;
@@ -576,6 +578,8 @@ namespace Wildbond
             knock = Vector3.MoveTowards(knock, Vector3.zero, dt * 20f);
             Vector3 step = (vel + knock) * dt;
             Vector3 next = pos + step;
+            // a dash stops where it ends: from dash speed (25-35 m/s) the normal easing used to glide it on 15-25 m
+            if (dashing && dashTime <= 0f && vel.sqrMagnitude > DashStopSpeed * DashStopSpeed) vel = vel.normalized * DashStopSpeed;
 
             // don't wander into deep water unless it's a water kin
             if (Mode == CreatureMode.Wild && !Sp.nearWater && Sp.locomotion != Locomotion.Flyer && Ground.Height(next.x, next.z) < -0.6f)
@@ -953,7 +957,9 @@ namespace Wildbond
                 case AbilityKind.Dash:
                 {
                     dashTime = 0.28f;
-                    float dd = FlatDist(transform.position, pendingTarget.Position) + 1f;
+                    // to just touching it (user, 2026-10-19: "dash skills go too far past what they dash into") -
+                    // it used to aim 1 m past the target's middle, which is well behind a big target
+                    float dd = Mathf.Max(0.5f, FlatDist(transform.position, pendingTarget.Position) - (pendingTarget.Radius + BodyRadius) + DashContact);
                     // your kin's dashes always reach the target (wild kin keep their fixed dash length)
                     float len = ally ? Mathf.Clamp(dd, 2f, a.range + 3f) : Mathf.Min(a.radius, dd);
                     dashVel = dir * len / 0.28f;
@@ -1036,6 +1042,9 @@ namespace Wildbond
             {
                 dashHit = true;
                 CombatSystem.Apply(this, pendingTarget, dashAbility.power, dashAbility.element, dashAbility.status, dashAbility.statusChance, dashVel.normalized * 7f, dashBoost, dashAbility.effect);
+                // the blow lands: the dash ends here instead of running on through the target
+                dashTime = 0f;
+                vel = dashVel.normalized * DashStopSpeed;
                 Fx.Burst(transform.position, dashAbility.color, 10, 4f, 0.3f, 0.4f, true);
             }
         }
