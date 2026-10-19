@@ -34,6 +34,14 @@ namespace Wildbond
         bool sneakBonus;
         CreatureActor homing;
 
+        // the catch sequence: the kin is drawn into the seed, the seed drops and shakes, then it bursts open or clicks shut
+        const float AbsorbTime = 0.42f, DropTime = 0.38f, CatchShow = 0.55f, CatchFly = 0.5f;
+        Vector3 hitPoint, modelPos0, modelScale0, flyFrom;
+        Quaternion modelRot0;
+        Transform victimModel;
+        bool absorbed, caught;
+        float bindT, dropV;
+
         public bool Busy => phase != Phase.Idle;
 
         public void Init()
@@ -247,8 +255,9 @@ namespace Wildbond
                 case Phase.Binding: TickBinding(dt); break;
                 case Phase.Shaking: TickShaking(dt); break;
                 case Phase.Result:
+                    if (caught) { TickCaught(dt); break; }
                     timer -= dt;
-                    if (timer <= 0f) { seed.gameObject.SetActive(false); phase = Phase.Idle; }
+                    if (timer <= 0f) { seed.gameObject.SetActive(false); seed.localScale = Vector3.one; phase = Phase.Idle; }
                     break;
             }
         }
@@ -343,18 +352,98 @@ namespace Wildbond
             SynthAudio.Play(Sfx.Bind);
             a.BeginCapture();
             phase = Phase.Binding;
-            timer = 0.45f;
-            // seed drops to the ground where the kin was
+            bindT = 0f;
+            absorbed = false;
+            dropV = 0f;
+            // the seed stops where it struck, a little out from the kin, and hangs there while the kin is pulled in
+            hitPoint = seed.position + Vector3.up * 0.35f;
+            victimModel = a.Rig.Model;
+            if (victimModel != null)
+            {
+                modelPos0 = victimModel.position;
+                modelScale0 = victimModel.localScale;
+                modelRot0 = victimModel.rotation;
+            }
+            a.Rig.ApplyHold(new Color(0.75f, 1f, 0.7f, 0.25f));
+            // ...then it drops to the ground where the kin stood
             pos = a.Position;
             pos.y = Mathf.Max(Ground.Height(pos.x, pos.z), Tides.Surface(pos.x, pos.z) - 0.3f) + 0.2f;
         }
 
         void TickBinding(float dt)
         {
-            timer -= dt;
-            seed.position = Vector3.Lerp(seed.position, pos, dt * 12f);
+            bindT += dt;
+            if (!absorbed)
+            {
+                // the kin glows, shrinks and streams into the seed, which swells as it takes it in
+                float k = Mathf.Clamp01(bindT / AbsorbTime);
+                float e = k * k;                                             // slow start, then gone in a rush
+                seed.position = Vector3.Lerp(seed.position, hitPoint, dt * 14f);
+                seed.Rotate(0f, 540f * dt, 0f, Space.World);
+                seed.localScale = Vector3.one * (1f + Mathf.Sin(k * Mathf.PI) * 0.45f);
+                if (victimModel != null && victim != null)
+                {
+                    victimModel.position = Vector3.Lerp(modelPos0, seed.position, e);
+                    victimModel.localScale = modelScale0 * Mathf.Max(0.001f, 1f - e);
+                    victimModel.rotation = modelRot0 * Quaternion.Euler(0f, e * 260f, 0f);
+                    victim.Rig.ApplyHold(new Color(0.75f, 1f, 0.7f, Mathf.Lerp(0.25f, 0.95f, k)));
+                    // light pulled off the body into the seed
+                    float r = victim.Radius;
+                    for (int i = 0; i < 2; i++)
+                    {
+                        Vector3 from = victimModel.position + (Random.insideUnitSphere * 1.3f + Vector3.up * 0.5f) * r * (1f - e);
+                        const float life = 0.18f;
+                        Fx.Mote(from, (seed.position - from) / life, new Color(0.6f, 1f, 0.55f, 0.9f), 0.14f, life, true);
+                    }
+                }
+                if (k >= 1f)
+                {
+                    absorbed = true;
+                    if (victim != null)
+                    {
+                        victim.Rig.SetVisible(false);
+                        if (victimModel != null)
+                        {
+                            victimModel.position = modelPos0;
+                            victimModel.localScale = modelScale0;
+                            victimModel.rotation = modelRot0;
+                        }
+                    }
+                    Fx.Burst(seed.position, new Color(0.8f, 1f, 0.7f), 16, 3f, 0.22f, 0.35f, true);
+                    Fx.Ring(seed.position, new Color(0.6f, 1f, 0.5f), 0.9f, 18);
+                    SynthAudio.Play(Sfx.Shake, 1.4f, 0.6f);
+                    bindT = 0f;
+                }
+                return;
+            }
+
+            // closed up: it falls to the ground with a small bounce and comes to rest upright
+            seed.localScale = Vector3.Lerp(seed.localScale, Vector3.one, dt * 12f);
             seed.rotation = Quaternion.Slerp(seed.rotation, Quaternion.identity, dt * 10f);
-            if (timer <= 0f) { phase = Phase.Shaking; timer = shakeInterval; }
+            Vector3 sp = seed.position;
+            dropV -= seedGravity * dt;
+            float side = Mathf.Min(1f, dt * 8f);
+            sp += new Vector3((pos.x - sp.x) * side, dropV * dt, (pos.z - sp.z) * side);
+            if (sp.y <= pos.y)
+            {
+                sp.y = pos.y;
+                if (dropV < -2.5f)
+                {
+                    dropV = -dropV * 0.3f;
+                    Fx.Puff(sp, new Color(0.7f, 0.6f, 0.45f, 0.7f), 0.3f, 0.4f);
+                    SynthAudio.Play(Sfx.Clunk, 1.3f, 0.35f);
+                }
+                else dropV = 0f;
+            }
+            seed.position = sp;
+            if (bindT >= DropTime && sp.y <= pos.y + 0.01f)
+            {
+                seed.position = pos;
+                seed.rotation = Quaternion.identity;
+                seed.localScale = Vector3.one;
+                phase = Phase.Shaking;
+                timer = shakeInterval;
+            }
         }
 
         void TickShaking(float dt)
@@ -362,7 +451,8 @@ namespace Wildbond
             timer -= dt;
             float k = 1f - timer / shakeInterval;
             float wob = Mathf.Sin(k * Mathf.PI * 3f) * 28f * (1f - k);
-            seed.rotation = Quaternion.Euler(0, 0, wob);
+            seed.rotation = Quaternion.Euler(wob * 0.35f, 0, wob);
+            seed.localScale = new Vector3(1f, 1f + Mathf.Sin(k * Mathf.PI * 3f) * 0.06f * (1f - k), 1f);
             if (timer > 0f) return;
 
             if (victim == null || victim.Data == null)
@@ -384,26 +474,69 @@ namespace Wildbond
         {
             var a = victim;
             var data = a.Data;
+            // click: it is sealed - stars and a ring, then the seed hops and flies back to you (TickCaught)
+            seed.localScale = Vector3.one;
             Fx.Sparkle(seed.position + Vector3.up * 0.3f, new Color(1f, 0.95f, 0.5f), 30, 0.8f);
-            Fx.Ring(seed.position, new Color(0.6f, 1f, 0.5f), 2.5f, 26);
+            Fx.Ring(seed.position, new Color(1f, 0.9f, 0.45f), 2.5f, 26);
+            Fx.Burst(seed.position + Vector3.up * 0.3f, new Color(1f, 0.92f, 0.5f), 22, 5f, 0.2f, 0.6f, true);
+            HUD.DamageNumber(seed.position + Vector3.up * 1.2f, "Caught!", new Color(1f, 0.9f, 0.4f), 1.3f);
             SynthAudio.Play(Sfx.CaptureSuccess);
             if (data.alpha) CreatureSpawner.I.OnAlphaGone(a);
             if (seedDef != null && seedDef.shimmerSeed && !data.shimmer) Shimmer.Make(data);   // Prismatic Seed: it comes out a shimmer
+            a.Rig.Hold = Color.clear;   // pooled: the next kin to use this actor must not come out glowing
             a.Despawn();
             data.hp = -1f;
             GameManager.I.OnKinCaptured(data);
             if (Wardens.I != null) Wardens.I.BossCaught(a);   // binding a boss wins its fight
             victim = null;
             phase = Phase.Result;
-            timer = 0.8f;
+            caught = true;
+            bindT = 0f;
+        }
+
+        /// <summary>After a catch: the seed glows and hops, then shrinks into a streak of light that flies to you.</summary>
+        void TickCaught(float dt)
+        {
+            bindT += dt;
+            if (bindT < CatchShow)
+            {
+                float k = bindT / CatchShow;
+                seed.position = pos + Vector3.up * (Mathf.Sin(k * Mathf.PI) * 0.55f);
+                seed.Rotate(0f, 360f * dt, 0f, Space.World);
+                seed.localScale = Vector3.one * (1f + Mathf.Sin(k * Mathf.PI * 2f) * 0.12f);
+                if (Random.value < 0.5f) Fx.Sparkle(seed.position + Vector3.up * 0.2f, new Color(1f, 0.95f, 0.55f), 1, 0.45f);
+                flyFrom = seed.position;
+                return;
+            }
+            float f = Mathf.Clamp01((bindT - CatchShow) / CatchFly);
+            var pl = GameManager.I != null ? GameManager.I.Player : null;
+            Vector3 to = pl != null ? pl.transform.position + Vector3.up * 1.2f : flyFrom;
+            float e = f * f * (3f - 2f * f);
+            seed.position = Vector3.Lerp(flyFrom, to, e) + Vector3.up * (Mathf.Sin(f * Mathf.PI) * 1.6f);
+            seed.localScale = Vector3.one * Mathf.Max(0.05f, 1f - e * 0.9f);
+            seed.Rotate(0f, 720f * dt, 0f, Space.World);
+            Fx.Mote(seed.position, Vector3.zero, new Color(1f, 0.9f, 0.5f, 0.85f), 0.18f * (1f - e * 0.5f), 0.3f, true);
+            if (f >= 1f)
+            {
+                Fx.Sparkle(to, new Color(1f, 0.95f, 0.6f), 12, 0.5f);
+                seed.gameObject.SetActive(false);
+                seed.localScale = Vector3.one;
+                caught = false;
+                phase = Phase.Idle;
+            }
         }
 
         void Fail()
         {
             var a = victim;
+            // the seed bursts open and the kin pops back out where it lay
             a.transform.position = new Vector3(pos.x, a.transform.position.y, pos.z);
             a.EndCaptureFailed();
             Fx.Burst(seed.position, new Color(0.6f, 0.45f, 0.3f), 14, 3.5f, 0.25f, 0.5f);
+            Fx.Burst(seed.position + Vector3.up * 0.3f, new Color(0.6f, 1f, 0.5f), 20, 5f, 0.22f, 0.45f, true);
+            Fx.Debris(seed.position, new Color(0.45f, 0.32f, 0.2f), 8);
+            seed.gameObject.SetActive(false);
+            seed.localScale = Vector3.one;
             SynthAudio.Play(Sfx.CaptureFail);
             string[] lines = { "Argh! It broke free!", "So close!", "It slipped out!" };
             GameEvents.Warn(shakes >= 2 ? lines[1] : lines[Random.Range(0, 3)]);
@@ -415,8 +548,19 @@ namespace Wildbond
 
         public void Cancel()
         {
-            if (victim != null && phase != Phase.Idle && phase != Phase.Result) victim.EndCaptureFailed();
+            if (victim != null && phase != Phase.Idle && phase != Phase.Result)
+            {
+                if (victimModel != null && phase == Phase.Binding && !absorbed)
+                {
+                    victimModel.position = modelPos0;
+                    victimModel.localScale = modelScale0;
+                    victimModel.rotation = modelRot0;
+                }
+                victim.EndCaptureFailed();
+            }
             victim = null;
+            caught = false;
+            seed.localScale = Vector3.one;
             seed.gameObject.SetActive(false);
             phase = Phase.Idle;
         }

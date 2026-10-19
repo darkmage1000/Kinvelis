@@ -761,18 +761,23 @@ namespace Wildbond
             }
         }
 
-        /// <summary>Wild creature gently calms down while a capture seed shakes.</summary>
+        /// <summary>
+        /// The kin is being drawn into a capture seed: it stops acting at once. CaptureSystem shrinks the model into the
+        /// seed and then hides it (it stays hidden while the seed shakes).
+        /// </summary>
         public void BeginCapture()
         {
             pendingAbility = -1;
             dashTime = 0f;
             SetState(AIState.Captured);
-            Rig.SetVisible(false);
         }
 
+        /// <summary>Broke out of the seed: pops back out at full size, angry.</summary>
         public void EndCaptureFailed()
         {
+            Rig.Hold = Color.clear;
             Rig.SetVisible(true);
+            Rig.PopIn();
             Rig.Squash();
             Aggro = true;
             Target = GameManager.I.Player;

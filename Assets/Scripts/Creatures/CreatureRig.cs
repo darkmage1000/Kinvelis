@@ -57,7 +57,7 @@ namespace Wildbond
             lookScale = Vector3.one; hasCoat = false; markGo = null; markMf = null; markMr = null;
             phase = Random.value * 10f;
             t = Random.value * 10f;
-            sleepNow = 0f; restMeasured = false; Lift = 0f;
+            sleepNow = 0f; restMeasured = false; Lift = 0f; popT = 1f;
         }
 
         public void Register(BodyGroup g, Transform tr, Renderer r)
@@ -144,6 +144,14 @@ namespace Wildbond
 
         public void Lunge() => lunge = 1f;
         public void Squash() => squash = 1f;
+
+        // pop back out of a capture seed: grows from nothing with a little overshoot over PopTime
+        float popT = 1f;
+        const float PopTime = 0.42f;
+        public void PopIn() => popT = 0f;
+
+        /// <summary>Sets the held glow and shows it now - for a model that is not being animated (inside a capture).</summary>
+        public void ApplyHold(Color c) { Hold = c; UpdateFlash(0f); }
 
         public Transform GetGroup(BodyGroup g) => groups[(int)g];
 
@@ -276,6 +284,13 @@ namespace Wildbond
                 squash = Mathf.Max(0f, squash - dt * 5f);
                 float k = Mathf.Sin(squash * Mathf.PI) * 0.25f;
                 modelScale = new Vector3(modelScale.x * (1f + k), modelScale.y * (1f - k), modelScale.z * (1f + k));
+            }
+            if (popT < 1f)
+            {
+                popT = Mathf.Min(1f, popT + dt / PopTime);
+                float ob = 1.9f, u = popT - 1f;
+                float k = Mathf.Max(0.02f, 1f + (ob + 1f) * u * u * u + ob * u * u);   // ease out with an overshoot
+                modelScale *= k;
             }
             SetRot(BodyGroup.Head, Quaternion.Euler(headPitch, headYaw, 0));
 

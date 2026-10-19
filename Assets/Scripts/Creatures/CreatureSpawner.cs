@@ -98,13 +98,13 @@ namespace Wildbond
 
                 if (dist <= q.creatureFullSimRange || a.Mode == CreatureMode.Companion || a.Engaged)
                 {
-                    a.Rig.SetVisible(true);
+                    if (a.State != AIState.Captured) a.Rig.SetVisible(true);   // a kin inside a capture seed stays hidden
                     a.Tick(dt, true);
                 }
                 else
                 {
                     // reduced-rate AI; visible only inside fog
-                    a.Rig.SetVisible(dist < q.fogEnd * 0.9f);
+                    if (a.State != AIState.Captured) a.Rig.SetVisible(dist < q.fogEnd * 0.9f);
                     int slot = (frame + a.GetInstanceID()) & 3;
                     if (slot == 0) a.Tick(dt * 4f, false);
                 }
