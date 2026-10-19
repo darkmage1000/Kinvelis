@@ -261,7 +261,7 @@
       var m = 1;
       [k.e1, k.e2].forEach(function (d) {
         if (!d || a === "Normal" || d === "Normal") return;
-        if (D.elements.strong[a].indexOf(d) >= 0) m *= 1.5; else if (D.elements.strong[d].indexOf(a) >= 0) m *= 0.67;
+        if (D.elements.strong[a].indexOf(d) >= 0) m *= 1.5; else if (D.elements.strong[d].indexOf(a) >= 0) m *= 0.5; else if (a === d) m *= 0.75;
       });
       if (m > 1.01) weak.push(el(a) + (m > 2 ? " &times;2.25" : "")); else if (m < 0.99) resist.push(el(a));
     });
@@ -499,7 +499,7 @@
     title("Wardens");
     var h = "<h1>Wardens</h1><p class='lead'>Ten boss fights. Each of the eight lands has a Warden holding a Sigil; the eight Sigils unseal Stormcrest's Aerie. The Kraken is optional.</p>" +
       "<div class='prose'><ul><li>Find the ring of standing stones with the tall beacon (the crown on the map) and tap <b>WARDEN</b> at the shrine.</li>" +
-      "<li>A Warden has twice the health of a wild kin of its kind and changes its behaviour at 66% and at 33% health. It hits hard, but no single blow can take more than about a third of a kin's health, so a kin always survives at least two hits.</li>" +
+      "<li>A Warden has twice the health of a wild kin of its kind and has a <b>signature</b> of its own that runs the whole fight (and comes faster as it weakens), plus one more trick from 66% health and another from 33%. It fights with four moves no other kin has. It hits hard, but no single blow can take more than about a third of a kin's health, so a kin always survives at least two hits.</li>" +
       "<li>Leave the ring (about 60 m) or go down, and it goes back to sleep. You can try again straight away.</li>" +
       "<li>A first win gives the land's <b>Sigil</b>, Glimmer and three Warden Hearts. Rematches (every 30 minutes) give half the Glimmer and one Heart.</li>" +
       "<li>Sigils unlock <a href='#/research'>research</a>. They never gate travel.</li></ul></div>";
@@ -507,6 +507,8 @@
       var k = kinById[w.kin];
       h += '<div class="warden">' + (k ? '<a href="#/kin/' + k.id + '">' + img("kin", k.id, "", w.name) + "</a>" : "<span></span>") + "<div><h3>" + esc(w.name) + ' <span class="tag ghost">Level ' + w.level + "</span> " +
         (w.optional ? '<span class="tag ghost">optional</span>' : w.final ? '<span class="tag ghost">the finale</span>' : "") + "</h3><p>" + esc(w.place) + ", " + esc(w.land) + (k ? " &nbsp; " + els(k) : "") + "</p>" +
+        (w.signature ? "<p><b>" + esc(w.signature) + " (signature):</b> " + esc(w.signatureText) + "</p>" : "") +
+        (w.moves && w.moves.length ? "<p><b>Moves:</b> " + w.moves.map(function (m) { return esc(m); }).join(", ") + "</p>" : "") +
         "<p><b>From 66% health:</b> " + esc(w.phase2) + "</p><p><b>From 33% health:</b> " + esc(w.phase3) + "</p>" +
         (w.final ? "<p>Sealed until you hold all eight Sigils. The first win adds a level-50 Stormcrest to your roster.</p>" : "") +
         (w.optional ? '<p>Fought on foot on its own rock in the south-east sea. The only Warden that can be caught: craft a <a href="#/item/deepcall_seed">Deepcall Seed</a>, get the Kraken under 15% health and throw. Beating it also leaves a seed or two behind.</p>' : "") +
@@ -546,7 +548,7 @@
   function elementsPage() {
     title("Elements");
     var E = D.elements.names, S = D.elements.strong;
-    var h = "<h1>Elements</h1><p class='lead'>Ten elements. A move that is <b>strong</b> against the target does &times;1.5; one the target is strong against does &times;0.67. A kin with two elements multiplies both. A move of the user's own element gets +20%.</p>" +
+    var h = "<h1>Elements</h1><p class='lead'>Ten elements. A move that is <b>strong</b> against the target does &times;1.5; one the target is strong against does &times;0.5; one of the target's own element does &times;0.75 (a kin shrugs off its own kind). A kin with two elements multiplies both. A move of the user's own element gets +20%.</p>" +
       table(["Element", "Strong against", "Weak against", "Kin"], E.map(function (e) {
         var weak = E.filter(function (o) { return S[o].indexOf(e) >= 0; });
         var n = D.kin.filter(function (k) { return k.e1 === e || k.e2 === e; }).length;
@@ -556,7 +558,8 @@
       E.map(function (a) {
         return "<tr><th>" + a + "</th>" + E.map(function (d) {
           var s = a !== "Normal" && d !== "Normal" && S[a].indexOf(d) >= 0, w = a !== "Normal" && d !== "Normal" && S[d].indexOf(a) >= 0;
-          return s ? '<td class="s">&times;1.5</td>' : w ? '<td class="w">&times;0.67</td>' : "<td>&middot;</td>";
+          var same = a === d && a !== "Normal";
+          return s ? '<td class="s">&times;1.5</td>' : w ? '<td class="w">&times;0.5</td>' : same ? '<td class="w">&times;0.75</td>' : "<td>&middot;</td>";
         }).join("") + "</tr>";
       }).join("") + "</tbody></table></div>";
     main.innerHTML = h;
