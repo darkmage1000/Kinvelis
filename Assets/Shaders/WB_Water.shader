@@ -70,8 +70,13 @@ Shader "Wildbond/Water"
                 Light l = GetMainLight();
                 half3 h = normalize(l.direction + v);
                 half spec = pow(saturate(dot(n, h)), 90.0) * 1.2;
-                float band = sin(i.positionWS.x * 0.6 + i.positionWS.z * 0.4 + _Time.y * 2.0) * sin(i.positionWS.z * 0.7 - _Time.y * 1.5);
-                half sparkle = smoothstep(0.92, 1.0, band) * 0.35;
+                // glints that twinkle where they are and only creep (~0.4 m/s): they used to sweep along at ~2.8 m/s,
+                // as fast as surfing, which read as the sea flowing one way (user playtest 2026-10-18)
+                float2 xz = i.positionWS.xz;
+                float band = sin(xz.x * 0.6 + xz.y * 0.4 + _Time.y * 0.3) * sin(xz.y * 0.7 - xz.x * 0.25 - _Time.y * 0.22);
+                float cell = frac(sin(dot(floor(xz * 0.35), float2(12.9898, 78.233))) * 43758.5453);
+                half twinkle = 0.45 + 0.55 * saturate(sin(_Time.y * (1.1 + cell) + cell * 6.2832) * 0.5 + 0.5);
+                half sparkle = smoothstep(0.92, 1.0, band) * 0.35 * twinkle;
                 half4 baseCol = lerp(_ShallowColor, _DeepColor, saturate(fres * 0.4 + 0.3));
                 half3 col = baseCol.rgb * (l.color * 0.6 + SampleSH(n) * 0.8);
                 col = lerp(col, _SkyColor.rgb, fres * 0.6) + (spec + sparkle) * l.color;

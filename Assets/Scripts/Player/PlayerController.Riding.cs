@@ -165,6 +165,42 @@ namespace Wildbond
             get { var c = GameManager.I.Party.Companion; return c != null && CanSurf(c) && AtWater ? "SURF" : "RIDE"; }
         }
 
+        /// <summary>
+        /// Surfing (user playtest 2026-10-18: "surfing feels awful"): it used to be 3.6 m/s cruising / 5.6 sprinting (slower
+        /// than walking), steered at a third of the ground's grip so the kin slid sideways after every turn, and small kin sat
+        /// under the water. Now: SurfSpeed when sprinting (x0.55 cruising, like every mount), SurfAccel grip, the kin faces
+        /// its way of travel, floats with SurfDraft of it under water and rides Tides.Swell, and throws spray (TickWake).
+        /// </summary>
+        public const float SurfSpeed = 11f, SurfAccel = 30f;
+
+        /// <summary>How deep a surfing kin sits: about a third of the way up to its back, between 0.12 and 1.05 m.</summary>
+        float SurfDraft => Mathf.Clamp(SeatY * 0.36f, 0.12f, 1.05f);
+
+        float wakeTimer;
+
+        /// <summary>White spray off both sides and a little foam behind while a surfing kin moves.</summary>
+        void TickWake(float dt, Vector3 at)
+        {
+            float sp = Speed;
+            if (sp < 2f) return;
+            wakeTimer -= dt * (0.6f + sp * 0.12f);
+            if (wakeTimer > 0f) return;
+            wakeTimer = 0.035f;
+            float sea = Tides.Surface(at) + Tides.Swell(at.x, at.z);
+            Vector3 fwd = transform.forward, side = transform.right;
+            float r = Mathf.Max(0.35f, mount.BodyRadius);
+            Color foam = new Color(0.92f, 0.97f, 1f, 0.85f);
+            for (int s = -1; s <= 1; s += 2)
+            {
+                Vector3 p = at + side * (r * s) + fwd * (r * 0.3f);
+                p.y = sea + 0.05f;
+                Vector3 v = side * (s * (1.2f + sp * 0.12f)) + Vector3.up * (1f + sp * 0.08f) - fwd * (sp * 0.25f);
+                Fx.Mote(p, v, foam, 0.2f + sp * 0.016f, 0.38f, false);
+            }
+            Vector3 back = at - fwd * (r * 1.1f); back.y = sea + 0.04f;
+            Fx.Puff(back, new Color(0.9f, 0.96f, 1f, 0.55f), 0.28f + sp * 0.02f, 0.6f);
+        }
+
         /// <summary>Surf-only kin set you down once you're properly back on land.</summary>
         void TickSurf(float dt)
         {
@@ -234,6 +270,7 @@ namespace Wildbond
         {
             // a kin that was never meant as a mount (ride-anything worlds, or a surfer) carries you a little faster than it runs
             float baseSpeed = mount.Sp.mountable ? mount.Sp.mountSpeed : Mathf.Max(7.5f, mount.Sp.runSpeed * 1.2f);
+            if (IsSwimming && MountSwims) baseSpeed = Mathf.Max(baseSpeed, SurfSpeed);   // any water kin surfs like an early mount gallops
             float run = baseSpeed * mount.Data.SpeedMul * mount.Status.SpeedMul;
             return IsSprinting ? run : run * 0.55f;
         }

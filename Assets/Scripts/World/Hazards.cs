@@ -33,6 +33,18 @@ namespace Wildbond
         public static float Surface(float x, float z) => WorldGen.WaterLevel + height * Weight(x, z);
         public static float Surface(Vector3 p) => Surface(p.x, p.z);
 
+        // the swell drawn by WB_Water's vertex shader (same numbers as WB_Water.mat), so a surfing kin can ride it
+        const float WaveAmp = 0.18f, WaveFreq = 0.12f;
+
+        /// <summary>Height of the drawn swell above the sea surface at a point (about -0.27 to +0.27 m).</summary>
+        public static float Swell(float x, float z)
+        {
+            float t = Time.timeSinceLevelLoad;   // the shader's _Time.y
+            float w1 = Mathf.Sin(x * WaveFreq + t * 1.3f) * Mathf.Cos(z * WaveFreq * 0.8f + t * 0.9f);
+            float w2 = Mathf.Sin((x + z) * WaveFreq * 2.1f - t * 1.7f) * 0.5f;
+            return (w1 + w2) * WaveAmp;
+        }
+
         /// <summary>"Low tide" etc. while you are on the Isles, otherwise null.</summary>
         public static string Label(Vector3 p)
         {

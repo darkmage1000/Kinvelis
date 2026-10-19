@@ -281,7 +281,7 @@ html: `
 <li><b>Mounts</b>: some kin can be ridden once you have crafted a <span data-items="Kin Harness"></span>. Find them with the "Can be ridden" filter in the <a href="#/kin">Kin Dex</a>. How fast one gallops follows where it lives: early mounts (Sunmeadow, the Isles) are the slowest, Epic and Legendary ones the fastest, and a kin's Travel quality moves it up or down a little.</li>
 <li><b>Flying</b>: every flying kin you can ride flies - hold <b>JUMP</b> to climb (it costs stamina), let go to glide down. Landing never hurts. <b>Galewing</b>, a Rare of the Sunmeadow and the Peaks, is the first one you can find.</li>
 <li><b>From the saddle</b>: the kin you ride still uses its skills (the skill buttons; a close-up move needs you to ride up to the target), you can throw seeds, and if it can log, quarry or forage, your swings at trees, rocks and plants are its blows too - it can even work ones your own tool is too weak for.</li>
-<li><b>Surfing</b>: any Tide kin, and any kin that lives by the water, will carry you across water with no harness. This is how you reach the five outer lands.</li>
+<li><b>Surfing</b>: any Tide kin, and any kin that lives by the water, will carry you across water with no harness. This is how you reach the five outer lands. A surfing kin cruises a little faster than you walk, and with RUN held it goes as fast as an early mount gallops (11 m/s); sprinting on water costs stamina the same as on land.</li>
 <li><b>Gliding</b> and the <b>grapple</b> are items: <span data-items="Gale Glider, Vine Grapple"></span>. Look at a tree top or a ledge and a green ring marks it; HOOK reels you there. At a tree you are flung up and on past it - open the glider to keep going.</li>
 </ul>
 

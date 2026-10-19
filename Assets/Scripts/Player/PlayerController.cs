@@ -251,7 +251,7 @@ namespace Wildbond
             if (q.stamina <= 0.5f && !Exhausted) { Exhausted = true; SprintToggled = false; }
             if (Exhausted && q.stamina >= q.MaxStamina * 0.25f) Exhausted = false;
             bool wantSprint = (InputHub.Held(Btn.Sprint) || SprintToggled || WorldRules.Current.simpleControls) && !IsCrouching && !Exhausted && !Aiming;
-            IsSprinting = wantSprint && wishMag > 0.1f && q.stamina > 1f && !IsSwimming;
+            IsSprinting = wantSprint && wishMag > 0.1f && q.stamina > 1f && (!IsSwimming || (IsMounted && MountSwims));   // a surfing kin can sprint; a swimmer cannot
             if (IsSprinting) IsCrouching = false;
 
             // ---------------- stamina ----------------
@@ -336,14 +336,14 @@ namespace Wildbond
             float perkMul = comp != null && comp.Sp.perk == CompanionPerk.Swiftness ? 1.12f : 1f;
             float tailwind = compPerk == CompanionPerk.Tailwind ? 1.15f : 1f;
             float target = IsSwimming ? swimSpeed * q.SwimMul : (IsCrouching ? sneakSpeed : (IsSprinting ? runSpeed * perkMul : walkSpeed)) * tailwind;
-            if (IsMounted) target = MountTargetSpeed() * (IsSwimming ? 0.75f : 1f);
+            if (IsMounted) target = MountTargetSpeed() * (IsSwimming && !MountSwims ? 0.75f : 1f);
             else target *= q.MoveMul * (Aiming ? 0.75f : 1f);   // careful steps with a seed ready
             target *= SlowMul * WorldRules.Current.moveSpeed;
             if (stunTimer > 0f) target *= 0.15f;
             if (swingTimer > 0f) target *= IsMounted ? 0.7f : swingAct == SwingAct.Shoot ? 0.55f : 0.35f;
             Vector3 desired = wish * target * wishMag * envMul;
             if (Gliding) desired = (wishMag > 0.1f ? wish : transform.forward) * GlideSpeed * q.MoveMul;
-            float accel = grounded ? 40f : 12f;
+            float accel = grounded ? 40f : IsSwimming && IsMounted && MountSwims ? SurfAccel : 12f;   // surfing steers nearly as sharply as the ground
             hVel = Vector3.MoveTowards(hVel, desired, accel * dt);
             Vector3 step = hVel * dt;
             if (dodgeTimer > 0f) { dodgeTimer -= dt; step = dodgeDir * dodgeSpeed * dt; }
@@ -369,9 +369,10 @@ namespace Wildbond
             // vertical
             float sea = Tides.Surface(next);   // the Isles have tides; everywhere else this is WaterLevel
             float waterSurface = sea - 1.05f;
-            // a small water kin floats high enough to keep its rider's seat just clear of the water
-            if (IsMounted && MountSwims) waterSurface = Mathf.Max(waterSurface, sea + 0.12f - SeatY);
+            // a surfing kin floats like a boat: only the bottom of it in the water, its back and its rider well clear
+            if (IsMounted && MountSwims) waterSurface = sea - SurfDraft;
             IsSwimming = hNext < waterSurface - 0.1f && next.y <= waterSurface + 0.3f;
+            bool surfing = IsSwimming && IsMounted && MountSwims;
             if (IsSwimming && IsMounted && !MountSwims) { Dismount(true); GameEvents.Say("You slide off into the water - only water kin can carry you across. Summon a Tide kin and tap SURF."); }
             TickSurf(dt);
             if (IsSwimming && Gliding) SetGliding(false);
@@ -379,7 +380,9 @@ namespace Wildbond
             {
                 vVel = 0f;
                 launched = false;
-                next.y = Mathf.Lerp(pos.y, waterSurface + Mathf.Sin(Time.time * 2f) * 0.06f, dt * 6f);
+                // surfing rides the swell the water shader draws; a swimmer just bobs
+                next.y = Mathf.Lerp(pos.y, waterSurface + (surfing ? Tides.Swell(next.x, next.z) : Mathf.Sin(Time.time * 2f) * 0.06f), dt * 6f);
+                if (surfing) TickWake(dt, next);
                 grounded = false;
             }
             else
@@ -419,6 +422,7 @@ namespace Wildbond
             if (dodgeTimer > 0f) face = dodgeDir;
             else if (swingTimer > 0f && swingAct == SwingAct.Shoot) face = shotTarget != null ? shotTarget.Position - pos : cam.Forward;
             else if (swingTimer > 0f && CombatTarget != null) face = CombatTarget.Position - pos;
+            else if (surfing && hVel.sqrMagnitude > 1f) face = hVel;   // on water the kin points where it is going: no sliding sideways
             else face = wishMag > 0.1f ? wish : Vector3.zero;
             face.y = 0;
             if (face.sqrMagnitude > 0.001f)
