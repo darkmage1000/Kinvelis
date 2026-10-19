@@ -499,7 +499,7 @@
     title("Wardens");
     var h = "<h1>Wardens</h1><p class='lead'>Ten boss fights. Each of the eight lands has a Warden holding a Sigil; the eight Sigils unseal Stormcrest's Aerie. The Kraken is optional.</p>" +
       "<div class='prose'><ul><li>Find the ring of standing stones with the tall beacon (the crown on the map) and tap <b>WARDEN</b> at the shrine.</li>" +
-      "<li>A Warden has twice the health of a wild kin of its kind and changes its behaviour at 66% and at 33% health.</li>" +
+      "<li>A Warden has twice the health of a wild kin of its kind and changes its behaviour at 66% and at 33% health. It hits hard, but no single blow can take more than about a third of a kin's health, so a kin always survives at least two hits.</li>" +
       "<li>Leave the ring (about 60 m) or go down, and it goes back to sleep. You can try again straight away.</li>" +
       "<li>A first win gives the land's <b>Sigil</b>, Glimmer and three Warden Hearts. Rematches (every 30 minutes) give half the Glimmer and one Heart.</li>" +
       "<li>Sigils unlock <a href='#/research'>research</a>. They never gate travel.</li></ul></div>";
