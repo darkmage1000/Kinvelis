@@ -74,7 +74,7 @@ html: `
 <tr><td>Skill chips</td><td>Four chips = your companion's skills. Tap to order one. A grey chip shows the level where it unlocks.</td></tr>
 <tr><td><b>KIN SWAP</b></td><td>Opens the quick bar to send out a different party kin, or call the current one back.</td></tr>
 <tr><td>Stance button</td><td>Passive (never fights), Defensive (fights what attacks you), Aggressive (fights anything hostile nearby).</td></tr>
-<tr><td>Hotbar</td><td>Four slots for items you want in your hand quickly.</td></tr>
+<tr><td>Hotbar</td><td>Six slots (keys 1-6). A tool or weapon on it goes into your hand when tapped; food or a heal (a Salve, say) is used at once, and its slot shows how many you have left. Put things on it from MENU &gt; Bag.</td></tr>
 <tr><td>The prompt button</td><td>Changes with what is in front of you: PICK UP, USE, OPEN, TALK, RIDE, SURF, PET, FISH, WORK, CHALLENGE and so on.</td></tr>
 <tr><td><b>BUILD</b></td><td>Place structures. ROTATE turns the piece, PLACE confirms.</td></tr>
 <tr><td><b>CAMP</b></td><td>Appears inside your camp ring. Opens the camp screens.</td></tr>
@@ -176,7 +176,7 @@ html: `
 <h2 id="companion">Your companion</h2>
 <ul>
 <li>Kin know <b>1 skill at level 1, 2 at level 5, 3 at level 10 and 4 at level 15</b>.</li>
-<li>Tap a skill chip to order that skill. The kin runs into range first, then uses it.</li>
+<li>Tap a skill chip to order that skill. With a target (or a wild kin within 18 m) the kin runs into range first, then uses it. With nothing around it uses the skill at once, aimed where the camera looks: shots fly that way, dashes and blinks go that way, bursts go off where it stands.</li>
 <li>Left alone it picks its own skills according to its <b>stance</b>: Passive, Defensive or Aggressive.</li>
 <li>Many kin have a <b>signature skill</b> that does something no other move does. The <a href="#/skills">skills page</a> lists all of them.</li>
 <li>A fainted kin rests for a while before it can come out again. A Kin Clinic at camp shortens that for camp kin; a <b>Healing Spring</b> (camp, Lv 3) puts your whole party back on its feet at full health the moment you tap HEAL PARTY at it.</li>
