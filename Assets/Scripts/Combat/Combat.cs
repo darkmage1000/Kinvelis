@@ -101,6 +101,13 @@ namespace Wildbond
         public const float PlayerLevelGrowth = 0.04f;
         /// <summary>How hard an attack/defense mismatch bites (0 = ignored, 1 = linear).</summary>
         public const float StatExponent = 0.6f;
+        /// <summary>
+        /// Most of one kin's max health a single Warden blow can take (user playtest 2026-10-18: Wardens' dashes one-shot
+        /// kin a level or two under them). Weak matchups and small kin still lose a third a hit - just never all of it.
+        /// </summary>
+        public const float BossHitCap = 0.34f, BossHitCapCrit = 0.42f;
+        /// <summary>Warden damage per level of gap to the kin it hits (the general formula barely looks at the defender's level).</summary>
+        public const float BossLevelStep = 0.05f;
 
         /// <summary>Damage multiplier from the attacker's level and kind.</summary>
         public static float LevelScale(ICombatant attacker)
@@ -129,6 +136,13 @@ namespace Wildbond
             float dmg = power * ratio * eff * elementBoost * Random.Range(0.9f, 1.1f) * (crit ? 1.5f : 1f);
             dmg *= SkillEffects.OutMul(attacker) * SkillEffects.InMul(target);          // Wrath, Rally
             if (target is PlayerController pDef) dmg *= 1f - pDef.Stats.Resist(elem);   // gear element resistance
+            // a Warden never one-shots a kin: no single blow takes more than a third of its health (a crit a little more)
+            // and out-levelling it pays: 5% less per level your kin has over it (down to half), 5% more per level under (to +25%)
+            if (attacker is CreatureActor boss && boss.Boss && target is CreatureActor kin)
+            {
+                dmg *= Mathf.Clamp(1f - BossLevelStep * (kin.Level - boss.Level), 0.5f, 1.25f);
+                dmg = Mathf.Min(dmg, kin.MaxHp * (crit ? BossHitCapCrit : BossHitCap));
+            }
             return new HitInfo
             {
                 attacker = attacker, damage = Mathf.Max(1f, dmg), element = elem, status = st, statusChance = stChance,

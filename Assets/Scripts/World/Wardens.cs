@@ -52,7 +52,7 @@ namespace Wildbond
             End(true, null);
             caughtNow = false;
         }
-        const float HpMul = 2f, BaseAtk = 0.75f, EnrageAtk = 1.1f;
+        const float HpMul = 2f, BaseAtk = 0.55f, EnrageAtk = 0.8f;   // 0.75 / 1.1 until 2026-10-18 (Warden hits took a fifth to half of a kin at its level)
 
         public class Warden
         {
