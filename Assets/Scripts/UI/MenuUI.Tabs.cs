@@ -303,6 +303,7 @@ namespace Wildbond
             var stats = GameManager.I.Player.Stats;
             LeftRight(out var left, out var right, 0.46f);
             var list = TrackedList(left);
+            KinFilterBar(list, party.All, Rebuild, true, true);
             Header(list, $"Kin  <size=24>Registered {stats.registeredSpecies.Count}/{ContentDB.SpeciesList.Count}</size>");
             UIFactory.Size(UIFactory.Button(list, $"DREAM UP A KIN  ({stats.customKin.Count}/{CustomKinLimit})", ShowKinMaker, new Color(0.5f, 0.35f, 0.7f), 26), 74);
             foreach (var loc in new[] { KinLocation.Party, KinLocation.Base, KinLocation.Box, KinLocation.Expedition, KinLocation.Outpost })
@@ -311,7 +312,9 @@ namespace Wildbond
                 if ((loc == KinLocation.Expedition || loc == KinLocation.Outpost) && cnt == 0) continue;
                 string cap = loc == KinLocation.Party ? $"{cnt}/{KinRoster.PartySize}" : (loc == KinLocation.Base ? $"{cnt}/{BaseManager.I.WorkerCap}" : cnt.ToString());
                 Header(list, $"{(loc == KinLocation.Outpost ? "At Outposts" : loc == KinLocation.Expedition ? "On Expedition" : loc == KinLocation.Box ? "Hearth Box" : loc == KinLocation.Base ? "Camp Workers" : "Party")}  <size=22>{cap}</size>", 28);
-                foreach (var d in party.In(loc))
+                var shownHere = KinFiltered(party.In(loc));
+                if (shownHere.Count < cnt) Para(list, UIFactory.Col($"{cnt - shownHere.Count} hidden by the filter", UIFactory.TextDim), 18, Color.white);
+                foreach (var d in shownHere)
                 {
                     var dd = d;
                     var row = UIFactory.Panel(list, "KinRow", d.uid == selectedKin ? new Color(0.3f, 0.55f, 0.48f, 1f) : new Color(1, 1, 1, 0.06f));
@@ -500,8 +503,60 @@ namespace Wildbond
                 GameEvents.Warn("Stand inside your camp to move kin between party, camp and box.");
                 return;
             }
-            GameManager.I.Party.Move(d, to);
+            var party = GameManager.I.Party;
+            if (to == KinLocation.Party && party.CountIn(KinLocation.Party) >= KinRoster.PartySize) { SwapPicker(d, to); return; }
+            if (to == KinLocation.Base && BaseManager.I.HasBase && party.CountIn(KinLocation.Base) >= BaseManager.I.WorkerCap) { SwapPicker(d, to); return; }
+            party.Move(d, to);
             Rebuild();
+        }
+
+        static string PlaceName(KinLocation l) => l == KinLocation.Party ? "party" : l == KinLocation.Base ? "camp" : "Hearth Box";
+
+        /// <summary>
+        /// The party or camp is full: pick who makes room (user, 2026-10-20: "pull up my list and let me choose who to swap so i
+        /// dont have to scroll", then "same for camp swaps"). The one picked goes where the incoming kin was. A companion that
+        /// leaves the party is replaced by the newcomer coming out; a camp kin that leaves hands its job to the newcomer if it can do it.
+        /// </summary>
+        void SwapPicker(CreatureData incoming, KinLocation to)
+        {
+            var party = GameManager.I.Party;
+            var bm = BaseManager.I;
+            var from = incoming.location;
+            string toName = PlaceName(to), fromName = PlaceName(from);
+            ShowModal($"Swap {incoming.DisplayName} into your {toName}", list =>
+            {
+                Para(list, $"Your {toName} is full. Pick who makes room - they go to the {fromName} in {incoming.DisplayName}'s place.", 21, Color.white);
+                KinFilterBar(list, party.In(to), () => SwapPicker(incoming, to));
+                var members = new List<CreatureData>(party.In(to));
+                if (to == KinLocation.Base)   // least useful first: no job, then the fewest stars for anything
+                    members.Sort((x, y) =>
+                    {
+                        bool xj = x.assignedBuilding != null, yj = y.assignedBuilding != null;
+                        if (xj != yj) return xj ? 1 : -1;
+                        return BaseManager.BestWork(x).CompareTo(BaseManager.BestWork(y));
+                    });
+                foreach (var m in KinFiltered(members))
+                {
+                    var leaving = m;
+                    var btn = KinCard(list, m, WorkType.None, WorkType.None, 260f);
+                    UIFactory.Button(btn, $"SWAP\n<size=16>to {(from == KinLocation.Base ? "camp" : from == KinLocation.Party ? "party" : "box")}</size>", () =>
+                    {
+                        bool wasOut = party.Companion != null && party.Companion.Data == leaving;
+                        var job = to == KinLocation.Base && bm != null ? bm.FindBuilding(leaving.assignedBuilding) : null;
+                        // a newcomer from a full party or camp steps into the box first, so its old place has room for the one leaving
+                        bool viaBox = from != KinLocation.Box;
+                        if (viaBox && !party.Move(incoming, KinLocation.Box)) return;
+                        if (!party.Move(leaving, from)) { if (viaBox) party.Move(incoming, from); return; }
+                        party.Move(incoming, to);
+                        if (wasOut && !incoming.Fainted) party.Summon(incoming);
+                        if (job != null && job.Suitability(incoming) > 0) bm.Assign(incoming, job);
+                        GameEvents.Good($"{incoming.DisplayName} joined your {toName}; {leaving.DisplayName} went to the {fromName}." + (job != null && incoming.assignedBuilding == job.Uid ? $" It works at the {job.Def.displayName}." : ""));
+                        CloseModal();
+                        Rebuild();
+                    }, new Color(0.3f, 0.45f, 0.8f), 20);
+                }
+                UIFactory.Size(UIFactory.Button(list, "CANCEL", CloseModal, UIFactory.ButtonCol, 24), 70);
+            });
         }
 
         // ============================================================ BUILD

@@ -141,6 +141,7 @@ namespace Wildbond
             var current = new List<CreatureData>(bm.WorkersAt(b));
             ShowModal($"{b.Def.displayName} - who works here ({current.Count}/{b.WorkerSlots})", list =>
             {
+                KinFilterBar(list, party.All, () => AssignPicker(b), false);
                 Para(list, $"Needs <b>{UIFactory.Col(w1.ToString(), StarGold)}</b>{(w2 != WorkType.None ? $" or <b>{UIFactory.Col(w2.ToString(), StarGold)}</b>" : "")}: more stars work faster. Camp {party.CountIn(KinLocation.Base)}/{bm.WorkerCap} kin.", 21, Color.white);
                 // the weakest worker here: who a SWAP IN replaces when every place is taken
                 CreatureData weakest = null;
@@ -160,6 +161,7 @@ namespace Wildbond
                 foreach (var d in party.In(KinLocation.Base)) if (d.assignedBuilding != b.Uid && b.Suitability(d) > 0) camp.Add(d);
                 camp.Sort((x, y) => b.Suitability(y).CompareTo(b.Suitability(x)));
                 if (camp.Count > 0) Header(list, "Camp kin who can do it", 26);
+                camp = KinFiltered(camp, false);
                 foreach (var d in camp)
                 {
                     var dd = d;
@@ -174,6 +176,7 @@ namespace Wildbond
                 away.Sort((x, y) => b.Suitability(y).CompareTo(b.Suitability(x)));
                 if (away.Count > 0) Header(list, "From your party and Hearth Box", 26);
                 bool campFull = party.CountIn(KinLocation.Base) >= bm.WorkerCap;
+                away = KinFiltered(away, false);
                 foreach (var d in away)
                 {
                     var dd = d;
@@ -227,7 +230,8 @@ namespace Wildbond
                     if (xj != yj) return xj ? 1 : -1;
                     return BaseManager.BestWork(x).CompareTo(BaseManager.BestWork(y));
                 });
-                foreach (var d in camp)
+                KinFilterBar(list, camp, () => SwapOutPicker(incoming, b));
+                foreach (var d in KinFiltered(camp))
                 {
                     var dd = d;
                     var btn = KinCard(list, d, b.Def.workType, b.Def.secondaryWorkType, 300f);

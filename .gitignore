@@ -17,3 +17,7 @@
 /.vs/
 /.claude/
 *.tmp
+
+# positioned editor screenshots (copies go to Previews/)
+/Assets/Screenshots/
+/Assets/Screenshots.meta

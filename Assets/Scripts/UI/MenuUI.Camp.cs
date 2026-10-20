@@ -11,7 +11,6 @@ namespace Wildbond
     public partial class MenuUI
     {
         CampTab campTab = CampTab.Overview;
-        WorkType workerFilter = WorkType.None;
         string storageSel;
         int storageFilter; // 0 all, 1 resources, 2 food, 3 gear & other
         bool campScrollReset;
@@ -394,29 +393,20 @@ namespace Wildbond
             UIFactory.Size(cl, 58, 900);
             bool atCore = bm.AtCore;
             if (!atCore) Para(list, UIFactory.Col($"Assign jobs at the Hearthstone ({bm.WayTo(bm.Core)}), or at each structure with MANAGE.", Idle), 21, Color.white);
-            var top = UIFactory.HRow(list, 70, 8);
-            if (atCore) UIFactory.Size(UIFactory.Button(top.transform, "AUTO-ASSIGN", () => { bm.AutoAssignAll(); Rebuild(); }, new Color(0.25f, 0.5f, 0.42f), 22), 64, 220);
-            UIFactory.Size(UIFactory.Button(top.transform, "ALL", () => { workerFilter = WorkType.None; Rebuild(); }, workerFilter == WorkType.None ? new Color(0.25f, 0.55f, 0.45f) : UIFactory.ButtonCol, 20), 64, 90);
-            var types = new HashSet<WorkType>();
-            foreach (var d in party.In(KinLocation.Base)) foreach (var w in d.Species.work) types.Add(w.type);
-            foreach (var wt in types)
-            {
-                var ww = wt;
-                UIFactory.Size(UIFactory.Button(top.transform, WorkInfo.Icon(wt), () => { workerFilter = ww; Rebuild(); }, workerFilter == wt ? new Color(0.25f, 0.55f, 0.45f) : UIFactory.ButtonCol, 20), 64, 90);
-            }
+            if (atCore) UIFactory.Size(UIFactory.Button(UIFactory.HRow(list, 70, 8).transform, "AUTO-ASSIGN", () => { bm.AutoAssignAll(); Rebuild(); }, new Color(0.25f, 0.5f, 0.42f), 22), 64, 220);
+            KinFilterBar(list, party.In(KinLocation.Base), Rebuild);
             int shown = 0;
-            foreach (var d in party.In(KinLocation.Base))
+            foreach (var d in KinFiltered(party.In(KinLocation.Base)))
             {
-                if (workerFilter != WorkType.None && d.WorkLevel(workerFilter) <= 0) continue;
                 shown++;
                 var dd = d;
                 // the kin as a card: who it is, its jobs (the filtered one in gold), grade, traits, what it is doing
-                var btns = KinCard(list, d, workerFilter, WorkType.None, 300f);
+                var btns = KinCard(list, d, kinJob, WorkType.None, 300f);
                 if (atCore) UIFactory.Button(btns, "JOB", () => JobPicker(dd), new Color(0.25f, 0.42f, 0.55f), 22);
                 else UIFactory.Button(btns, "JOB", null, new Color(0.3f, 0.3f, 0.32f), 22);
                 UIFactory.Button(btns, "TO BOX", () => { party.Move(dd, KinLocation.Box); Rebuild(); }, new Color(0.35f, 0.32f, 0.4f), 20);
             }
-            if (shown == 0) Para(list, party.CountIn(KinLocation.Base) == 0 ? "No workers yet. In the Kin tab, send kin TO CAMP (stand inside your camp)." : "No workers with that skill.", 24, Color.white);
+            if (shown == 0) Para(list, party.CountIn(KinLocation.Base) == 0 ? "No workers yet. In the Kin tab, send kin TO CAMP (stand inside your camp)." : "No workers match the filter.", 24, Color.white);
         }
 
         /// <summary>Pick a job (building) for one worker.</summary>
