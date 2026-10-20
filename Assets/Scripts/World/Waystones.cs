@@ -66,6 +66,14 @@ namespace Wildbond
             Add("frostpass", "Frostpass Waystone", new Vector3(-600f, 0, 480f));
             Add("summit", "Summit Watch Waystone", new Vector3(-1300f, 0, 1180f));
             Add("glacier", "Glacier Hollow Waystone", new Vector3(-880f, 0, 1080f));
+            // one in each village (user, 2026-10-20: "add a waystone to towns"): at the back of the village, opposite the
+            // north gate, 19.5 m from the fire - the one open stretch of the ring (houses at 25/115/205/295 degrees,
+            // workplaces and lamps further in), inside the no-trees / no-spawns circle
+            foreach (var t in Settlements.All)
+            {
+                float a = 183f * Mathf.Deg2Rad;
+                AddExact("town_" + t.id, t.name + " Waystone", t.pos + new Vector3(Mathf.Sin(a), 0f, Mathf.Cos(a)) * 19.5f);
+            }
             // one where you make landfall on each outer land
             string[] outerNames = { "Driftkey Waystone", "Mirefen Waystone", "Sunscour Waystone", "Blightmoor Waystone", "Glowdeep Waystone" };
             for (int i = 0; i < WorldGen.Lands.Length && i < outerNames.Length; i++)
