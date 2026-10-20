@@ -162,7 +162,9 @@ namespace Wildbond
             vel = Vector3.zero;
             knock = Vector3.zero;
             Target = null;
-            SetState(AIState.Follow);
+            // a mount that fainted under you is dismounted by the rider the next frame: it must stay fainted (setting Follow
+            // here brought it back as a 0 HP companion nobody owned, beside the one summoned next)
+            if (State != AIState.Dead && State != AIState.Captured) SetState(AIState.Follow);
         }
 
         public void SetMountPose(Vector3 pos, float yawDeg, float speed)
@@ -452,6 +454,8 @@ namespace Wildbond
                 return;
             }
             if (State == AIState.Captured) return;
+            // only the roster's companion may act as one: anything else in Companion mode is a leftover, so it goes
+            if (Mode == CreatureMode.Companion && GameManager.I.Party.Companion != this) { Despawn(); return; }
 
             // status effects
             if (Status.Active)
