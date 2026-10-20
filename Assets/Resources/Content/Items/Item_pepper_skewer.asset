@@ -17,7 +17,7 @@ MonoBehaviour:
   description: Blistered peppers on a stick. Puts fire in your arm and keeps the
     cold out.
   category: 1
-  maxStack: 20
+  maxStack: 999
   iconColor: {r: 0.8784314, g: 0.3764706, b: 0.22745098, a: 1}
   iconGlyph: Sk
   foodValue: 40
@@ -32,10 +32,16 @@ MonoBehaviour:
     element: 0
     value: 0.5
   mealMinutes: 8
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
+  legendFor: 
+  shimmerSeed: 0
   equipSlot: 0
   rarity: 0
   mods: []

@@ -17,7 +17,7 @@ MonoBehaviour:
   description: A bud that glows like a lamp. Grows only in Lanternfen, in Mirefen.
     Steeps into Lantern Tea.
   category: 1
-  maxStack: 99
+  maxStack: 999
   iconColor: {r: 1, g: 0.8156863, b: 0.4392157, a: 1}
   iconGlyph: Lb
   foodValue: 4
@@ -26,9 +26,13 @@ MonoBehaviour:
   bonusInventorySlots: 0
   mealMods: []
   mealMinutes: 0
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0

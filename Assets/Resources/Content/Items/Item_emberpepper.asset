@@ -17,7 +17,7 @@ MonoBehaviour:
   description: Fiery pepper from the Cinderreach Badlands. Warms you right through
     when cooked.
   category: 1
-  maxStack: 99
+  maxStack: 999
   iconColor: {r: 0.9098039, g: 0.2901961, b: 0.16470589, a: 1}
   iconGlyph: Ep
   foodValue: 5
@@ -26,10 +26,16 @@ MonoBehaviour:
   bonusInventorySlots: 0
   mealMods: []
   mealMinutes: 0
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
+  legendFor: 
+  shimmerSeed: 0
   equipSlot: 0
   rarity: 0
   mods: []

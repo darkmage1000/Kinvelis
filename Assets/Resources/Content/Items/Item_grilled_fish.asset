@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Grilled Silverfin
   description: Two fish on a stick, crisp at the edges. Simple and filling.
   category: 1
-  maxStack: 20
+  maxStack: 999
   iconColor: {r: 0.84705883, g: 0.78431374, b: 0.65882355, a: 1}
   iconGlyph: Gf
   foodValue: 50
@@ -28,9 +28,13 @@ MonoBehaviour:
     element: 0
     value: 15
   mealMinutes: 10
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0

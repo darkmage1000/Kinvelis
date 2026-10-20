@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Reef Platter
   description: Snapper with sweet berries. Sharpens the eye and the arm.
   category: 1
-  maxStack: 20
+  maxStack: 999
   iconColor: {r: 1, g: 0.5411765, b: 0.4392157, a: 1}
   iconGlyph: Rp
   foodValue: 55
@@ -31,9 +31,13 @@ MonoBehaviour:
     element: 0
     value: 0.05
   mealMinutes: 12
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0

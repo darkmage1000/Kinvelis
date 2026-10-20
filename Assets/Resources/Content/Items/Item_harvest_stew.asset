@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Harvest Stew
   description: Everything good in one pot. Makes you hard to knock down.
   category: 1
-  maxStack: 20
+  maxStack: 999
   iconColor: {r: 0.78431374, g: 0.47843137, b: 0.22745098, a: 1}
   iconGlyph: St
   foodValue: 80
@@ -31,10 +31,16 @@ MonoBehaviour:
     element: 0
     value: 4
   mealMinutes: 12
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
+  legendFor: 
+  shimmerSeed: 0
   equipSlot: 0
   rarity: 0
   mods: []

@@ -17,7 +17,7 @@ MonoBehaviour:
   description: A heavy golden flower dripping nectar. Grows only on the hills of
     Petalrun, in the Sunmeadow. Bakes into Honeybloom Cake.
   category: 1
-  maxStack: 99
+  maxStack: 999
   iconColor: {r: 1, g: 0.8235294, b: 0.22745098, a: 1}
   iconGlyph: Hb
   foodValue: 5
@@ -26,9 +26,13 @@ MonoBehaviour:
   bonusInventorySlots: 0
   mealMods: []
   mealMinutes: 0
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0

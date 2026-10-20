@@ -17,7 +17,7 @@ MonoBehaviour:
   description: 'Bitter as anything. Clears poison from your blood and keeps it out:
     spore clouds can''t touch you.'
   category: 1
-  maxStack: 20
+  maxStack: 999
   iconColor: {r: 0.6901961, g: 0.3764706, b: 0.8156863, a: 1}
   iconGlyph: Sd
   foodValue: 15
@@ -32,9 +32,13 @@ MonoBehaviour:
     element: 0
     value: 3
   mealMinutes: 10
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0

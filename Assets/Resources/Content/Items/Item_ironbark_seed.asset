@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Ironbark Seed
   description: Metal-banded seed. Rated for kin up to Lv 20.
   category: 4
-  maxStack: 50
+  maxStack: 999
   iconColor: {r: 0.7882353, g: 0.69803923, b: 0.47843137, a: 1}
   iconGlyph: T2
   foodValue: 0

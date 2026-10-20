@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Sunforged Seed
   description: A shell of Sunsteel, hammered thin. Rated for kin up to Lv 44.
   category: 4
-  maxStack: 50
+  maxStack: 999
   iconColor: {r: 0.8156863, g: 0.5411765, b: 0.22745098, a: 1}
   iconGlyph: T5
   foodValue: 0

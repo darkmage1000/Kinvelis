@@ -17,7 +17,7 @@ MonoBehaviour:
   description: A whiskered bottom-feeder from Mirefen, Blightmoor and Glowdeep. Better
     in a broth than it looks.
   category: 1
-  maxStack: 99
+  maxStack: 999
   iconColor: {r: 0.47843137, g: 0.6039216, b: 0.41568628, a: 1}
   iconGlyph: Mf
   foodValue: 16
@@ -26,9 +26,13 @@ MonoBehaviour:
   bonusInventorySlots: 0
   mealMods: []
   mealMinutes: 0
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0

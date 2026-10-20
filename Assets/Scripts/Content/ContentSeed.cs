@@ -69,7 +69,22 @@ namespace Wildbond
             BuildStorageBuildings(b);
             BuildFishingBuildings(b);
             ApplyBuildCategories(b);
+            ApplyStackSizes(b);
             return b;
+        }
+
+        /// <summary>
+        /// Bag and box stacks (user, 2026-10-20: "let food stack higher and seeds stack higher in the bag"): every food and
+        /// every ordinary capture seed stacks to `BigStack`; legend and boss seeds, which come a few at a time, to 99.
+        /// </summary>
+        public const int BigStack = 999;
+        static void ApplyStackSizes(Bundle b)
+        {
+            foreach (var it in b.items)
+            {
+                if (it.category == ItemCategory.Food) it.maxStack = Mathf.Max(it.maxStack, BigStack);
+                else if (it.category == ItemCategory.CaptureSeed) it.maxStack = Mathf.Max(it.maxStack, string.IsNullOrEmpty(it.legendFor) ? BigStack : 99);
+            }
         }
 
         static Color C(float r, float g, float b) => new Color(r, g, b);

@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Tamer's Tart
   description: Kin can't resist the smell. Tether Seeds bind a little easier.
   category: 1
-  maxStack: 20
+  maxStack: 999
   iconColor: {r: 0.9411765, g: 0.627451, b: 0.7529412, a: 1}
   iconGlyph: Tt
   foodValue: 40
@@ -28,10 +28,16 @@ MonoBehaviour:
     element: 0
     value: 0.1
   mealMinutes: 8
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
+  legendFor: 
+  shimmerSeed: 0
   equipSlot: 0
   rarity: 0
   mods: []

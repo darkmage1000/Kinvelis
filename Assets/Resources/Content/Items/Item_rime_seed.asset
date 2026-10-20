@@ -17,7 +17,7 @@ MonoBehaviour:
   description: A core of Rime Crystal that hums as it binds. Rated for kin up to
     Lv 36.
   category: 4
-  maxStack: 50
+  maxStack: 999
   iconColor: {r: 0.65882355, g: 0.93333334, b: 1, a: 1}
   iconGlyph: T4
   foodValue: 0

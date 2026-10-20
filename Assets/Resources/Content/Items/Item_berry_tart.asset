@@ -16,14 +16,29 @@ MonoBehaviour:
   displayName: Berry Tart
   description: Baked treat. Big hunger + heal.
   category: 1
-  maxStack: 30
+  maxStack: 999
   iconColor: {r: 1, g: 0.6039216, b: 0.3529412, a: 1}
   iconGlyph: Ta
   foodValue: 40
   healValue: 20
   kinHealValue: 0
   bonusInventorySlots: 0
+  mealMods: []
+  mealMinutes: 0
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
+  legendFor: 
+  shimmerSeed: 0
+  equipSlot: 0
+  rarity: 0
+  mods: []
+  unique: 0
+  gearStyle: 0
+  trimColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  alphaDrop: 0

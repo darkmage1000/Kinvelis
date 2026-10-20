@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Frostmint Tea
   description: Cooling tea for hot country. You catch your breath faster.
   category: 1
-  maxStack: 20
+  maxStack: 999
   iconColor: {r: 0.65882355, g: 0.9098039, b: 0.9098039, a: 1}
   iconGlyph: Te
   foodValue: 20
@@ -31,10 +31,16 @@ MonoBehaviour:
     element: 0
     value: 0.25
   mealMinutes: 10
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
+  legendFor: 
+  shimmerSeed: 0
   equipSlot: 0
   rarity: 0
   mods: []

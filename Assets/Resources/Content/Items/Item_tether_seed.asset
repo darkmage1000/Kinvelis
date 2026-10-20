@@ -17,7 +17,7 @@ MonoBehaviour:
   description: Throw at a weakened kin. Vines bind it into the seed. Rated for kin
     up to Lv 12.
   category: 4
-  maxStack: 50
+  maxStack: 999
   iconColor: {r: 0.56078434, g: 0.8509804, b: 0.41568628, a: 1}
   iconGlyph: T1
   foodValue: 0

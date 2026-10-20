@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Lantern Tea
   description: It glows in the cup. Kin are drawn to the light on your breath.
   category: 1
-  maxStack: 20
+  maxStack: 999
   iconColor: {r: 1, g: 0.8784314, b: 0.5411765, a: 1}
   iconGlyph: Lt
   foodValue: 25
@@ -31,9 +31,13 @@ MonoBehaviour:
     element: 0
     value: 0.05
   mealMinutes: 12
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0

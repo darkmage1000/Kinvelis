@@ -17,7 +17,7 @@ MonoBehaviour:
   description: 'Sweet berry. A mouthful: it takes a lot of them to fill anyone up,
     and they only keep a day. Better cooked.'
   category: 1
-  maxStack: 99
+  maxStack: 999
   iconColor: {r: 1, g: 0.3529412, b: 0.47843137, a: 1}
   iconGlyph: Be
   foodValue: 3
@@ -30,6 +30,9 @@ MonoBehaviour:
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0

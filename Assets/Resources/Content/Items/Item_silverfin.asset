@@ -17,7 +17,7 @@ MonoBehaviour:
   description: A small silver fish found in every water. Camp kin will eat it. Grill
     two for a proper meal.
   category: 1
-  maxStack: 99
+  maxStack: 999
   iconColor: {r: 0.78431374, g: 0.84705883, b: 0.9098039, a: 1}
   iconGlyph: Sv
   foodValue: 14
@@ -26,9 +26,13 @@ MonoBehaviour:
   bonusInventorySlots: 0
   mealMods: []
   mealMinutes: 0
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0

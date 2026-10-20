@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Trail Mix
   description: Grain and berries for the road.
   category: 1
-  maxStack: 20
+  maxStack: 999
   iconColor: {r: 0.78431374, g: 0.6039216, b: 0.3529412, a: 1}
   iconGlyph: Tm
   foodValue: 30
@@ -28,10 +28,16 @@ MonoBehaviour:
     element: 0
     value: 0.08
   mealMinutes: 10
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
+  legendFor: 
+  shimmerSeed: 0
   equipSlot: 0
   rarity: 0
   mods: []

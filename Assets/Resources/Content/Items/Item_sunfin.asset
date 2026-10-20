@@ -17,7 +17,7 @@ MonoBehaviour:
   description: A golden-bellied lake fish from the old island's waters. Goes into
     Fisher's Stew.
   category: 1
-  maxStack: 99
+  maxStack: 999
   iconColor: {r: 0.9411765, g: 0.72156864, b: 0.2901961, a: 1}
   iconGlyph: Sn
   foodValue: 18
@@ -26,9 +26,13 @@ MonoBehaviour:
   bonusInventorySlots: 0
   mealMods: []
   mealMinutes: 0
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0

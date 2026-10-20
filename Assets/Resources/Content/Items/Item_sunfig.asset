@@ -17,7 +17,7 @@ MonoBehaviour:
   description: A sugar-sweet fig, warm from the sun. Grows only in the Verdant Oasis,
     in the Sunscour Dunes. Boils down to Sunfig Jam.
   category: 1
-  maxStack: 99
+  maxStack: 999
   iconColor: {r: 1, g: 0.6901961, b: 0.22745098, a: 1}
   iconGlyph: Sf
   foodValue: 12
@@ -26,9 +26,13 @@ MonoBehaviour:
   bonusInventorySlots: 0
   mealMods: []
   mealMinutes: 0
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
   legendFor: 
   shimmerSeed: 0

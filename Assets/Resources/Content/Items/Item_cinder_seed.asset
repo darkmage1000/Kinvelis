@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Cinderbound Seed
   description: Sealed in still-warm cinder glass. Rated for kin up to Lv 28.
   category: 4
-  maxStack: 50
+  maxStack: 999
   iconColor: {r: 1, g: 0.5411765, b: 0.2901961, a: 1}
   iconGlyph: T3
   foodValue: 0

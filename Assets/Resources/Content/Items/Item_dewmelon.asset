@@ -17,7 +17,7 @@ MonoBehaviour:
   description: Cool, juicy melon from the Sunmeadow. Filling on its own, better in
     a bowl.
   category: 1
-  maxStack: 99
+  maxStack: 999
   iconColor: {r: 0.47843137, g: 0.8156863, b: 0.627451, a: 1}
   iconGlyph: Dm
   foodValue: 18
@@ -26,10 +26,16 @@ MonoBehaviour:
   bonusInventorySlots: 0
   mealMods: []
   mealMinutes: 0
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
+  legendFor: 
+  shimmerSeed: 0
   equipSlot: 0
   rarity: 0
   mods: []

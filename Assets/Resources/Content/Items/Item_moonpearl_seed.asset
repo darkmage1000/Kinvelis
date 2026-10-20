@@ -19,7 +19,7 @@ MonoBehaviour:
     fail (ordinary seeds top out near 55% there). Readied for you when the legend
     appears.
   category: 4
-  maxStack: 10
+  maxStack: 99
   iconColor: {r: 0.78431374, g: 0.8784314, b: 1, a: 1}
   iconGlyph: Ls
   foodValue: 0
@@ -28,9 +28,13 @@ MonoBehaviour:
   bonusInventorySlots: 0
   mealMods: []
   mealMinutes: 0
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 2.4
   legendFor: marelune
   shimmerSeed: 0

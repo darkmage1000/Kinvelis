@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Starbloom Seed
   description: Starcrystal-cored seed. Works on kin of any level.
   category: 4
-  maxStack: 50
+  maxStack: 999
   iconColor: {r: 1, g: 0.9137255, b: 0.5411765, a: 1}
   iconGlyph: T6
   foodValue: 0
