@@ -122,6 +122,7 @@ namespace Wildbond
         {
             var mb = new MeshBuilder();
             var obstacles = new List<(Vector3, float)>();
+            buildAt = pos;   // so a model can reach down to the real ground under each of its feet (GroundRel)
             build(mb, obstacles);
             var go = new GameObject("Landmark_" + name);
             go.transform.SetParent(parent, false);
@@ -169,6 +170,24 @@ namespace Wildbond
             }
         }
 
+        static Vector3 buildAt;
+
+        /// <summary>
+        /// The lowest ground within r of a point beside the landmark, relative to its own base: a model is built round the
+        /// height at its middle, and on a hump a leg 14 m out would end in the air (user, 2026-10-20: the Sunforge Arch
+        /// "floating").
+        /// </summary>
+        static float GroundRel(float dx, float dz, float r)
+        {
+            float low = float.MaxValue;
+            for (int i = 0; i < 9; i++)
+            {
+                float a = i / 8f * Mathf.PI * 2f, k = i == 8 ? 0f : r;
+                low = Mathf.Min(low, WorldGen.Height(buildAt.x + dx + Mathf.Cos(a) * k, buildAt.z + dz + Mathf.Sin(a) * k));
+            }
+            return low - buildAt.y;
+        }
+
         static Matrix4x4 M(float x, float y, float z, float sx, float sy, float sz, float rx = 0, float ry = 0, float rz = 0) =>
             Matrix4x4.TRS(new Vector3(x, y, z), Quaternion.Euler(rx, ry, rz), new Vector3(sx, sy, sz));
 
@@ -200,10 +219,12 @@ namespace Wildbond
             for (int i = 0; i < 9; i++)
             {
                 float a = i / 9f * Mathf.PI * 2f;
-                var p = new Vector3(Mathf.Cos(a) * 11f, 1.8f, Mathf.Sin(a) * 11f);
+                float g = GroundRel(Mathf.Cos(a) * 11f, Mathf.Sin(a) * 11f, 0.8f);   // the ground under this stone
+                var p = new Vector3(Mathf.Cos(a) * 11f, 1.8f + g, Mathf.Sin(a) * 11f);
                 bool fallen = i == 3 || i == 7;
-                if (fallen) mb.Box(M(p.x, 0.5f, p.z, 1.2f, 3.6f, 1.0f, 90, a * Mathf.Rad2Deg, 0), C("#8a8e90"), C("#9ab08a"));
-                else mb.Box(M(p.x, p.y, p.z, 1.3f, 3.8f + (i % 3) * 0.6f, 1.0f, 0, -a * Mathf.Rad2Deg, (i % 2) * 4f), C("#8a8e90"), C("#9ab08a"));
+                float h = 3.8f + (i % 3) * 0.6f + 0.6f;   // a little taller, the extra sunk into the ground
+                if (fallen) mb.Box(M(p.x, 0.5f + g, p.z, 1.2f, 3.6f, 1.0f, 90, a * Mathf.Rad2Deg, 0), C("#8a8e90"), C("#9ab08a"));
+                else mb.Box(M(p.x, g + h * 0.5f - 0.6f, p.z, 1.3f, h, 1.0f, 0, -a * Mathf.Rad2Deg, (i % 2) * 4f), C("#8a8e90"), C("#9ab08a"));
                 obs.Add((new Vector3(p.x, 0, p.z), 0.9f));
             }
             mb.Cylinder(M(0, 0.2f, 0, 5f, 0.5f, 5f), C("#7a7e80"), C("#9aa0a0"), 12, 1f, true);
@@ -213,8 +234,12 @@ namespace Wildbond
 
         static void SunforgeArch(MeshBuilder mb, List<(Vector3, float)> obs)
         {
-            mb.Rock(M(-14f, 11f, 0, 9f, 24f, 9f), C("#b0583a"), C("#d0784a"), 71u, 8, 6, 0.12f);
-            mb.Rock(M(14f, 11f, 0, 9f, 24f, 9f), C("#b0583a"), C("#d0784a"), 73u, 8, 6, 0.12f);
+            // each leg runs from 2 m under the lowest ground at its foot up into the span (it was a fixed -1..23 m)
+            for (int k = -1; k <= 1; k += 2)
+            {
+                float bottom = Mathf.Min(-1f, GroundRel(k * 14f, 0f, 4.5f) - 2f), top = 23f;
+                mb.Rock(M(k * 14f, (bottom + top) * 0.5f, 0, 9f, top - bottom, 9f), C("#b0583a"), C("#d0784a"), k < 0 ? 71u : 73u, 8, 6, 0.12f);
+            }
             mb.Rock(M(0, 24f, 0, 36f, 8f, 10f), C("#c06a40"), C("#e0905a"), 79u, 9, 6, 0.1f);
             mb.Rock(M(0, 29f, 0, 20f, 4f, 7f), C("#d88a5a"), C("#f0b07a"), 83u, 8, 5, 0.1f);
             mb.Sphere(M(0, 33f, 0, 3f, 3f, 3f), C("#ffd060"), 10, 7);
