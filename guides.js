@@ -523,7 +523,7 @@ html: `
 
 <h2 id="travel">Getting around</h2>
 <ul>
-<li><b>Waystones</b>: touch one to attune it, then fast travel to it from the Map. There are 19.</li>
+<li><b>Waystones</b>: touch one to attune it, then fast travel to it from the Map. There are 22, including one in each village (at the back, opposite the gate).</li>
 <li><b>Roads</b>: pale paths with lantern posts join the start to Hearthmere and the three villages to each other.</li>
 <li><b>The sea</b>: the outer lands have no bridges. Ride a Tide kin, or any kin that lives by water, and it will surf you across.</li>
 <li><b>Climbing and falling</b>: a Gale Glider turns a cliff into a shortcut.</li>
