@@ -21,3 +21,4 @@
 # positioned editor screenshots (copies go to Previews/)
 /Assets/Screenshots/
 /Assets/Screenshots.meta
+/Assets/Resources/PerformanceTestRun*
