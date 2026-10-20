@@ -63,6 +63,17 @@ namespace Wildbond
         [System.NonSerialized] public Vector3 Drift;
         public bool Grounded => grounded;
 
+        // the kin you ride dashing with you on its back (CreatureActor.MountedSkill): you are carried, not steering
+        float chargeTimer;
+        Vector3 chargeVel;
+        /// <summary>Speed kept when a mounted dash ends, so it stops where it lands instead of gliding on.</summary>
+        const float ChargeStopSpeed = 3f;
+        public bool Charging => chargeTimer > 0f;
+        /// <summary>Carry the rider at `vel` for `time` seconds (a mount's dash skill).</summary>
+        public void MountCharge(Vector3 vel, float time) { vel.y = 0f; chargeVel = vel; chargeTimer = time; }
+        /// <summary>The dash landed: stop here.</summary>
+        public void EndCharge() { if (chargeTimer <= 0f) return; chargeTimer = 0f; hVel = chargeVel.normalized * ChargeStopSpeed; }
+
         /// <summary>Thrown into the air (geysers). The landing that follows does no fall damage.</summary>
         public void Launch(float up)
         {
@@ -350,6 +361,16 @@ namespace Wildbond
             Vector3 step = hVel * dt + Drift * dt;
             Drift = Vector3.zero;
             if (dodgeTimer > 0f) { dodgeTimer -= dt; step = dodgeDir * dodgeSpeed * dt; }
+            if (chargeTimer > 0f)
+            {
+                if (!IsMounted) chargeTimer = 0f;
+                else
+                {
+                    step = chargeVel * Mathf.Min(dt, chargeTimer);   // never further than the charge (a long frame)
+                    chargeTimer -= dt;
+                    hVel = chargeTimer > 0f ? chargeVel : chargeVel.normalized * ChargeStopSpeed;
+                }
+            }
 
             Vector3 pos = transform.position;
             Vector3 next = pos + step;
@@ -423,6 +444,7 @@ namespace Wildbond
             // a swing turns you to the target; a shot turns you to the kin it was drawn on, or to where the camera looks
             Vector3 face;
             if (dodgeTimer > 0f) face = dodgeDir;
+            else if (chargeTimer > 0f) face = chargeVel;
             else if (swingTimer > 0f && swingAct == SwingAct.Shoot) face = shotTarget != null ? shotTarget.Position - pos : cam.Forward;
             else if (swingTimer > 0f && CombatTarget != null) face = CombatTarget.Position - pos;
             else if (surfing && hVel.sqrMagnitude > 1f) face = hVel;   // on water the kin points where it is going: no sliding sideways

@@ -207,7 +207,7 @@ namespace Wildbond
             var ab = abilities[slot];
             bool self = SkillEffects.SelfCast(ab.effect) || (ab.effect == AbilityEffect.Tonic && TonicWantsHeal());
             if (cooldowns[slot] > 0f) return $"{ab.displayName} recharging ({cooldowns[slot]:0.0}s).";
-            if (pendingAbility >= 0) return "Busy...";
+            if (pendingAbility >= 0 || mountDashAb != null) return "Busy...";
             if (!self && (target == null || !target.IsAlive)) { StartAbility(slot, AimAhead(ab)); return null; }   // fired ahead, at nothing
             if (!self)
             {
@@ -245,7 +245,63 @@ namespace Wildbond
         }
 
         static float MountedReach(AbilityDef a) =>
-            a.kind == AbilityKind.Projectile ? a.range : a.kind == AbilityKind.Burst ? a.radius : Mathf.Max(a.range, 1.5f) + 1.4f;
+            a.kind == AbilityKind.Projectile ? a.range : a.kind == AbilityKind.Burst ? a.radius
+            : a.kind == AbilityKind.Dash || a.kind == AbilityKind.Blink ? a.range + 3f   // it charges in with you on its back
+            : Mathf.Max(a.range, 1.5f) + 1.4f;
+
+        // a dash from the saddle (user, 2026-10-19: "if i use a dash skill while riding i sit still"): the mount charges
+        // with you on it - PlayerController carries you both - and the blow lands when it reaches the target
+        const float MountDashTime = 0.3f;
+        AbilityDef mountDashAb;
+        ICombatant mountDashTarget;
+        float mountDashLeft;
+
+        void StartMountDash(AbilityDef a, ICombatant target)
+        {
+            var pl = GameManager.I.Player;
+            Vector3 to = target.Position - transform.position; to.y = 0f;
+            Vector3 dir = to.sqrMagnitude > 0.01f ? to.normalized : transform.forward;
+            float len = target is AimPoint
+                ? Mathf.Max(3f, a.range)
+                : Mathf.Clamp(to.magnitude - (target.Radius + BodyRadius) + DashContact, 1f, a.range + 3f);
+            pl.MountCharge(dir * len / MountDashTime, MountDashTime);
+            mountDashAb = a;
+            mountDashTarget = target;
+            mountDashLeft = MountDashTime + 0.05f;
+            Rig.Lunge();
+            Fx.Puff(transform.position + Vector3.up * 0.15f, new Color(0.85f, 0.8f, 0.7f, 0.7f), 0.7f, 0.45f);
+            SynthAudio.Play(Sfx.Whoosh, 1.1f, 0.6f);
+        }
+
+        void TickMountDash(float dt)
+        {
+            var a = mountDashAb;
+            var t = mountDashTarget;
+            mountDashLeft -= dt;
+            bool real = t != null && !(t is AimPoint) && t.IsAlive;
+            // measured from the rider: this kin's own transform only catches up with you after the player has moved
+            var pl = GameManager.I.Player;
+            if (real && FlatDist(pl.Position, t.Position) <= BodyRadius + t.Radius + 1.2f)
+            {
+                Vector3 to = t.Position - transform.position; to.y = 0f;
+                CombatSystem.Apply(this, t, a.power, a.element, a.status, a.statusChance, to.normalized * 7f, Data.ElementBoost(a.element), a.effect);
+                if (a.kind == AbilityKind.Blink && t.IsAlive)
+                {
+                    if (t is CreatureActor sk) sk.Stun(BlinkStun);
+                    critUntil = Time.time + CritWindow;
+                    HUD.DamageNumber(transform.position + Vector3.up * (BodyRadius * 2f + 1.1f), "CRIT READY", new Color(1f, 0.4f, 0.3f), 0.75f);
+                }
+                Fx.Burst(transform.position, a.color, 10, 4f, 0.3f, 0.4f, true);
+                pl.EndCharge();
+                mountDashAb = null;
+                return;
+            }
+            if (mountDashLeft <= 0f || !pl.Charging)
+            {
+                if (real) ShowMiss();
+                mountDashAb = null;
+            }
+        }
 
         /// <summary>A mounted kin's skill going off (Update calls this instead of the AI while it is ridden).</summary>
         void TickMountedAbility(float dt)
@@ -256,12 +312,8 @@ namespace Wildbond
             if (windup > 0f) return;
             if (a.kind == AbilityKind.Dash || a.kind == AbilityKind.Blink)
             {
-                // under a rider a dash is a charging blow: it lands if the target is still in reach
-                Vector3 to = pendingTarget.Position - transform.position; to.y = 0f;
-                if (to.magnitude - (pendingTarget.Radius + BodyRadius) <= MountedReach(a) + 0.6f)
-                    CombatSystem.Apply(this, pendingTarget, a.power, a.element, a.status, a.statusChance, to.normalized * 6f, Data.ElementBoost(a.element), a.effect);
-                else ShowMiss();
-                Rig.Lunge();
+                // under a rider a dash (or a blink - no teleporting with you on it) is a charge: you go with it
+                StartMountDash(a, pendingTarget);
                 pendingAbility = -1;
                 return;
             }
