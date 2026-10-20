@@ -118,19 +118,23 @@ html: `
 </tbody></table></div>
 <p>The chance slides smoothly between those points. How rare a kin is does <b>not</b> change the odds, and neither does a shimmer coat. The only exception is the six <a href="#/guide/legends">legendaries</a>.</p>
 
-<h2 id="seeds">The three seeds</h2>
-<p><span data-items="Tether Seed, Ironbark Seed, Starbloom Seed"></span></p>
-<p>Better seeds are for higher-level kin. Each has a level rating:</p>
+<h2 id="seeds">The six seeds</h2>
+<p><span data-items="Tether Seed, Ironbark Seed, Cinderbound Seed, Rimecore Seed, Sunforged Seed, Starbloom Seed"></span></p>
+<p>Better seeds are for higher-level kin. There is one about every 8 levels, each made from the material of the land where you start to need it, so you upgrade your seeds as you travel:</p>
 <div class="scroll"><table>
-<thead><tr><th>Seed</th><th>Good up to</th><th>Small bonus</th></tr></thead>
+<thead><tr><th>Seed</th><th>Rated for kin up to</th><th>Made from</th><th>Explorer level</th></tr></thead>
 <tbody>
-<tr><td>Tether Seed</td><td>Level 20</td><td>none</td></tr>
-<tr><td>Ironbark Seed</td><td>Level 40</td><td>about +15%</td></tr>
-<tr><td>Starbloom Seed</td><td>Any level</td><td>about +35%</td></tr>
+<tr><td>Tether Seed</td><td>Level 12</td><td>fiber, wood, stone (by hand)</td><td>1</td></tr>
+<tr><td>Ironbark Seed</td><td>Level 20</td><td>an ingot</td><td>5</td></tr>
+<tr><td>Cinderbound Seed</td><td>Level 28</td><td>Cinder Shard (Badlands)</td><td>10</td></tr>
+<tr><td>Rimecore Seed</td><td>Level 36</td><td>Rime Crystal (Peaks)</td><td>15</td></tr>
+<tr><td>Sunforged Seed</td><td>Level 44</td><td>Sunsteel Ore (Sunscour Dunes)</td><td>24</td></tr>
+<tr><td>Starbloom Seed</td><td>Any level</td><td>Starcrystal (Glowdeep)</td><td>34</td></tr>
 </tbody></table></div>
 <ul>
-<li>A kin above the seed's rating is 6% harder for every level over, down to a floor of 15% of the normal chance.</li>
-<li>Using a strong seed on a weak kin is nearly a sure thing: an Ironbark Seed on a kin under level 20, or a Starbloom on one under 40, pulls the chance up toward the ceiling.</li>
+<li>A kin above the seed's rating is 6% harder for every level over, down to a floor of 15% of the normal chance. Eight levels over, the chance is about half.</li>
+<li>A kin below the seed's rating is a little easier, the same for every seed: up to +35% once the kin is 20 or more levels under. A strong seed on a weak kin is good odds, never a sure thing - so a better seed is only worth it for stronger kin.</li>
+<li>All crafted at the Workbench except the Tether Seed. Chests, Wardens, quests, bounties and the trader hand out the seed that suits where you are.</li>
 </ul>
 
 <h2 id="boosts">What helps</h2>
@@ -575,7 +579,7 @@ html: `
 <tbody>
 <tr><td>Wooden</td><td>Amber</td><td>Nothing</td><td>A few seeds, a little of the land's ore, some Glimmer</td></tr>
 <tr><td>Iron</td><td>Pale blue</td><td>Nothing</td><td>Better seeds, more ore and a few ingots, sometimes Prism Shards</td></tr>
-<tr><td>Gilded</td><td>Gold</td><td>A <b>Chest Key</b></td><td>Starbloom Seeds, a lot of ore, Prism Shards, and most likely a blueprint</td></tr>
+<tr><td>Gilded</td><td>Gold</td><td>A <b>Chest Key</b></td><td>The land's next seed up, a lot of ore, Prism Shards, and most likely a blueprint</td></tr>
 </tbody></table></div>
 <ul>
 <li><b>What is inside follows the land.</b> The ore is that land's own (Rustore in the Sunmeadow, Cinder Shards in the Badlands, Rime Crystal in the Peaks, and each outer land's metal), and the seeds get better the further out you are.</li>
