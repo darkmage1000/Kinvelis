@@ -74,14 +74,21 @@ namespace Wildbond
                 UIFactory.Size(go, 76);
             }
 
-            foreach (var d in party.All)
+            // every kin that can be a parent, through the shared sort / filter bar (user, 2026-10-20: "add it to hatchery as well")
+            var parents = new List<CreatureData>();
+            foreach (var d in party.All) if (KinGrowth.CanParent(d)) parents.Add(d);
+            Header(list, "Your kin", 26);
+            KinFilterBar(list, parents, Rebuild);
+            var shownParents = KinFiltered(parents);
+            if (shownParents.Count < parents.Count) Para(list, UIFactory.Col($"{parents.Count - shownParents.Count} hidden by the filter", UIFactory.TextDim), 18, Color.white);
+            foreach (var d in shownParents)
             {
-                if (!KinGrowth.CanParent(d)) continue;
                 var dd = d;
                 bool picked = d.uid == hatchA || d.uid == hatchB;
                 var r = UIFactory.HRow(list, 74, 12);
                 var p = Portrait(r.transform, d, 60); UIFactory.Size(p, 60, 60);
-                var lt = UIFactory.Label(r.transform, $"<b>{d.DisplayName}</b> Lv {d.level}  <size=19>{Aptitude.Summary(d)}</size>", 23, Color.white);
+                string els = UIFactory.Col(d.Element1.ToString(), ElementInfo.Color(d.Element1)) + (d.Element2 != Element.Normal && d.Element2 != d.Element1 ? "/" + UIFactory.Col(d.Element2.ToString(), ElementInfo.Color(d.Element2)) : "");
+                var lt = UIFactory.Label(r.transform, $"<b>{d.DisplayName}</b> Lv {d.level}  <size=19>#{d.Species.dexNumber:000} {els}  ·  {Aptitude.Summary(d)}</size>", 23, Color.white);
                 lt.supportRichText = true; UIFactory.Size(lt, 66, 860);
                 UIFactory.Size(UIFactory.Button(r.transform, picked ? "REMOVE" : "PICK", () =>
                 {
