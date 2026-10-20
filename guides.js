@@ -422,7 +422,24 @@ html: `
 
 <h2 id="stations">Stations and orders</h2>
 <p>The Campfire, Workbench and Alloy Forge are <b>stations</b>. Each has its own screen (tap COOK or CRAFT at it): choose a recipe and how many, and it becomes an order that the station's worker finishes. Recipes you make with your own hands are on the Craft tab.</p>
+<p><b>Your camp grows with you.</b> Crafting benches come in four tiers, and each one makes everything the one before it made, so you can take the old one down:</p>
+<div class="scroll"><table>
+<thead><tr><th>Bench</th><th>Explorer level</th><th>Works</th></tr></thead>
+<tbody>
+<tr><td>Workbench</td><td>1</td><td>wood, stone, fiber, pelt and ingot things</td></tr>
+<tr><td>Forge Bench</td><td>7</td><td>cinder, Rime Crystal, saltglass, bog iron</td></tr>
+<tr><td>Artisan's Anvil</td><td>20</td><td>sunsteel and blightsteel</td></tr>
+<tr><td>Starforge</td><td>32</td><td>starcrystal, starsteel and geode cores - the best things in the game</td></tr>
+</tbody></table></div>
+<p>Which bench a recipe needs comes from what it is made of, and its row says so ("Made at a Forge Bench or better"). Cooking works the same way: Sunmeadow food at the Campfire, meals with ingredients from other lands at the <b>Kitchen</b> (Lv 6). The <b>Blast Furnace</b> (Lv 12) smelts ingots twice as fast as the Smelter. Each better bench costs a pile of its land's materials.</p>
 <p>All recipes: <a href="#/items">Items</a>. All structures: <a href="#/structures">Structures</a>.</p>
+
+<h2 id="orework">Ore works and gardens</h2>
+<p>Every ore has its own works, so the camp can supply the metals your gear needs: Cinder Pit, Saltglass Dredge, Obsidian Cutter, Crystal Drill, Bog Iron Sluice, Sunsteel Mine, Blight Shaft and Star Excavator. Each is built with some of its own ore, and the harder ones need a better quarrier: a Quarrying kin of at least Lv 2 (or Lv 3 for sunsteel, blight ore and starcrystal) - a weaker one simply won't work there.</p>
+<p>Each land's own plant has a garden too, the only way to farm it: Flower Bed (Honeybloom), Frost Bed (Frostcap), Lantern Bog (Lanternbud), Fig Orchard (Sunfig), Spore Log Bed (Sporecap) and Moss Terrace (Starmoss). They are planted, watered, grown and harvested like a Crop Plot. An Oyster Bed grows Sea Pearls with a Fishing kin.</p>
+
+<h2 id="pace">Camp pace</h2>
+<p>Camp work takes time: kin work, your own work at a structure, crafting orders, research, building and the hands-off steps (growing, smelting) all run at a steady, slow pace, so a bigger camp with more kin is what makes it keep up. Camp kin get hungry at the same pace, so a camp that feeds itself stays fed.</p>
 
 <h2 id="farm">Crops</h2>
 <p>A Crop Plot grows one crop at a time; pick which on its CROP button. Changing to a new crop costs three of it, so you have to find it in the wild first.</p>
