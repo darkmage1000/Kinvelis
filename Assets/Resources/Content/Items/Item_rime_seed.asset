@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d410b7e3ca321b469fb7773a4c2b8dc, type: 3}
+  m_Name: Item_rime_seed
+  m_EditorClassIdentifier: 
+  id: rime_seed
+  displayName: Rimecore Seed
+  description: A core of Rime Crystal that hums as it binds. Rated for kin up to
+    Lv 36.
+  category: 4
+  maxStack: 50
+  iconColor: {r: 0.65882355, g: 0.93333334, b: 1, a: 1}
+  iconGlyph: T4
+  foodValue: 0
+  healValue: 0
+  kinHealValue: 0
+  bonusInventorySlots: 0
+  mealMods: []
+  mealMinutes: 0
+  handStyle: 0
+  toolKind: 0
+  toolPower: 0
+  weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
+  captureMult: 1.9
+  legendFor: 
+  shimmerSeed: 0
+  equipSlot: 0
+  rarity: 0
+  mods: []
+  unique: 0
+  gearStyle: 0
+  trimColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  alphaDrop: 0

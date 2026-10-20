@@ -14,19 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: starbloom_seed
   displayName: Starbloom Seed
-  description: Crystal-cored seed. Rarely breaks; works on kin of any level.
+  description: Starcrystal-cored seed. Works on kin of any level.
   category: 4
   maxStack: 50
   iconColor: {r: 1, g: 0.9137255, b: 0.5411765, a: 1}
-  iconGlyph: T3
+  iconGlyph: T6
   foodValue: 0
   healValue: 0
   kinHealValue: 0
   bonusInventorySlots: 0
+  mealMods: []
+  mealMinutes: 0
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 2.4
+  legendFor: 
+  shimmerSeed: 0
   equipSlot: 0
   rarity: 0
   mods: []

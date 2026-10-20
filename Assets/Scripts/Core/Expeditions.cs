@@ -111,10 +111,10 @@ namespace Wildbond
                     Add("wood", 6 * scale); Add("fiber", 5 * scale); Add("berry", 4 * scale); Add("pelt", 1.2f * scale); Add("gel", 1f * scale); Add("tether_seed", 1.5f * scale);
                     break;
                 case BiomeId.Badlands:
-                    Add("ore", 3 * scale); Add("cinder", 1.2f * scale); Add("stone", 5 * scale); Add("ingot", 0.5f * scale); Add("ironbark_seed", 0.6f * scale);
+                    Add("ore", 3 * scale); Add("cinder", 1.2f * scale); Add("stone", 5 * scale); Add("ingot", 0.5f * scale); Add("cinder_seed", 0.6f * scale);
                     break;
                 default:
-                    Add("crystal", 1.2f * scale); Add("pelt", 2f * scale); Add("ingot", 0.6f * scale); Add("ore", 2f * scale); if (rng.NextDouble() < 0.3 * hours) Add("starbloom_seed", 1);
+                    Add("crystal", 1.2f * scale); Add("pelt", 2f * scale); Add("ingot", 0.6f * scale); Add("ore", 2f * scale); if (rng.NextDouble() < 0.3 * hours) Add("rime_seed", 1);
                     break;
             }
             int glimmer = Mathf.RoundToInt(6f * hours * team.Count + power * 0.2f * hours);

@@ -374,7 +374,7 @@ namespace Wildbond
                 .Pay(100, 80, ("ironbark_seed", 3)).At("the Driftkey Isles", () => WardenPos("isles"));
             WardenQuest("s_w_isles", "isles", "Reefwarden", "The Coral Throne",
                 "The islanders say the reef grew a guardian the way a shell grows a pearl: slowly, around something that hurt.",
-                200, ("ironbark_seed", 4), ("salve", 3));
+                200, ("cinder_seed", 4), ("salve", 3));
 
             chapter = "Chapter 4 - Fire Country";
             Q(ST, "s_go_badlands", "Fire Country",
@@ -384,7 +384,7 @@ namespace Wildbond
                 .Pay(120, 100, ("salve", 3)).At("Cinderhold", () => TownPos("cinderhold"));
             WardenQuest("s_w_badlands", "badlands", "Solarion", "Solarion's Caldera",
                 "Kinkeeper Brask points with his chin. \"Up in the caldera. It does not like visitors and it does not like shade. Bring something wet.\"",
-                280, ("ironbark_seed", 5), ("kin_treat", 3));
+                280, ("cinder_seed", 5), ("kin_treat", 3));
 
             chapter = "Chapter 5 - The Drowned Heart";
             Q(ST, "s_go_swamp", "The Drowned Heart",
@@ -394,7 +394,7 @@ namespace Wildbond
                 .Pay(140, 110, ("salve", 3)).At("Mirefen", () => WardenPos("swamp"));
             WardenQuest("s_w_swamp", "swamp", "Hydrabog", "Three Heads",
                 "Something in the Sunken Heart has been counting your footsteps since the shore. It has three heads to count with.",
-                300, ("starbloom_seed", 2), ("salve", 4));
+                300, ("rime_seed", 3), ("salve", 4));
 
             chapter = "Chapter 6 - The Glacier's Light";
             Q(ST, "s_go_peaks", "The Glacier's Light",
@@ -404,27 +404,27 @@ namespace Wildbond
                 .Pay(180, 130, ("salve", 3)).At("Frostgate", () => TownPos("frostgate"));
             WardenQuest("s_w_peaks", "peaks", "Aurorox", "Aurora Glacier",
                 "Kinkeeper Sella does not look up from her fire. \"You will know the place. The sky comes down to look at it.\"",
-                380, ("starbloom_seed", 3), ("kin_treat", 4));
+                380, ("rime_seed", 4), ("kin_treat", 4));
 
             chapter = "Chapter 7 - The Laughing Wind";
             Q(ST, "s_go_desert", "The Laughing Wind",
                 "North-east over the sea the Sunscour Dunes lie under a sun that takes it personally. The wind there has a voice, and the voice has a temple.",
                 "The dunes bake you by day: travel at night or carry cooling food. Quicksand drags at your feet - keep moving and save your stamina.",
                 O("Set foot on the Sunscour Dunes", () => BeenTo(BiomeId.Desert, "desert")))
-                .Pay(200, 140, ("starbloom_seed", 2)).At("the Sunscour Dunes", () => WardenPos("desert"));
+                .Pay(200, 140, ("rime_seed", 3)).At("the Sunscour Dunes", () => WardenPos("desert"));
             WardenQuest("s_w_desert", "desert", "Djinnado", "The Sun Temple",
                 "It has been laughing at travellers for a thousand years. It would like very much to be given a reason to stop.",
-                420, ("starbloom_seed", 3), ("salve", 4));
+                420, ("sunforged_seed", 3), ("salve", 4));
 
             chapter = "Chapter 8 - What the Crater Keeps";
             Q(ST, "s_go_blight", "What the Crater Keeps",
                 "North, past where the charts stop, the Blightmoor rots quietly round a hole in the world. The first keepers put a Warden there for a reason they did not write down.",
                 "Its pools are poison to wade - ride a kin through them. A Sporecap Draught blocks Poison outright. Wild kin there are a little stronger after dark.",
                 O("Set foot on the Blightmoor", () => BeenTo(BiomeId.Blight, "blight")))
-                .Pay(260, 170, ("starbloom_seed", 2)).At("the Blightmoor", () => WardenPos("blight"));
+                .Pay(260, 170, ("sunforged_seed", 2)).At("the Blightmoor", () => WardenPos("blight"));
             WardenQuest("s_w_blight", "blight", "Venomarch", "The Blight Crater",
                 "Something heavy uncoils when you come to the rim. It has been patient for longer than the villages have had names.",
-                520, ("starbloom_seed", 4), ("salve", 5));
+                520, ("sunforged_seed", 4), ("salve", 5));
 
             chapter = "Chapter 9 - Every Light Looks Back";
             Q(ST, "s_go_glow", "Every Light Looks Back",
@@ -515,12 +515,12 @@ namespace Wildbond
                 "There is ore on the far shores, and nobody there to dig it.",
                 "Research Outpost Logistics (it needs the Driftkey Sigil), craft an Outpost Kit and USE it on an outer land. Station two kin there and a caravan brings what they gather home.",
                 O("Found an outpost", () => S.outposts.Count > 0))
-                .Pay(250, 150, ("starbloom_seed", 2));
+                .Pay(250, 150, ("cinder_seed", 3));
             Q(CA, "c_metal", "Metals of the Outer Lands",
                 "Saltglass, bogsteel, sunsteel, blightsteel, starsteel: five lands, five metals, and each one opens tools and armour the last could not.",
                 "Each metal's research needs its land's Sigil and some of its ore. Research > Metals.",
                 O("Research an outer-land metal", () => OuterMetals > 0))
-                .Pay(300, 180, ("starbloom_seed", 2));
+                .Pay(300, 180, ("rime_seed", 2));
 
             chapter = "A Home Worth the Storm";
             Q(CA, "c_hearth4", "The Hearth Grows",
@@ -533,13 +533,13 @@ namespace Wildbond
                 "A Volt Pylon charged by a Charging kin powers the camp: sprinklers, turrets and the machines that come after.",
                 O("Build a Volt Pylon", () => Built("volt_pylon")),
                 O("Have the camp powered", () => BaseManager.I != null && BaseManager.I.HasBase && BaseManager.I.CampPowered))
-                .Pay(400, 220, ("starbloom_seed", 3));
+                .Pay(400, 220, ("rime_seed", 3));
             Q(CA, "c_auto", "It Runs Itself",
                 "The best camp is the one that does not notice you are gone.",
                 "A Conveyor Hub moves goods to storage without haulers. An Auto-Assembler works a queue of orders by itself while the camp is powered.",
                 O("Build a Conveyor Hub", () => Built("conveyor_hub")),
                 O("Build an Auto-Assembler", () => Built("auto_assembler")))
-                .Pay(500, 260, ("starbloom_seed", 3));
+                .Pay(500, 260, ("rime_seed", 3));
             Q(CA, "c_hearth6", "A Home Worth the Storm",
                 "One fire, once. Look at it now.",
                 "The last Hearthstone level wants the rarest bars and a good many Warden Hearts.",
@@ -600,7 +600,7 @@ namespace Wildbond
                 "At twenty levels something in a kin changes. It stands taller. It starts to shine.",
                 "MENU > KIN, pick a kin of Lv 20 or more and tap EVOLVE: +15% to every stat, a little more work at camp, and a new look.",
                 O("Ascend a kin", 1, () => KinStage))
-                .Pay(250, 150, ("starbloom_seed", 2));
+                .Pay(250, 150, ("cinder_seed", 3));
 
             chapter = "Family";
             Q(KI, "k_egg", "New Life",
@@ -617,24 +617,24 @@ namespace Wildbond
                 "Word gets round. The tamers have started practising before you arrive.",
                 "Each village has a Tamer and an Ace on its roads. Wins also raise your standing with the village.",
                 O("Beat 3 different tamers", 3, () => Tamers))
-                .Pay(350, 200, ("starbloom_seed", 2));
+                .Pay(350, 200, ("cinder_seed", 3));
             Q(KI, "k_dex25", "Field Notes",
                 "Twenty-five kinds in the book. The Kinkeepers have started asking you questions.",
                 "The Dex shows where each kin lives and when. Catching one of a kind makes every later catch of it 10% easier.",
                 O("Register 25 kinds of kin", 25, () => Species))
-                .Pay(400, 220, ("starbloom_seed", 3));
+                .Pay(400, 220, ("rime_seed", 3));
 
             chapter = "Mastery";
             Q(KI, "k_shimmer", "A Different Coat",
                 "Once in a long while a kin is born the wrong colour, and it is the best thing that ever happened to it.",
                 "Shimmer kin sparkle and work one level better at every camp job. They are rare everywhere, less rare on shimmer nights and in Glowdeep after dark.",
                 O("Own a shimmer kin", () => HasShimmer))
-                .Pay(500, 250, ("starbloom_seed", 3));
+                .Pay(500, 250, ("rime_seed", 3));
             Q(KI, "k_exalt", "Exalted",
                 "There is a second change, later, for kin that have come a long way with somebody.",
                 "MENU > KIN, the same EVOLVE button again at Lv 35.",
                 O("Exalt a kin", 2, () => KinStage))
-                .Pay(600, 300, ("starbloom_seed", 4));
+                .Pay(600, 300, ("sunforged_seed", 4));
             Q(KI, "k_bond5", "Unbreakable",
                 "There is a point past which a kin simply will not leave you, whatever is standing over it.",
                 "At bond level 5 a companion survives a blow that would have dropped it, once every ten minutes.",

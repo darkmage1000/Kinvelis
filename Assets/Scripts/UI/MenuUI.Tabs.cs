@@ -133,7 +133,7 @@ namespace Wildbond
             if (d.category == ItemCategory.CaptureSeed)
             {
                 int cap = CaptureSystem.SeedLevelCap(d);
-                extra += $"Works on kin {(cap >= 99 ? "of any level" : $"up to Lv {cap}")}  ·  catch x{CaptureSystem.SeedBonus(d):0.00}";
+                extra += cap >= Seeds.AnyLevel ? "Works on kin of any level" : $"Rated for kin up to Lv {cap} - weaker on kin above that";
             }
             if (extra.Length > 0) Para(right, extra, 24, Color.white);
 

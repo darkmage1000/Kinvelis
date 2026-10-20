@@ -62,11 +62,18 @@ namespace Wildbond
         }
 
         // ============================================================ PROBABILITY
-        /// <summary>Highest kin level a seed is rated for; above it the chance falls off fast (Tether 20, Ironbark 40, Starbloom any).</summary>
-        /// <summary>Catch multiplier of a seed tier: Tether x1, Ironbark x1.15, Starbloom x1.35.</summary>
-        public static float SeedBonus(ItemDef seed) => seed == null ? 1f : 1f + (Mathf.Max(1f, seed.captureMult) - 1f) * 0.25f;
+        /// <summary>Highest kin level a seed is rated for (`Seeds.Ladder`); above it the chance falls off 6% a level.</summary>
+        public static int SeedLevelCap(ItemDef seed) => Seeds.Rating(seed);
 
-        public static int SeedLevelCap(ItemDef seed) => seed == null ? 0 : seed.captureMult >= 2.2f ? 99 : seed.captureMult >= 1.5f ? 40 : 20;
+        /// <summary>
+        /// Every seed's edge on kin below its rating: up to x`EdgeMax` once the kin is `EdgeLevels` or more levels under it.
+        /// The same for every tier (user, 2026-10-20: Ironbark was "op early game" because a seed used to slide towards a
+        /// certain catch on kin under its tier), so a better seed only reaches higher. EdgeMax 1.35 keeps the legend anchor:
+        /// a Starbloom at 10% health on a legend is 0.90 x 1.35 x LegendMul = 55%.
+        /// </summary>
+        public const float EdgeMax = 1.35f, EdgeLevels = 20f;
+        public static float SeedEdge(ItemDef seed, int kinLevel) =>
+            seed == null ? 1f : 1f + (EdgeMax - 1f) * Mathf.Clamp01((Seeds.Rating(seed) - kinLevel) / EdgeLevels);
 
         /// <summary>
         /// Final capture chance 0..1. Health is what matters: ~20% at full HP rising to 90% at 5% HP or less.
@@ -96,22 +103,16 @@ namespace Wildbond
             if (stats.HasEffect(UniqueEffect.NightsFavour) && EnvironmentSystem.I != null && EnvironmentSystem.I.IsNight) p *= 1.12f;
             if (stats.HasEffect(UniqueEffect.Delver) && Caves.InCave) p *= 1.2f;
             if (sneak) p *= 1.35f;
-            p *= SeedBonus(seedItem);                                  // better seeds: a modest boost (their real job is higher-level kin)
+            p *= SeedEdge(seedItem, c.Level);                          // a seed rated well above the kin: a small, capped edge
             int over = c.Level - SeedLevelCap(seedItem);
             if (over > 0) p *= Mathf.Clamp(1f - over * 0.06f, 0.15f, 1f);
             // only all 7 Tetherbloom relics unlock a true 100%; otherwise 99% is the ceiling
             float cap = stats.RelicCount(RelicType.Tetherbloom) >= Relics.PerType ? 1f : 0.99f;
-            // overkill: a seed tier well above the kin's level is a near-sure catch (Starbloom on a low-level kin ~ cap)
-            int under = SeedTierFloor(seedItem) - c.Level;
-            if (under > 0) p = Mathf.Lerp(p, cap, Mathf.Clamp01(under / 20f));
             if (c.Data.alpha) p *= 0.5f;
             if (c.Sp.rarity == Rarity.Legendary) p *= LegendMul;   // a Starbloom at 10% health lands at 55%: good odds, never a sure thing
             p *= WorldRules.Current.captureRate;
             return Mathf.Clamp(p, 0.01f, cap);
         }
-
-        /// <summary>Lowest kin level a seed tier is meant for (Tether 0, Ironbark 20, Starbloom 40); kin below it are overkill.</summary>
-        public static int SeedTierFloor(ItemDef seed) => seed == null ? 0 : seed.captureMult >= 2.2f ? 40 : seed.captureMult >= 1.5f ? 20 : 0;
 
         // catch chance by remaining HP fraction (linear between points)
         static readonly float[] CurveHp = { 0.05f, 0.10f, 0.25f, 0.50f, 1.00f };

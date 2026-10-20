@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: ironbark_seed
   displayName: Ironbark Seed
-  description: Metal-banded seed. Fewer break-frees; rated for kin up to Lv 40.
+  description: Metal-banded seed. Rated for kin up to Lv 20.
   category: 4
   maxStack: 50
   iconColor: {r: 0.7882353, g: 0.69803923, b: 0.47843137, a: 1}
@@ -23,10 +23,18 @@ MonoBehaviour:
   healValue: 0
   kinHealValue: 0
   bonusInventorySlots: 0
+  mealMods: []
+  mealMinutes: 0
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
-  captureMult: 1.6
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
+  captureMult: 1.3
+  legendFor: 
+  shimmerSeed: 0
   equipSlot: 0
   rarity: 0
   mods: []

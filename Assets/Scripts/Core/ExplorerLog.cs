@@ -20,6 +20,13 @@ namespace Wildbond
         /// <summary>0 (Sunmeadow) .. 7 (Glowdeep): how far along the journey a land is.</summary>
         public static int Tier(BiomeId b) { int i = System.Array.IndexOf(Lands, b); return i < 0 ? 0 : i; }
 
+        /// <summary>The seed a land's rewards hand out: the tier you need there (Capture/Seeds.cs).</summary>
+        public static string LandSeed(BiomeId b)
+        {
+            string[] byTier = { "tether_seed", "ironbark_seed", "cinder_seed", "cinder_seed", "rime_seed", "rime_seed", "sunforged_seed", "starbloom_seed" };
+            return byTier[Mathf.Clamp(Tier(b), 0, byTier.Length - 1)];
+        }
+
         /// <summary>The item that only grows in this land.</summary>
         public static string RegionalItem(BiomeId b)
         {
@@ -167,7 +174,7 @@ namespace Wildbond
         public static (string item, int count) Goods(BiomeId b, int step)
         {
             int t = Tier(b);
-            string seed = t < 2 ? "tether_seed" : t < 5 ? "ironbark_seed" : "starbloom_seed";
+            string seed = LandSeed(b);
             switch (step)
             {
                 case 25: return (seed, 5);

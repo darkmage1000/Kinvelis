@@ -506,12 +506,12 @@ namespace Wildbond
             switch (e.biome)
             {
                 case BiomeId.Meadow: Give("ore", Random.Range(lo + 1, hi + 2) * mul); Give(Random.value < 0.5f ? "gel" : "pelt", Random.Range(1, 3) * mul); Give("tether_seed", Random.Range(2, early ? 4 : 6) * mul); glim = 10; break;
-                case BiomeId.Badlands: Give("ingot", Random.Range(lo, hi) * mul); Give("cinder", Random.Range(lo, hi) * mul); Give("ironbark_seed", Random.Range(1, 4) * mul); glim = 20; break;
-                case BiomeId.Peaks: Give("crystal", Random.Range(lo, hi) * mul); Give("ingot", Random.Range(lo, hi) * mul); Give(Random.value < 0.6f ? "ironbark_seed" : "starbloom_seed", Random.Range(1, 3) * mul); glim = 30; break;
-                case BiomeId.Isles: Give("saltglass", Random.Range(lo, hi) * mul); Give(Random.value < 0.5f ? "tether_seed" : "ironbark_seed", Random.Range(2, 5) * mul); glim = 20; break;
-                case BiomeId.Swamp: Give("bog_iron", Random.Range(lo, hi) * mul); Give("ironbark_seed", Random.Range(2, 4) * mul); glim = 30; break;
-                case BiomeId.Desert: Give("sunsteel_ore", Random.Range(lo, hi) * mul); Give(Random.value < 0.6f ? "ironbark_seed" : "starbloom_seed", Random.Range(2, 4) * mul); glim = 45; break;
-                case BiomeId.Blight: Give("blight_ore", Random.Range(lo, hi) * mul); Give("starbloom_seed", Random.Range(1, 3) * mul); glim = 60; break;
+                case BiomeId.Badlands: Give("ingot", Random.Range(lo, hi) * mul); Give("cinder", Random.Range(lo, hi) * mul); Give("cinder_seed", Random.Range(1, 4) * mul); glim = 20; break;
+                case BiomeId.Peaks: Give("crystal", Random.Range(lo, hi) * mul); Give("ingot", Random.Range(lo, hi) * mul); Give("rime_seed", Random.Range(1, 3) * mul); glim = 30; break;
+                case BiomeId.Isles: Give("saltglass", Random.Range(lo, hi) * mul); Give("ironbark_seed", Random.Range(2, 5) * mul); glim = 20; break;
+                case BiomeId.Swamp: Give("bog_iron", Random.Range(lo, hi) * mul); Give("cinder_seed", Random.Range(2, 4) * mul); glim = 30; break;
+                case BiomeId.Desert: Give("sunsteel_ore", Random.Range(lo, hi) * mul); Give(Random.value < 0.6f ? "rime_seed" : "sunforged_seed", Random.Range(2, 4) * mul); glim = 45; break;
+                case BiomeId.Blight: Give("blight_ore", Random.Range(lo, hi) * mul); Give("sunforged_seed", Random.Range(2, 4) * mul); glim = 60; break;
                 default: Give("starcrystal", Random.Range(lo, hi) * mul); Give("starbloom_seed", Random.Range(2, 4) * mul); glim = 80; break;
             }
             if (Random.value < 0.35f) Give("salve", Random.Range(1, 3));

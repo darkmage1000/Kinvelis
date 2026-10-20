@@ -134,7 +134,7 @@ namespace Wildbond
                     gm.GiveItem("crystal", Random.Range(2, 5), c.pos + Vector3.up);
                     int g = Random.Range(15, 31);
                     gm.Player.Stats.glimmer += g;
-                    if (Random.value < 0.35f) gm.GiveItem("starbloom_seed", 1, c.pos + Vector3.up);
+                    if (Random.value < 0.35f) gm.GiveItem(Seeds.ForLevel(gm.Player.Stats.level + 8), 1, c.pos + Vector3.up);
                     GameEvents.Good($"Star Shards! +{g} Glimmer");
                     Fx.Burst(c.pos + Vector3.up, new Color(0.7f, 0.85f, 1f), 24, 6f, 0.3f, 0.8f, true);
                     SynthAudio.Play(Sfx.CaptureSuccess, 1.4f);

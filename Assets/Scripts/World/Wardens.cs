@@ -709,7 +709,7 @@ namespace Wildbond
             s.glimmer += purse;
             Vector3 at = gm.Player.Position + Vector3.up;
             gm.GiveItem(HeartItem, hearts, at);
-            gm.GiveItem("starbloom_seed", first ? 2 + w.level / 12 : 1, at);
+            gm.GiveItem(Seeds.ForLevel(w.level + 8), first ? 2 + w.level / 12 : 1, at);   // the tier for the next land
             gm.GiveItem("kin_treat", first ? 3 : 1, at);
             string bossSeed = SeedFor(w.species);
             if (bossSeed != null && !caughtNow) gm.GiveItem(bossSeed, first ? 2 : 1, at);   // beaten, not bound: it leaves the means to bind it next time

@@ -95,7 +95,7 @@ namespace Wildbond
                     {
                         id = s.id + "_" + t, name = names[s.index % names.Length][t], title = t == 0 ? "Tamer" : "Ace Tamer", home = s, tier = t, pos = p, face = face,
                         glimmer = (t == 0 ? 150 : 300) + s.index * (t == 0 ? 250 : 400),
-                        rewardItem = s.index == 0 ? (t == 0 ? "ironbark_seed" : "kin_treat") : s.index == 1 ? (t == 0 ? "kin_treat" : "starbloom_seed") : (t == 0 ? "starbloom_seed" : "crystal"),
+                        rewardItem = s.index == 0 ? (t == 0 ? "ironbark_seed" : "kin_treat") : s.index == 1 ? (t == 0 ? "kin_treat" : "cinder_seed") : (t == 0 ? "rime_seed" : "crystal"),
                         rewardCount = t == 0 ? 3 : (s.index == 2 ? 6 : 2)
                     };
                     PickTeam(tm, lv);

@@ -129,9 +129,13 @@ namespace Wildbond
             var spear = Item(b, "stone_spear", "Flint Spear", ItemCategory.Weapon, "Sp", Hex("#a8a8b0"), "Long reach. Attack power 17.", 1); spear.weaponDamage = 17f;
             var blade = Item(b, "iron_blade", "Ingot Blade", ItemCategory.Weapon, "Bl", Hex("#e8e8ff"), "Keen metal edge. Attack power 27.", 1); blade.weaponDamage = 27f;
 
-            var s1 = Item(b, "tether_seed", "Tether Seed", ItemCategory.CaptureSeed, "T1", Hex("#8fd96a"), "Throw at a weakened kin. Vines bind it into the seed. Rated for kin up to Lv 20.", 50); s1.captureMult = 1f;
-            var s2 = Item(b, "ironbark_seed", "Ironbark Seed", ItemCategory.CaptureSeed, "T2", Hex("#c9b27a"), "Metal-banded seed. Fewer break-frees; rated for kin up to Lv 40.", 50); s2.captureMult = 1.6f;
-            var s3 = Item(b, "starbloom_seed", "Starbloom Seed", ItemCategory.CaptureSeed, "T3", Hex("#ffe98a"), "Crystal-cored seed. Rarely breaks; works on kin of any level.", 50); s3.captureMult = 2.4f;
+            // the seed ladder (Capture/Seeds.cs): one tier about every 8 levels, each from the land where you start to need it
+            var s1 = Item(b, "tether_seed", "Tether Seed", ItemCategory.CaptureSeed, "T1", Hex("#8fd96a"), "Throw at a weakened kin. Vines bind it into the seed. Rated for kin up to Lv 12.", 50); s1.captureMult = 1f;
+            var s2 = Item(b, "ironbark_seed", "Ironbark Seed", ItemCategory.CaptureSeed, "T2", Hex("#c9b27a"), "Metal-banded seed. Rated for kin up to Lv 20.", 50); s2.captureMult = 1.3f;
+            var s4 = Item(b, "cinder_seed", "Cinderbound Seed", ItemCategory.CaptureSeed, "T3", Hex("#ff8a4a"), "Sealed in still-warm cinder glass. Rated for kin up to Lv 28.", 50); s4.captureMult = 1.6f;
+            var s5 = Item(b, "rime_seed", "Rimecore Seed", ItemCategory.CaptureSeed, "T4", Hex("#a8eeff"), "A core of Rime Crystal that hums as it binds. Rated for kin up to Lv 36.", 50); s5.captureMult = 1.9f;
+            var s6 = Item(b, "sunforged_seed", "Sunforged Seed", ItemCategory.CaptureSeed, "T5", Hex("#d08a3a"), "A shell of Sunsteel, hammered thin. Rated for kin up to Lv 44.", 50); s6.captureMult = 2.1f;
+            var s3 = Item(b, "starbloom_seed", "Starbloom Seed", ItemCategory.CaptureSeed, "T6", Hex("#ffe98a"), "Starcrystal-cored seed. Works on kin of any level.", 50); s3.captureMult = 2.4f;
         }
 
         // ================================================================ RECIPES
@@ -160,11 +164,14 @@ namespace Wildbond
             Recipe(b, "vine_grapple", 1, CraftStation.Workbench, 30, 6, ("fiber", 25), ("ingot", 3), ("gel", 4));
             Recipe(b, "stone_spear", 1, CraftStation.Workbench, 15, 2, ("wood", 4), ("stone", 3), ("fiber", 3));
             Recipe(b, "satchel", 1, CraftStation.Workbench, 25, 3, ("pelt", 4), ("fiber", 10));
-            Recipe(b, "ironbark_seed", 3, CraftStation.Workbench, 20, 4, ("ingot", 1), ("wood", 3), ("fiber", 3));
+            Recipe(b, "ironbark_seed", 3, CraftStation.Workbench, 20, 5, ("ingot", 1), ("wood", 3), ("fiber", 3));
+            Recipe(b, "cinder_seed", 3, CraftStation.Workbench, 25, 10, ("cinder", 1), ("ingot", 1), ("fiber", 2));
+            Recipe(b, "rime_seed", 3, CraftStation.Workbench, 30, 15, ("crystal", 1), ("ingot", 1), ("fiber", 2));
+            Recipe(b, "sunforged_seed", 2, CraftStation.Workbench, 35, 24, ("sunsteel_ore", 1), ("ingot", 1), ("fiber", 2));
             Recipe(b, "iron_axe", 1, CraftStation.Workbench, 30, 4, ("ingot", 3), ("wood", 3));
             Recipe(b, "iron_pick", 1, CraftStation.Workbench, 30, 4, ("ingot", 3), ("wood", 3));
             Recipe(b, "iron_blade", 1, CraftStation.Workbench, 40, 6, ("ingot", 5), ("wood", 2), ("pelt", 2));
-            Recipe(b, "starbloom_seed", 2, CraftStation.Workbench, 35, 8, ("crystal", 2), ("ingot", 1), ("fiber", 2));
+            Recipe(b, "starbloom_seed", 2, CraftStation.Workbench, 40, 34, ("starcrystal", 1), ("crystal", 1), ("fiber", 2));
             Recipe(b, "berry_tart", 1, CraftStation.Campfire, 10, 1, ("berry", 5));
             Recipe(b, "kin_treat", 2, CraftStation.Campfire, 12, 2, ("berry", 3), ("gel", 1));
         }

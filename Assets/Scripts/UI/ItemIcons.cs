@@ -482,6 +482,18 @@ namespace Wildbond
                 case "ironbark_seed":
                     Seed(mb, C("#c9a86a"), C("#8a6a3a"), C("#d8dae6"), C("#9ac04a"));
                     break;
+                case "cinder_seed":
+                    Seed(mb, C("#ff8a4a"), C("#b8401a"), C("#3a3034"), C("#ffc070"));
+                    mb.Crystal(M(0.16f, 0.5f, -0.1f, 0.08f, 0.16f, 0.08f), C("#ff6a2a"), C("#ffd080"));
+                    break;
+                case "rime_seed":
+                    Seed(mb, C("#b8f0ff"), C("#4aa0c8"), C("#d8dae6"), C("#e8fbff"));
+                    mb.Crystal(M(0, 0.6f, 0, 0.11f, 0.22f, 0.11f), C("#8fe8ff"), C("#ffffff"));
+                    break;
+                case "sunforged_seed":
+                    Seed(mb, C("#d08a3a"), C("#7a4a18"), C("#ffe27a"), C("#ffb84a"));
+                    mb.Cylinder(M(0, 0.4f, 0, 0.48f, 0.05f, 0.48f), C("#ffd860"), 12, 1f, true);
+                    break;
                 case "starbloom_seed":
                     Seed(mb, C("#ffe06a"), C("#e0a02a"), C("#8fe8ff"), C("#ffffff"));
                     mb.Crystal(M(0, 0.62f, 0, 0.14f, 0.28f, 0.14f), C("#8fe8ff"), C("#ffffff"));

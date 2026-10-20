@@ -116,7 +116,7 @@ namespace Wildbond
             }
             open = true;
             if (kinds.Count == 0) { GameEvents.Warn("No capture seeds! Craft Tether Seeds (Menu > Craft)."); return; }
-            kinds.Sort((a, b) => a.captureMult.CompareTo(b.captureMult));
+            kinds.Sort((a, b) => Seeds.Rank(a).CompareTo(Seeds.Rank(b)));
             if (root == null)
             {
                 root = UIFactory.Rect(transform, "SeedWheel");

@@ -24,4 +24,4 @@ MonoBehaviour:
     count: 3
   station: 1
   work: 20
-  unlockLevel: 4
+  unlockLevel: 5

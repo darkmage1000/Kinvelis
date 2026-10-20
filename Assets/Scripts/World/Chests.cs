@@ -389,9 +389,12 @@ namespace Wildbond
             int rank = Rank(l.biome), t = (int)l.tier;
             var loot = new List<(string id, int n)>();
             // seeds
-            if (t == 0) { if (rank < 2) loot.Add(("tether_seed", rank == 0 ? R(3, 5) : R(2, 3))); if (rank > 0) loot.Add(("ironbark_seed", rank == 1 ? R(1, 2) : R(2, 3))); }
-            else if (t == 1) { loot.Add(("ironbark_seed", rank == 1 ? R(3, 4) : R(2, 3))); if (rank == 0) loot.Add(("tether_seed", 2)); if (rank == 2) loot.Add(("starbloom_seed", R(1, 2))); }
-            else { loot.Add(("starbloom_seed", rank == 2 ? R(3, 5) : R(2, 3))); loot.Add(("ironbark_seed", 3)); }
+            // seeds of the land's own tier, and the next one up in the better chests (Capture/Seeds.cs)
+            string seedA = rank == 0 ? "tether_seed" : rank == 1 ? "cinder_seed" : "sunforged_seed";
+            string seedB = Seeds.Step(seedA, 1);
+            if (t == 0) loot.Add((seedA, R(3, 5)));
+            else if (t == 1) { loot.Add((seedA, R(3, 4))); loot.Add((seedB, 1)); }
+            else { loot.Add((seedB, R(2, 3))); loot.Add((seedA, 3)); }
             // the land's ore
             loot.Add((Ore(l.biome), t == 0 ? R(2, 4) : t == 1 ? R(5, 8) : R(9, 14)));
             if (t == 1) loot.Add(("ingot", R(1, 3)));

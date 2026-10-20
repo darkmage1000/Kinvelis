@@ -15,7 +15,7 @@ MonoBehaviour:
   id: tether_seed
   displayName: Tether Seed
   description: Throw at a weakened kin. Vines bind it into the seed. Rated for kin
-    up to Lv 20.
+    up to Lv 12.
   category: 4
   maxStack: 50
   iconColor: {r: 0.56078434, g: 0.8509804, b: 0.41568628, a: 1}
@@ -24,10 +24,18 @@ MonoBehaviour:
   healValue: 0
   kinHealValue: 0
   bonusInventorySlots: 0
+  mealMods: []
+  mealMinutes: 0
+  handStyle: 0
   toolKind: 0
   toolPower: 0
   weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
   captureMult: 1
+  legendFor: 
+  shimmerSeed: 0
   equipSlot: 0
   rarity: 0
   mods: []

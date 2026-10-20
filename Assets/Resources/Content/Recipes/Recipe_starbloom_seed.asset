@@ -16,12 +16,12 @@ MonoBehaviour:
   outputItem: starbloom_seed
   outputCount: 2
   inputs:
+  - itemId: starcrystal
+    count: 1
   - itemId: crystal
-    count: 2
-  - itemId: ingot
     count: 1
   - itemId: fiber
     count: 2
   station: 1
-  work: 35
-  unlockLevel: 8
+  work: 40
+  unlockLevel: 34

@@ -158,7 +158,7 @@ namespace Wildbond
                 else
                 {
                     parts.Add(cap >= 99 ? "Any level kin" : $"Kin up to Lv {cap}");
-                    if (CaptureSystem.SeedBonus(d) > 1.001f) parts.Add($"catch x{CaptureSystem.SeedBonus(d):0.00}");
+                    if (cap < Seeds.AnyLevel) parts.Add("weaker on kin above that");
                     if (CaptureSystem.IsLegendSeed(d)) parts.Add("certain catch at 10% health or less");
                 }
                 if (d.shimmerSeed) parts.Add("the catch is a shimmer");

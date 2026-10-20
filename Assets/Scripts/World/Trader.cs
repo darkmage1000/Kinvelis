@@ -51,6 +51,9 @@ namespace Wildbond
                 case "salve": return 6;
                 case "tether_seed": return 2;
                 case "ironbark_seed": return 6;
+                case "cinder_seed": return 8;
+                case "rime_seed": return 10;
+                case "sunforged_seed": return 12;
                 case "starbloom_seed": return 14;
             }
             if (d.category == ItemCategory.Gear) return d.rarity == Rarity.Common ? 30 : d.rarity == Rarity.Uncommon ? 60 : d.rarity == Rarity.Rare ? 120 : 220;
@@ -94,7 +97,10 @@ namespace Wildbond
             Stock.Add(new Offer { id = "ironbark_seed", count = 3, price = 45 });
             Stock.Add(new Offer { id = "salve", count = 2, price = 20 });
             Stock.Add(new Offer { id = "kin_treat", count = 1, price = 35 });
-            if (rng.NextDouble() < 0.6) Stock.Add(new Offer { id = "starbloom_seed", count = 1, price = 80 });
+            // a few of the seeds a tier above where you are (Capture/Seeds.cs)
+            string up = Seeds.ForLevel((GameManager.I != null ? GameManager.I.Player.Stats.level : 1) + 8);
+            if (up != "ironbark_seed" && up != "tether_seed" && rng.NextDouble() < 0.6)
+                Stock.Add(new Offer { id = up, count = 2, price = 40 + 15 * Seeds.Rank(ContentDB.Item(up)) });
             if (rng.NextDouble() < 0.35) Stock.Add(new Offer { id = "satchel", count = 1, price = 250 });
             string[] gear = { "explorer_coat", "explorer_boots", "guard_ring", "windrunner_ring", "hearty_amulet", "binders_bracelet", "ironbark_helm", "keen_ring", "featherstep_boots", "glowstone_pendant" };
             for (int i = 0; i < 2; i++)

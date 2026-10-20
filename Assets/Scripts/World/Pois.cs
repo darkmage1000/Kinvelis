@@ -520,7 +520,7 @@ namespace Wildbond
             int tier = ExplorerLog.Tier(p.biome);
             int glim = Mathf.RoundToInt((25 + tier * 18) * Random.Range(0.85f, 1.3f));
             S.glimmer += glim;
-            gm.GiveItem(tier < 2 ? "tether_seed" : tier < 5 ? "ironbark_seed" : "starbloom_seed", Random.Range(2, 5), drop);
+            gm.GiveItem(ExplorerLog.LandSeed(p.biome), Random.Range(2, 5), drop);
             switch (p.kind)
             {
                 case PoiKind.Shipwreck: gm.GiveItem("ingot", Random.Range(1, 4), drop); gm.GiveItem("fiber", Random.Range(3, 7), drop); break;

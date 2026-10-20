@@ -100,9 +100,10 @@ namespace Wildbond
                     break;
             }
             // bonus item scaled to the player's stage
-            string[] pool = lv < 5 ? new[] { "tether_seed", "salve", "berry_tart" } : lv < 10 ? new[] { "ironbark_seed", "salve", "ingot", "kin_treat" } : new[] { "starbloom_seed", "ironbark_seed", "kin_treat", "crystal" };
+            string seedR = Seeds.ForLevel(lv + 4);   // the seed rated for kin a little above you
+            string[] pool = lv < 5 ? new[] { seedR, "salve", "berry_tart" } : lv < 10 ? new[] { seedR, "salve", "ingot", "kin_treat" } : new[] { seedR, seedR, "kin_treat", "crystal" };
             bo.rewardItem = pool[rng.Next(pool.Length)];
-            bo.rewardCount = bo.rewardItem == "starbloom_seed" ? 1 : bo.rewardItem == "tether_seed" ? 5 : bo.rewardItem == "ironbark_seed" ? 3 : 2;
+            bo.rewardCount = bo.rewardItem == "tether_seed" ? 5 : bo.rewardItem == seedR ? 3 : 2;
             return bo;
         }
 
