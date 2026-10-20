@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: campfire
   displayName: Campfire
-  description: Cooking station. Kindling kin keep the fire going.
+  description: 'Tier 1 cooking: Sunmeadow food and treats. Kindling kin keep the
+    fire going. The Kitchen cooks meals from the other lands too.'
   cost:
   - itemId: wood
     count: 6
@@ -23,6 +24,7 @@ MonoBehaviour:
   unlockLevel: 1
   footprint: 1
   isCore: 0
+  category: 0
   workType: 3
   secondaryWorkType: 0
   workerSlots: 1
@@ -34,9 +36,14 @@ MonoBehaviour:
   bufferCap: 30
   storageSlots: 0
   station: 2
+  benchTier: 0
+  minJobLevel: 0
   boostPercent: 0
   feeds: 0
   beds: 0
+  bedSize: 0
+  bedTop: 0
+  bedBonus: 0
   palette:
     primary: {r: 0.5568628, g: 0.5411765, b: 0.57254905, a: 1}
     secondary: {r: 0.41960785, g: 0.26666668, b: 0.14117648, a: 1}

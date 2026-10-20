@@ -26,14 +26,15 @@ namespace Wildbond
         }
 
         /// <summary>The structure of this station kind the player is standing at, or null.</summary>
-        public Building StationHere(CraftStation st)
+        public Building StationHere(CraftStation st, int minTier = 1)
         {
             if (st == CraftStation.Hand) return null;
-            foreach (var b in Buildings) if (b.Def.station == st && PlayerAt(b)) return b;
+            foreach (var b in Buildings) if (b.Def.station == st && Stations.Tier(b) >= minTier && PlayerAt(b)) return b;
             return null;
         }
 
-        public bool AtStation(CraftStation st) => st == CraftStation.Hand || StationHere(st) != null;
+        /// <summary>Standing at a station of this kind, at least this tier (Stations).</summary>
+        public bool AtStation(CraftStation st, int minTier = 1) => st == CraftStation.Hand || StationHere(st, minTier) != null;
 
         /// <summary>A storage box (chest, vault, larder, the Hearthstone) the player is standing at, or null.</summary>
         public Building StorageHere()
@@ -64,12 +65,12 @@ namespace Wildbond
         }
 
         /// <summary>The nearest structure with this station (to point the player at it).</summary>
-        public Building NearestStation(CraftStation st)
+        public Building NearestStation(CraftStation st, int minTier = 1)
         {
             Building best = null; float bd = float.MaxValue;
             foreach (var b in Buildings)
             {
-                if (b.Def.station != st) continue;
+                if (b.Def.station != st || Stations.Tier(b) < minTier) continue;
                 float d = (b.transform.position - PlayerPos).sqrMagnitude;
                 if (d < bd) { bd = d; best = b; }
             }

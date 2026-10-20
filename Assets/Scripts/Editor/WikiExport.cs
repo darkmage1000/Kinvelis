@@ -191,7 +191,7 @@ namespace Wildbond.EditorTools
                 var t = Tech.ForRecipe(r.outputItem);
                 l.Add(new Dictionary<string, object>
                 {
-                    ["makes"] = r.outputItem, ["n"] = r.outputCount, ["at"] = MenuUI.StationName(r.station), ["level"] = r.unlockLevel, ["needs"] = Cost(r.inputs),
+                    ["makes"] = r.outputItem, ["n"] = r.outputCount, ["at"] = r.station == CraftStation.Hand ? "Hand" : Stations.BenchName(r.station, Stations.Tier(r)), ["level"] = r.unlockLevel, ["needs"] = Cost(r.inputs),
                     ["research"] = t != null ? t.name : null,
                     ["blueprint"] = Chests.IsBlueprint(r.id, out var land) ? (Chests.CaveTierOf(r.id) == 2 ? "deep caves" : Chests.CaveTierOf(r.id) == 1 ? "mid-depth caves" : BiomeInfo.Name(land)) : null,
                 });

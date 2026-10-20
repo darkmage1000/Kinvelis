@@ -114,11 +114,20 @@ namespace Wildbond
         /// <summary>A kin is chilling a Frost Larder, or there is stored cold left (BaseManager.Power).</summary>
         public bool LarderActive => LarderStaffed || (Cold > 0f && ColdCapacity > 0f);
 
-        public bool HasStation(CraftStation s)
+        /// <summary>A station of this kind at least this tier is built (Stations).</summary>
+        public bool HasStation(CraftStation s, int minTier = 1)
         {
             if (s == CraftStation.Hand) return true;
-            foreach (var b in Buildings) if (b.Def.station == s) return true;
+            foreach (var b in Buildings) if (b.Def.station == s && Stations.Tier(b) >= minTier) return true;
             return false;
+        }
+
+        /// <summary>The best tier of this station kind in camp (0 = none).</summary>
+        public int CampTier(CraftStation s)
+        {
+            int t = 0;
+            foreach (var b in Buildings) if (b.Def.station == s) t = Mathf.Max(t, Stations.Tier(b));
+            return t;
         }
 
         public Building NearestStorage(Vector3 p)
@@ -164,11 +173,20 @@ namespace Wildbond
         }
 
         // ============================================================ WORK RATES
+        /// <summary>
+        /// Everything at camp runs at a third of its old speed (user, 2026-10-20: "slow down everything at camp"): kin
+        /// work, your own work at a structure, crafting, research, building, and the hands-off steps (growing, smelting).
+        /// Camp kin get hungry at the same third, so food made and food eaten stay in step; stored charge and cold are
+        /// unchanged (a pylon still outruns its drain). The world's work-speed rule multiplies on top: `Pace`.
+        /// </summary>
+        public const float CampPace = 1f / 3f;
+        public static float Pace => CampPace * WorldRules.Current.workSpeed;
+
         public float WorkRate(CreatureData d, Building b)
         {
             float lvl = b.WorkLevelFor(d);   // for a producer: at the step it is on (planting, watering, harvesting...)
             float hungerMul = d.hunger > 0f ? 1f : 0.4f;
-            float levelMul = (1f + 0.02f * (d.level - 1)) * WorldRules.Current.workSpeed;   // experienced workers are a bit faster
+            float levelMul = (1f + 0.02f * (d.level - 1)) * Pace;   // experienced workers are a bit faster
             return lvl * d.WorkMul * hungerMul * levelMul * (1f + DynamoBoost) * RestedMul * BedBonusMul(d) * Dev.WorkMul * GameManager.I.Player.Stats.WorkBonus * HearthlinkMul * IrrigationMul(b)
                  * b.LevelMul * CheerMul(d);   // an upgraded structure; a kin you have just cheered up (BaseManager.Upgrades)
         }
@@ -316,12 +334,12 @@ namespace Wildbond
         void TickStages(float dt)
         {
             bool sprinkler = SprinklerRunning;
-            float speed = WorldRules.Current.workSpeed;
+            float speed = Pace;
             foreach (var b in Buildings)
             {
                 if (!b.IsProducer) continue;
                 b.TickStage(dt * Dev.WorkMul);
-                if (!Crops.IsPlot(b) || b.Waiting) continue;
+                if (!Crops.Grows(b.Def) || b.Waiting) continue;
                 if (b.Def.id == "greenhouse") b.AddWork(GreenhouseRate * speed * dt);
                 if (sprinkler && b.Stage == WorkStages.CropWater) b.AddWork(SprinklerWater * speed * dt);
             }
@@ -570,24 +588,33 @@ namespace Wildbond
         public CreatureActor ActorFor(CreatureData d) => workerActors.TryGetValue(d.uid, out var a) ? a : null;
 
         // ============================================================ CRAFT ORDERS
-        public bool HasOrderFor(CraftStation s)
+        /// <summary>An order a station of this kind and tier can work (a Workbench can't work a Starforge order).</summary>
+        public bool HasOrderFor(CraftStation s, int tier = Stations.MaxTier)
         {
             if (s == CraftStation.Research) return Tech.Active != null;
             foreach (var o in Orders)
             {
                 var r = ContentDB.Recipes.TryGetValue(o.recipeId, out var rr) ? rr : null;
-                if (r != null && r.station == s) return true;
+                if (r != null && r.station == s && Stations.Makes(tier, r)) return true;
             }
             return false;
         }
 
-        public void AddCraftWork(CraftStation s, float w)
+        /// <summary>Orders of this kind that no bench in camp is good enough for.</summary>
+        public bool HasOrderAbove(CraftStation s, int tier)
+        {
+            foreach (var o in Orders)
+                if (ContentDB.Recipes.TryGetValue(o.recipeId, out var r) && r.station == s && !Stations.Makes(tier, r)) return true;
+            return false;
+        }
+
+        public void AddCraftWork(CraftStation s, float w, int tier = Stations.MaxTier)
         {
             if (s == CraftStation.Research) { Tech.AddWork(w); return; }
             for (int i = 0; i < Orders.Count; i++)
             {
                 var o = Orders[i];
-                if (!ContentDB.Recipes.TryGetValue(o.recipeId, out var r) || r.station != s) continue;
+                if (!ContentDB.Recipes.TryGetValue(o.recipeId, out var r) || r.station != s || !Stations.Makes(tier, r)) continue;
                 o.progress += w * GameManager.I.Player.Stats.CraftSpeedMul;
                 if (o.progress >= r.work)
                 {
@@ -654,10 +681,10 @@ namespace Wildbond
             assistTimer -= dt;
             foreach (var b in Buildings)
             {
-                if (!b.IsStation || !HasOrderFor(b.Def.station)) continue;
+                if (!b.IsStation || !HasOrderFor(b.Def.station, Stations.Tier(b))) continue;
                 if (Vector3.Distance(playerPos, b.transform.position) < b.Def.footprint + 3f)
                 {
-                    AddCraftWork(b.Def.station, playerCraftAssist * dt);
+                    AddCraftWork(b.Def.station, playerCraftAssist * Pace * dt, Stations.Tier(b));
                     if (assistTimer <= 0f) { assistTimer = 0.5f; Fx.Debris(b.transform.position + Vector3.up, new Color(0.9f, 0.8f, 0.6f), 2); }
                 }
             }
@@ -701,7 +728,7 @@ namespace Wildbond
             Vector3 d = b.transform.position - playerPos; d.y = 0;
             if (!near || !pl.IsAlive || Caves.InCave || d.magnitude - b.Def.footprint > PlayerWorkReach) { StopPlayerWork("You stop working."); return; }
             int before = b.BufferCount;
-            PlayerWorkBlock = b.PlayerWork(playerWorkRate * WorldRules.Current.workSpeed * pl.Stats.CraftSpeedMul * dt, pl.Stats.Bag);
+            PlayerWorkBlock = b.PlayerWork(playerWorkRate * Pace * pl.Stats.CraftSpeedMul * dt, pl.Stats.Bag);
             if (PlayerWorkBlock == "WAIT") { StopPlayerWork($"Done. {b.Cur.doing} now - it will be ready in {WorkStages.Clock(b.SecondsLeft)}."); return; }
             if (PlayerWorkBlock != null)
             {

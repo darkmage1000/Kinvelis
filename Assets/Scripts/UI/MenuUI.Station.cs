@@ -20,10 +20,12 @@ namespace Wildbond
             Open(MenuTab.Station);
         }
 
+        /// <summary>The station's name: your best bench of that kind, or the first tier if none is built.</summary>
         public static string StationName(CraftStation st)
         {
-            foreach (var b in ContentDB.BuildingList) if (b.station == st && st != CraftStation.Hand) return b.displayName;
-            return st.ToString();
+            if (st == CraftStation.Hand) return "Hand";
+            int t = BaseManager.I != null ? BaseManager.I.CampTier(st) : 0;
+            return Stations.BenchName(st, Mathf.Max(1, t));
         }
 
         /// <summary>What you do there: shown in the title and on the recipe buttons.</summary>
@@ -58,6 +60,10 @@ namespace Wildbond
             Para(list, !built ? $"You haven't built a {name} yet (Build tab). These are the recipes it unlocks."
                      : !inCamp ? $"This is a view. Walk up to your {name} ({bm.WayTo(bm.NearestStation(st))}) to {StationVerb(st).ToLower()}, queue orders or keep things in stock."
                      : "Ingredients come from your bag and camp storage. Finished items go to camp storage. KEEP makes the camp restock that item by itself, from camp storage.", 21);
+            int camp = bm.CampTier(st);
+            var nextBench = camp < Stations.MaxTier ? Stations.Bench(st, camp + 1) : null;
+            if (nextBench != null && Stations.Tier(nextBench) > camp)
+                Para(list, UIFactory.Col($"Better things need a better bench: the {nextBench.displayName} (Build tab, explorer Lv {nextBench.unlockLevel}) makes everything here and more. Recipes marked with a bench name need it.", UIFactory.Accent), 20);
             RecipeRows(list, st, 520);
             RestoreScroll();
 
@@ -177,13 +183,13 @@ namespace Wildbond
         {
             var bm = BaseManager.I;
             var stats = GameManager.I.Player.Stats;
-            bool inCamp = bm.AtStation(st);   // standing at a station of this kind (always true for hand recipes)
+            bool inCampAny = bm.AtStation(st);   // standing at a station of this kind (always true for hand recipes)
             // tools & supplies first, then armor, then accessories (each by unlock level)
             var recs = ContentDB.RecipeList.FindAll(x => x.station == st);
             recs.Sort((x, y) => CraftGroup(x) != CraftGroup(y) ? CraftGroup(x).CompareTo(CraftGroup(y)) : (CraftGroup(x) == 0 ? 0 : x.unlockLevel.CompareTo(y.unlockLevel)));
             // long lists are split into category tabs (MenuUI.Categories)
-            int tab = RecipeTabs(list, st, recs, inCamp);
-            if (tab == ReadyTab) recs = recs.FindAll(x => RecipeBlock(x, inCamp) == null);
+            int tab = RecipeTabs(list, st, recs, inCampAny);
+            if (tab == ReadyTab) recs = recs.FindAll(x => RecipeBlock(x, bm.AtStation(st, Stations.Tier(x))) == null && bm.HasStation(st, Stations.Tier(x)));
             else if (tab != AllTab)
             {
                 recs = recs.FindAll(x => (int)CatOf(x) == tab);
@@ -196,8 +202,11 @@ namespace Wildbond
                 int grp = CraftGroup(r);
                 if (tab == AllTab && grp != lastGroup) { lastGroup = grp; Header(list, grp == 1 ? "Armor" : "Accessories", 26); }
                 var outDef = ContentDB.Item(r.outputItem);
+                int need = Stations.Tier(r);
+                bool inCamp = bm.AtStation(st, need);   // at a bench of this kind good enough for it
                 // what it does: stat line + description, wrapped under the name (row grows to fit)
                 string stat = ItemStatLine(outDef), desc = outDef.description ?? "";
+                if (need > 1) desc = $"Made at a {Stations.BenchName(st, need)}{(need < Stations.MaxTier ? " or better" : "")}.  " + desc;
                 var tech = Tech.RecipeUnlocked(r.id) ? null : Tech.ForRecipe(r.id);
                 if (tech != null) desc += $"  Locked: research {tech.name} at a Research Bench.";
                 bool noPlan = Chests.Locked(r);
@@ -219,14 +228,14 @@ namespace Wildbond
                 if (tech != null) reason = "Research";
                 else if (noPlan) reason = "Blueprint";
                 else if (r.unlockLevel > stats.level && !Dev.FreeAll) reason = $"Lv {r.unlockLevel}";
-                else if (st != CraftStation.Hand && !bm.HasStation(st)) reason = "Not built";
+                else if (st != CraftStation.Hand && !bm.HasStation(st, need)) reason = need > 1 ? Stations.BenchName(st, need) : "Not built";
                 else if (st != CraftStation.Hand && !inCamp) reason = "Walk to it";
                 else if (!ItemSources.Has(r.inputs)) reason = "Missing";
                 var rec = r;
                 var btn = UIFactory.Button(row.transform, reason ?? StationVerb(st),
                     reason == null ? () => Craft(rec) : (System.Action)null, reason == null ? new Color(0.25f, 0.55f, 0.4f) : new Color(0.3f, 0.3f, 0.32f), 26);
                 UIFactory.Size(btn, 84, 200);
-                if (st != CraftStation.Hand && inCamp && tech == null && !noPlan && r.unlockLevel <= stats.level && bm.HasStation(st))
+                if (st != CraftStation.Hand && inCamp && tech == null && !noPlan && r.unlockLevel <= stats.level && bm.HasStation(st, need))
                 {
                     // standing order: tap to step through 5 / 10 / 20 / 50 / off (BaseManager.Standing)
                     int keep = bm.KeepOf(r.id);

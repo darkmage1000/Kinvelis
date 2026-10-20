@@ -72,7 +72,8 @@ namespace Wildbond
         bool DrawsPower => Has("conveyor_hub") || Has("auto_assembler") || Has("sprinkler") || Has("volt_turret") || Has("dynamo");
 
         /// <summary>Work done at a pylon (Building.AddWork), near, far or offline.</summary>
-        public void AddCharge(float work) => Charge = Mathf.Min(ChargeCapacity, Charge + work * ChargeGain);
+        // work arrives at camp pace (CampPace); stored power and cold don't slow down, so a pylon still outruns its drain
+        public void AddCharge(float work) => Charge = Mathf.Min(ChargeCapacity, Charge + work / CampPace * ChargeGain);
 
         // ============================================================ COLD
         // The Frost Larder keeps its chill the same way: a Chilling kin fills it with cold, then is free; the food stays
@@ -116,7 +117,7 @@ namespace Wildbond
         }
 
         /// <summary>Work done at a larder (Building.AddWork), near, far or offline.</summary>
-        public void AddCold(float work) => Cold = Mathf.Min(ColdCapacity, Cold + work * ColdGain);
+        public void AddCold(float work) => Cold = Mathf.Min(ColdCapacity, Cold + work / CampPace * ColdGain);
 
         void TickCold(float dt)
         {

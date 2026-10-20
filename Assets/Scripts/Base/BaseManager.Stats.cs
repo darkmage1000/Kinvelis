@@ -40,8 +40,8 @@ namespace Wildbond
                 float best = 0f;
                 b.Stage = i;   // WorkRate reads the step the structure is on
                 foreach (var d in GameManager.I.Party.In(KinLocation.Base)) if (!d.Fainted && b.StageLevelAt(i, d) > 0f) best = Mathf.Max(best, WorkRate(d, b));
-                if (Crops.IsPlot(b) && i == WorkStages.CropWater && SprinklerRunning) best = Mathf.Max(best, SprinklerWater * WorldRules.Current.workSpeed);
-                if (b.Def.id == "greenhouse") best += GreenhouseRate * WorldRules.Current.workSpeed;
+                if (Crops.Grows(b.Def) && i == WorkStages.CropWater && SprinklerRunning) best = Mathf.Max(best, SprinklerWater * Pace);
+                if (b.Def.id == "greenhouse") best += GreenhouseRate * Pace;
                 if (best <= 0f) { b.Stage = was; return 0f; }
                 seconds += b.StageNeedAt(i) / best;
             }
@@ -137,7 +137,12 @@ namespace Wildbond
             }
             if (b.IsStation)
             {
-                if (!HasOrderFor(b.Def.station)) { text = "No orders queued"; return BuildingHealth.Info; }
+                if (!HasOrderFor(b.Def.station, Stations.Tier(b)))
+                {
+                    if (HasOrderAbove(b.Def.station, Stations.Tier(b)) && !HasStation(b.Def.station, Stations.Tier(b) + 1))
+                    { text = $"Orders waiting for a {Stations.BenchName(b.Def.station, Stations.Tier(b) + 1)}"; return BuildingHealth.Blocked; }
+                    text = "No orders queued"; return BuildingHealth.Info;
+                }
                 bool machine = CampPowered && Has("auto_assembler") && (b.Def.station == CraftStation.Workbench || b.Def.station == CraftStation.Campfire);
                 if (HandsAt(b) > 0) { text = machine ? "Kin and the Auto-Assembler are crafting orders" : "Crafting orders"; return BuildingHealth.Good; }
                 if (machine) { text = "The Auto-Assembler is crafting orders"; return BuildingHealth.Good; }

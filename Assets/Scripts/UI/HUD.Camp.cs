@@ -69,7 +69,7 @@ namespace Wildbond
                 {
                     if (used >= CampLabelMax) break;
                     if (b == null) continue;
-                    bool station = b.IsStation && bm.HasOrderFor(b.Def.station);
+                    bool station = b.IsStation && bm.HasOrderFor(b.Def.station, Stations.Tier(b));
                     bool pylon = b.Def.id == "volt_pylon";
                     bool larder = BaseManager.IsLarder(b);
                     if (!b.IsProducer && !station && !pylon && !larder) continue;
@@ -198,7 +198,7 @@ namespace Wildbond
             text = ""; fill = 0f;
             foreach (var o in bm.Orders)
             {
-                if (!ContentDB.Recipes.TryGetValue(o.recipeId, out var r) || r.station != b.Def.station) continue;
+                if (!ContentDB.Recipes.TryGetValue(o.recipeId, out var r) || r.station != b.Def.station || !Stations.Makes(Stations.Tier(b), r)) continue;
                 text = $"{MenuUI.StationActivity(b.Def.station)} {ContentDB.ItemName(r.outputItem)}" + (o.remaining > 1 ? $"  x{o.remaining}" : "");
                 fill = bm.OrderProgress01(o);
                 return;

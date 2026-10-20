@@ -31,6 +31,10 @@ namespace Wildbond
         [Header("Utility")]
         public int storageSlots;
         public CraftStation station = CraftStation.Hand;
+        [Tooltip("Stations: tier within the station's family (Workbench 1, Forge Bench 2, ...). 0 = 1. A bench works every order up to its tier (Stations).")]
+        public int benchTier;
+        [Tooltip("Producers: the lowest job level a kin needs to work here at all (hard ores). 0 = any.")]
+        public int minJobLevel;
         [Tooltip("Base-wide production bonus while staffed (Dynamo).")]
         public float boostPercent;
         public bool feeds;

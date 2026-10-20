@@ -32,7 +32,17 @@ namespace Wildbond
         /// <summary>Plain foods camp workers will eat from storage, cheapest first.</summary>
         public static readonly string[] KinFoods = { "berry", "frostmint", "goldgrain", "emberpepper", "dewmelon", "berry_tart", "silverfin" };
 
+        /// <summary>Crop Plot and Greenhouse: the ones you can replant with any crop (CROP picker).</summary>
         public static bool IsPlot(Building b) => b != null && (b.Def.id == PlotId || b.Def.id == "greenhouse");
+
+        /// <summary>
+        /// Gardens: plots made for one land's own plant, the only way to farm it (user, 2026-10-20: "crop plots for
+        /// different crops"). Planted, watered, grown and harvested like a Crop Plot, but fixed to their plant.
+        /// </summary>
+        public static readonly string[] Gardens = { "flower_bed", "frost_bed", "lantern_bog", "fig_orchard", "spore_log", "moss_terrace" };
+
+        /// <summary>Anything farmed in steps (planting, watering, growing, harvesting): plots, the Greenhouse and gardens.</summary>
+        public static bool Grows(BuildingDef d) => d != null && (d.id == PlotId || d.id == "greenhouse" || System.Array.IndexOf(Gardens, d.id) >= 0);
 
         public static bool TryGet(string id, out Crop c)
         {

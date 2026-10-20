@@ -278,7 +278,7 @@ namespace Wildbond
                 var existing = bm.Orders.Find(o => o.recipeId == r.id);
                 if (existing != null) existing.remaining++;
                 else bm.Orders.Add(new CraftOrder { recipeId = r.id, remaining = 1 });
-                GameEvents.Good($"Queued {ContentDB.ItemName(r.outputItem)} at the {r.station}.");
+                GameEvents.Good($"Queued {ContentDB.ItemName(r.outputItem)} at the {Stations.BenchName(r.station, Stations.Tier(r))}.");
                 SynthAudio.Play(Sfx.Craft, 0.8f);
             }
             GameEvents.RaiseInventoryChanged();

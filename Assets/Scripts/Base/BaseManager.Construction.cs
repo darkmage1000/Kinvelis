@@ -233,7 +233,7 @@ namespace Wildbond
         }
 
         /// <summary>How fast a kin builds: its Crafting level (at least 1) and its work multipliers.</summary>
-        public static float BuildRate(CreatureData d) => Mathf.Max(1, d.JobLevel(WorkType.Crafting)) * d.WorkMul * Dev.WorkMul * WorldRules.Current.workSpeed * CheerMul(d);
+        public static float BuildRate(CreatureData d) => Mathf.Max(1, d.JobLevel(WorkType.Crafting)) * d.WorkMul * Dev.WorkMul * Pace * CheerMul(d);
 
         /// <summary>A kin that has the Crafting job, switched on (kin without it never build - you can always BUILD yourself).</summary>
         public static bool CanBuild(CreatureData d) => d != null && d.WorkLevel(WorkType.Crafting) > 0 && !d.Fainted;
@@ -255,7 +255,7 @@ namespace Wildbond
             if (s.finished || d.magnitude - s.radius > 3f || !pl.IsAlive) { PlayerBuildSite = null; return; }
             playerBuildFx -= dt;
             if (playerBuildFx <= 0f) { playerBuildFx = 0.45f; SynthAudio.Play(Sfx.Chop, UnityEngine.Random.Range(1.0f, 1.25f), 0.5f); Fx.Puff(s.pos + Vector3.up * 0.4f, new Color(0.85f, 0.75f, 0.55f), 0.25f, 0.6f); }
-            AddSiteWork(s, PlayerBuildRate * Dev.WorkMul * dt);
+            AddSiteWork(s, PlayerBuildRate * Pace * Dev.WorkMul * dt);
         }
 
         readonly HashSet<string> abstractBuilders = new HashSet<string>();

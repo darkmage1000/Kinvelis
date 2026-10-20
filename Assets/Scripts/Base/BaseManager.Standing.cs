@@ -68,7 +68,7 @@ namespace Wildbond
         /// <summary>Why a standing order is not moving (null = it is, or it is satisfied).</summary>
         public string StandingBlock(RecipeDef r)
         {
-            if (!HasStation(r.station)) return "station not built";
+            if (!HasStation(r.station, Stations.Tier(r))) return $"needs a {Stations.BenchName(r.station, Stations.Tier(r))}";
             if (!Tech.RecipeUnlocked(r.id)) return "needs research";
             if (Chests.Locked(r)) return "needs its blueprint";
             if (r.unlockLevel > GameManager.I.Player.Stats.level) return $"needs Lv {r.unlockLevel}";
@@ -87,7 +87,7 @@ namespace Wildbond
             foreach (var s in Standing)
             {
                 if (!ContentDB.Recipes.TryGetValue(s.recipeId, out var r) || r.station == CraftStation.Hand) continue;
-                if (!HasStation(r.station) || !Tech.RecipeUnlocked(r.id) || Chests.Locked(r) || r.unlockLevel > GameManager.I.Player.Stats.level) continue;
+                if (!HasStation(r.station, Stations.Tier(r)) || !Tech.RecipeUnlocked(r.id) || Chests.Locked(r) || r.unlockLevel > GameManager.I.Player.Stats.level) continue;
                 int queued = 0;
                 CraftOrder mine = null;
                 foreach (var o in Orders) if (o.recipeId == r.id) { mine = o; queued += o.remaining; }

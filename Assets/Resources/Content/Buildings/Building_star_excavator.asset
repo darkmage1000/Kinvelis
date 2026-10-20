@@ -1,0 +1,121 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1add58a51849408438b7235809d63b65, type: 3}
+  m_Name: Building_star_excavator
+  m_EditorClassIdentifier: 
+  id: star_excavator
+  displayName: Star Excavator
+  description: Lenses draw starlight into a seed crystal until Starcrystal grows.
+    Needs a Quarrying kin of Lv 3 or more.
+  cost:
+  - itemId: stone
+    count: 60
+  - itemId: blightsteel_bar
+    count: 8
+  - itemId: starcrystal
+    count: 8
+  unlockLevel: 36
+  footprint: 1.6
+  isCore: 0
+  category: 0
+  workType: 2
+  secondaryWorkType: 0
+  workerSlots: 2
+  outputItem: starcrystal
+  outputCount: 1
+  workPerUnit: 32
+  inputItem: 
+  inputCount: 0
+  bufferCap: 30
+  storageSlots: 0
+  station: 0
+  benchTier: 0
+  minJobLevel: 3
+  boostPercent: 0
+  feeds: 0
+  beds: 0
+  bedSize: 0
+  bedTop: 0
+  bedBonus: 0
+  palette:
+    primary: {r: 0.47843137, g: 0.4392157, b: 0.40784314, a: 1}
+    secondary: {r: 0.2901961, g: 0.26666668, b: 0.2509804, a: 1}
+    accent: {r: 0.6901961, g: 0.627451, b: 0.5647059, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.6901961, g: 0.627451, b: 1, a: 1}
+  parts:
+  - shape: 6
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.6, z: 0}
+    scale: {x: 2.4, y: 1.3, z: 2}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 5
+    group: 0
+    slot: 6
+    pos: {x: 0.5, y: 0.8, z: 0.3}
+    scale: {x: 0.65, y: 1.5, z: 0.65}
+    rot: {x: 0, y: 0, z: -15}
+  - shape: 5
+    group: 0
+    slot: 6
+    pos: {x: -0.4, y: 0.9, z: -0.3}
+    scale: {x: 0.55, y: 1.2, z: 0.55}
+    rot: {x: 10, y: 0, z: 20}
+  - shape: 5
+    group: 0
+    slot: 6
+    pos: {x: 0.1, y: 1, z: -0.6}
+    scale: {x: 0.45, y: 1, z: 0.45}
+    rot: {x: -15, y: 0, z: 0}
+  - shape: 6
+    group: 0
+    slot: 6
+    pos: {x: 1.5, y: 0.22, z: -0.7}
+    scale: {x: 0.6, y: 0.4, z: 0.55}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 6
+    group: 0
+    slot: 6
+    pos: {x: 1.85, y: 0.18, z: -0.25}
+    scale: {x: 0.45, y: 0.32, z: 0.45}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 6
+    group: 0
+    slot: 6
+    pos: {x: 1.3, y: 0.16, z: -1.15}
+    scale: {x: 0.4, y: 0.3, z: 0.4}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 1
+    pos: {x: -1.2, y: 1.2, z: 0.8}
+    scale: {x: 0.14, y: 2.2, z: 0.14}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 1
+    pos: {x: 1.2, y: 1.2, z: 0.8}
+    scale: {x: 0.14, y: 2.2, z: 0.14}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 2.3, z: 0.8}
+    scale: {x: 2.5, y: 0.14, z: 0.18}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 0
+    slot: 2
+    pos: {x: 0, y: 1.9, z: 0.8}
+    scale: {x: 0.35, y: 0.2, z: 0.35}
+    rot: {x: 90, y: 0, z: 0}

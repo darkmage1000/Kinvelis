@@ -812,7 +812,7 @@ namespace Wildbond
             if (b.BufferCount > 0) InteractPrompt = $"COLLECT {b.BufferCount}";
             else if (baseMgr.PlayerWorkTarget == b) InteractPrompt = $"STOP\n{Mathf.RoundToInt(b.Progress01 * 100f)}%";
             else if (b.IsProducer && b.Waiting) InteractPrompt = $"{b.Cur.doing.ToUpperInvariant()}\n{WorkStages.Clock(b.SecondsLeft)}";
-            else if (b.IsProducer) InteractPrompt = Crops.IsPlot(b) ? (b.Stage == 0 ? "PLANT" : b.Stage == WorkStages.CropWater ? "WATER" : "HARVEST") : "WORK";
+            else if (b.IsProducer) InteractPrompt = Crops.Grows(b.Def) ? (b.Stage == 0 ? "PLANT" : b.Stage == WorkStages.CropWater ? "WATER" : "HARVEST") : "WORK";
             else if (b.Def.isCore) InteractPrompt = "CAMP";
             else if (b.Def.storageSlots > 0) InteractPrompt = "OPEN";
             else if (b.Def.feeds) InteractPrompt = "FEED BOX";

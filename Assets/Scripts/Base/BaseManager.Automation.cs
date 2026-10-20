@@ -82,8 +82,9 @@ namespace Wildbond
             }
             if (Has("auto_assembler"))
             {
-                AddCraftWork(CraftStation.Workbench, AssemblerRate * step);
-                AddCraftWork(CraftStation.Campfire, AssemblerRate * step);
+                // as good as the best bench of each kind in camp
+                AddCraftWork(CraftStation.Workbench, AssemblerRate * Pace * step, CampTier(CraftStation.Workbench));
+                AddCraftWork(CraftStation.Campfire, AssemblerRate * Pace * step, CampTier(CraftStation.Campfire));
             }
         }
 
@@ -130,7 +131,7 @@ namespace Wildbond
                 case "auto_assembler":
                     if (!CampPowered && PowerAsleep) { h = BuildingHealth.Idle; text = NoPowerNight; }
                     else if (!CampPowered) { h = BuildingHealth.Blocked; text = "No power - staff a Volt Pylon"; }
-                    else if (HasOrderFor(CraftStation.Workbench) || HasOrderFor(CraftStation.Campfire)) { h = BuildingHealth.Good; text = "Assembling orders"; }
+                    else if (HasOrderFor(CraftStation.Workbench, CampTier(CraftStation.Workbench)) || HasOrderFor(CraftStation.Campfire, CampTier(CraftStation.Campfire))) { h = BuildingHealth.Good; text = "Assembling orders"; }
                     else { h = BuildingHealth.Info; text = "Powered - no orders queued"; }
                     return true;
                 case "sprinkler":

@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1add58a51849408438b7235809d63b65, type: 3}
+  m_Name: Building_blast_furnace
+  m_EditorClassIdentifier: 
+  id: blast_furnace
+  displayName: Blast Furnace
+  description: A tall furnace that smelts Rustore into Ingots twice as fast as the
+    Smelter, with room for two kin and twice the shelf. Kindling kin charge it, then
+    it blasts by itself.
+  cost:
+  - itemId: stone
+    count: 60
+  - itemId: ingot
+    count: 20
+  - itemId: cinder
+    count: 15
+  unlockLevel: 12
+  footprint: 1.6
+  isCore: 0
+  category: 0
+  workType: 3
+  secondaryWorkType: 0
+  workerSlots: 2
+  outputItem: ingot
+  outputCount: 1
+  workPerUnit: 8
+  inputItem: ore
+  inputCount: 2
+  bufferCap: 60
+  storageSlots: 0
+  station: 0
+  benchTier: 0
+  minJobLevel: 0
+  boostPercent: 0
+  feeds: 0
+  beds: 0
+  bedSize: 0
+  bedTop: 0
+  bedBonus: 0
+  palette:
+    primary: {r: 0.3529412, g: 0.30588236, b: 0.2901961, a: 1}
+    secondary: {r: 0.18039216, g: 0.15686275, b: 0.14901961, a: 1}
+    accent: {r: 0.6901961, g: 0.5411765, b: 0.41568628, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 1, g: 0.41568628, b: 0.101960786, a: 1}
+  parts:
+  - shape: 2
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 1.3, z: 0}
+    scale: {x: 2, y: 2.6, z: 2}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 2.9, z: 0}
+    scale: {x: 1.2, y: 0.7, z: 1.2}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.12, z: 0}
+    scale: {x: 2.5, y: 0.24, z: 2.5}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 0
+    group: 0
+    slot: 6
+    pos: {x: 0, y: 0.7, z: 0.95}
+    scale: {x: 0.8, y: 0.5, z: 0.25}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 2
+    pos: {x: 0, y: 1.6, z: 1}
+    scale: {x: 1.6, y: 0.12, z: 0.12}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 2
+    pos: {x: 0, y: 2.3, z: 1}
+    scale: {x: 1.4, y: 0.12, z: 0.12}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 2
+    group: 0
+    slot: 1
+    pos: {x: 1.15, y: 1, z: 0}
+    scale: {x: 0.3, y: 2, z: 0.3}
+    rot: {x: 0, y: 0, z: 0}

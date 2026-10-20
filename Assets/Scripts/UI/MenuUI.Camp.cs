@@ -588,7 +588,7 @@ namespace Wildbond
                 var card = Card(list, 120);
                 var ic = UIFactory.ItemIcon(card.transform, ContentDB.Item(r.outputItem), 90);
                 ic.rectTransform.Place(new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(14, 0), new Vector2(90, 90));
-                var t = UIFactory.Label(card.transform, $"<b>{ContentDB.ItemName(r.outputItem)} x{r.outputCount}</b>  <size=20>{o.remaining} left · {r.station}{(bm.OrderProgress01(o) > 0f ? " · in progress" : "")}</size>", 26, Color.white, TextAnchor.UpperLeft);
+                var t = UIFactory.Label(card.transform, $"<b>{ContentDB.ItemName(r.outputItem)} x{r.outputCount}</b>  <size=20>{o.remaining} left · {Stations.BenchName(r.station, Stations.Tier(r))}{(bm.OrderProgress01(o) > 0f ? " · in progress" : "")}</size>", 26, Color.white, TextAnchor.UpperLeft);
                 t.supportRichText = true;
                 t.rectTransform.Place(new Vector2(0, 1), new Vector2(0, 1), new Vector2(120, -14), new Vector2(700, 40));
                 var pb = UIFactory.Bar(card.transform, UIFactory.Accent, out var pf);
@@ -598,7 +598,7 @@ namespace Wildbond
                 var bh = btns.gameObject.AddComponent<HorizontalLayoutGroup>();
                 bh.spacing = 8; bh.childControlWidth = true; bh.childControlHeight = true; bh.childForceExpandWidth = true;
                 var oo = o;
-                if (!bm.AtStation(r.station)) { WalkBtn(btns, $"At the {StationName(r.station)}", 18); continue; }
+                if (!bm.AtStation(r.station, Stations.Tier(r))) { WalkBtn(btns, $"At the {Stations.BenchName(r.station, Stations.Tier(r))}", 18); continue; }
                 UIFactory.Button(btns, "UP", idx > 0 ? () => { MoveOrder(idx, -1); } : (Action)null, idx > 0 ? UIFactory.ButtonCol : new Color(0.25f, 0.25f, 0.27f), 22);
                 UIFactory.Button(btns, "DOWN", idx < bm.Orders.Count - 1 ? () => { MoveOrder(idx, 1); } : (Action)null, idx < bm.Orders.Count - 1 ? UIFactory.ButtonCol : new Color(0.25f, 0.25f, 0.27f), 22);
                 UIFactory.Button(btns, "CANCEL", () => CancelOrder(oo), new Color(0.45f, 0.25f, 0.25f), 20);

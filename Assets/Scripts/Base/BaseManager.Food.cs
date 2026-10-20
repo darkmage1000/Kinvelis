@@ -45,7 +45,7 @@ namespace Wildbond
         public float HungerRate(CreatureData d)
         {
             return hungerPerSecond * d.HungerMul * AppetiteMul(d) * (LarderActive ? 0.6f : 1f) * (Asleep(d) ? 0.5f : 1f)
-                 * WorldRules.Current.hungerRate * GameManager.I.Player.Stats.KinHungerMul;
+                 * WorldRules.Current.hungerRate * GameManager.I.Player.Stats.KinHungerMul * CampPace;   // at camp's pace: food made and food eaten stay in step
         }
 
         /// <summary>Hunger points one of this item gives a kin.</summary>

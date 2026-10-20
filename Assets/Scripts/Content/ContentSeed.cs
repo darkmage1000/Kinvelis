@@ -68,6 +68,7 @@ namespace Wildbond
             BuildTechBuildings(b);
             BuildStorageBuildings(b);
             BuildFishingBuildings(b);
+            BuildCampTiers(b);
             ApplyBuildCategories(b);
             ApplyStackSizes(b);
             return b;
@@ -296,7 +297,7 @@ namespace Wildbond
                 P(PartShape.Rock, BodyGroup.Body, ColorSlot.Accent, 0.1f, 0.35f, -1.3f, 0.55f, 0.5f, 0.55f),
             };
 
-            var wb = Bld(b, "workbench", "Workbench", "Crafting station. Queued orders are worked by Crafting kin (and you, if nearby).", 1, 1.3f, ("wood", 8), ("stone", 3));
+            var wb = Bld(b, "workbench", "Workbench", "Tier 1 crafting bench: wood, stone, fiber, pelt and ingot things. Queued orders are worked by Crafting kin (and you, if nearby). The Forge Bench, Artisan's Anvil and Starforge make better things and replace it.", 1, 1.3f, ("wood", 8), ("stone", 3));
             wb.station = CraftStation.Workbench; wb.workType = WorkType.Crafting; wb.workerSlots = 2; wb.palette = woodP;
             wb.parts = new[]
             {
@@ -376,7 +377,7 @@ namespace Wildbond
                 P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Glow, 0, 0.6f, 0.75f, 0.7f, 0.5f, 0.3f),
             };
 
-            var fire = Bld(b, "campfire", "Campfire", "Cooking station. Kindling kin keep the fire going.", 1, 1.0f, ("wood", 6), ("stone", 4));
+            var fire = Bld(b, "campfire", "Campfire", "Tier 1 cooking: Sunmeadow food and treats. Kindling kin keep the fire going. The Kitchen cooks meals from the other lands too.", 1, 1.0f, ("wood", 6), ("stone", 4));
             fire.station = CraftStation.Campfire; fire.workType = WorkType.Kindling; fire.workerSlots = 1;
             fire.palette = Pal(Hex("#8e8a92"), Hex("#6b4424"), Hex("#ffb13a"), Hex("#ff6a1a"));
             fire.parts = new[]

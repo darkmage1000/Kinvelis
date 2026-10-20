@@ -40,7 +40,7 @@ namespace Wildbond
 
         public static StageDef[] For(BuildingDef d)
         {
-            if (d.id == Crops.PlotId || d.id == "greenhouse") return Crop;
+            if (Crops.Grows(d)) return Crop;
             string work, idle, run;
             switch (d.id)
             {
@@ -50,6 +50,16 @@ namespace Wildbond
                 case "smelter": work = "Stoking the fire"; idle = "Needs stoking"; run = "Smelting"; break;
                 case "fish_pond": work = "Baiting the lines"; idle = "Lines need bait"; run = "Waiting for a bite"; break;
                 case "deep_drill": work = "Winding the drill"; idle = "Needs winding"; run = "Drilling"; break;
+                case "blast_furnace": work = "Charging the furnace"; idle = "Needs charging"; run = "Blasting"; break;
+                case "cinder_pit": work = "Raking the vents"; idle = "Needs raking"; run = "Cooling the cinder"; break;
+                case "obsidian_cutter": work = "Scoring the glass"; idle = "Needs scoring"; run = "Cleaving"; break;
+                case "saltglass_dredge": work = "Sinking the scoops"; idle = "Needs dredging"; run = "Rinsing the glass"; break;
+                case "crystal_drill": work = "Setting the bit"; idle = "Needs setting"; run = "Boring crystal"; break;
+                case "bog_sluice": work = "Shovelling mud"; idle = "Needs mud"; run = "Sluicing"; break;
+                case "sunsteel_mine": work = "Hewing the seam"; idle = "Needs hewing"; run = "Hauling ore up"; break;
+                case "blight_shaft": work = "Shoring the shaft"; idle = "Needs shoring"; run = "Draining the seep"; break;
+                case "star_excavator": work = "Aligning the lenses"; idle = "Needs aligning"; run = "Drawing starlight"; break;
+                case "oyster_bed": work = "Seeding the oysters"; idle = "Needs seeding"; run = "Pearls growing"; break;
                 default: work = "Working"; idle = "Needs a worker"; run = "Running"; break;
             }
             return new[]

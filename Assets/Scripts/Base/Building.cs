@@ -66,7 +66,7 @@ namespace Wildbond
         {
             var st = Stages[Mathf.Clamp(i, 0, Stages.Length - 1)];
             float whole = Batch * WorkPerUnit * st.share;
-            return st.handsOff ? whole / Mathf.Max(0.25f, WorldRules.Current.workSpeed) : whole;
+            return st.handsOff ? whole / Mathf.Max(0.02f, BaseManager.Pace) : whole;   // growing, smelting...: at camp pace
         }
         public float Stage01 => IsProducer ? Mathf.Clamp01(Progress / Mathf.Max(0.01f, StageNeed)) : 0f;
         public float SecondsLeft => Waiting ? Mathf.Max(0f, StageNeed - Progress) : 0f;
@@ -80,6 +80,11 @@ namespace Wildbond
             if (st.handsOff) return 0f;
             float a = st.job != WorkType.None ? d.WorkLevel(st.job) : 0f;
             float b2 = st.alt != WorkType.None ? d.WorkLevel(st.alt) * st.altRate : 0f;
+            if (Def.minJobLevel > 0)   // a hard ore: a kin must be this good at the job to work it at all
+            {
+                if (st.job != WorkType.None && d.WorkLevel(st.job) < Def.minJobLevel) a = 0f;
+                if (st.alt != WorkType.None && d.WorkLevel(st.alt) < Def.minJobLevel) b2 = 0f;
+            }
             return Mathf.Max(a, b2);
         }
 
@@ -118,7 +123,7 @@ namespace Wildbond
             transform.SetPositionAndRotation(pos, Quaternion.Euler(0, rotY, 0));
             Stages = WorkStages.For(def);
             if (def.feeds) Feed = new Inventory(BaseManager.FeedSlots);
-            bool plot = def.id == Crops.PlotId || def.id == "greenhouse";
+            bool plot = Crops.Grows(def);
             if (!meshCache.TryGetValue(def.id, out var mesh))
             {
                 var parts = def.parts;
@@ -207,7 +212,7 @@ namespace Wildbond
                 return true;
             }
             if (Suitability(d) <= 0) return false;
-            if (IsStation) return bm.HasOrderFor(Def.station);
+            if (IsStation) return bm.HasOrderFor(Def.station, Stations.Tier(this));
             if (Def.id == "volt_pylon") return bm.PylonWantsKin;   // charged up: its kin is free until it runs down (BaseManager.Power)
             if (Def.workType == WorkType.Chilling) return bm.LarderWantsKin;   // the same for a larder full of cold
             return Def.workType == WorkType.Charging || Def.workType == WorkType.Chilling;
@@ -229,7 +234,7 @@ namespace Wildbond
                 Progress += w;
                 if (Progress >= StageNeed) NextStage();
             }
-            else if (IsStation) bm.AddCraftWork(Def.station, w);
+            else if (IsStation) bm.AddCraftWork(Def.station, w, Stations.Tier(this));
             else
             {
                 PoweredUntil = GameManager.WorldTime + 2.0;

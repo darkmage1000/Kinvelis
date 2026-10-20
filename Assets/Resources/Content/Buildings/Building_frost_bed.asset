@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1add58a51849408438b7235809d63b65, type: 3}
+  m_Name: Building_frost_bed
+  m_EditorClassIdentifier: 
+  id: frost_bed
+  displayName: Frost Bed
+  description: 'Grows Frostcaps from the Shiverglass Field in cold, packed earth.
+    Planted, watered, grown and harvested like a Crop Plot: Cultivating kin plant
+    it, Irrigating kin water it, it grows by itself, then Cultivating or Foraging
+    kin harvest. This is the only way to farm it.'
+  cost:
+  - itemId: stone
+    count: 12
+  - itemId: crystal
+    count: 2
+  - itemId: frostcap
+    count: 3
+  unlockLevel: 12
+  footprint: 1.8
+  isCore: 0
+  category: 0
+  workType: 5
+  secondaryWorkType: 4
+  workerSlots: 2
+  outputItem: frostcap
+  outputCount: 2
+  workPerUnit: 16
+  inputItem: 
+  inputCount: 0
+  bufferCap: 30
+  storageSlots: 0
+  station: 0
+  benchTier: 0
+  minJobLevel: 0
+  boostPercent: 0
+  feeds: 0
+  beds: 0
+  bedSize: 0
+  bedTop: 0
+  bedBonus: 0
+  palette:
+    primary: {r: 0.3529412, g: 0.24313726, b: 0.15686275, a: 1}
+    secondary: {r: 0.5411765, g: 0.47843137, b: 0.41568628, a: 1}
+    accent: {r: 0.65882355, g: 0.84705883, b: 1, a: 1}
+    eye: {r: 0.08, g: 0.07, b: 0.1, a: 1}
+    glow: {r: 0.65882355, g: 0.84705883, b: 1, a: 1}
+  parts:
+  - shape: 1
+    group: 0
+    slot: 0
+    pos: {x: 0, y: 0.12, z: 0}
+    scale: {x: 3, y: 0.25, z: 2.2}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.16, z: 1.15}
+    scale: {x: 3.2, y: 0.32, z: 0.14}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 1
+    pos: {x: 0, y: 0.16, z: -1.15}
+    scale: {x: 3.2, y: 0.32, z: 0.14}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 1
+    pos: {x: 1.55, y: 0.16, z: 0}
+    scale: {x: 0.14, y: 0.32, z: 2.3}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 1
+    pos: {x: -1.55, y: 0.16, z: 0}
+    scale: {x: 0.14, y: 0.32, z: 2.3}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 2
+    pos: {x: 1.55, y: 0.55, z: 1.15}
+    scale: {x: 0.12, y: 0.8, z: 0.12}
+    rot: {x: 0, y: 0, z: 0}
+  - shape: 1
+    group: 0
+    slot: 2
+    pos: {x: 1.55, y: 0.95, z: 1.15}
+    scale: {x: 0.4, y: 0.24, z: 0.06}
+    rot: {x: 0, y: 0, z: 0}
