@@ -6,7 +6,10 @@ namespace Wildbond
     /// <summary>Rolls wild individuals: level, traits, and rare variants (shimmer, alpha, regional, mutation, rare ability).</summary>
     public static class CreatureFactory
     {
-        public static float ShimmerChance = 1f / 150f;
+        // 1 in 2000 (was 1 in 150; user 2026-10-19: "3 shimmer wild kin in 5 mins"): galloping on a mount passes ~190 new
+        // wild kin a minute (measured with Editor/SpawnSurvey), so 1/150 was more than one shimmer a minute of riding.
+        // Now about one per 10 minutes of hard riding, far fewer on foot.
+        public static float ShimmerChance = 1f / 2000f;
         public static float MutationChance = 0.025f;
         public static float RareAbilityChance = 0.06f;
 

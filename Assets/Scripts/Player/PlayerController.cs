@@ -70,7 +70,8 @@ namespace Wildbond
         const float ChargeStopSpeed = 3f;
         public bool Charging => chargeTimer > 0f;
         /// <summary>Carry the rider at `vel` for `time` seconds (a mount's dash skill).</summary>
-        public void MountCharge(Vector3 vel, float time) { vel.y = 0f; chargeVel = vel; chargeTimer = time; }
+        public void MountCharge(Vector3 vel, float time, bool keepPace = false) { vel.y = 0f; chargeVel = vel; chargeTimer = time; chargeKeep = keepPace; }
+        bool chargeKeep;   // a burst of speed (no target): you come out of it at the mount's full gallop, not braking
         /// <summary>The dash landed: stop here.</summary>
         public void EndCharge() { if (chargeTimer <= 0f) return; chargeTimer = 0f; hVel = chargeVel.normalized * ChargeStopSpeed; }
 
@@ -368,7 +369,7 @@ namespace Wildbond
                 {
                     step = chargeVel * Mathf.Min(dt, chargeTimer);   // never further than the charge (a long frame)
                     chargeTimer -= dt;
-                    hVel = chargeTimer > 0f ? chargeVel : chargeVel.normalized * ChargeStopSpeed;
+                    hVel = chargeTimer > 0f ? chargeVel : chargeVel.normalized * (chargeKeep ? Mathf.Max(ChargeStopSpeed, MountGallop) : ChargeStopSpeed);
                 }
             }
 

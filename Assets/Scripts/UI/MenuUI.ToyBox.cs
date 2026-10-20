@@ -44,7 +44,7 @@ namespace Wildbond
             UIFactory.SliderRow(list, "Kin size", 0.4f, 3f, w.kinSize, false, x, v => { w.kinSize = v; foreach (var a in CreatureRegistry.All) a.ApplyWorldSize(); });
             UIFactory.SliderRow(list, "Jump height", 1f, 4f, w.jumpPower, false, x, v => w.jumpPower = v);
             UIFactory.SliderRow(list, "Your speed", 0.5f, 3f, w.moveSpeed, false, x, v => w.moveSpeed = v);
-            UIFactory.SliderRow(list, "Shimmer (rare colour) odds", 1f, 150f, w.shimmerRate, false, v => v >= 149f ? "every kin" : $"x{v:0}", v => w.shimmerRate = v);
+            UIFactory.SliderRow(list, "Shimmer (rare colour) odds", 1f, 2000f, w.shimmerRate, false, v => v >= 1990f ? "every kin" : $"x{v:0}", v => w.shimmerRate = v);   // base odds are 1 in 2000
 
             // ---- switches
             var t1 = UIFactory.HRow(list, 84, 10);

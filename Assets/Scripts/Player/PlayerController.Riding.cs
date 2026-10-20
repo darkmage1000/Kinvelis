@@ -266,6 +266,18 @@ namespace Wildbond
             if (!quiet) SynthAudio.Play(Sfx.Jump, 1.1f, 0.5f);
         }
 
+        /// <summary>The mount's top speed (sprinting), whatever you are doing now.</summary>
+        float MountGallop
+        {
+            get
+            {
+                if (mount == null) return 0f;
+                float baseSpeed = mount.Sp.mountable ? mount.Sp.mountSpeed : Mathf.Max(7.5f, mount.Sp.runSpeed * 1.2f);
+                if (IsSwimming && MountSwims) baseSpeed = Mathf.Max(baseSpeed, SurfSpeed);
+                return baseSpeed * mount.Data.SpeedMul * mount.Status.SpeedMul;
+            }
+        }
+
         float MountTargetSpeed()
         {
             // a kin that was never meant as a mount (ride-anything worlds, or a surfer) carries you a little faster than it runs

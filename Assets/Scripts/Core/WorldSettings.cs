@@ -86,7 +86,7 @@ namespace Wildbond
                     // empty pockets never stop the fun
                     s.simpleControls = s.cantFaint = s.safeTravel = s.levelMatched = s.endlessSeeds = true;
                     s.freeBuild = s.rideAnything = s.parade = s.kidRoster = true;
-                    s.wildSpawnRate = 1.2f; s.captureRate = 3f; s.shimmerRate = 6f; s.expRate = 2f; s.gatherRate = 2f; s.resourceRespawnRate = 2f;
+                    s.wildSpawnRate = 1.2f; s.captureRate = 3f; s.shimmerRate = 80f;   /* 1 in 25 (base is 1 in 2000) */ s.expRate = 2f; s.gatherRate = 2f; s.resourceRespawnRate = 2f;
                     s.wildDamage = 0.4f; s.playerDamage = 1.6f; s.hungerRate = 0f; s.staminaDrain = 0f; s.dayLengthMinutes = 30f;
                     s.campWorkersBase = 8; s.campWorkersPerLevel = 4; s.workSpeed = 2f; s.alphaRespawnMinutes = 20f; s.raidFrequency = 0f;
                     break;

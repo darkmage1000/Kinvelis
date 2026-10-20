@@ -214,7 +214,9 @@ namespace Wildbond
             {
                 if (locked == null || !locked.IsAlive)
                 {
+                    // goes at once - no wind-up for a burst of speed (user: "dashing is overall slower than just sprinting")
                     StartAbility(slot, new AimPoint(transform.position + transform.forward * Mathf.Max(3f, ab.range)));
+                    windup = 0f;
                     return null;
                 }
                 target = locked;
@@ -262,7 +264,7 @@ namespace Wildbond
 
         // a dash from the saddle (user, 2026-10-19: "if i use a dash skill while riding i sit still"): the mount charges
         // with you on it - PlayerController carries you both - and the blow lands when it reaches the target
-        const float MountDashTime = 0.3f;
+        const float MountDashTime = 0.3f, BurstReach = 1.5f;
         AbilityDef mountDashAb;
         ICombatant mountDashTarget;
         float mountDashLeft;
@@ -279,9 +281,9 @@ namespace Wildbond
                 if (f.sqrMagnitude > 0.001f) dir = f.normalized;
             }
             float len = target is AimPoint
-                ? Mathf.Max(3f, a.range)
+                ? Mathf.Max(3f, a.range) * BurstReach   // a burst of speed goes a bit further than a charge at a kin
                 : Mathf.Clamp(to.magnitude - (target.Radius + BodyRadius) + DashContact, 1f, a.range + 3f);
-            pl.MountCharge(dir * len / MountDashTime, MountDashTime);
+            pl.MountCharge(dir * len / MountDashTime, MountDashTime, target is AimPoint);
             mountDashAb = a;
             mountDashTarget = target;
             mountDashLeft = MountDashTime + 0.05f;
