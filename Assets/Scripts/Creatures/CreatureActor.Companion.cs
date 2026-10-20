@@ -201,13 +201,24 @@ namespace Wildbond
         /// skills"): from where it stands under you - no run-in, you steer. A shot or a burst goes off at once; a melee
         /// move, a dash or a blink needs the target within reach of the mount (it strikes, it doesn't leave you).
         /// </summary>
-        public string MountedSkill(int slot, ICombatant target)
+        public string MountedSkill(int slot, ICombatant target, ICombatant locked = null)
         {
             if (slot < 0 || slot >= abilities.Length || abilities[slot] == null) return "Not learned yet.";
             var ab = abilities[slot];
             bool self = SkillEffects.SelfCast(ab.effect) || (ab.effect == AbilityEffect.Tonic && TonicWantsHeal());
             if (cooldowns[slot] > 0f) return $"{ab.displayName} recharging ({cooldowns[slot]:0.0}s).";
             if (pendingAbility >= 0 || mountDashAb != null) return "Busy...";
+            // a dash from the saddle only goes for a kin you have locked on to; otherwise it is a burst of speed straight
+            // ahead (user, 2026-10-19: "using the dash to go faster while sprinting, it takes me suddenly in a direction")
+            if (ab.kind == AbilityKind.Dash || ab.kind == AbilityKind.Blink)
+            {
+                if (locked == null || !locked.IsAlive)
+                {
+                    StartAbility(slot, new AimPoint(transform.position + transform.forward * Mathf.Max(3f, ab.range)));
+                    return null;
+                }
+                target = locked;
+            }
             if (!self && (target == null || !target.IsAlive)) { StartAbility(slot, AimAhead(ab)); return null; }   // fired ahead, at nothing
             if (!self)
             {
@@ -261,6 +272,12 @@ namespace Wildbond
             var pl = GameManager.I.Player;
             Vector3 to = target.Position - transform.position; to.y = 0f;
             Vector3 dir = to.sqrMagnitude > 0.01f ? to.normalized : transform.forward;
+            if (target is AimPoint)
+            {
+                // straight on, the way you are heading when it goes off (you kept riding through the wind-up)
+                Vector3 f = pl.Velocity.sqrMagnitude > 1f ? pl.Velocity : pl.Forward; f.y = 0f;
+                if (f.sqrMagnitude > 0.001f) dir = f.normalized;
+            }
             float len = target is AimPoint
                 ? Mathf.Max(3f, a.range)
                 : Mathf.Clamp(to.magnitude - (target.Radius + BodyRadius) + DashContact, 1f, a.range + 3f);
