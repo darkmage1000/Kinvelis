@@ -323,6 +323,10 @@ namespace Wildbond
                         else t = SubRegions.Swapped(si, sw, t, Hash.F(cx * cells + gx, cz * cells + gz, 913));
                     }
                 }
+                // a land's own ore stays out of the Sunmeadow (user, 2026-10-20: "cinder vents outside the area"): the
+                // border mix above lets a cell 100+ m into the meadow roll the Badlands or Peaks table, so a Cinder Vent
+                // or Rime Crystal on ground the meadow owns becomes a plain boulder in the same spot (nothing else moves)
+                if ((t == PropType.CinderRock || t == PropType.CrystalCluster) && MeadowOwns(b, wm, wb, wp)) t = PropType.Rock;
                 if (t == PropType.Count) continue;
                 // keep the start plateau and its cliffs an open glade: no trees / boulders (pickups, bushes & grass are fine)
                 if (t < PropType.LooseStones && t != PropType.BerryBush && t != PropType.FiberPlant &&
@@ -334,5 +338,9 @@ namespace Wildbond
             }
             return list;
         }
+
+        /// <summary>True on the old island where the Sunmeadow is the strongest land (not on an outer land).</summary>
+        public static bool MeadowOwns(BiomeId cellBiome, float wm, float wb, float wp) =>
+            (cellBiome == BiomeId.Meadow || cellBiome == BiomeId.Badlands || cellBiome == BiomeId.Peaks) && wm >= wb && wm >= wp;
     }
 }
