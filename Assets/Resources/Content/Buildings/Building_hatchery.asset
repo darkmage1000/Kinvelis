@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: hatchery
   displayName: Hatchery
-  description: 'Pair two kin to get an egg that inherits the best of both, and warm
-    eggs until they hatch: 1 at a time, 2 at level 2, 5 at level 3 (MANAGE > UPGRADE).
-    It takes waiting eggs from camp storage by itself.'
+  description: Pair two kin to get an egg that inherits the best of both, and warm
+    one egg at a time until it hatches. A Brood House warms 2, a Grand Incubator
+    5.
   cost:
   - itemId: wood
     count: 20

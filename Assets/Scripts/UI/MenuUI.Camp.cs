@@ -282,7 +282,7 @@ namespace Wildbond
                 if (b.IsStation) UIFactory.Button(act, StationVerb(b.Def.station), () => OpenStation(bb.Def.station), new Color(0.3f, 0.4f, 0.55f), 22);
                 if (Crops.IsPlot(b)) UIFactory.Button(act, "CROP", () => CropPicker(bb), new Color(0.3f, 0.5f, 0.3f), 22);
                 if (b.Def.feeds || (b.BoxLen > 0 && !b.Def.isCore)) UIFactory.Button(act, b.Def.feeds ? "FEED BOX" : "OPEN", () => OpenBox(bb), new Color(0.3f, 0.36f, 0.5f), 22);
-                if (b.Def.id == "hatchery") UIFactory.Button(act, "HATCHERY", () => OpenHatchery(), new Color(0.5f, 0.38f, 0.25f), 22);
+                if (KinGrowth.IsHatchery(b.Def)) UIFactory.Button(act, "HATCHERY", () => OpenHatchery(), new Color(0.5f, 0.38f, 0.25f), 22);
                 if (b.Upgradable && b.Level < Building.MaxLevel)
                 {
                     var upCost = BaseManager.StructureUpgradeCost(b);

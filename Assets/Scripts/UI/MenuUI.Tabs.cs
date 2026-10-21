@@ -187,10 +187,10 @@ namespace Wildbond
             {
                 // a carried egg: into the Hatchery, or into camp storage for the Hatchery to take; never dropped
                 Para(right, KinGrowth.EggLine(), 22, Color.white);
-                if (BaseManager.I.HasBase && BaseManager.I.BuildingHere("hatchery") != null)
-                    ActionBtn(right, KinGrowth.FreePlace ? "PUT IT IN THE HATCHERY" : "HATCHERY FULL", KinGrowth.FreePlace ? () => { var err = KinGrowth.WarmFromBag(); if (err != null) GameEvents.Warn(err); Rebuild(); } : (System.Action)null);
+                if (BaseManager.I.HasBase && KinGrowth.Here != null)
+                    ActionBtn(right, KinGrowth.FreePlace ? "PUT IT IN TO WARM" : "EVERY PLACE IS WARMING AN EGG", KinGrowth.FreePlace ? () => { var err = KinGrowth.WarmFromBag(); if (err != null) GameEvents.Warn(err); Rebuild(); } : (System.Action)null);
                 if (BaseManager.I.HasBase && BaseManager.I.StorageHere() != null)
-                    ActionBtn(right, "STORE IN CAMP (the Hatchery takes it from there)", () =>
+                    ActionBtn(right, KinGrowth.AutoTakes ? "STORE IN CAMP (the Grand Incubator takes it from there)" : "STORE IN CAMP", () =>
                     {
                         int left2 = BaseManager.I.Storage.Add(st.id, st.count);
                         stats.Bag.Remove(st.id, st.count - left2);

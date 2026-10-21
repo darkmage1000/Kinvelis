@@ -816,7 +816,7 @@ namespace Wildbond
             else if (b.Def.isCore) InteractPrompt = "CAMP";
             else if (b.Def.storageSlots > 0) InteractPrompt = "OPEN";
             else if (b.Def.feeds) InteractPrompt = "FEED BOX";
-            else if (b.Def.id == "hatchery") InteractPrompt = KinGrowth.FirstReady() != null ? "HATCH!" : "HATCHERY";
+            else if (KinGrowth.IsHatchery(b.Def)) InteractPrompt = KinGrowth.FirstReady() != null ? "HATCH!" : "HATCHERY";
             else if (b.Def.id == HealingSpring) InteractPrompt = Party.AnyPartyKinHurt() ? "HEAL\nPARTY" : "SPRING";
             else if (b.IsStation) InteractPrompt = MenuUI.StationVerb(b.Def.station);
             else InteractPrompt = "INFO";
@@ -828,7 +828,7 @@ namespace Wildbond
             if (b.IsProducer) { baseMgr.TogglePlayerWork(b); return; }
             if (b.IsStation) { menu.OpenStation(b.Def.station); return; }
             if (b.Def.feeds || (b.BoxLen > 0 && !b.Def.isCore)) { menu.OpenBox(b); return; }   // a chest or a feed box: its own contents
-            if (b.Def.id == "hatchery") { menu.OpenHatchery(); return; }   // a ready egg hatches right here
+            if (KinGrowth.IsHatchery(b.Def)) { menu.OpenHatchery(); return; }   // a ready egg hatches right here
             if (b.Def.id == HealingSpring) { HealAtSpring(b); return; }
             menu.Open(MenuTab.Camp);
         }

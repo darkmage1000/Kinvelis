@@ -93,7 +93,7 @@ namespace Wildbond
         /// </summary>
         static void ApplyBuildCategories(Bundle b)
         {
-            foreach (var id in new[] { "kin_clinic", "hatchery", "training_yard" })
+            foreach (var id in new[] { "kin_clinic", "hatchery", "brood_house", "grand_incubator", "training_yard" })
             {
                 var d = b.buildings.Find(x => x.id == id);
                 if (d != null) d.category = BuildCategory.KinCare;

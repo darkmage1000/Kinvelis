@@ -91,28 +91,52 @@ namespace Wildbond
         // ================================================================ BREEDING
         /// <summary>
         /// Eggs (user, 2026-10-21: "eggs should take up an inv slot each", then "hatchery gets higher level tiers, allow 2
-        /// eggs at a time, allow 5 eggs at a time and auto grab them from storage"). An egg only warms inside a Hatchery:
-        /// a level 1 Hatchery has 1 place, level 2 has 2, level 3 has 5 (`PlacesAt`; upgraded like any structure, MANAGE >
-        /// UPGRADE). Until it has a place an egg is `held`: one `EggItem` in your bag or camp storage, a slot each. A
-        /// Hatchery with a free place takes the next egg from camp storage by itself (`SyncEggSlots`), or you put one in
-        /// from your bag standing at it (`WarmFromBag`). The `KinEgg` (its kin, its timer) stays in `PlayerStats.eggs`;
+        /// eggs at a time, allow 5 eggs at a time and auto grab them from storage" - as separate buildings, like the
+        /// benches). An egg only warms inside a hatchery building, and the best one in camp sets how many at once:
+        /// Hatchery 1, Brood House 2, Grand Incubator 5 (`Ladder`). Until it has a place an egg is `held`: one `EggItem` in
+        /// your bag or camp storage, a slot each. You put one in from your bag standing at the building (`WarmFromBag`);
+        /// a Grand Incubator also takes the next egg from camp storage by itself (`SyncEggSlots`). The `KinEgg` (its kin, its timer) stays in `PlayerStats.eggs`;
         /// the items only stand for the held ones, kept in step by `SyncEggSlots`.
         /// </summary>
         public const string EggItem = "kin_egg";
-        static readonly int[] PlacesByLevel = { 1, 2, 5 };
-        public static int PlacesAt(int level) => PlacesByLevel[Mathf.Clamp(level, 1, PlacesByLevel.Length) - 1];
+        /// <summary>The hatchery buildings, weakest first, and how many eggs each warms at once.</summary>
+        public static readonly (string id, int places)[] Ladder = { ("hatchery", 1), ("brood_house", 2), ("grand_incubator", 5) };
+        public const string AutoTaker = "grand_incubator";
 
-        /// <summary>Warming places in every Hatchery in camp.</summary>
-        public static int Places
+        public static int TierOf(BuildingDef d)
+        {
+            if (d == null) return 0;
+            for (int i = 0; i < Ladder.Length; i++) if (Ladder[i].id == d.id) return i + 1;
+            return 0;
+        }
+        public static bool IsHatchery(BuildingDef d) => TierOf(d) > 0;
+
+        /// <summary>The best hatchery building in camp (null = none).</summary>
+        public static Building Best
         {
             get
             {
-                if (BaseManager.I == null || !BaseManager.I.HasBase) return 0;
-                int n = 0;
-                foreach (var b in BaseManager.I.Buildings) if (b.Def.id == "hatchery") n += PlacesAt(b.Level);
-                return n;
+                if (BaseManager.I == null || !BaseManager.I.HasBase) return null;
+                Building best = null;
+                foreach (var b in BaseManager.I.Buildings) if (TierOf(b.Def) > TierOf(best != null ? best.Def : null)) best = b;
+                return best;
             }
         }
+
+        /// <summary>The hatchery building you are standing at, if any.</summary>
+        public static Building Here
+        {
+            get
+            {
+                if (BaseManager.I == null || !BaseManager.I.HasBase) return null;
+                foreach (var t in Ladder) { var b = BaseManager.I.BuildingHere(t.id); if (b != null) return b; }
+                return null;
+            }
+        }
+
+        /// <summary>Eggs warming at once: the best hatchery building's places (a new one replaces the old).</summary>
+        public static int Places { get { var b = Best; return b == null ? 0 : Ladder[TierOf(b.Def) - 1].places; } }
+        public static bool AutoTakes { get { var b = Best; return b != null && b.Def.id == AutoTaker; } }
         public static int WarmingCount { get { int n = 0; foreach (var e in GameManager.I.Player.Stats.eggs) if (!e.held) n++; return n; } }
         public static int HeldCount { get { int n = 0; foreach (var e in GameManager.I.Player.Stats.eggs) if (e.held) n++; return n; } }
         public static bool FreePlace => WarmingCount < Places;
@@ -150,7 +174,7 @@ namespace Wildbond
         public static string WarmFromBag()
         {
             var s = GameManager.I.Player.Stats;
-            if (!FreePlace) return "Every place in the Hatchery is warming an egg. Upgrade it for more places.";
+            if (!FreePlace) return "Every place is warming an egg. A Brood House warms 2 at once, a Grand Incubator 5.";
             if (s.Bag.Count(EggItem) <= 0) return "You have no eggs in your bag.";
             s.Bag.Remove(EggItem, 1);
             Warm();
@@ -184,12 +208,12 @@ namespace Wildbond
                 if (left > 0 && store != null) store.Add(EggItem, left);
                 changed = true;
             }
-            // the Hatchery helps itself to eggs left in camp storage
-            while (store != null && FreePlace && store.Count(EggItem) > 0 && HeldCount > 0)
+            // a Grand Incubator helps itself to eggs left in camp storage
+            while (store != null && AutoTakes && FreePlace && store.Count(EggItem) > 0 && HeldCount > 0)
             {
                 store.Remove(EggItem, 1);
                 Warm();
-                GameEvents.Good($"The Hatchery took an egg from storage. It hatches in {HatchMinutes} minutes.");
+                GameEvents.Good($"The Grand Incubator took an egg from storage. It hatches in {HatchMinutes} minutes.");
                 changed = true;
             }
             if (changed) GameEvents.RaiseInventoryChanged();
@@ -197,7 +221,7 @@ namespace Wildbond
         public const int HatchMinutes = 10;
         public static Ingredient[] BreedCost => new[] { new Ingredient("berry_tart", 2) };
 
-        public static bool HasHatchery => BaseManager.I != null && BaseManager.I.HasBase && BaseManager.I.Buildings.Exists(b => b.Def.id == "hatchery");
+        public static bool HasHatchery => Best != null;
 
         public static bool CanParent(CreatureData d) => d != null && !d.Fainted && d.location != KinLocation.Expedition && d.location != KinLocation.Outpost;
 
@@ -223,7 +247,8 @@ namespace Wildbond
             else
             {
                 AddEgg(egg);
-                GameEvents.Good("An egg! Every place is warming one, so it's in your bag - the Hatchery takes it from camp storage when a place frees up.");
+                GameEvents.Good(AutoTakes ? "An egg! Every place is warming one, so it's in your bag - leave it in camp storage and the Grand Incubator takes it when a place frees up."
+                    : "An egg! Every place is warming one, so it's in your bag - put it in when a place frees up.");
             }
             SynthAudio.Play(Sfx.CaptureSuccess, 1.3f);
             GameEvents.RaiseInventoryChanged();

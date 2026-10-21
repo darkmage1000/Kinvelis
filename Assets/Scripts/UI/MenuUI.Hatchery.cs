@@ -14,10 +14,11 @@ namespace Wildbond
             var s = GameManager.I.Player.Stats;
             var party = GameManager.I.Party;
             var list = TrackedList(body);
-            var hb0 = BaseManager.I.BuildingHere("hatchery");
+            var hb0 = KinGrowth.Here;
             bool here = hb0 != null;   // eggs are laid and hatched at the Hatchery itself
             int places = KinGrowth.Places, warming = KinGrowth.WarmingCount, held = KinGrowth.HeldCount;
-            Header(list, $"Hatchery  <size=22>warming {warming}/{places}{(held > 0 ? $"  ·  {held} waiting" : "")}</size>", 32);
+            string name = KinGrowth.Best != null ? KinGrowth.Best.Def.displayName : "Hatchery";
+            Header(list, $"{name}  <size=22>warming {warming}/{places}{(held > 0 ? $"  ·  {held} waiting" : "")}</size>", 32);
             if (!KinGrowth.HasHatchery)
             {
                 Para(list, "Build a Hatchery (BUILD menu, Explorer Lv 3) to breed kin. Eggs inherit the best quality grades of both parents and good traits - the way to raise S-grade kin.", 23, Color.white);
@@ -26,20 +27,23 @@ namespace Wildbond
             if (!here)
             {
                 Building near = null;
-                foreach (var hb1 in BaseManager.I.Buildings) if (hb1.Def.id == "hatchery") near = hb1;
-                Para(list, UIFactory.Col($"This is a view. Walk up to the Hatchery ({BaseManager.I.WayTo(near)}) to pair kin and hatch eggs.", Idle), 21, Color.white);
+                near = KinGrowth.Best;
+                Para(list, UIFactory.Col($"This is a view. Walk up to the {near.Def.displayName} ({BaseManager.I.WayTo(near)}) to pair kin and hatch eggs.", Idle), 21, Color.white);
             }
 
-            // places: level 1 warms one egg, level 2 two, level 3 five (KinGrowth.PlacesAt); eggs wait in the bag / camp storage
-            int lvl = 1; foreach (var hb2 in BaseManager.I.Buildings) if (hb2.Def.id == "hatchery") lvl = Mathf.Max(lvl, hb2.Level);
-            string more = lvl < Building.MaxLevel ? $" Upgrade it (MANAGE > UPGRADE at the Hatchery) to warm {KinGrowth.PlacesAt(lvl + 1)} at once." : "";
-            Para(list, $"Eggs only warm inside the Hatchery: {places} place{(places == 1 ? "" : "s")} here.{more} Eggs waiting for a place sit in your bag or camp storage, a slot each; leave them in camp storage and the Hatchery takes the next one by itself when a place frees up.", 20, Color.white);
+            // places come from the best hatchery building (KinGrowth.Ladder); eggs wait in the bag / camp storage
+            int tier = KinGrowth.TierOf(KinGrowth.Best.Def);
+            string more = tier < KinGrowth.Ladder.Length
+                ? $" Build a {ContentDB.Building(KinGrowth.Ladder[tier].id)?.displayName} to warm {KinGrowth.Ladder[tier].places} at once{(KinGrowth.Ladder[tier].id == KinGrowth.AutoTaker ? " and have it take eggs from camp storage by itself" : "")}."
+                : "";
+            string fetch = KinGrowth.AutoTakes ? " Leave them in camp storage and the Grand Incubator takes the next one by itself when a place frees up." : " Put them in standing here.";
+            Para(list, $"Eggs only warm inside: {places} place{(places == 1 ? "" : "s")} at your {name}.{more} Eggs waiting for a place sit in your bag or camp storage, a slot each.{fetch}", 20, Color.white);
             if (held > 0)
             {
                 int inBag = s.Bag.Count(KinGrowth.EggItem), inStore = BaseManager.I.Storage.Count(KinGrowth.EggItem);
                 Para(list, $"Waiting: {inBag} in your bag, {inStore} in camp storage.", 21, new Color(1f, 0.85f, 0.45f));
                 if (inBag > 0)
-                    UIFactory.Size(UIFactory.Button(list, here ? (KinGrowth.FreePlace ? "PUT AN EGG FROM YOUR BAG IN" : "EVERY PLACE IS WARMING AN EGG") : "PUT EGGS IN AT THE HATCHERY",
+                    UIFactory.Size(UIFactory.Button(list, here ? (KinGrowth.FreePlace ? "PUT AN EGG FROM YOUR BAG IN" : "EVERY PLACE IS WARMING AN EGG") : "PUT EGGS IN STANDING HERE",
                         here && KinGrowth.FreePlace ? () => { var err = KinGrowth.WarmFromBag(); if (err != null) GameEvents.Warn(err); Rebuild(); } : (System.Action)null,
                         here && KinGrowth.FreePlace ? new Color(0.6f, 0.45f, 0.25f) : new Color(0.3f, 0.3f, 0.32f), 24), 70);
             }

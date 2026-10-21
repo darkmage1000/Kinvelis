@@ -37,9 +37,8 @@ namespace Wildbond
             return list.ToArray();
         }
 
-        public static string UpgradeText(Building b) => b.Def.id == "hatchery"
-            ? $"Level {b.Level + 1}: warms {KinGrowth.PlacesAt(b.Level + 1)} eggs at once (now {KinGrowth.PlacesAt(b.Level)})."
-            : $"Level {b.Level + 1}: +25% work speed here (x{1f + 0.25f * b.Level:0.00} in all)" + (b.Def.workerSlots > 0 ? ", one more worker place" : "") + (b.Def.bufferCap > 0 ? ", a bigger output shelf" : "") + ".";
+        public static string UpgradeText(Building b) =>
+            $"Level {b.Level + 1}: +25% work speed here (x{1f + 0.25f * b.Level:0.00} in all)" + (b.Def.workerSlots > 0 ? ", one more worker place" : "") + (b.Def.bufferCap > 0 ? ", a bigger output shelf" : "") + ".";
 
         public bool TryUpgradeStructure(Building b)
         {
@@ -52,8 +51,7 @@ namespace Wildbond
             Fx.Sparkle(b.transform.position + Vector3.up * (b.TopY + 0.4f), new Color(1f, 0.85f, 0.4f), 30, 1.4f);
             SynthAudio.Play(Sfx.Build, 1.1f);
             SynthAudio.Play(Sfx.LevelUp, 1.3f, 0.6f);
-            if (b.Def.id == "hatchery") GameEvents.Good($"Hatchery level {b.Level}: it warms {KinGrowth.PlacesAt(b.Level)} eggs at once.");
-            else GameEvents.Good($"{b.Def.displayName} is now level {b.Level}: x{b.LevelMul:0.00} work speed{(b.Def.workerSlots > 0 ? $", {b.WorkerSlots} worker places" : "")}.");
+            GameEvents.Good($"{b.Def.displayName} is now level {b.Level}: x{b.LevelMul:0.00} work speed{(b.Def.workerSlots > 0 ? $", {b.WorkerSlots} worker places" : "")}.");
             GameEvents.RaiseBaseChanged();
             GameEvents.RaiseInventoryChanged();
             return true;

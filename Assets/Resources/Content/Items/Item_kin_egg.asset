@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: kin_egg
   displayName: Kin Egg
-  description: 'A kin egg. Each takes one bag slot. It only warms in a Hatchery:
-    put it in there, or leave it in camp storage and the Hatchery takes it when a
-    place is free. It hatches 10 minutes later.'
+  description: A kin egg. Each takes one bag slot (or a slot in camp storage). It
+    only warms in a Hatchery, Brood House or Grand Incubator - put it in there; a
+    Grand Incubator also takes eggs from camp storage by itself. It hatches 10 minutes
+    after it goes in.
   category: 7
   maxStack: 1
   iconColor: {r: 0.9411765, g: 0.8862745, b: 0.7529412, a: 1}
