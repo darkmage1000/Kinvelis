@@ -273,10 +273,10 @@ html: `
 
 <h2 id="eggs">Eggs</h2>
 <ul>
-<li>Build a <b>Hatchery</b>. Pick two kin and pay two Berry Tarts for an egg. It is ready after ten minutes of real time (you get a note when it starts to wobble). Walk up to the Hatchery and tap <b>HATCH!</b>: the egg rocks, cracks and bursts, and the kin's page shows its quality grades, traits, looks, skills and camp jobs. Name it there and choose party, camp or box. Tap the picture to hurry the egg along.</li>
+<li>Build a <b>Hatchery</b>. Pick two kin and pay two Berry Tarts for an egg. Once it is warming in the Hatchery it is ready after ten minutes of real time (you get a note when it starts to wobble). Walk up to the Hatchery and tap <b>HATCH!</b>: the egg rocks, cracks and bursts, and the kin's page shows its quality grades, traits, looks, skills and camp jobs. Name it there and choose party, camp or box. Tap the picture to hurry the egg along.</li>
 <li>The child is the kind of one parent or the other, starts at level 1, and takes after the better parent in each quality grade, give or take a little. Good traits pass on.</li>
 <li>Out in the world, wild <b>nests</b> appear now and then. A mother guards each one. Take the egg and you get a kin of her kind with better-than-usual grades.</li>
-<li>Eggs ride in your bag: each one takes a bag slot, and there is no other limit on how many you carry. With a full bag you can't take another until a slot is free. An egg can't be stored or dropped - only hatched.</li>
+<li>An egg only warms inside the <b>Hatchery</b>: a level 1 Hatchery warms one egg at a time, level 2 two, level 3 five (upgrade it with MANAGE > UPGRADE). Eggs waiting for a place ride in your bag or sit in camp storage, a slot each - there is no other limit on how many you keep. Put one in standing at the Hatchery, or leave them in camp storage and the Hatchery takes the next one by itself whenever a place frees up. A bred egg goes straight in when there is room. Eggs can't be dropped.</li>
 </ul>
 
 <h2 id="tonics">Training with tonics</h2>
