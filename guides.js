@@ -135,6 +135,7 @@ html: `
 <li>A kin above the seed's rating is 6% harder for every level over, down to a floor of 15% of the normal chance. Eight levels over, the chance is about half.</li>
 <li>A kin below the seed's rating is a little easier, the same for every seed: up to +35% once the kin is 20 or more levels under. A strong seed on a weak kin is good odds, never a sure thing - so a better seed is only worth it for stronger kin.</li>
 <li>All crafted at the Workbench except the Tether Seed. Chests, Wardens, quests, bounties and the trader hand out the seed that suits where you are.</li>
+<li>Keep up with the ladder and the odds feel the same all game: with the best seed you can make, about 25% on a kin at full health, 55-60% at half and 80-88% at a quarter. Fall a tier behind and they slip (a Cinderbound Seed on a Lv 30 kin at a quarter health is 57%).</li>
 </ul>
 
 <h2 id="boosts">What helps</h2>
