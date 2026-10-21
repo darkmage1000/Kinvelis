@@ -69,6 +69,7 @@ namespace Wildbond
             BuildStorageBuildings(b);
             BuildFishingBuildings(b);
             BuildCampTiers(b);
+            BuildTonics(b);
             ApplyBuildCategories(b);
             ApplyStackSizes(b);
             return b;

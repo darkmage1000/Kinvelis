@@ -100,12 +100,12 @@ namespace Wildbond
             if (n == null || n.taken) return;
             var gm = GameManager.I;
             var s = gm.Player.Stats;
-            if (s.eggs.Count >= KinGrowth.MaxEggs) { GameEvents.Warn($"You are already carrying {KinGrowth.MaxEggs} eggs. Hatch one first (Camp > Hatchery)."); return; }
+            if (!KinGrowth.EggRoom(out string full)) { GameEvents.Warn(full); return; }
             var child = CreatureFactory.RollWild(n.sp, 1, n.biome, false);
             child.location = KinLocation.Box;
             if (!child.shimmer && Random.value < 0.06f) Shimmer.Make(child);
             for (int i = 0; i < 3; i++) child.apt[i] = Mathf.Min(100, child.apt[i] + 8);
-            s.eggs.Add(new KinEgg { child = child, readyUnix = Expeditions.Now + KinGrowth.HatchMinutes * 60L, parents = "a wild nest" });
+            KinGrowth.AddEgg(new KinEgg { child = child, readyUnix = Expeditions.Now + KinGrowth.HatchMinutes * 60L, parents = "a wild nest" });
             n.taken = true;
             if (n.egg != null) n.egg.SetActive(false);
             gm.AddPlayerXp(25);

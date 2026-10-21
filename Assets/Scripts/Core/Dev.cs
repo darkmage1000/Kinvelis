@@ -122,7 +122,7 @@ namespace Wildbond
             if (shimmer && !e.child.shimmer) Shimmer.Make(e.child);
             e.readyUnix = Expeditions.Now;
             e.parents = "dev mode";
-            S.eggs.Add(e);
+            KinGrowth.AddEgg(e);
             Say($"An egg is ready: a {e.child.Species.displayName}{(shimmer ? " (shimmer)" : "")}. Hatch it at the Hatchery or Camp > Hatchery.");
         }
 

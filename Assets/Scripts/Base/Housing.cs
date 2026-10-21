@@ -82,6 +82,7 @@ namespace Wildbond
             new HousePieceDef { id = "house_door_wide", name = "Wide Doorway", kind = HouseKind.Doorway, gap = 1.6f, cost = C(("wood", 12), ("fiber", 2)), desc = "Double doors almost a storey tall: medium-sized kin fit through." },
             new HousePieceDef { id = "house_arch_grand", name = "Grand Archway", kind = HouseKind.Doorway, gap = 2.7f, tall = true, cost = C(("wood", 16), ("stone", 16)), desc = "An open arch two storeys tall that fills a whole edge: any kin fits through. Stack walls on walls beside it for a hall big kin can stand up in." },
             new HousePieceDef { id = "house_arch_great", name = "Great Archway", kind = HouseKind.Doorway, gap = 2.7f, tall = true, span = 3, cost = C(("wood", 24), ("stone", 26), ("ingot", 4)), desc = "An arch three storeys tall for the very biggest kin - the legendaries stand up under it. Stack walls three high beside it and lay a Flat Ceiling over the hall." },
+            new HousePieceDef { id = "house_railing", name = "Wooden Railing", kind = HouseKind.Wall, style = "railing", cost = C(("wood", 3)), desc = "A waist-high rail along an edge: closes the open sides of a balcony or a landing so nobody walks off." },
             new HousePieceDef { id = "house_window", name = "Window Wall", kind = HouseKind.Window, cost = C(("wood", 6), ("fiber", 2)), desc = "A wall with a window in it." },
             new HousePieceDef { id = "house_roof", name = "Flat Roof", kind = HouseKind.Roof, cost = C(("wood", 6), ("fiber", 4)), desc = "A roof over the top floor of one square. A bed needs a roof (or a floor) over it to sleep in." },
             new HousePieceDef { id = "house_ceiling", name = "Flat Ceiling", kind = HouseKind.Roof, style = "ceiling", cost = C(("wood", 6)), desc = "A flat plank ceiling with beams under it. It goes up to the top of the room's walls however high you stacked them, so laid over every square of a room it makes one flat ceiling." },
@@ -342,11 +343,14 @@ namespace Wildbond
                     if (L >= 1)
                     {
                         s.level = Mathf.Min(L, MaxLevel);
-                        bool below = FloorOrSite(cx, cz, s.level - 1, out float by);
-                        s.pos = new Vector3(c.x, (below ? by : WorldGen.Height(c.x, c.z)) + LevelH, c.z); s.q = Quaternion.identity; s.depth = UpperDepth;
+                        // held up by a floor or the walls under it, or a balcony off a held floor beside it (Housing.Balcony)
+                        bool held = HeldFromBelow(cx, cz, s.level, out float hy);
+                        bool balcony = !held && Overhang(cx, cz, s.level, out hy);
+                        s.pos = new Vector3(c.x, held || balcony ? hy : WorldGen.Height(c.x, c.z) + LevelH * s.level, c.z); s.q = Quaternion.identity; s.depth = UpperDepth;
                         if (s.reason != null) break;
                         if (L > MaxLevel) { Fail("A house goes four storeys high at most"); break; }
-                        if (!below) { Fail("Upper floors go over a floor below"); break; }
+                        if (!held && !balcony) { Fail("Upper floors rest on a floor or walls below, or jut out one square from a floor beside them (a balcony)"); break; }
+                        if (!bm.IsInsideBase(c, 1.5f)) { Fail("Inside your camp ring only"); break; }
                         if (RoofOrSite(cx, cz)) { Fail("Take the roof off first"); break; }
                         if (StairsOrSite(cx, cz, L - 1)) { Fail("The stairs come up here"); break; }
                         s.ok = true;
@@ -715,6 +719,8 @@ namespace Wildbond
         public string RemoveBlock(Piece pc)
         {
             if (pc == null) return "Nothing here to remove";
+            string held = HeldUpBy(pc);
+            if (held != null) return held;
             if (pc.def.kind == HouseKind.Wall || pc.def.kind == HouseKind.Doorway || pc.def.kind == HouseKind.Window)
             {
                 int up = pc.level + Span(pc.def);
@@ -1107,6 +1113,18 @@ namespace Wildbond
         {
             switch (style)
             {
+                case "railing":
+                    // posts at the ends and the middle, a top rail and a lower rail, spindles between
+                    for (int k = -1; k <= 1; k++) mb.Box(M(new Vector3(k * (half - 0.07f), 0.55f, 0), new Vector3(0.14f, 1.1f, 0.14f)), Post);
+                    mb.Box(M(new Vector3(0, 1.08f, 0), new Vector3(half * 2f, 0.1f, 0.16f)), PlankDark, Plank);
+                    mb.Box(M(new Vector3(0, 0.25f, 0), new Vector3(half * 2f, 0.08f, 0.1f)), PlankDark);
+                    for (int i = 0; i < 12; i++)
+                    {
+                        float x = -half + 0.2f + i * 0.237f;
+                        if (Mathf.Abs(x) < 0.12f) continue;
+                        mb.Box(M(new Vector3(x, 0.66f, 0), new Vector3(0.05f, 0.8f, 0.05f)), i % 2 == 0 ? Plank : PlankLight);
+                    }
+                    break;
                 case "bamboo":
                     for (int i = 0; i < 13; i++)
                     {

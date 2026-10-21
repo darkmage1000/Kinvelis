@@ -118,10 +118,10 @@ namespace Wildbond
             if (o.egg)
             {
                 if (!KinGrowth.HasHatchery) return "You'll need a Hatchery at camp to keep an egg warm.";
-                if (s.eggs.Count >= KinGrowth.MaxEggs) return "Your Hatchery is full.";
+                if (!KinGrowth.EggRoom(out string full)) return full;
                 s.glimmer -= o.price;
-                s.eggs.Add(KinGrowth.MysteryEgg());
-                GameEvents.Good("A mystery egg! It's warming in your Hatchery.");
+                KinGrowth.AddEgg(KinGrowth.MysteryEgg());
+                GameEvents.Good("A mystery egg! It's warm in your bag - hatch it at the Hatchery.");
             }
             else
             {

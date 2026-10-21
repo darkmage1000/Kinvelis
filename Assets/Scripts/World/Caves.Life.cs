@@ -252,9 +252,6 @@ namespace Wildbond
                             : Guard(rm, Role.Alpha, sp, true, e.maxLv + (main ? 3 : 4), 1f, main ? "Guardian" : "Deep alpha", main);
                         if (g == null) break;
                         g.chest = AddChest(r, ChestSpot(r, rm), rm.role == Role.Boss ? ChestKind.Boss : ChestKind.Big, g);
-                        if (e.kind == CaveKind.Ruin && rm.role == Role.Alpha && main)
-                            for (int k = -1; k <= 1; k += 2)
-                                Wild(Pick(s => s.rarity <= Rarity.Uncommon), e.maxLv, Nudge(r, rm.Center + new Vector3(k * 5f, 0f, -3f)));
                         break;
                     }
                 }
@@ -423,13 +420,13 @@ namespace Wildbond
             if (n.taken) return;
             var gm = GameManager.I;
             var s = gm.Player.Stats;
-            if (s.eggs.Count >= KinGrowth.MaxEggs) { GameEvents.Warn($"You are already carrying {KinGrowth.MaxEggs} eggs. Hatch one first (Camp > Hatchery)."); return; }
+            if (!KinGrowth.EggRoom(out string full)) { GameEvents.Warn(full); return; }
             var child = CreatureFactory.RollWild(n.sp, 1, run.e.biome, false);
             child.location = KinLocation.Box;
             if (!child.shimmer && Random.value < (n.rare ? 0.15f : 0.06f)) Shimmer.Make(child);
             int lift = n.rare ? 12 : 8;
             for (int i = 0; i < 3; i++) child.apt[i] = Mathf.Min(100, child.apt[i] + lift);
-            s.eggs.Add(new KinEgg { child = child, readyUnix = Expeditions.Now + KinGrowth.HatchMinutes * 60L, parents = n.rare ? "a rare cave nest" : "a cave nest" });
+            KinGrowth.AddEgg(new KinEgg { child = child, readyUnix = Expeditions.Now + KinGrowth.HatchMinutes * 60L, parents = n.rare ? "a rare cave nest" : "a cave nest" });
             n.taken = true;
             run.done.Add(Key(run, "n", run.nests.IndexOf(n)));
             if (n.egg != null) n.egg.SetActive(false);
@@ -577,6 +574,23 @@ namespace Wildbond
         }
 
         // ================================================================ GUARDIANS
+        /// <summary>
+        /// A guardian fights alone (user, 2026-10-21: "cave boss should spawn alone"): any other cave kin that wanders or
+        /// chases you into its chamber while it is awake gives up and goes back to its own spot.
+        /// </summary>
+        static void KeepClear(Run r, Guardian g)
+        {
+            float rad = g.wake + 3f;
+            foreach (var k in r.kin)
+            {
+                if (k == null || k == g.a || !k.gameObject.activeSelf || !k.IsAlive || k.Mode != CreatureMode.Wild) continue;
+                if ((k.Position - g.home).sqrMagnitude > rad * rad) continue;
+                if ((k.Home - g.home).sqrMagnitude <= rad * rad) continue;   // lives in this chamber (shouldn't happen)
+                if (k.State == AIState.Return) continue;
+                k.Migrate(k.Home);
+            }
+        }
+
         void TickGuardians(Run r, PlayerController pl)
         {
             Guardian show = null; float showD = 38f * 38f;
@@ -595,6 +609,7 @@ namespace Wildbond
                     SynthAudio.Play(Sfx.Summon, 0.55f);
                 }
                 if (g.woke && d2 < showD) { show = g; showD = d2; }
+                if (g.woke) KeepClear(r, g);
             }
             if (HUD.I == null) return;
             if (show != null)

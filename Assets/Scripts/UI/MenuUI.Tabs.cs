@@ -183,6 +183,12 @@ namespace Wildbond
                     break;
                 }
             }
+            if (d.id == KinGrowth.EggItem)
+            {
+                // an egg's slot: it can't be stored or dropped, only hatched (KinGrowth.SyncEggSlots keeps one per egg)
+                Para(right, KinGrowth.EggLine(), 22, Color.white);
+                return;
+            }
             if (BaseManager.I.HasBase && BaseManager.I.StorageHere() != null)   // standing at a chest or the Hearthstone
                 ActionBtn(right, "STORE IN CAMP", () =>
                 {
@@ -398,6 +404,26 @@ namespace Wildbond
             var traits = new List<string>();
             foreach (var t in d.traits) { var td = ContentDB.Trait(t); if (td != null) traits.Add(UIFactory.Col(td.displayName, td.positive ? new Color(0.6f, 1f, 0.6f) : new Color(1f, 0.6f, 0.5f)) + $" <size=18>({td.description})</size>"); }
             Para(p, "Traits: " + (traits.Count > 0 ? string.Join("\n  ", traits) : "none"), 22, Color.white);
+
+            // Training: tonics give permanent ranks (KinTonics) - a hard hitter that keeps getting one-shot can be toughened
+            Header(p, "Training", 26);
+            Para(p, $"{KinTonics.Line(d, 0)}  ·  {KinTonics.Line(d, 1)}  ·  {KinTonics.Line(d, 2)}\n<size=18>Tonics are made at a Forge Bench (5 Prism Shards each). Every tonic is +5% to one stat, up to +50%.</size>", 21, Color.white);
+            var trow = UIFactory.HRow(p, 74, 10);
+            for (int ti = 0; ti < 3; ti++)
+            {
+                int stat = ti;
+                int have = KinTonics.BagCount(stat);
+                bool maxed = d.TonicRank(stat) >= KinTonics.MaxRank;
+                string label = maxed ? $"{KinTonics.Stats[stat].ToUpperInvariant()}\n<size=16>fully trained</size>"
+                    : $"+{KinTonics.Stats[stat].ToUpperInvariant()}\n<size=16>{have} tonic{(have == 1 ? "" : "s")} in bag</size>";
+                Color tc = stat == 0 ? new Color(0.62f, 0.3f, 0.38f) : stat == 1 ? new Color(0.66f, 0.42f, 0.22f) : new Color(0.3f, 0.42f, 0.62f);
+                UIFactory.Size(UIFactory.Button(trow.transform, label, !maxed && have > 0 ? () =>
+                {
+                    string err = KinTonics.Give(d, stat);
+                    if (err != null) GameEvents.Warn(err);
+                    Rebuild();
+                } : (System.Action)null, !maxed && have > 0 ? tc : new Color(0.3f, 0.3f, 0.32f), 20), 70, 230);
+            }
 
             var abil = new List<string>();
             var learnset = d.Learnset;

@@ -32,6 +32,13 @@ namespace Wildbond
         /// <summary>Evolution stage: 0 base, 1 Ascended (Lv 20), 2 Exalted (Lv 35). Bigger, glowing, stronger.</summary>
         public int stage;
         public float StageMul => 1f + 0.15f * stage;
+        /// <summary>
+        /// Tonic ranks for health / attack / defence (KinTonics): each rank +5%, up to 10. Bought, not rolled, so a glass
+        /// cannon can be made sturdier (user, 2026-10-21: "low def yet very high attack, they get one shot so easy").
+        /// </summary>
+        public int[] tonic = new int[3];
+        public int TonicRank(int stat) => tonic != null && stat >= 0 && stat < tonic.Length ? tonic[stat] : 0;
+        float TonicMul(int stat) => 1f + KinTonics.PerRank * TonicRank(stat);
         public static string StageName(int st) => st == 2 ? "Exalted" : st == 1 ? "Ascended" : "";
 
         [NonSerialized] SpeciesDef speciesCache;
@@ -131,9 +138,9 @@ namespace Wildbond
         /// <summary>Rider stamina use while mounted: x1.3 (0) .. x0.7 (100).</summary>
         public float MountStaminaMul => 1.3f - 0.6f * Apt(KinPath.Travel) / 100f;
 
-        public float MaxHp => Species.baseHp * (1f + 0.12f * (level - 1)) * TraitMul(t => t.hpMul) * (alpha ? 1.35f : 1f) * CombatAptMul * StageMul;
-        public float Atk => Species.baseAtk * (1f + 0.09f * (level - 1)) * TraitMul(t => t.atkMul) * CombatAptMul * StageMul;
-        public float Def => Species.baseDef * (1f + 0.09f * (level - 1)) * TraitMul(t => t.defMul) * CombatAptMul * StageMul;
+        public float MaxHp => Species.baseHp * (1f + 0.12f * (level - 1)) * TraitMul(t => t.hpMul) * (alpha ? 1.35f : 1f) * CombatAptMul * StageMul * TonicMul(0);
+        public float Atk => Species.baseAtk * (1f + 0.09f * (level - 1)) * TraitMul(t => t.atkMul) * CombatAptMul * StageMul * TonicMul(1);
+        public float Def => Species.baseDef * (1f + 0.09f * (level - 1)) * TraitMul(t => t.defMul) * CombatAptMul * StageMul * TonicMul(2);
         public float SpeedMul => TraitMul(t => t.speedMul) * TravelAptMul;
         public float WorkMul => TraitMul(t => t.workMul) * WorkAptMul * (1f + 0.1f * stage);
         public float HungerMul => TraitMul(t => t.hungerMul);

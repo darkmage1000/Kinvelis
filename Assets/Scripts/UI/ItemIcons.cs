@@ -603,6 +603,28 @@ namespace Wildbond
                     Shaft(mb, M(0f, 0f, 0f, 1, 1, 1, 0, 0, -46), true);
                     Shaft(mb, M(0.18f, 0.02f, -0.06f, 1, 1, 1, 0, 0, -58), true);
                     break;
+                case "kin_egg":
+                    // a speckled egg in a nest of straw
+                    mb.Sphere(M(0, 0.52f, 0, 0.66f, 0.86f, 0.66f), C("#fff4dc"), C("#e0cfa8"), 14, 10);
+                    mb.Sphere(M(-0.2f, 0.66f, -0.27f, 0.13f, 0.11f, 0.06f), C("#c89a5a"), 6, 4);
+                    mb.Sphere(M(0.12f, 0.42f, -0.31f, 0.1f, 0.08f, 0.05f), C("#c89a5a"), 6, 4);
+                    mb.Sphere(M(-0.06f, 0.86f, -0.18f, 0.08f, 0.07f, 0.05f), C("#c89a5a"), 6, 4);
+                    mb.Sphere(M(0.25f, 0.68f, -0.15f, 0.09f, 0.08f, 0.05f), C("#c89a5a"), 6, 4);
+                    mb.Cylinder(M(0, 0.1f, 0, 0.9f, 0.18f, 0.9f), C("#c8a050"), C("#9a7430"), 14, 0.8f, true);
+                    break;
+                case "tonic_vigor":
+                case "tonic_might":
+                case "tonic_ironhide":
+                {
+                    // a stoppered flask of coloured tonic
+                    string liquid = d.id == "tonic_vigor" ? "#e0506e" : d.id == "tonic_might" ? "#f08a2a" : "#5a86c8";
+                    string dark = d.id == "tonic_vigor" ? "#a02848" : d.id == "tonic_might" ? "#b0561a" : "#2e5288";
+                    mb.Sphere(M(0, 0.38f, 0, 0.62f, 0.6f, 0.62f), C(liquid), C(dark), 12, 8);
+                    mb.Cylinder(M(0, 0.78f, 0, 0.22f, 0.3f, 0.22f), C("#d8eef4"), C("#a8c4cc"), 10, 1f, true);
+                    mb.Cylinder(M(0, 0.98f, 0, 0.26f, 0.12f, 0.26f), C("#9a6a3a"), C("#6a4422"), 10, 1f, true);
+                    mb.Sphere(M(-0.14f, 0.5f, -0.22f, 0.1f, 0.14f, 0.05f), C("#ffffff"), 6, 4);
+                    break;
+                }
                 case "warden_heart":
                     // a heart cut from crystal on a gold setting
                     {

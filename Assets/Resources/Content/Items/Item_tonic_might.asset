@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d410b7e3ca321b469fb7773a4c2b8dc, type: 3}
+  m_Name: Item_tonic_might
+  m_EditorClassIdentifier: 
+  id: tonic_might
+  displayName: Might Tonic
+  description: 'Permanent training for one kin: +5% attack per tonic, up to 10 (+50%).
+    Give it from the Kin tab (pick the kin, Training).'
+  category: 0
+  maxStack: 20
+  iconColor: {r: 0.9098039, g: 0.5411765, b: 0.22745098, a: 1}
+  iconGlyph: Mt
+  foodValue: 0
+  healValue: 0
+  kinHealValue: 0
+  bonusInventorySlots: 0
+  mealMods: []
+  mealMinutes: 0
+  handStyle: 0
+  toolKind: 0
+  toolPower: 0
+  weaponDamage: 0
+  hitElement: 0
+  hitStatus: 0
+  hitStatusChance: 0
+  captureMult: 1
+  legendFor: 
+  shimmerSeed: 0
+  equipSlot: 0
+  rarity: 0
+  mods: []
+  unique: 0
+  gearStyle: 0
+  trimColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  alphaDrop: 0

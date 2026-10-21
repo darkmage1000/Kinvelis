@@ -1274,6 +1274,7 @@ namespace Wildbond
             goalTimer = 0.5f;
             Quests.Tick();   // notes where you are, pays out finished quests, opens the next
             KinGrowth.TickReady();
+            KinGrowth.SyncEggSlots();
             if (WorldRules.Current.endlessSeeds && Player.Stats.Bag.Count("tether_seed") < 5) Player.Stats.Bag.Add("tether_seed", 5);   // endless-seed worlds
             string next = Quests.HudLine();
             if (next != currentGoal)

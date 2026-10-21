@@ -16,7 +16,7 @@ namespace Wildbond
             var list = TrackedList(body);
             var hb0 = BaseManager.I.BuildingHere("hatchery");
             bool here = hb0 != null;   // eggs are laid and hatched at the Hatchery itself
-            Header(list, $"Hatchery  <size=22>{s.eggs.Count}/{KinGrowth.MaxEggs} eggs</size>", 32);
+            Header(list, $"Hatchery  <size=22>{s.eggs.Count} egg{(s.eggs.Count == 1 ? "" : "s")} - each takes a bag slot</size>", 32);
             if (!KinGrowth.HasHatchery)
             {
                 Para(list, "Build a Hatchery (BUILD menu, Explorer Lv 3) to breed kin. Eggs inherit the best quality grades of both parents and good traits - the way to raise S-grade kin.", 23, Color.white);
@@ -70,7 +70,7 @@ namespace Wildbond
                     string err = KinGrowth.Breed(a, b);
                     if (err != null) GameEvents.Warn(err); else { hatchA = null; hatchB = null; }
                     Rebuild();
-                } : (System.Action)null, here && s.eggs.Count < KinGrowth.MaxEggs ? new Color(0.6f, 0.4f, 0.25f) : new Color(0.3f, 0.3f, 0.32f), 26);
+                } : (System.Action)null, here && KinGrowth.EggRoom(out _) ? new Color(0.6f, 0.4f, 0.25f) : new Color(0.3f, 0.3f, 0.32f), 26);
                 UIFactory.Size(go, 76);
             }
 

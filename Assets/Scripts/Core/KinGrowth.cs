@@ -84,7 +84,47 @@ namespace Wildbond
         }
 
         // ================================================================ BREEDING
-        public const int MaxEggs = 2;
+        /// <summary>
+        /// Eggs ride in the bag, one slot each (user, 2026-10-21: "eggs should take up an inv slot each not be limited to
+        /// two"). The egg itself (its kin, its timer) is still a `KinEgg` in `PlayerStats.eggs`; the bag holds one
+        /// `EggItem` per egg so it takes the room, kept in step by `SyncEggSlots`.
+        /// </summary>
+        public const string EggItem = "kin_egg";
+
+        /// <summary>Room for one more egg: a free bag slot beyond any egg still waiting for one.</summary>
+        public static bool EggRoom(out string why)
+        {
+            var s = GameManager.I.Player.Stats;
+            int waiting = Mathf.Max(0, s.eggs.Count - s.Bag.Count(EggItem));
+            bool ok = s.Bag.SpaceFor(EggItem) > waiting;
+            why = ok ? null : "Your bag is full - an egg needs a free slot.";
+            return ok;
+        }
+
+        /// <summary>Every new egg comes through here: into the egg list and a bag slot.</summary>
+        public static void AddEgg(KinEgg e)
+        {
+            var s = GameManager.I.Player.Stats;
+            s.eggs.Add(e);
+            s.Bag.Add(EggItem, 1);
+            GameEvents.RaiseInventoryChanged();
+        }
+
+        /// <summary>
+        /// Twice a second: one Kin Egg in the bag per egg. Eggs put in camp storage come back to the bag, extra ones go,
+        /// and an egg with no slot yet (a full bag from an old save) gets one as soon as there is room.
+        /// </summary>
+        public static void SyncEggSlots()
+        {
+            var s = GameManager.I.Player.Stats;
+            var store = BaseManager.I != null && BaseManager.I.HasBase ? BaseManager.I.Storage : null;
+            int stray = store != null ? store.Count(EggItem) : 0;
+            if (stray > 0) store.Remove(EggItem, stray);
+            int have = s.Bag.Count(EggItem), want = s.eggs.Count;
+            if (have > want) s.Bag.Remove(EggItem, have - want);
+            else if (have < want) s.Bag.Add(EggItem, Mathf.Min(want - have, s.Bag.SpaceFor(EggItem)));
+            if (have != want || stray > 0) GameEvents.RaiseInventoryChanged();
+        }
         public const int HatchMinutes = 10;
         public static Ingredient[] BreedCost => new[] { new Ingredient("berry_tart", 2) };
 
@@ -98,11 +138,11 @@ namespace Wildbond
             if (!HasHatchery) return "Build a Hatchery at camp first.";
             if (a == null || b == null || a == b) return "Pick two different kin.";
             if (!CanParent(a) || !CanParent(b)) return "Both parents must be rested and at home.";
-            if (s.eggs.Count >= MaxEggs) return $"The Hatchery holds {MaxEggs} eggs at a time.";
+            if (!EggRoom(out string full)) return full;
             if (!ItemSources.Has(BreedCost)) return "Needs 2 Berry Tarts (cook them at a Campfire).";
             ItemSources.Consume(BreedCost);
             var child = MakeChild(a, b);
-            s.eggs.Add(new KinEgg { child = child, readyUnix = Expeditions.Now + HatchMinutes * 60L, parents = $"{a.DisplayName} + {b.DisplayName}" });
+            AddEgg(new KinEgg { child = child, readyUnix = Expeditions.Now + HatchMinutes * 60L, parents = $"{a.DisplayName} + {b.DisplayName}" });
             GameEvents.Good($"An egg! It hatches in {HatchMinutes} minutes (Camp > Hatchery).");
             SynthAudio.Play(Sfx.CaptureSuccess, 1.3f);
             GameEvents.RaiseInventoryChanged();
@@ -206,6 +246,8 @@ namespace Wildbond
             if (e == null || !EggReady(e)) return null;
             var s = GameManager.I.Player.Stats;
             if (!s.eggs.Remove(e)) return null;
+            s.Bag.Remove(EggItem, 1);
+            GameEvents.RaiseInventoryChanged();
             var d = e.child;
             GameManager.I.OnKinHatched(d, quiet);
             return d;
