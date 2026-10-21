@@ -446,6 +446,7 @@ html: `
 
 <h2 id="pace">Camp pace</h2>
 <p>Camp work takes time: kin work, your own work at a structure, crafting orders, research, building and the hands-off steps (growing, smelting) all run at a steady, slow pace, so a bigger camp with more kin is what makes it keep up. Camp kin get hungry at the same pace, so a camp that feeds itself stays fed.</p>
+<p>Crafting orders take longer the better the bench: with a crafter of the level you'd have by then, a basic Workbench order is about a minute, Forge Bench and Kitchen work 2-3 minutes, Artisan's Anvil gear about 5 and Starforge gear about 10. Queue the big pieces and go adventuring while they are made. Every recipe row says how long it takes with your best crafter. Hand crafting is still instant.</p>
 
 <h2 id="farm">Crops</h2>
 <p>A Crop Plot grows one crop at a time; pick which on its CROP button. Changing to a new crop costs three of it, so you have to find it in the wild first.</p>

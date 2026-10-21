@@ -65,7 +65,7 @@ namespace Wildbond
         public float StageNeedAt(int i)
         {
             var st = Stages[Mathf.Clamp(i, 0, Stages.Length - 1)];
-            float whole = Batch * WorkPerUnit * st.share;
+            float whole = Batch * WorkPerUnit * st.share / BaseManager.ProducePace;   // producers run slower again (ProducePace)
             return st.handsOff ? whole / Mathf.Max(0.02f, BaseManager.Pace) : whole;   // growing, smelting...: at camp pace
         }
         public float Stage01 => IsProducer ? Mathf.Clamp01(Progress / Mathf.Max(0.01f, StageNeed)) : 0f;

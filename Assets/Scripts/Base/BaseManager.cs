@@ -180,6 +180,12 @@ namespace Wildbond
         /// unchanged (a pylon still outruns its drain). The world's work-speed rule multiplies on top: `Pace`.
         /// </summary>
         public const float CampPace = 1f / 3f;
+        /// <summary>
+        /// Producers (mills, quarries, ore works, gardens, plots, smelters...) take this much longer again per batch, on
+        /// top of CampPace (user, 2026-10-21: "producers slower too"). Kin hunger slows by the same share so food made and
+        /// food eaten stay in step.
+        /// </summary>
+        public const float ProducePace = 0.6f;
         public static float Pace => CampPace * WorldRules.Current.workSpeed;
 
         public float WorkRate(CreatureData d, Building b)
@@ -616,11 +622,12 @@ namespace Wildbond
                 var o = Orders[i];
                 if (!ContentDB.Recipes.TryGetValue(o.recipeId, out var r) || r.station != s || !Stations.Makes(tier, r)) continue;
                 o.progress += w * GameManager.I.Player.Stats.CraftSpeedMul;
-                if (o.progress >= r.work)
+                float need = Stations.OrderWork(r);
+                if (o.progress >= need)
                 {
                     int left = Storage.Add(r.outputItem, r.outputCount);
                     if (left > 0) left = GameManager.I.Player.Stats.Bag.Add(r.outputItem, left);
-                    if (left > 0) { o.progress = r.work; GameEvents.Warn("Storage full - craft order paused."); return; }
+                    if (left > 0) { o.progress = need; GameEvents.Warn("Storage full - craft order paused."); return; }
                     o.progress = 0f;
                     o.remaining--;
                     if (!o.auto)   // a standing order restocks quietly
@@ -636,7 +643,7 @@ namespace Wildbond
         }
 
         public float OrderProgress01(CraftOrder o) =>
-            ContentDB.Recipes.TryGetValue(o.recipeId, out var r) && r.work > 0 ? Mathf.Clamp01(o.progress / r.work) : 0f;
+            ContentDB.Recipes.TryGetValue(o.recipeId, out var r) && r.work > 0 ? Mathf.Clamp01(o.progress / Stations.OrderWork(r)) : 0f;
 
         // ============================================================ TICK
         public void Tick(float dt, Vector3 playerPos)

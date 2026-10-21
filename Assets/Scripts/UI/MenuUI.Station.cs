@@ -207,6 +207,8 @@ namespace Wildbond
                 // what it does: stat line + description, wrapped under the name (row grows to fit)
                 string stat = ItemStatLine(outDef), desc = outDef.description ?? "";
                 if (need > 1) desc = $"Made at a {Stations.BenchName(st, need)}{(need < Stations.MaxTier ? " or better" : "")}.  " + desc;
+                string took = Stations.TimeText(r);
+                if (took != null) desc = took + "  " + desc;
                 var tech = Tech.RecipeUnlocked(r.id) ? null : Tech.ForRecipe(r.id);
                 if (tech != null) desc += $"  Locked: research {tech.name} at a Research Bench.";
                 bool noPlan = Chests.Locked(r);
