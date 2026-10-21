@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: hatchery
   displayName: Hatchery
-  description: Pair two kin to get an egg that inherits the best of both (Camp >
-    Hatchery).
+  description: 'Pair two kin to get an egg that inherits the best of both, and warm
+    eggs until they hatch: 1 at a time, 2 at level 2, 5 at level 3 (MANAGE > UPGRADE).
+    It takes waiting eggs from camp storage by itself.'
   cost:
   - itemId: wood
     count: 20
@@ -40,9 +41,14 @@ MonoBehaviour:
   bufferCap: 30
   storageSlots: 0
   station: 0
+  benchTier: 0
+  minJobLevel: 0
   boostPercent: 0
   feeds: 0
   beds: 0
+  bedSize: 0
+  bedTop: 0
+  bedBonus: 0
   palette:
     primary: {r: 0.7882353, g: 0.6392157, b: 0.41568628, a: 1}
     secondary: {r: 0.5411765, g: 0.41568628, b: 0.2509804, a: 1}

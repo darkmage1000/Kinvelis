@@ -20,7 +20,7 @@ namespace Wildbond
             Recipe(b, "tonic_ironhide", 1, CraftStation.Workbench, 40, 14, ("prism_shard", 5), ("crystal", 3), ("ingot", 6));
 
             Item(b, KinGrowth.EggItem, "Kin Egg", ItemCategory.KeyItem, "Eg", Hex("#f0e2c0"),
-                "A kin egg, warm in your bag. Each egg takes one bag slot. It hatches at the Hatchery in camp once it wobbles (Camp > Hatchery shows how long).", 1);
+                "A kin egg. Each takes one bag slot. It only warms in a Hatchery: put it in there, or leave it in camp storage and the Hatchery takes it when a place is free. It hatches 10 minutes later.", 1);
         }
     }
 }

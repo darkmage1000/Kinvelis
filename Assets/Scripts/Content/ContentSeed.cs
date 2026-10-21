@@ -491,7 +491,7 @@ namespace Wildbond
                 P(PartShape.Sphere, BodyGroup.Body, ColorSlot.Glow, -0.6f, 1.68f, 0, 0.2f, 0.2f, 0.2f),
             };
 
-            var hatch = Bld(b, "hatchery", "Hatchery", "Pair two kin to get an egg that inherits the best of both (Camp > Hatchery).", 3, 1.2f,
+            var hatch = Bld(b, "hatchery", "Hatchery", "Pair two kin to get an egg that inherits the best of both, and warm eggs until they hatch: 1 at a time, 2 at level 2, 5 at level 3 (MANAGE > UPGRADE). It takes waiting eggs from camp storage by itself.", 3, 1.2f,
                 ("wood", 20), ("fiber", 20), ("pelt", 6), ("stone", 10));
             hatch.palette = Pal(Hex("#c9a36a"), Hex("#8a6a40"), Hex("#fff2d8"), Hex("#ffb35a"));
             hatch.parts = new[]

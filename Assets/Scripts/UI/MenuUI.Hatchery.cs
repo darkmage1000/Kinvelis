@@ -16,7 +16,8 @@ namespace Wildbond
             var list = TrackedList(body);
             var hb0 = BaseManager.I.BuildingHere("hatchery");
             bool here = hb0 != null;   // eggs are laid and hatched at the Hatchery itself
-            Header(list, $"Hatchery  <size=22>{s.eggs.Count} egg{(s.eggs.Count == 1 ? "" : "s")} - each takes a bag slot</size>", 32);
+            int places = KinGrowth.Places, warming = KinGrowth.WarmingCount, held = KinGrowth.HeldCount;
+            Header(list, $"Hatchery  <size=22>warming {warming}/{places}{(held > 0 ? $"  ·  {held} waiting" : "")}</size>", 32);
             if (!KinGrowth.HasHatchery)
             {
                 Para(list, "Build a Hatchery (BUILD menu, Explorer Lv 3) to breed kin. Eggs inherit the best quality grades of both parents and good traits - the way to raise S-grade kin.", 23, Color.white);
@@ -29,9 +30,24 @@ namespace Wildbond
                 Para(list, UIFactory.Col($"This is a view. Walk up to the Hatchery ({BaseManager.I.WayTo(near)}) to pair kin and hatch eggs.", Idle), 21, Color.white);
             }
 
-            // incubating eggs
+            // places: level 1 warms one egg, level 2 two, level 3 five (KinGrowth.PlacesAt); eggs wait in the bag / camp storage
+            int lvl = 1; foreach (var hb2 in BaseManager.I.Buildings) if (hb2.Def.id == "hatchery") lvl = Mathf.Max(lvl, hb2.Level);
+            string more = lvl < Building.MaxLevel ? $" Upgrade it (MANAGE > UPGRADE at the Hatchery) to warm {KinGrowth.PlacesAt(lvl + 1)} at once." : "";
+            Para(list, $"Eggs only warm inside the Hatchery: {places} place{(places == 1 ? "" : "s")} here.{more} Eggs waiting for a place sit in your bag or camp storage, a slot each; leave them in camp storage and the Hatchery takes the next one by itself when a place frees up.", 20, Color.white);
+            if (held > 0)
+            {
+                int inBag = s.Bag.Count(KinGrowth.EggItem), inStore = BaseManager.I.Storage.Count(KinGrowth.EggItem);
+                Para(list, $"Waiting: {inBag} in your bag, {inStore} in camp storage.", 21, new Color(1f, 0.85f, 0.45f));
+                if (inBag > 0)
+                    UIFactory.Size(UIFactory.Button(list, here ? (KinGrowth.FreePlace ? "PUT AN EGG FROM YOUR BAG IN" : "EVERY PLACE IS WARMING AN EGG") : "PUT EGGS IN AT THE HATCHERY",
+                        here && KinGrowth.FreePlace ? () => { var err = KinGrowth.WarmFromBag(); if (err != null) GameEvents.Warn(err); Rebuild(); } : (System.Action)null,
+                        here && KinGrowth.FreePlace ? new Color(0.6f, 0.45f, 0.25f) : new Color(0.3f, 0.3f, 0.32f), 24), 70);
+            }
+
+            // warming eggs
             foreach (var e in s.eggs)
             {
+                if (e.held) continue;
                 var ee = e;
                 bool ready = KinGrowth.EggReady(e);
                 var card = Card(list, 104, ready ? new Color(0.2f, 0.45f, 0.3f, 0.5f) : (Color?)null);
@@ -70,7 +86,7 @@ namespace Wildbond
                     string err = KinGrowth.Breed(a, b);
                     if (err != null) GameEvents.Warn(err); else { hatchA = null; hatchB = null; }
                     Rebuild();
-                } : (System.Action)null, here && KinGrowth.EggRoom(out _) ? new Color(0.6f, 0.4f, 0.25f) : new Color(0.3f, 0.3f, 0.32f), 26);
+                } : (System.Action)null, here && (KinGrowth.FreePlace || KinGrowth.EggRoom(out _)) ? new Color(0.6f, 0.4f, 0.25f) : new Color(0.3f, 0.3f, 0.32f), 26);
                 UIFactory.Size(go, 76);
             }
 

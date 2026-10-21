@@ -42,7 +42,7 @@ namespace Wildbond
         public const int MaxLevel = 3;
         /// <summary>1-3. Producers and stations only; saved as BuildingSave.level.</summary>
         public int Level = 1;
-        public bool Upgradable => !Def.isCore && (IsProducer || IsStation);
+        public bool Upgradable => !Def.isCore && (IsProducer || IsStation || Def.id == "hatchery");   // a Hatchery's levels add egg places (KinGrowth.PlacesAt)
         /// <summary>Worker places: one more per level above 1 (structures that take workers at all).</summary>
         public int WorkerSlots => Def.workerSlots > 0 ? Def.workerSlots + (Level - 1) : 0;
         /// <summary>Output shelf: bigger with each level.</summary>

@@ -185,8 +185,18 @@ namespace Wildbond
             }
             if (d.id == KinGrowth.EggItem)
             {
-                // an egg's slot: it can't be stored or dropped, only hatched (KinGrowth.SyncEggSlots keeps one per egg)
+                // a carried egg: into the Hatchery, or into camp storage for the Hatchery to take; never dropped
                 Para(right, KinGrowth.EggLine(), 22, Color.white);
+                if (BaseManager.I.HasBase && BaseManager.I.BuildingHere("hatchery") != null)
+                    ActionBtn(right, KinGrowth.FreePlace ? "PUT IT IN THE HATCHERY" : "HATCHERY FULL", KinGrowth.FreePlace ? () => { var err = KinGrowth.WarmFromBag(); if (err != null) GameEvents.Warn(err); Rebuild(); } : (System.Action)null);
+                if (BaseManager.I.HasBase && BaseManager.I.StorageHere() != null)
+                    ActionBtn(right, "STORE IN CAMP (the Hatchery takes it from there)", () =>
+                    {
+                        int left2 = BaseManager.I.Storage.Add(st.id, st.count);
+                        stats.Bag.Remove(st.id, st.count - left2);
+                        if (left2 > 0) GameEvents.Warn("Camp storage is full.");
+                        GameEvents.RaiseInventoryChanged();
+                    });
                 return;
             }
             if (BaseManager.I.HasBase && BaseManager.I.StorageHere() != null)   // standing at a chest or the Hearthstone

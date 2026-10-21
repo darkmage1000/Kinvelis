@@ -10,6 +10,11 @@ namespace Wildbond
         public CreatureData child;
         public long readyUnix;
         public string parents;
+        /// <summary>
+        /// Carried, not warming: it sits in your bag or camp storage as a Kin Egg and waits for a place in a Hatchery
+        /// (KinGrowth.Warm). Old saves' eggs load false = already warming.
+        /// </summary>
+        public bool held;
     }
 
     /// <summary>
@@ -85,45 +90,109 @@ namespace Wildbond
 
         // ================================================================ BREEDING
         /// <summary>
-        /// Eggs ride in the bag, one slot each (user, 2026-10-21: "eggs should take up an inv slot each not be limited to
-        /// two"). The egg itself (its kin, its timer) is still a `KinEgg` in `PlayerStats.eggs`; the bag holds one
-        /// `EggItem` per egg so it takes the room, kept in step by `SyncEggSlots`.
+        /// Eggs (user, 2026-10-21: "eggs should take up an inv slot each", then "hatchery gets higher level tiers, allow 2
+        /// eggs at a time, allow 5 eggs at a time and auto grab them from storage"). An egg only warms inside a Hatchery:
+        /// a level 1 Hatchery has 1 place, level 2 has 2, level 3 has 5 (`PlacesAt`; upgraded like any structure, MANAGE >
+        /// UPGRADE). Until it has a place an egg is `held`: one `EggItem` in your bag or camp storage, a slot each. A
+        /// Hatchery with a free place takes the next egg from camp storage by itself (`SyncEggSlots`), or you put one in
+        /// from your bag standing at it (`WarmFromBag`). The `KinEgg` (its kin, its timer) stays in `PlayerStats.eggs`;
+        /// the items only stand for the held ones, kept in step by `SyncEggSlots`.
         /// </summary>
         public const string EggItem = "kin_egg";
+        static readonly int[] PlacesByLevel = { 1, 2, 5 };
+        public static int PlacesAt(int level) => PlacesByLevel[Mathf.Clamp(level, 1, PlacesByLevel.Length) - 1];
 
-        /// <summary>Room for one more egg: a free bag slot beyond any egg still waiting for one.</summary>
+        /// <summary>Warming places in every Hatchery in camp.</summary>
+        public static int Places
+        {
+            get
+            {
+                if (BaseManager.I == null || !BaseManager.I.HasBase) return 0;
+                int n = 0;
+                foreach (var b in BaseManager.I.Buildings) if (b.Def.id == "hatchery") n += PlacesAt(b.Level);
+                return n;
+            }
+        }
+        public static int WarmingCount { get { int n = 0; foreach (var e in GameManager.I.Player.Stats.eggs) if (!e.held) n++; return n; } }
+        public static int HeldCount { get { int n = 0; foreach (var e in GameManager.I.Player.Stats.eggs) if (e.held) n++; return n; } }
+        public static bool FreePlace => WarmingCount < Places;
+
+        /// <summary>Room for one more carried egg: a free bag slot beyond any held egg still waiting for one.</summary>
         public static bool EggRoom(out string why)
         {
             var s = GameManager.I.Player.Stats;
-            int waiting = Mathf.Max(0, s.eggs.Count - s.Bag.Count(EggItem));
+            int items = s.Bag.Count(EggItem) + (BaseManager.I != null && BaseManager.I.HasBase ? BaseManager.I.Storage.Count(EggItem) : 0);
+            int waiting = Mathf.Max(0, HeldCount - items);
             bool ok = s.Bag.SpaceFor(EggItem) > waiting;
             why = ok ? null : "Your bag is full - an egg needs a free slot.";
             return ok;
         }
 
-        /// <summary>Every new egg comes through here: into the egg list and a bag slot.</summary>
+        /// <summary>A new egg you carry: into the egg list and a bag slot. It starts warming once it is in a Hatchery.</summary>
         public static void AddEgg(KinEgg e)
         {
             var s = GameManager.I.Player.Stats;
+            e.held = true;
             s.eggs.Add(e);
             s.Bag.Add(EggItem, 1);
             GameEvents.RaiseInventoryChanged();
         }
 
+        /// <summary>The oldest held egg starts warming in a free Hatchery place (its Kin Egg item is taken by the caller).</summary>
+        static KinEgg Warm()
+        {
+            foreach (var e in GameManager.I.Player.Stats.eggs)
+                if (e.held) { e.held = false; e.readyUnix = Expeditions.Now + HatchMinutes * 60L; return e; }
+            return null;
+        }
+
+        /// <summary>At the Hatchery: put an egg from your bag in a free place.</summary>
+        public static string WarmFromBag()
+        {
+            var s = GameManager.I.Player.Stats;
+            if (!FreePlace) return "Every place in the Hatchery is warming an egg. Upgrade it for more places.";
+            if (s.Bag.Count(EggItem) <= 0) return "You have no eggs in your bag.";
+            s.Bag.Remove(EggItem, 1);
+            Warm();
+            GameEvents.Good($"The egg is warming. It hatches in {HatchMinutes} minutes.");
+            SynthAudio.Play(Sfx.Build, 1.3f, 0.5f);
+            GameEvents.RaiseInventoryChanged();
+            return null;
+        }
+
         /// <summary>
-        /// Twice a second: one Kin Egg in the bag per egg. Eggs put in camp storage come back to the bag, extra ones go,
-        /// and an egg with no slot yet (a full bag from an old save) gets one as soon as there is room.
+        /// Twice a second: one Kin Egg item (bag or camp storage) per held egg - extras go, a held egg with no item yet (a
+        /// full bag) gets one when there is room - and a Hatchery with a free place takes the next egg from camp storage.
         /// </summary>
         public static void SyncEggSlots()
         {
             var s = GameManager.I.Player.Stats;
             var store = BaseManager.I != null && BaseManager.I.HasBase ? BaseManager.I.Storage : null;
-            int stray = store != null ? store.Count(EggItem) : 0;
-            if (stray > 0) store.Remove(EggItem, stray);
-            int have = s.Bag.Count(EggItem), want = s.eggs.Count;
-            if (have > want) s.Bag.Remove(EggItem, have - want);
-            else if (have < want) s.Bag.Add(EggItem, Mathf.Min(want - have, s.Bag.SpaceFor(EggItem)));
-            if (have != want || stray > 0) GameEvents.RaiseInventoryChanged();
+            int inBag = s.Bag.Count(EggItem), inStore = store != null ? store.Count(EggItem) : 0;
+            int held = HeldCount, items = inBag + inStore;
+            bool changed = false;
+            if (items > held)
+            {
+                int extra = items - held, fromBag = Mathf.Min(extra, inBag);
+                s.Bag.Remove(EggItem, fromBag);
+                if (extra > fromBag && store != null) store.Remove(EggItem, extra - fromBag);
+                changed = true;
+            }
+            else if (items < held)
+            {
+                int left = s.Bag.Add(EggItem, held - items);
+                if (left > 0 && store != null) store.Add(EggItem, left);
+                changed = true;
+            }
+            // the Hatchery helps itself to eggs left in camp storage
+            while (store != null && FreePlace && store.Count(EggItem) > 0 && HeldCount > 0)
+            {
+                store.Remove(EggItem, 1);
+                Warm();
+                GameEvents.Good($"The Hatchery took an egg from storage. It hatches in {HatchMinutes} minutes.");
+                changed = true;
+            }
+            if (changed) GameEvents.RaiseInventoryChanged();
         }
         public const int HatchMinutes = 10;
         public static Ingredient[] BreedCost => new[] { new Ingredient("berry_tart", 2) };
@@ -138,12 +207,24 @@ namespace Wildbond
             if (!HasHatchery) return "Build a Hatchery at camp first.";
             if (a == null || b == null || a == b) return "Pick two different kin.";
             if (!CanParent(a) || !CanParent(b)) return "Both parents must be rested and at home.";
-            if (!EggRoom(out string full)) return full;
+            bool place = FreePlace;
+            if (!place && !EggRoom(out _)) return "Every Hatchery place is taken and your bag is full - an egg needs a free slot.";
             if (!ItemSources.Has(BreedCost)) return "Needs 2 Berry Tarts (cook them at a Campfire).";
             ItemSources.Consume(BreedCost);
             var child = MakeChild(a, b);
-            AddEgg(new KinEgg { child = child, readyUnix = Expeditions.Now + HatchMinutes * 60L, parents = $"{a.DisplayName} + {b.DisplayName}" });
-            GameEvents.Good($"An egg! It hatches in {HatchMinutes} minutes (Camp > Hatchery).");
+            var egg = new KinEgg { child = child, parents = $"{a.DisplayName} + {b.DisplayName}" };
+            if (place)
+            {
+                // straight into a free place
+                egg.readyUnix = Expeditions.Now + HatchMinutes * 60L;
+                s.eggs.Add(egg);
+                GameEvents.Good($"An egg! It is warming and hatches in {HatchMinutes} minutes.");
+            }
+            else
+            {
+                AddEgg(egg);
+                GameEvents.Good("An egg! Every place is warming one, so it's in your bag - the Hatchery takes it from camp storage when a place frees up.");
+            }
             SynthAudio.Play(Sfx.CaptureSuccess, 1.3f);
             GameEvents.RaiseInventoryChanged();
             return null;
@@ -219,7 +300,7 @@ namespace Wildbond
             return new KinEgg { child = d, readyUnix = Expeditions.Now + HatchMinutes * 60L, parents = Trader.Name };
         }
 
-        public static bool EggReady(KinEgg e) => Expeditions.Now >= e.readyUnix;
+        public static bool EggReady(KinEgg e) => e != null && !e.held && Expeditions.Now >= e.readyUnix;
 
         /// <summary>The first egg that is ready to hatch, or null.</summary>
         public static KinEgg FirstReady()
@@ -234,10 +315,12 @@ namespace Wildbond
         public static string EggLine()
         {
             var s = GameManager.I.Player.Stats;
-            if (s.eggs.Count == 0) return "No eggs in the Hatchery.";
+            int held = HeldCount;
+            string carried = held > 0 ? $"  {held} egg{(held == 1 ? "" : "s")} waiting for a place (bag or camp storage)." : "";
+            if (WarmingCount == 0) return (held > 0 ? "No egg is warming yet." : "No eggs in the Hatchery.") + carried;
             long left = long.MaxValue;
-            foreach (var e in s.eggs) left = System.Math.Min(left, e.readyUnix - Expeditions.Now);
-            return left <= 0 ? "An egg is ready to hatch!" : $"The next egg hatches in {left / 60}m {left % 60}s.";
+            foreach (var e in s.eggs) if (!e.held) left = System.Math.Min(left, e.readyUnix - Expeditions.Now);
+            return (left <= 0 ? "An egg is ready to hatch!" : $"The next egg hatches in {left / 60}m {left % 60}s.") + carried;
         }
 
         /// <summary>The egg's kin joins the roster. quiet = the hatching show tells the player, so no toasts.</summary>
@@ -245,8 +328,7 @@ namespace Wildbond
         {
             if (e == null || !EggReady(e)) return null;
             var s = GameManager.I.Player.Stats;
-            if (!s.eggs.Remove(e)) return null;
-            s.Bag.Remove(EggItem, 1);
+            if (!s.eggs.Remove(e)) return null;   // a warming egg has no item: nothing to take from the bag
             GameEvents.RaiseInventoryChanged();
             var d = e.child;
             GameManager.I.OnKinHatched(d, quiet);

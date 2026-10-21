@@ -122,11 +122,13 @@ namespace Wildbond
             if (shimmer && !e.child.shimmer) Shimmer.Make(e.child);
             e.readyUnix = Expeditions.Now;
             e.parents = "dev mode";
-            KinGrowth.AddEgg(e);
+            e.held = false;   // straight into the Hatchery, ready, whatever its places
+            S.eggs.Add(e);
+            GameEvents.RaiseInventoryChanged();
             Say($"An egg is ready: a {e.child.Species.displayName}{(shimmer ? " (shimmer)" : "")}. Hatch it at the Hatchery or Camp > Hatchery.");
         }
 
-        public static void EggsReady() { foreach (var e in S.eggs) e.readyUnix = Expeditions.Now; Say($"{S.eggs.Count} egg{(S.eggs.Count == 1 ? " is" : "s are")} ready to hatch."); }
+        public static void EggsReady() { int n = 0; foreach (var e in S.eggs) if (!e.held) { e.readyUnix = Expeditions.Now; n++; } Say($"{n} warming egg{(n == 1 ? " is" : "s are")} ready to hatch."); }
 
         public static void LevelCompanion(int levels)
         {

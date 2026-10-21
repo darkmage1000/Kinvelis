@@ -121,7 +121,7 @@ namespace Wildbond
                 if (!KinGrowth.EggRoom(out string full)) return full;
                 s.glimmer -= o.price;
                 KinGrowth.AddEgg(KinGrowth.MysteryEgg());
-                GameEvents.Good("A mystery egg! It's warm in your bag - hatch it at the Hatchery.");
+                GameEvents.Good("A mystery egg! It's in your bag - put it in the Hatchery (or leave it in camp storage and the Hatchery takes it).");
             }
             else
             {
