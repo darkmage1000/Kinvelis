@@ -389,8 +389,10 @@ namespace Wildbond
             int rank = Rank(l.biome), t = (int)l.tier;
             var loot = new List<(string id, int n)>();
             // seeds
-            // seeds of the land's own tier, and the next one up in the better chests (Capture/Seeds.cs)
-            string seedA = rank == 0 ? "tether_seed" : rank == 1 ? "cinder_seed" : "sunforged_seed";
+            // seeds of the land's own tier, and the next one up in the better chests (Capture/Seeds.cs). The land's seed is
+            // the one its rewards use everywhere (ExplorerLog.LandSeed: Dunes = Rimecore, Glowdeep = Starbloom); the old
+            // three ranks gave Dunes chests Sunforged and Starbloom.
+            string seedA = ExplorerLog.LandSeed(l.biome);
             string seedB = Seeds.Step(seedA, 1);
             if (t == 0) loot.Add((seedA, R(3, 5)));
             else if (t == 1) { loot.Add((seedA, R(3, 4))); loot.Add((seedB, 1)); }
