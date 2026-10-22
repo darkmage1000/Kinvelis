@@ -105,6 +105,7 @@ html: `
 { id: "catching", group: "Start here", title: "Catching kin", blurb: "The real odds, the three seeds, and what makes a catch easier.",
 html: `
 <p class="lead">A seed that hits draws the kin inside, drops to the ground and shakes three times. If one shake fails the seed bursts and the kin pops back out, angry; if all three hold, the seed clicks shut and flies back to you. The number shown while you aim is the true chance that all three hold. A wild kin's panel says <b>NEW</b> if you have never had its kind, and shows a small seed (with how many you have caught) once you have caught one.</p>
+<p>You can catch several kin at once: throw again while a seed is still shaking, and each seed works on its own kin. Up to 5 seeds can be out at a time, and a kin already inside a seed lets the next seed fly past it.</p>
 
 <h2 id="health">Health is what matters most</h2>
 <div class="scroll"><table>
@@ -656,7 +657,7 @@ html: `
 <h2 id="relics">Relics</h2>
 <p>57 relics are hidden in hard-to-reach places: ledges, summits, mesa tops, canyon floors and out on lakes. Each one you touch is a small permanent bonus.</p>
 <div data-view="relics"></div>
-<p>Climbing a <b>Lookout</b> tower and tapping LOOK OUT puts everything within 650 m on your map, including a "relic glint" marker for any relic in range.</p>
+<p>Climbing a <b>Lookout</b> tower and tapping LOOK OUT puts everything within 650 m on your map: ways underground, waystones, named places and things worth a look. It never shows relics; the only help with those is the "You sense a ... relic nearby" line when you come within about 55 m of one.</p>
 
 <h2 id="finds">Finds</h2>
 <p>Scattered across every land: old ruins, shipwrecks on the beaches, skeletons, abandoned camps and statues. Most have a chest (Glimmer, seeds, materials), and many have a tablet. Tablets are worth reading: the lines double as tips.</p>
