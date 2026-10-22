@@ -553,7 +553,7 @@ namespace Wildbond
             bool first = !st.lookouts.Contains(p.id);
             if (first) st.lookouts.Add(p.id);
             float r2 = LookRadius * LookRadius;
-            int caves = 0, stones = 0, places = 0, finds = 0, glints = 0;
+            int caves = 0, stones = 0, places = 0, finds = 0;
             if (Caves.I != null)
                 foreach (var e in Caves.I.Entrances)
                     if (Flat2(e.pos, p.pos) < r2 && !st.cavesFound.Contains(e.id)) { st.cavesFound.Add(e.id); caves++; }
@@ -564,15 +564,12 @@ namespace Wildbond
                 if (s.strength > 0f && Flat2(s.Pos, p.pos) < (LookRadius + s.radius * 0.5f) * (LookRadius + s.radius * 0.5f) && !st.regionsFound.Contains(s.id)) { st.regionsFound.Add(s.id); places++; }
             foreach (var o in All)
                 if (o != p && Flat2(o.pos, p.pos) < r2 && !st.poisFound.Contains(o.id)) { st.poisFound.Add(o.id); finds++; }
-            if (Relics.I != null && Relics.I.Ready)
-                foreach (var rl in Relics.I.All)
-                    if (Flat2(rl.pos, p.pos) < r2 && !st.relicsFound.Contains(rl.id) && !st.relicHints.Contains(rl.id)) { st.relicHints.Add(rl.id); glints++; }
+            // relics are never shown from up here (user, 2026-10-22): the "You sense a ... relic nearby" line close by is the only help
             var parts = new List<string>();
             if (places > 0) parts.Add(places == 1 ? "a named place" : places + " named places");
             if (caves > 0) parts.Add(caves == 1 ? "a way underground" : caves + " ways underground");
             if (stones > 0) parts.Add(stones == 1 ? "a waystone" : stones + " waystones");
             if (finds > 0) parts.Add(finds == 1 ? "something worth a look" : finds + " things worth a look");
-            if (glints > 0) parts.Add(glints == 1 ? "the glint of a relic" : glints + " relic glints");
             if (first) GameManager.I.AddPlayerXp(40);
             if (parts.Count == 0) GameEvents.Say(first ? "A fine view, but nothing you had not already found." : "Nothing new from up here.", new Color(0.9f, 0.9f, 0.75f));
             else GameEvents.Good("From the top you mark " + string.Join(", ", parts) + ". They are on your map.");

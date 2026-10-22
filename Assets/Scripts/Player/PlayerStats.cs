@@ -81,6 +81,7 @@ namespace Wildbond
         public int chestsOpened;
         public System.Collections.Generic.List<string> poisRead = new System.Collections.Generic.List<string>();
         public System.Collections.Generic.List<string> lookouts = new System.Collections.Generic.List<string>();
+        /// <summary>No longer filled or shown (2026-10-22: Lookouts stopped marking relics); kept so old saves load.</summary>
         public System.Collections.Generic.List<string> relicHints = new System.Collections.Generic.List<string>();
         /// <summary>Region-only items picked up at least once, and Explorer's log milestones claimed ("biome:step").</summary>
         public System.Collections.Generic.List<string> regionalFound = new System.Collections.Generic.List<string>();

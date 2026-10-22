@@ -198,9 +198,6 @@ namespace Wildbond
             foreach (var poi in Pois.All)
                 if (poi.kind != PoiKind.Lookout && Pois.Found(poi)) AddMarker(poi.pos, Pois.Done(poi) ? new Color(0.55f, 0.55f, 0.5f) : new Color(1f, 0.9f, 0.55f), poi.name, 28, null, Pois.Icon(poi.kind));
             var st = GameManager.I.Player.Stats;
-            if (Relics.I != null && Relics.I.Ready && st.relicHints.Count > 0)
-                foreach (var rl in Relics.I.All)
-                    if (st.relicHints.Contains(rl.id) && !st.relicsFound.Contains(rl.id)) AddMarker(rl.pos, Color.white, "Relic glint", 24, null, MapIcon.Relic);
             var ws = Waystones.I;
             foreach (var w in ws.All)
             {

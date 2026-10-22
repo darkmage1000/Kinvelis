@@ -521,9 +521,6 @@ namespace Wildbond
             foreach (var poi in Pois.All)
                 if (poi.kind != PoiKind.Lookout && mst.poisFound.Contains(poi.id))
                     PlaceMarker(ref mi, poi.pos - pl.Position, px, Pois.Done(poi) ? new Color(0.6f, 0.6f, 0.56f) : new Color(1f, 0.9f, 0.55f), Pois.Icon(poi.kind));
-            if (Relics.I != null && Relics.I.Ready && mst.relicHints.Count > 0)
-                foreach (var rl in Relics.I.All)
-                    if (mst.relicHints.Contains(rl.id) && !mst.relicsFound.Contains(rl.id)) PlaceMarker(ref mi, rl.pos - pl.Position, px, Color.white, MapIcon.Relic);
             foreach (var l in Landmarks.List) PlaceMarker(ref mi, l.pos - pl.Position, px, l.color, l.icon);
             if (Fishing.I != null && pl.Stats.Bag.Count(Fishing.Rod) > 0)
             {
