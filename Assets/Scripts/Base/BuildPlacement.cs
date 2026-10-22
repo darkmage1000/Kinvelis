@@ -20,7 +20,9 @@ namespace Wildbond
         Housing.Piece removeTarget;
         BaseManager.Site removeSite;
         int turns;
-        public string CurrentName => Removing ? (removeSite != null ? "Cancel " + removeSite.Name + " (all back)" : removeTarget != null ? "Remove " + removeTarget.def.name + " (half back)" : "Remove") : Piece != null ? Piece.name : Current != null ? Current.displayName : "";
+        public string CurrentName => Removing ? (removeSite != null ? "Cancel " + removeSite.Name + " (all back)" : removeTarget != null ? "Remove " + removeTarget.def.name + " (half back)" : "Remove") : Piece != null ? Piece.name + FloorNote : Current != null ? Current.displayName : "";
+        /// <summary>For a floor: which storey it goes on, and that ROTATE lifts it.</summary>
+        string FloorNote => Piece.kind != HouseKind.Floor ? "" : spot.level > 0 ? $" on storey {spot.level + 1} (ROTATE: higher)" : " (ROTATE: up a storey)";
         public bool Valid { get; private set; }
         public string Reason { get; private set; }
 

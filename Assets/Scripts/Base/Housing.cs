@@ -313,7 +313,7 @@ namespace Wildbond
         bool StairsOrSite(int cx, int cz, int level) => StairsAt(cx, cz, level) != null || pending.Contains($"S{level}:{cx},{cz}");
         bool RoofOrSite(int cx, int cz) => roofs.ContainsKey(Key(cx, cz)) || pending.Contains($"R{cx},{cz}");
         /// <summary>The highest storey with a floor (or a floor being built) on this square, or -1.</summary>
-        int TopFloor(int cx, int cz) { int t = -1; for (int l = 0; l <= MaxLevel; l++) if (FloorOrSite(cx, cz, l, out _)) t = l; else break; return t; }
+        int TopFloor(int cx, int cz) { int t = -1; for (int l = 0; l <= MaxLevel; l++) if (FloorOrSite(cx, cz, l, out _)) t = l; return t; }   // floors may float, so no gap stops it
 
         // ============================================================ PLACING
         public struct Spot { public bool ok; public string reason; public int cx, cz, side, rot, level; public Vector3 pos; public Quaternion q; public float depth; }
@@ -340,16 +340,25 @@ namespace Wildbond
                     // the first storey up from yours with no floor yet: lay it on the ground, or over the floor below
                     int L = lv;
                     while (L <= MaxLevel && FloorOrSite(cx, cz, L, out _)) L++;
+                    // ROTATE lifts it: each press one free storey higher, back round to the first (so a floor for the
+                    // storey above can be laid from the ground, out over open air)
+                    if (s.rot > 0 && L <= MaxLevel)
+                    {
+                        int free = 0;
+                        for (int l = L; l <= MaxLevel; l++) if (!FloorOrSite(cx, cz, l, out _)) free++;
+                        for (int l = L, k = s.rot % free; l <= MaxLevel; l++)
+                            if (!FloorOrSite(cx, cz, l, out _)) { if (k == 0) { L = l; break; } k--; }
+                    }
                     if (L >= 1)
                     {
                         s.level = Mathf.Min(L, MaxLevel);
-                        // held up by a floor or the walls under it, or a balcony off a held floor beside it (Housing.Balcony)
+                        // held up by a floor or the walls under it, or touching another floor at this storey (Housing.Balcony)
                         bool held = HeldFromBelow(cx, cz, s.level, out float hy);
                         bool balcony = !held && Overhang(cx, cz, s.level, out hy);
                         s.pos = new Vector3(c.x, held || balcony ? hy : WorldGen.Height(c.x, c.z) + LevelH * s.level, c.z); s.q = Quaternion.identity; s.depth = UpperDepth;
                         if (s.reason != null) break;
                         if (L > MaxLevel) { Fail("A house goes four storeys high at most"); break; }
-                        if (!held && !balcony) { Fail("Upper floors rest on a floor or walls below, or jut out one square from a floor beside them (a balcony)"); break; }
+                        if (!held && !balcony) { Fail(s.level == 1 && !FloorOrSite(cx, cz, 0, out _) ? "An upper floor has to touch another floor or sit on walls - ROTATE again to bring it back down" : "An upper floor has to touch another floor at that height, or sit on a floor or walls"); break; }
                         if (!bm.IsInsideBase(c, 1.5f)) { Fail("Inside your camp ring only"); break; }
                         if (RoofOrSite(cx, cz)) { Fail("Take the roof off first"); break; }
                         if (StairsOrSite(cx, cz, L - 1)) { Fail("The stairs come up here"); break; }
