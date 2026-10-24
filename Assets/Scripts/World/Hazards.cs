@@ -187,7 +187,7 @@ namespace Wildbond
             }
             if (hi - lo > (kind == Kind.SporePod || kind == Kind.Geyser ? 1.4f : 0.55f) || lo < 1f) return null;
             var p = new Vector3(x, y, z);
-            if (Settlements.Inside(p, 30f) || Wardens.Inside(p, 12f) || Caves.BlocksNode(p) || Outposts.BlocksNode(p) || Pois.BlocksNode(p) || Landmarks.NearLandmark(p, 16f)) return null;
+            if (Settlements.Inside(p, 30f) || Wardens.Inside(p, 12f) || Caves.BlocksNode(p) || Outposts.BlocksNode(p) || Pois.BlocksNode(p) || Relics.BlocksNode(p) || Landmarks.NearLandmark(p, 16f)) return null;
             if (BaseManager.I != null && BaseManager.I.HasBase && BaseManager.I.IsInsideBase(p, 10f)) return null;
             if (WorldGen.StartDistance(x, z) < 260f) return null;
 

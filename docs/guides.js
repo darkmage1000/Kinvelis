@@ -655,7 +655,7 @@ html: `
 <div data-view="underground"></div>
 
 <h2 id="relics">Relics</h2>
-<p>57 relics are hidden in hard-to-reach places: ledges, summits, mesa tops, canyon floors and out on lakes. Each one you touch is a small permanent bonus.</p>
+<p>57 relics wait in places that stand out once you know to look: on mountain summits (by a stone cairn), on Badlands mesa tops (by an old altar), in a ring of standing stones on a hilltop, on a mossy stump in the heart of a forest, on a rock out in a lake, and under a stone gate in a canyon. The outer lands each hide three on their highest ground. The setting stays after you take the relic, so an empty cairn means you have been there. Each relic you touch is a small permanent bonus.</p>
 <div data-view="relics"></div>
 <p>Climbing a <b>Lookout</b> tower and tapping LOOK OUT puts everything within 650 m on your map: ways underground, waystones, named places and things worth a look. It never shows relics; the only help with those is the "You sense a ... relic nearby" line when you come within about 55 m of one.</p>
 

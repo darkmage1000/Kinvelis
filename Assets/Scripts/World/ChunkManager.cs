@@ -278,6 +278,7 @@ namespace Wildbond
                 if (n.alive && Pois.BlocksNode(n.pos)) n.alive = false;
                 if (n.alive && Outposts.BlocksNode(n.pos)) n.alive = false;
                 if (n.alive && Trails.BlocksNode(n.pos)) n.alive = false;
+                if (n.alive && Relics.BlocksNode(n.pos)) n.alive = false;
                 c.nodes.Add(n);
                 Nodes.Insert(n);
             }
@@ -408,6 +409,7 @@ namespace Wildbond
                         if (Pois.BlocksNode(n.pos)) continue;
                         if (Outposts.BlocksNode(n.pos)) continue;
                         if (Trails.BlocksNode(n.pos)) continue;
+                        if (Relics.BlocksNode(n.pos)) continue;
                         Depleted.Remove(n.key);
                         n.alive = true;
                         n.hp = n.Info.hp;

@@ -8,11 +8,11 @@ namespace Wildbond
     public enum RelicType { Tetherbloom, Windfeather, Kinspring, Hearthmoss, Tidepearl, CragClaw, Wardstone, Kinheart, Glintstone, Count }
 
     /// <summary>
-    /// Hidden relics placed deterministically from the world seed in fun, hard-to-reach spots:
-    /// mountain ledges most of the way up, summits, mesa tops, canyon floors, and out on lakes.
-    /// Placement runs on a worker thread (WorldGen is pure); objects exist only near the player.
+    /// Hidden relics placed deterministically from the world seed on places chosen to look designed: mountain summits,
+    /// mesa tops, hill crowns, forest groves, rocks in lakes and canyon arches, each with a small built setting
+    /// (Relics.Places). Placement runs on a worker thread (WorldGen is pure); objects exist only near the player.
     /// </summary>
-    public class Relics : MonoBehaviour
+    public partial class Relics : MonoBehaviour
     {
         public static Relics I { get; private set; }
         public const int PerType = 7;
@@ -26,6 +26,10 @@ namespace Wildbond
             public RelicType type;
             public Vector3 pos;
             public string spot;
+            /// <summary>The kind of place and the ground point its setting stands on (an islet: the top of its rock).</summary>
+            public Setting setting;
+            public Vector3 basePos;
+            public float seabed, clear;
         }
 
         public readonly List<Relic> All = new List<Relic>();
@@ -35,6 +39,8 @@ namespace Wildbond
         Task<List<Relic>> job;
         readonly Dictionary<string, GameObject> live = new Dictionary<string, GameObject>();
         readonly HashSet<string> sensed = new HashSet<string>();
+        readonly Dictionary<string, GameObject> settings = new Dictionary<string, GameObject>();
+        const float SettingRange = 230f;
         float sparkleTimer, checkTimer;
         static Mesh[] meshes;
 
@@ -89,207 +95,33 @@ namespace Wildbond
         public void Init()
         {
             I = this;
+            job = pending ?? StartJob();   // normally already running since Prepare
+            pending = null;
+        }
+
+        static Task<List<Relic>> pending;
+        static Task<List<Relic>> StartJob()
+        {
             int seed = WorldGen.Seed;
-            job = Task.Run(() => Generate(seed));
+            var avoid = AvoidSnapshot();
+            return Task.Run(() => Generate(seed, avoid));
         }
 
-        // ================================================================ PLACEMENT (thread)
-        enum Spot { Ledge, Summit, Mesa, Canyon, Lake, Hilltop }
+        /// <summary>Starts placement as early as the sites it keeps clear of exist (called after Trails.Prepare).</summary>
+        public static void Prepare() { pending = StartJob(); }
 
-        static List<Relic> Generate(int seed)
+        /// <summary>Finishes placement now if it is still running (the first chunk that asks BlocksNode waits for it).</summary>
+        void EnsureReady()
         {
-            var rng = new System.Random(seed * 7919 + 17);
-            var cands = new List<(Spot spot, Vector3 p)>[6];
-            for (int i = 0; i < cands.Length; i++) cands[i] = new List<(Spot, Vector3)>();
-            var peaks = new HashSet<Vector2Int>();
-            var dirs = new Vector2[8];
-            for (int i = 0; i < 8; i++) dirs[i] = new Vector2(Mathf.Cos(i * Mathf.PI / 4f), Mathf.Sin(i * Mathf.PI / 4f));
-
-            for (int n = 0; n < 5000; n++)
-            {
-                float ang = (float)rng.NextDouble() * Mathf.PI * 2f;
-                float rad = Mathf.Sqrt((float)rng.NextDouble()) * 1580f;
-                float x = Mathf.Cos(ang) * rad, z = Mathf.Sin(ang) * rad;
-                float h = WorldGen.Height(x, z);
-
-                if (h < -2.5f)
-                {
-                    // out on a lake (not the open ocean): land must be close in some direction
-                    int land = 0;
-                    for (int d = 0; d < 8; d++) if (WorldGen.Height(x + dirs[d].x * 45f, z + dirs[d].y * 45f) > 0.5f) land++;
-                    if (land >= 2 && rad < 1500f) cands[(int)Spot.Lake].Add((Spot.Lake, new Vector3(x, WorldGen.WaterLevel - 0.35f, z)));
-                    continue;
-                }
-                if (h < 2f) continue;
-                var biome = WorldGen.Biome(x, z);
-
-                // climb to the local peak (tells us how far up the mountain this spot is)
-                float px = x, pz = z, ph = h;
-                if (h > 14f || (n & 3) == 0)
-                {
-                    for (int step = 0; step < 45; step++)
-                    {
-                        float bx = px, bz = pz, bh = ph;
-                        for (int d = 0; d < 8; d++)
-                        {
-                            float qx = px + dirs[d].x * 7f, qz = pz + dirs[d].y * 7f, qh = WorldGen.Height(qx, qz);
-                            if (qh > bh) { bx = qx; bz = qz; bh = qh; }
-                        }
-                        if (bh <= ph + 0.05f) break;
-                        px = bx; pz = bz; ph = bh;
-                    }
-                    // the peak itself is a candidate (deduped on a coarse grid)
-                    var key = new Vector2Int(Mathf.RoundToInt(px / 25f), Mathf.RoundToInt(pz / 25f));
-                    if (peaks.Add(key) && Flat(px, pz, ph, 1.2f))
-                    {
-                        int drop = 0;
-                        for (int d = 0; d < 8; d++) if (WorldGen.Height(px + dirs[d].x * 12f, pz + dirs[d].y * 12f) < ph - 3f) drop++;
-                        var pp = new Vector3(px, ph + 1.1f, pz);
-                        var pb = WorldGen.Biome(px, pz);
-                        if (ph > 38f && pb != BiomeId.Badlands) cands[(int)Spot.Summit].Add((Spot.Summit, pp));
-                        else if (pb == BiomeId.Badlands && ph > 26f && drop >= 4) cands[(int)Spot.Mesa].Add((Spot.Mesa, pp));
-                        else if (drop >= 6 && ph > 8f) cands[(int)Spot.Hilltop].Add((Spot.Hilltop, pp));
-                    }
-                }
-
-                if (!Flat(x, z, h, 1.1f)) continue;
-                var p = new Vector3(x, h + 1.1f, z);
-                // ledge: a standable spot well up a real mountain, with plenty of mountain still above it
-                if (h > 40f && ph - h > 12f && h >= ph * 0.55f)
-                {
-                    int lower = 0;
-                    for (int d = 0; d < 8; d++) if (WorldGen.Height(x + dirs[d].x * 9f, z + dirs[d].y * 9f) < h - 4f) lower++;
-                    if (lower >= 2) { cands[(int)Spot.Ledge].Add((Spot.Ledge, p)); continue; }
-                }
-                // canyon floor: walled in on most sides
-                if (biome == BiomeId.Badlands)
-                {
-                    int higher = 0;
-                    for (int d = 0; d < 8; d++) if (WorldGen.Height(x + dirs[d].x * 16f, z + dirs[d].y * 16f) > h + 6f) higher++;
-                    if (higher >= 5) cands[(int)Spot.Canyon].Add((Spot.Canyon, p));
-                }
-            }
-
-            // preferred spots per relic type (fallbacks follow)
-            var prefs = new Dictionary<RelicType, Spot[]>
-            {
-                { RelicType.CragClaw, new[] { Spot.Ledge, Spot.Summit, Spot.Mesa, Spot.Hilltop, Spot.Canyon } },
-                { RelicType.Windfeather, new[] { Spot.Summit, Spot.Mesa, Spot.Ledge, Spot.Hilltop, Spot.Canyon } },
-                { RelicType.Tidepearl, new[] { Spot.Lake, Spot.Hilltop, Spot.Canyon, Spot.Mesa } },
-                { RelicType.Hearthmoss, new[] { Spot.Canyon, Spot.Hilltop, Spot.Mesa, Spot.Ledge, Spot.Lake } },
-                { RelicType.Kinspring, new[] { Spot.Mesa, Spot.Ledge, Spot.Hilltop, Spot.Summit, Spot.Lake } },
-                { RelicType.Tetherbloom, new[] { Spot.Hilltop, Spot.Canyon, Spot.Summit, Spot.Ledge, Spot.Mesa, Spot.Lake } },
-            };
-            foreach (var l in cands) Shuffle(l, rng);
-            var result = new List<Relic>();
-            var used = new HashSet<Vector3>();
-            for (int k = 0; k < PerType; k++)
-            {
-                for (int t = 0; t < IslandTypes; t++)
-                {
-                    var type = (RelicType)t;
-                    bool placed = false;
-                    foreach (var s in prefs[type])
-                    {
-                        foreach (var c in cands[(int)s])
-                        {
-                            if (used.Contains(c.p) || TooClose(result, c.p, 150f)) continue;
-                            used.Add(c.p);
-                            result.Add(new Relic { id = t + "_" + k, type = type, pos = c.p, spot = SpotName(c.spot) });
-                            placed = true;
-                            break;
-                        }
-                        if (placed) break;
-                    }
-                }
-            }
-            PlaceOuter(seed, result, dirs);
-            return result;
-        }
-
-        /// <summary>
-        /// One Wardstone, Kinheart and Glintstone on each outer land, on its most prominent heights, well apart and away
-        /// from where you land. Uses its own random stream, so the old island's 42 never move.
-        /// </summary>
-        static void PlaceOuter(int seed, List<Relic> result, Vector2[] dirs)
-        {
-            for (int li = 0; li < WorldGen.Lands.Length; li++)
-            {
-                var land = WorldGen.Lands[li];
-                var rng = new System.Random(seed * 6151 + 101 * (li + 1));
-                var gate = WorldGen.LandGate(land);
-                var peaks = new HashSet<Vector2Int>();
-                var cands = new List<(Vector3 p, int drop)>();
-                for (int n = 0; n < 1400; n++)
-                {
-                    float ang = (float)rng.NextDouble() * Mathf.PI * 2f;
-                    float rad = Mathf.Sqrt((float)rng.NextDouble()) * land.radius * 0.95f;
-                    float px = land.center.x + Mathf.Cos(ang) * rad, pz = land.center.y + Mathf.Sin(ang) * rad;
-                    float ph = WorldGen.Height(px, pz);
-                    if (ph < 2f || WorldGen.Biome(px, pz) != land.biome) continue;
-                    for (int step = 0; step < 40; step++)
-                    {
-                        float bx = px, bz = pz, bh = ph;
-                        for (int d = 0; d < 8; d++)
-                        {
-                            float qx = px + dirs[d].x * 7f, qz = pz + dirs[d].y * 7f, qh = WorldGen.Height(qx, qz);
-                            if (qh > bh) { bx = qx; bz = qz; bh = qh; }
-                        }
-                        if (bh <= ph + 0.05f) break;
-                        px = bx; pz = bz; ph = bh;
-                    }
-                    var key = new Vector2Int(Mathf.RoundToInt(px / 25f), Mathf.RoundToInt(pz / 25f));
-                    if (!peaks.Add(key) || !Flat(px, pz, ph, 1.4f)) continue;
-                    float gx = px - gate.x, gz = pz - gate.z;
-                    if (gx * gx + gz * gz < 220f * 220f) continue;
-                    int drop = 0;
-                    for (int d = 0; d < 8; d++) if (WorldGen.Height(px + dirs[d].x * 14f, pz + dirs[d].y * 14f) < ph - 2.5f) drop++;
-                    cands.Add((new Vector3(px, ph + 1.1f, pz), drop * 10 + Mathf.Min(9, (int)(ph / 4f))));
-                }
-                cands.Sort((a, b) => b.drop.CompareTo(a.drop));
-                var mine = new List<Relic>();
-                string where = BiomeInfo.Name(land.biome);
-                for (float apart = 320f; apart >= 60f && mine.Count < 3; apart *= 0.6f)
-                    foreach (var c in cands)
-                    {
-                        if (mine.Count >= 3) break;
-                        if (TooClose(mine, c.p, apart)) continue;
-                        var type = (RelicType)(IslandTypes + (mine.Count + li) % 3);
-                        mine.Add(new Relic { id = (int)type + "_" + li, type = type, pos = c.p, spot = (c.drop >= 60 ? "a lone height in " : "high ground in ") + where });
-                    }
-                result.AddRange(mine);
-            }
-        }
-
-        static bool Flat(float x, float z, float h, float tol)
-        {
-            return Mathf.Abs(WorldGen.Height(x + 1.5f, z) - h) < tol && Mathf.Abs(WorldGen.Height(x - 1.5f, z) - h) < tol &&
-                   Mathf.Abs(WorldGen.Height(x, z + 1.5f) - h) < tol && Mathf.Abs(WorldGen.Height(x, z - 1.5f) - h) < tol;
-        }
-
-        static string SpotName(Spot s)
-        {
-            switch (s)
-            {
-                case Spot.Ledge: return "a high mountain ledge";
-                case Spot.Summit: return "a summit";
-                case Spot.Mesa: return "a mesa top";
-                case Spot.Canyon: return "a canyon floor";
-                case Spot.Lake: return "the middle of a lake";
-                default: return "a lonely hilltop";
-            }
-        }
-
-        static bool TooClose(List<Relic> list, Vector3 p, float min)
-        {
-            float m2 = min * min;
-            foreach (var r in list) { float dx = r.pos.x - p.x, dz = r.pos.z - p.z; if (dx * dx + dz * dz < m2) return true; }
-            return false;
-        }
-
-        static void Shuffle<T>(List<T> l, System.Random rng)
-        {
-            for (int i = l.Count - 1; i > 0; i--) { int j = rng.Next(i + 1); var t = l[i]; l[i] = l[j]; l[j] = t; }
+            if (Ready) return;
+            if (job == null) return;
+            var waited = System.Diagnostics.Stopwatch.StartNew();
+            try { job.Wait(); } catch (System.Exception) { }
+            if (waited.ElapsedMilliseconds > 5) PlacementReport += $" | main thread waited {waited.ElapsedMilliseconds} ms";
+            if (job.Status == TaskStatus.RanToCompletion) All.AddRange(job.Result);
+            else Debug.LogWarning("Relic placement failed: " + job.Exception);
+            job = null;
+            Ready = true;
         }
 
         // ================================================================ RUNTIME
@@ -298,10 +130,7 @@ namespace Wildbond
             if (!Ready)
             {
                 if (job == null || !job.IsCompleted) return;
-                if (job.Status == TaskStatus.RanToCompletion) All.AddRange(job.Result);
-                else Debug.LogWarning("Relic placement failed: " + job.Exception);
-                job = null;
-                Ready = true;
+                EnsureReady();
             }
             var stats = pl.Stats;
             Vector3 pp = pl.Position;
@@ -319,6 +148,11 @@ namespace Wildbond
                 live.TryGetValue(r.id, out var go);
                 if (check)
                 {
+                    // the setting (cairn, stone ring, stump, rock...) stands whether or not the relic is still there
+                    settings.TryGetValue(r.id, out var sg);
+                    bool show = d2 < SettingRange * SettingRange;
+                    if (show && sg == null) settings[r.id] = MakeSetting(r);
+                    else if (!show && sg != null) { Destroy(sg.GetComponent<MeshFilter>().sharedMesh); Destroy(sg); settings.Remove(r.id); }
                     bool found = stats.relicsFound.Contains(r.id);
                     bool want = !found && d2 < 130f * 130f;
                     if (want && go == null) live[r.id] = go = MakeObject(r);

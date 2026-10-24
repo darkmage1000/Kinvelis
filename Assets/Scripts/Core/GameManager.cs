@@ -114,6 +114,7 @@ namespace Wildbond
             LegendHunts.Prepare();
             Landmarks.BuildOuterLairs();
             Trails.Prepare();        // roads between the settlements: the ground colour and the map both read them
+            Relics.Prepare();        // relic places, on a worker thread while the rest loads (they keep clear of the sites above)
             MapTexture.Begin();
 
             // camera + light
