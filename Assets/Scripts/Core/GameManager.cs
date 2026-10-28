@@ -489,7 +489,7 @@ namespace Wildbond
         {
             if (InputHub.Down(Btn.Menu)) { menu.Open(MenuTab.Bag); return; }
             if (InputHub.Down(Btn.Map)) { menu.Open(MenuTab.Map); return; }
-            if (InputHub.Down(Btn.Build) && !placement.Active) { menu.Open(MenuTab.Build); return; }
+            if (InputHub.Down(Btn.Build) && !placement.Active) { placement.OpenBuild(); return; }   // straight into placing (the menu's BUILD tab still lists everything)
             if (InputHub.Down(Btn.Summon)) Party.ToggleCompanion();
             if (InputHub.Down(Btn.Stance)) Party.CycleStance();
             if (InputHub.Down(Btn.KinPanel)) hud.ToggleKinPanel();

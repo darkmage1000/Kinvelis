@@ -227,7 +227,7 @@ namespace Wildbond
 
             var menu = UIFactory.Button(safe, "MENU", () => MenuUI.I.Toggle(), new Color(0.2f, 0.45f, 0.4f, 0.95f), 28);
             ((RectTransform)menu.transform).Place(new Vector2(1, 1), new Vector2(1, 1), new Vector2(-310, -20), new Vector2(150, 76));
-            var build = UIFactory.Button(safe, "BUILD", () => MenuUI.I.Open(MenuTab.Build), new Color(0.45f, 0.35f, 0.2f, 0.95f), 28);
+            var build = UIFactory.Button(safe, "BUILD", () => { if (BuildPlacement.I.Active) BuildPlacement.I.Cancel(); else BuildPlacement.I.OpenBuild(); }, new Color(0.45f, 0.35f, 0.2f, 0.95f), 28);
             ((RectTransform)build.transform).Place(new Vector2(1, 1), new Vector2(1, 1), new Vector2(-310, -106), new Vector2(150, 76));
             campBtn = UIFactory.Button(safe, "CAMP", () => MenuUI.I.OpenCamp(CampTab.Overview), new Color(0.3f, 0.42f, 0.55f, 0.95f), 28);
             ((RectTransform)campBtn.transform).Place(new Vector2(1, 1), new Vector2(1, 1), new Vector2(-310, -192), new Vector2(150, 76));
@@ -416,7 +416,7 @@ namespace Wildbond
             RoundButton(placeCluster, "JUMP", Btn.Jump, new Vector2(-110, 420), 120, new Color(0.2f, 0.24f, 0.3f, 0.75f), out _, 22);
             RoundButton(placeCluster, "DONE", Btn.Cancel, new Vector2(-310, 410), 112, new Color(0.7f, 0.3f, 0.3f, 0.85f), out _, 20);
             placeReason = UIFactory.Label(placeCluster, "", 30, Color.white, TextAnchor.MiddleCenter, FontStyle.Bold);
-            placeReason.rectTransform.Place(new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(-60, 182), new Vector2(940, 50));
+            placeReason.rectTransform.Place(new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(-60, 246), new Vector2(940, 50));
             var sh = placeReason.gameObject.AddComponent<Shadow>(); sh.effectColor = new Color(0f, 0f, 0f, 0.85f); sh.effectDistance = new Vector2(2f, -2f);
             BuildBuildBar();
             placeCluster.gameObject.SetActive(false);

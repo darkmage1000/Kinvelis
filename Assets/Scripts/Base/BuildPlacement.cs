@@ -59,12 +59,40 @@ namespace Wildbond
             ring.enabled = false;
         }
 
+        /// <summary>The last house piece / camp structure picked, so BUILD opens where you left off; and which of the two.</summary>
+        HousePieceDef lastPiece; BuildingDef lastCamp;
+        public static bool HouseMode;
+        bool ghostOwned;   // the ghost's mesh was made here (camp structures) - house meshes are shared, never destroyed
+
+        /// <summary>
+        /// BUILD (user, 2026-10-28: "tapping build should open placing, with an option at top for house or camp"): straight
+        /// into placing, house or camp as last time (camp until there is a Hearthstone), on the last thing picked.
+        /// </summary>
+        public void OpenBuild(bool? house = null)
+        {
+            if (Caves.InCave) { GameEvents.Warn("You can't build underground."); return; }
+            bool h = (house ?? HouseMode) && BaseManager.I.HasBase;
+            if (h) { BeginPiece(lastPiece != null && !Housing.Locked(lastPiece) ? lastPiece : Housing.Def("house_floor")); return; }
+            var list = MenuUI.CampBuildable();
+            var d = lastCamp != null && list.Contains(lastCamp) ? lastCamp : list.Count > 0 ? list[0] : null;
+            if (d == null) { GameEvents.Warn("Nothing you can build yet - level up or research more structures."); return; }
+            Begin(d);
+        }
+
+        void SetGhost(Mesh m, bool owned)
+        {
+            if (ghostOwned && ghostMf.sharedMesh != null && ghostMf.sharedMesh != m) Destroy(ghostMf.sharedMesh);
+            ghostMf.sharedMesh = m;
+            ghostOwned = owned;
+        }
+
         public void BeginPiece(HousePieceDef def)
         {
             if (def == null) return;
+            lastPiece = def; HouseMode = true;
             // a piece you can't afford can still be picked from the build bar: its ghost shows red with "Missing materials"
             Current = null; Removing = false; Piece = def; Active = true;
-            ghostMf.sharedMesh = Housing.MeshFor(def);
+            SetGhost(Housing.MeshFor(def), false);
             ghost.SetActive(true);
             turns = 0;
             SynthAudio.Play(Sfx.UiOpen);
@@ -96,7 +124,7 @@ namespace Wildbond
                 if (t != removeTarget)
                 {
                     removeTarget = t;
-                    if (t != null) ghostMf.sharedMesh = t.go.GetComponent<MeshFilter>().sharedMesh;
+                    if (t != null) SetGhost(t.go.GetComponent<MeshFilter>().sharedMesh, false);
                 }
                 ghost.SetActive(t != null);
                 if (t != null) { ghost.transform.SetPositionAndRotation(t.go.transform.position, t.go.transform.rotation); ghost.transform.localScale = Vector3.one * 1.02f; }
@@ -157,15 +185,11 @@ namespace Wildbond
         {
             if (def == null) return;
             Piece = null; Removing = false;
-            if (!WorldRules.Current.freeBuild && !ItemSources.Has(def.cost))
-            {
-                GameEvents.Warn($"Not enough materials for {def.displayName}.");
-                return;
-            }
+            // one you can't afford can still be picked from the build bar: its ghost shows red with "Missing materials"
+            lastCamp = def; HouseMode = false;
             Current = def;
             Active = true;
-            if (ghostMf.sharedMesh != null) Destroy(ghostMf.sharedMesh);
-            ghostMf.sharedMesh = ModelBuilder.BuildStatic(def.parts, def.palette, "ghost_" + def.id);
+            SetGhost(ModelBuilder.BuildStatic(def.parts, def.palette, "ghost_" + def.id), true);
             ghost.SetActive(true);
             rotY = GameManager.I.Player.transform.eulerAngles.y + 180f;
             rotY = Mathf.Round(rotY / rotateStep) * rotateStep;
@@ -232,7 +256,6 @@ namespace Wildbond
                 SynthAudio.Play(Sfx.Build, 0.8f, 0.7f);
                 GameManager.I.AddPlayerXp(8);
                 GameEvents.Say($"{Current.displayName}: construction started - Crafting kin will build it, or tap BUILD there to help.");
-                if (!free && !ItemSources.Has(Current.cost)) Cancel();
                 return;
             }
             var b = bm.Place(Current, target, rotY);
@@ -249,7 +272,6 @@ namespace Wildbond
             }
             GameEvents.Good($"Built {Current.displayName}");
             bm.StaffNew(b);   // idle camp kin that suit it start there
-            if (!free && !ItemSources.Has(Current.cost)) Cancel();
         }
 
         void DrawRing(Vector3 c, float r)

@@ -294,7 +294,7 @@ namespace Wildbond
             // add-building card
             if (manageUid != null) return;   // MANAGE shows just the one structure
             var add = UIFactory.Panel(list, "Add", new Color(1, 1, 1, 0.03f));
-            add.gameObject.AddComponent<Button>().onClick.AddListener(() => Open(MenuTab.Build));
+            add.gameObject.AddComponent<Button>().onClick.AddListener(() => { Close(); BuildPlacement.I.OpenBuild(false); });
             var at = UIFactory.Label(add.transform, "+ BUILD NEW", 32, new Color(1, 1, 1, 0.6f), TextAnchor.MiddleCenter, FontStyle.Bold);
             at.rectTransform.Stretch();
         }

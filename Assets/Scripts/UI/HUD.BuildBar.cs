@@ -5,22 +5,26 @@ using UnityEngine.UI;
 namespace Wildbond
 {
     /// <summary>
-    /// The house build bar (user, 2026-10-28: "easy and functional building a toddler could use ... swap from placing to
-    /// destroying in that ui for placing, not have to go into menu building house then pick it"): while you place a house
-    /// piece or use REMOVE, a strip along the bottom shows REMOVE and every house piece you can build, as pictures. Tap one
-    /// to switch to it at once; the one in hand is lit gold, ones you can't afford are dimmed.
+    /// The build bar (user, 2026-10-28: "easy and functional building a toddler could use ... swap from placing to
+    /// destroying in that ui for placing", then "tapping build should open placing, with an option at top for house or
+    /// camp"): BUILD goes straight into placing, and while placing a strip along the bottom shows, as pictures, either
+    /// REMOVE and every house piece you have the blueprint for (HOUSE) or every camp structure you can build at your level
+    /// (CAMP). HOUSE / CAMP tabs sit on top of it. Tap a picture to switch to it at once; the one in hand is lit gold, ones
+    /// you can't afford are dimmed.
     /// </summary>
     public partial class HUD
     {
         RectTransform buildBar, buildBarContent;
         ScrollRect buildBarScroll;
-        readonly List<(HousePieceDef def, Image bg, Image pic, Text name)> buildChips = new List<(HousePieceDef, Image, Image, Text)>();
+        Image houseTab, campTab;
+        readonly List<(object def, Image bg, Image pic, Text name)> buildChips = new List<(object, Image, Image, Text)>();
         Image removeChip;
         int buildBarStamp = -1;
-        bool buildBarWasOn;
+        bool buildBarWasOn, buildBarHouse;
 
         static readonly Color ChipCol = new Color(0.16f, 0.2f, 0.26f, 0.92f), ChipOn = new Color(0.85f, 0.65f, 0.2f, 0.95f),
-            ChipRemove = new Color(0.55f, 0.24f, 0.22f, 0.92f), ChipRemoveOn = new Color(0.9f, 0.35f, 0.3f, 0.98f);
+            ChipRemove = new Color(0.55f, 0.24f, 0.22f, 0.92f), ChipRemoveOn = new Color(0.9f, 0.35f, 0.3f, 0.98f),
+            TabOn = new Color(0.85f, 0.65f, 0.2f, 0.98f), TabOff = new Color(0.16f, 0.2f, 0.26f, 0.92f);
 
         void BuildBuildBar()
         {
@@ -43,22 +47,47 @@ namespace Wildbond
             buildBarScroll.vertical = false;
             buildBarScroll.movementType = ScrollRect.MovementType.Clamped;
             buildBarScroll.viewport = bg.rectTransform;
+
+            // HOUSE / CAMP tabs on top of the bar's left end
+            houseTab = Tab("HOUSE", 0, () => BuildPlacement.I.OpenBuild(true));
+            campTab = Tab("CAMP", 1, () => BuildPlacement.I.OpenBuild(false));
             buildBar.gameObject.SetActive(false);
         }
 
-        /// <summary>Fills the bar with REMOVE and the pieces you have the blueprint for (again whenever the house changes).</summary>
-        void FillBuildBar()
+        Image Tab(string label, int i, System.Action onTap)
+        {
+            var b = UIFactory.Button(buildBar, label, onTap, TabOff, 24);
+            var img = b.GetComponent<Image>();
+            img.sprite = UIFactory.Rounded; img.type = Image.Type.Sliced;
+            ((RectTransform)b.transform).Place(new Vector2(0, 1), new Vector2(0, 0), new Vector2(10 + i * 168, 6), new Vector2(160, 58));
+            return img;
+        }
+
+        /// <summary>Fills the bar for the mode in hand (again whenever what you can build changes).</summary>
+        void FillBuildBar(bool house)
         {
             foreach (Transform c in buildBarContent) Destroy(c.gameObject);
             buildChips.Clear();
-            removeChip = Chip("REMOVE", null, ChipRemove, () => BuildPlacement.I.BeginRemove());
-            foreach (var d in Housing.Pieces)
+            removeChip = null;
+            if (house)
             {
-                if (Housing.Locked(d)) continue;
-                var dd = d;
-                var bg = Chip(d.name, ItemIcons.Get("hp_" + d.id), ChipCol, () => BuildPlacement.I.BeginPiece(dd));
-                buildChips.Add((d, bg, bg.transform.Find("Pic")?.GetComponent<Image>(), bg.transform.Find("Name")?.GetComponent<Text>()));
+                removeChip = Chip("REMOVE", null, ChipRemove, () => BuildPlacement.I.BeginRemove());
+                foreach (var d in Housing.Pieces)
+                {
+                    if (Housing.Locked(d)) continue;
+                    var dd = d;
+                    var bg = Chip(d.name, ItemIcons.Get("hp_" + d.id), ChipCol, () => BuildPlacement.I.BeginPiece(dd));
+                    buildChips.Add((d, bg, bg.transform.Find("Pic")?.GetComponent<Image>(), bg.transform.Find("Name")?.GetComponent<Text>()));
+                }
             }
+            else
+                foreach (var d in MenuUI.CampBuildable())
+                {
+                    var dd = d;
+                    var bg = Chip(d.displayName, ItemIcons.Get("bld_" + d.id), ChipCol, () => BuildPlacement.I.Begin(dd));
+                    buildChips.Add((d, bg, bg.transform.Find("Pic")?.GetComponent<Image>(), bg.transform.Find("Name")?.GetComponent<Text>()));
+                }
+            buildBarWasOn = false;   // scroll to the one in hand again
         }
 
         Image Chip(string label, Sprite pic, Color col, System.Action onTap)
@@ -93,32 +122,38 @@ namespace Wildbond
         void UpdateBuildBar()
         {
             var bp = BuildPlacement.I;
-            bool on = bp.Active && (bp.Piece != null || bp.Removing);
+            bool on = bp.Active;
             if (buildBar.gameObject.activeSelf != on) buildBar.gameObject.SetActive(on);
             if (!on) { buildBarWasOn = false; return; }
-            // blueprints you find while building show up the next time it is filled
-            int stamp = GameManager.I.Player.Stats.blueprints.Count;
-            if (stamp != buildBarStamp || buildChips.Count == 0) { buildBarStamp = stamp; FillBuildBar(); }
+            bool house = bp.Piece != null || bp.Removing;
+            // refill on a mode switch, or when what you can build changes (a level, research, a blueprint, the camp founded)
+            var st = GameManager.I.Player.Stats;
+            int stamp = (house ? 1 : 0) + 2 * st.blueprints.Count + 1000 * st.level + 100000 * st.techDone.Count + (BaseManager.I.HasBase ? 50000000 : 0);
+            if (stamp != buildBarStamp || house != buildBarHouse || buildChips.Count == 0) { buildBarStamp = stamp; buildBarHouse = house; FillBuildBar(house); }
+            houseTab.color = house ? TabOn : TabOff;
+            campTab.color = house ? TabOff : TabOn;
+            houseTab.gameObject.SetActive(BaseManager.I.HasBase);   // no house before there is a camp
             bool free = WorldRules.Current.freeBuild;
             int picked = -1;
             for (int i = 0; i < buildChips.Count; i++)
             {
                 var c = buildChips[i];
-                bool cur = !bp.Removing && bp.Piece == c.def;
+                bool cur = house ? !bp.Removing && bp.Piece == c.def : bp.Current == c.def;
                 if (cur) picked = i;
-                bool can = free || ItemSources.Has(c.def.cost);
+                var cost = c.def is HousePieceDef hp ? hp.cost : ((BuildingDef)c.def).cost;
+                bool can = free || ItemSources.Has(cost);
                 c.bg.color = cur ? ChipOn : ChipCol;
                 if (c.pic != null) c.pic.color = can ? Color.white : new Color(1f, 1f, 1f, 0.35f);
                 if (c.name != null) c.name.color = can ? Color.white : new Color(1f, 0.6f, 0.55f);
             }
-            removeChip.color = bp.Removing ? ChipRemoveOn : ChipRemove;
-            // on opening, scroll so the piece in hand is in view
+            if (removeChip != null) removeChip.color = bp.Removing ? ChipRemoveOn : ChipRemove;
+            // on opening, scroll so the one in hand is in view
             if (!buildBarWasOn)
             {
                 buildBarWasOn = true;
                 Canvas.ForceUpdateCanvases();
                 float w = buildBarContent.rect.width, view = ((RectTransform)buildBarScroll.viewport).rect.width;
-                float x = picked < 0 ? 0f : 10 + (picked + 1) * 132f;
+                float x = picked < 0 ? 0f : 10 + (picked + (removeChip != null ? 1 : 0)) * 132f;
                 buildBarScroll.horizontalNormalizedPosition = w > view ? Mathf.Clamp01((x - view * 0.4f) / (w - view)) : 0f;
             }
         }

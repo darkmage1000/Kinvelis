@@ -65,8 +65,22 @@ namespace Wildbond
             return null;
         }
 
+        /// <summary>
+        /// Camp structures the build bar offers: the Hearthstone before there is a camp, then everything researched and
+        /// within your level (ones you are short of materials for included), by category then level.
+        /// </summary>
+        public static List<BuildingDef> CampBuildable()
+        {
+            var bm = BaseManager.I;
+            int lvl = GameManager.I.Player.Stats.level;
+            var defs = ContentDB.BuildingList.FindAll(x => x.isCore != bm.HasBase);
+            defs = defs.FindAll(d => { var b = BuildBlock(d, lvl); return b == null || b == "Missing"; });
+            defs.Sort((a, b) => { int c = BuildCatOf(a).CompareTo(BuildCatOf(b)); return c != 0 ? c : a.unlockLevel.CompareTo(b.unlockLevel); });
+            return defs;
+        }
+
         /// <summary>Why this can't be built this moment (null = it can).</summary>
-        static string BuildBlock(BuildingDef d, int level)
+        public static string BuildBlock(BuildingDef d, int level)
         {
             if (!Tech.BuildingUnlocked(d.id)) return "Research";
             if (WorldRules.Current.freeBuild) return null;   // free-building worlds: no level, no cost
