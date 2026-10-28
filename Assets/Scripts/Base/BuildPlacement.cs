@@ -20,7 +20,7 @@ namespace Wildbond
         Housing.Piece removeTarget;
         BaseManager.Site removeSite;
         int turns;
-        public string CurrentName => Removing ? (removeSite != null ? "Cancel " + removeSite.Name + " (all back)" : removeTarget != null ? "Remove " + removeTarget.def.name + " (half back)" : "Remove") : Piece != null ? Piece.name + FloorNote : Current != null ? Current.displayName : "";
+        public string CurrentName => Removing ? (removeSite != null ? "Cancel " + removeSite.Name + " (all back)" : removeTarget != null ? "Remove " + removeTarget.def.name + " (all back)" : "Remove") : Piece != null ? Piece.name + FloorNote : Current != null ? Current.displayName : "";
         /// <summary>For a floor: which storey it goes on, and that ROTATE lifts it.</summary>
         string FloorNote => Piece.kind != HouseKind.Floor ? "" : spot.level > 0 ? $" on storey {spot.level + 1} (ROTATE: higher)" : " (ROTATE: up a storey)";
         public bool Valid { get; private set; }
@@ -62,7 +62,7 @@ namespace Wildbond
         public void BeginPiece(HousePieceDef def)
         {
             if (def == null) return;
-            if (!WorldRules.Current.freeBuild && !ItemSources.Has(def.cost)) { GameEvents.Warn($"Not enough materials for {def.name}."); return; }
+            // a piece you can't afford can still be picked from the build bar: its ghost shows red with "Missing materials"
             Current = null; Removing = false; Piece = def; Active = true;
             ghostMf.sharedMesh = Housing.MeshFor(def);
             ghost.SetActive(true);
@@ -130,7 +130,8 @@ namespace Wildbond
                 var t = removeTarget;
                 string why = h.RemoveBlock(t);
                 if (why != null) { GameEvents.Warn(why); SynthAudio.Play(Sfx.Clunk); return; }
-                if (!free) foreach (var c in t.def.cost) { int n = c.count / 2; if (n > 0) GameManager.I.Player.Stats.Bag.Add(c.itemId, n); }
+                // every material back (user, 2026-10-28: building should be easy - a mistake costs nothing)
+                if (!free) foreach (var c in t.def.cost) { int left = GameManager.I.Player.Stats.Bag.Add(c.itemId, c.count); if (left > 0) BaseManager.I.Storage.Add(c.itemId, left); }
                 Fx.Burst(t.go.transform.position + Vector3.up, new Color(0.8f, 0.65f, 0.45f), 18, 4f, 0.35f, 0.7f);
                 SynthAudio.Play(Sfx.Chop, 0.8f);
                 h.Remove(t);
@@ -149,7 +150,7 @@ namespace Wildbond
             Fx.Burst(s.pos + Vector3.up * 0.5f, new Color(0.95f, 0.85f, 0.6f), 16, 4f, 0.35f, 0.6f);
             SynthAudio.Play(Sfx.Build, 1.15f);
             GameManager.I.AddPlayerXp(2);
-            if (!free && !ItemSources.Has(Piece.cost)) { GameEvents.Say($"Out of materials for another {Piece.name}."); Cancel(); }
+            if (!free && !ItemSources.Has(Piece.cost)) GameEvents.Say($"Out of materials for another {Piece.name} - pick another piece below, or DONE.");
         }
 
         public void Begin(BuildingDef def)

@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 
 namespace Wildbond
 {
-    [Serializable] public class SiteSave { public string defId, pieceId; public float x, y, z, rotY, done, depth; public int cx, cz, side, rot, level; }
+    [Serializable] public class SiteSave { public string defId, pieceId; public float x, y, z, rotY, done, depth; public int cx, cz, side, rot, level; public bool lid; }
 
     /// <summary>
     /// Construction (user, 2026-10-14: "crafting kin could be used to help build placed pieces like palworld"). Placing a
@@ -294,7 +294,7 @@ namespace Wildbond
             var l = new List<SiteSave>();
             foreach (var s in Sites)
                 l.Add(new SiteSave { defId = s.def != null ? s.def.id : null, pieceId = s.piece != null ? s.piece.id : null, x = s.pos.x, y = s.pos.y, z = s.pos.z, rotY = s.rotY, done = s.done,
-                    cx = s.spot.cx, cz = s.spot.cz, side = s.spot.side, rot = s.spot.rot, level = s.spot.level, depth = s.spot.depth });
+                    cx = s.spot.cx, cz = s.spot.cz, side = s.spot.side, rot = s.spot.rot, level = s.spot.level, depth = s.spot.depth, lid = s.piece != null && Housing.IsLid(s.piece) });
             return l;
         }
 
@@ -311,6 +311,8 @@ namespace Wildbond
                     if (piece == null) continue;
                     var spot = new Housing.Spot { ok = true, cx = v.cx, cz = v.cz, side = v.side, rot = v.rot, level = v.level, pos = new Vector3(v.x, v.y, v.z), depth = v.depth,
                         q = Quaternion.Euler(0f, v.rotY, 0f) };
+                    // a flat roof / ceiling site from before they were floors: move it to the storey it reaches, or give it back
+                    if (Housing.IsLid(piece) && !v.lid && !Housing.I.MigrateLidSite(ref spot)) { foreach (var c in piece.cost) Storage.Add(c.itemId, c.count); continue; }
                     s = StartSite(piece, spot);
                 }
                 if (s != null) { s.done = Mathf.Min(v.done, s.need * 0.99f); ShowProgress(s); }

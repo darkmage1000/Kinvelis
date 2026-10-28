@@ -7,7 +7,8 @@ namespace Wildbond
 {
     public enum HouseKind { Floor, Wall, Doorway, Window, Roof, RoofSlope, Furniture, Stairs, Steps }
 
-    [Serializable] public class HouseSave { public string id; public int cx, cz, side, rot, level; public float x, y, z; }
+    /// <summary>`lid` = saved as a floor-type Flat Roof / Flat Ceiling; older saves stored those as roofs over their top floor.</summary>
+    [Serializable] public class HouseSave { public string id; public int cx, cz, side, rot, level; public float x, y, z; public bool lid; }
 
     public class HousePieceDef
     {
@@ -84,8 +85,10 @@ namespace Wildbond
             new HousePieceDef { id = "house_arch_great", name = "Great Archway", kind = HouseKind.Doorway, gap = 2.7f, tall = true, span = 3, cost = C(("wood", 24), ("stone", 26), ("ingot", 4)), desc = "An arch three storeys tall for the very biggest kin - the legendaries stand up under it. Stack walls three high beside it and lay a Flat Ceiling over the hall." },
             new HousePieceDef { id = "house_railing", name = "Wooden Railing", kind = HouseKind.Wall, style = "railing", cost = C(("wood", 3)), desc = "A waist-high rail along an edge: closes the open sides of a balcony or a landing so nobody walks off." },
             new HousePieceDef { id = "house_window", name = "Window Wall", kind = HouseKind.Window, cost = C(("wood", 6), ("fiber", 2)), desc = "A wall with a window in it." },
-            new HousePieceDef { id = "house_roof", name = "Flat Roof", kind = HouseKind.Roof, cost = C(("wood", 6), ("fiber", 4)), desc = "A roof over the top floor of one square. A bed needs a roof (or a floor) over it to sleep in." },
-            new HousePieceDef { id = "house_ceiling", name = "Flat Ceiling", kind = HouseKind.Roof, style = "ceiling", cost = C(("wood", 6)), desc = "A flat plank ceiling with beams under it. It goes up to the top of the room's walls however high you stacked them, so laid over every square of a room it makes one flat ceiling." },
+            // flat roofs and ceilings are floors of the storey above (user, 2026-10-28: "why can't I walk on ceilings?"): you can
+            // walk on them, build walls and furniture on them, and stairs arrive on them; they snap to the top of the room
+            new HousePieceDef { id = "house_roof", name = "Flat Roof", kind = HouseKind.Floor, style = "roof", cost = C(("wood", 6), ("fiber", 4)), desc = "A flat roof over a room, at the top of its walls. You can walk on it and build on it - it is the floor of the next storey. A bed needs a roof (or a floor) over it to sleep in." },
+            new HousePieceDef { id = "house_ceiling", name = "Flat Ceiling", kind = HouseKind.Floor, style = "ceiling", cost = C(("wood", 6)), desc = "A flat plank ceiling with beams under it, at the top of the room's walls however high you stacked them. Walk on it and build on it: it is the floor of the storey above." },
             new HousePieceDef { id = "house_roof_slope", name = "Sloped Roof", kind = HouseKind.RoofSlope, cost = C(("wood", 6), ("fiber", 4)), desc = "A roof that slopes one way (ROTATE turns it). Two back to back make a ridge." },
             new HousePieceDef { id = "house_stairs", name = "Wooden Stairs", kind = HouseKind.Stairs, cost = C(("wood", 14), ("stone", 2)), desc = "Stairs up one storey, on a floor; they climb the way you face (ROTATE turns them). Lay floors beside the top for an upstairs. Camp kin use them too." },
             new HousePieceDef { id = "house_steps", name = "Porch Steps", kind = HouseKind.Steps, cost = C(("wood", 6), ("stone", 4)), desc = "Steps up to the floor on the outside of an edge, as long as the ground needs - put them by a door where the floor sits high." },
@@ -337,9 +340,14 @@ namespace Wildbond
                 case HouseKind.Floor:
                 {
                     var c = CellCenter(cx, cz);
-                    // the first storey up from yours with no floor yet: lay it on the ground, or over the floor below
-                    int L = lv;
+                    // the first storey up from yours with no floor yet: lay it on the ground, or over the floor below;
+                    // a flat roof / ceiling goes on top of the room instead (LidStorey)
+                    bool lid = IsLid(def);
+                    float lidY = 0f; bool overRoom = false;
+                    int L = lid ? LidStorey(cx, cz, lv, out lidY, out overRoom) : lv;
+                    int L0 = L;
                     while (L <= MaxLevel && FloorOrSite(cx, cz, L, out _)) L++;
+                    if (L != L0) overRoom = false;
                     // ROTATE lifts it: each press one free storey higher, back round to the first (so a floor for the
                     // storey above can be laid from the ground, out over open air)
                     if (s.rot > 0 && L <= MaxLevel)
@@ -354,6 +362,7 @@ namespace Wildbond
                         s.level = Mathf.Min(L, MaxLevel);
                         // held up by a floor or the walls under it, or touching another floor at this storey (Housing.Balcony)
                         bool held = HeldFromBelow(cx, cz, s.level, out float hy);
+                        if (!held && lid && overRoom && s.level == L0) { held = true; hy = lidY; }   // the top of the room's walls
                         bool balcony = !held && Overhang(cx, cz, s.level, out hy);
                         s.pos = new Vector3(c.x, held || balcony ? hy : WorldGen.Height(c.x, c.z) + LevelH * s.level, c.z); s.q = Quaternion.identity; s.depth = UpperDepth;
                         if (s.reason != null) break;
@@ -515,6 +524,56 @@ namespace Wildbond
         /// same top storey reached from it without crossing a wall, doorway or window - so a tall hall gets one flat
         /// ceiling, middle squares included. A room with no stacked walls: one storey up, as before.
         /// </summary>
+        /// <summary>A Flat Roof or Flat Ceiling: a floor that goes on top of a room.</summary>
+        public static bool IsLid(HousePieceDef d) => d != null && d.kind == HouseKind.Floor && (d.style == "roof" || d.style == "ceiling");
+        bool IsLidAt(int cx, int cz, int l) => floors.TryGetValue(LKey(cx, cz, l), out var f) && IsLid(f.def);
+
+        /// <summary>
+        /// The storey a lid goes on over this square: the top of the room's walls over its top floor (however high they
+        /// are stacked), or a lid already on a square beside it if that is higher (so the middle of a tall hall matches
+        /// its edges), else the storey above yours. y = its height when it sits on the room.
+        /// </summary>
+        int LidStorey(int cx, int cz, int lv, out float y, out bool overRoom)
+        {
+            int top = TopFloor(cx, cz);
+            int L = lv + 1; y = 0f; overRoom = false;
+            if (top >= 0 && FloorOrSite(cx, cz, top, out float topY))
+            {
+                float ry = RoomRoofY(cx, cz, top, topY);
+                L = top + Mathf.Max(1, Mathf.RoundToInt((ry - topY) / LevelH));
+                y = topY + (L - top) * LevelH; overRoom = true;
+            }
+            for (int k = 0; k < 4; k++)
+                for (int l = MaxLevel; l > L; l--)
+                    if (IsLidAt(cx + DX[k], cz + DZ[k], l) && floors.TryGetValue(LKey(cx + DX[k], cz + DZ[k], l), out var n)) { L = l; y = n.Y; overRoom = true; break; }
+            return Mathf.Min(L, MaxLevel + 1);
+        }
+
+        /// <summary>
+        /// Saves from before 2026-10-28 kept a Flat Roof / Ceiling as a roof over its top floor at the room's roof height.
+        /// It becomes the floor of the storey that height reaches (false = no room for it, it is dropped).
+        /// </summary>
+        bool OldRoofToLid(int cx, int cz, float roofY, out int level, out float y)
+        {
+            level = 0; y = roofY;
+            for (int l = MaxLevel; l >= 0; l--)
+                if (floors.TryGetValue(LKey(cx, cz, l), out var f) && f.Y < roofY - 1f)
+                {
+                    level = l + Mathf.Max(1, Mathf.RoundToInt((roofY - f.Y) / LevelH));
+                    y = f.Y + (level - l) * LevelH;
+                    return level <= MaxLevel && !floors.ContainsKey(LKey(cx, cz, level));
+                }
+            return false;
+        }
+
+        /// <summary>For a construction site saved before lids were floors: where it goes now (false = drop it).</summary>
+        public bool MigrateLidSite(ref Spot s)
+        {
+            if (!OldRoofToLid(s.cx, s.cz, s.pos.y, out int level, out float y)) return false;
+            s.level = level; s.pos.y = y; s.depth = UpperDepth; s.q = Quaternion.identity; s.rot = 0;
+            return true;
+        }
+
         float RoomRoofY(int cx, int cz, int top, float topY)
         {
             float y = topY + WallH;
@@ -916,7 +975,7 @@ namespace Wildbond
         public List<HouseSave> Save()
         {
             var l = new List<HouseSave>();
-            void Add(Piece p) => l.Add(new HouseSave { id = p.def.id, cx = p.cx, cz = p.cz, side = p.side, rot = p.rot, level = p.level, x = p.pos.x, y = p.pos.y, z = p.pos.z });
+            void Add(Piece p) => l.Add(new HouseSave { id = p.def.id, cx = p.cx, cz = p.cz, side = p.side, rot = p.rot, level = p.level, x = p.pos.x, y = p.pos.y, z = p.pos.z, lid = IsLid(p.def) });
             foreach (var p in floors.Values) Add(p);
             for (int s = 0; s < 2; s++) foreach (var p in edges[s].Values) Add(p);
             foreach (var p in stairs.Values) Add(p);
@@ -929,14 +988,24 @@ namespace Wildbond
         public void Load(List<HouseSave> list)
         {
             if (list == null) return;
-            // floors first, storey by storey: everything else stands on them
-            for (int pass = 0; pass <= MaxLevel + 1; pass++)
+            // floors first, storey by storey: everything else stands on them. A flat roof / ceiling from an older save
+            // (stored as a roof) becomes a floor once the real floors are down (OldRoofToLid), before the rest
+            for (int pass = 0; pass <= MaxLevel + 2; pass++)
                 foreach (var s in list)
                 {
                     var def = Def(s.id);
                     if (def == null) continue;
-                    bool floor = def.kind == HouseKind.Floor;
-                    if (pass <= MaxLevel ? !(floor && s.level == pass) : floor) continue;
+                    bool oldLid = IsLid(def) && !s.lid;
+                    bool floor = def.kind == HouseKind.Floor && !oldLid;
+                    if (pass <= MaxLevel ? !(floor && s.level == pass) : pass == MaxLevel + 1 ? !oldLid : floor || oldLid) continue;
+                    if (oldLid)
+                    {
+                        if (!OldRoofToLid(s.cx, s.cz, s.y, out int lvl, out float ly)) continue;
+                        var lc = new Piece { def = def, cx = s.cx, cz = s.cz, level = lvl, pos = new Vector3(s.x, ly, s.z) };
+                        Build(lc, UpperDepth);
+                        Register(lc);
+                        continue;
+                    }
                     var pc = new Piece { def = def, cx = s.cx, cz = s.cz, side = s.side, rot = s.rot, level = s.level, pos = new Vector3(s.x, s.y, s.z) };
                     float depth = UpperDepth;
                     if (floor && s.level == 0)
@@ -968,6 +1037,16 @@ namespace Wildbond
             float h = Cell, half = Cell * 0.5f;
             switch (def.kind)
             {
+                case HouseKind.Floor when def.style == "ceiling":
+                    // flush with its neighbours: planks on top (their top is the floor), beams underneath
+                    mb.Box(M(new Vector3(0, -0.06f, 0), new Vector3(h + 0.02f, 0.12f, h + 0.02f)), PlankDark, Plank);
+                    for (int i = 0; i < 3; i++) mb.Box(M(new Vector3(-h * 0.5f + 0.5f + i, -0.19f, 0), new Vector3(0.16f, 0.16f, h)), Post);
+                    mb.Box(M(new Vector3(0, -0.16f, 0), new Vector3(h, 0.1f, 0.12f)), PlankDark);
+                    break;
+                case HouseKind.Floor when def.style == "roof":
+                    mb.Box(M(new Vector3(0, -0.1f, 0), new Vector3(h + 0.3f, 0.2f, h + 0.3f)), Shingle, Thatch);
+                    mb.Box(M(new Vector3(0, -0.26f, 0), new Vector3(h + 0.1f, 0.12f, h + 0.1f)), PlankDark);
+                    break;
                 case HouseKind.Floor:
                     mb.Box(M(new Vector3(0, -0.12f - depth * 0.5f, 0), new Vector3(h - 0.06f, depth, h - 0.06f)), StoneDark, StoneC);
                     if (def.style == "sandstone")

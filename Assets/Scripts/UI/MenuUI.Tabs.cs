@@ -647,8 +647,8 @@ namespace Wildbond
         /// <summary>BUILD > HOUSE: floors, walls, doorways, windows, roofs and furniture (Housing), plus the REMOVE tool.</summary>
         void BuildHouseList(RectTransform list)
         {
-            Para(list, "Your house goes inside the camp ring, a 3 m square at a time. Lay <b>floors</b> first, then walls, doorways and windows along their edges (stand facing the edge; ROTATE steps round the square), then <b>roofs</b>. Furniture goes on floors. A <b>Bed</b> with a roof over it lets you sleep through the night.", 21);
-            UIFactory.Size(UIFactory.Button(list, "REMOVE A PIECE  (half the materials back)", () => { Close(); BuildPlacement.I.BeginRemove(); }, new Color(0.5f, 0.3f, 0.28f), 22), 64);
+            Para(list, "Your house goes inside the camp ring, a 3 m square at a time. Lay <b>floors</b> first, then walls, doorways and windows along their edges (stand facing the edge; ROTATE steps round the square), then a <b>Flat Roof</b> or <b>Flat Ceiling</b> on top - you can walk on those and build the next storey on them. Furniture goes on floors. A <b>Bed</b> with a roof over it lets you sleep through the night. While building, the bar at the bottom switches pieces and has REMOVE, so you never need to come back here.", 21);
+            UIFactory.Size(UIFactory.Button(list, "REMOVE A PIECE  (all the materials back)", () => { Close(); BuildPlacement.I.BeginRemove(); }, new Color(0.5f, 0.3f, 0.28f), 22), 64);
             // structure first, then furniture, then kin play pieces; blueprint pieces you haven't found are shown greyed with where to look
             string[] heads = { "Structure", "Furniture", "Kin play  <size=20>(idle camp kin play here and come back relaxed: +25% work for 5 minutes)</size>" };
             for (int grp = 0; grp < 3; grp++)

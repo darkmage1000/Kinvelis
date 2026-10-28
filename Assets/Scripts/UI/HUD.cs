@@ -412,9 +412,13 @@ namespace Wildbond
             placeCluster.Stretch();
             RoundButton(placeCluster, "PLACE", Btn.Confirm, new Vector2(-200, 200), 190, new Color(0.3f, 0.75f, 0.4f, 0.85f), out _, 30);
             RoundButton(placeCluster, "ROTATE", Btn.Rotate, new Vector2(-400, 170), 130, new Color(0.3f, 0.45f, 0.8f, 0.85f), out _, 22);
-            RoundButton(placeCluster, "CANCEL", Btn.Cancel, new Vector2(-150, 400), 120, new Color(0.7f, 0.3f, 0.3f, 0.85f), out _, 20);
+            // JUMP stays where it always is, so you can hop up onto what you are building
+            RoundButton(placeCluster, "JUMP", Btn.Jump, new Vector2(-110, 420), 120, new Color(0.2f, 0.24f, 0.3f, 0.75f), out _, 22);
+            RoundButton(placeCluster, "DONE", Btn.Cancel, new Vector2(-310, 410), 112, new Color(0.7f, 0.3f, 0.3f, 0.85f), out _, 20);
             placeReason = UIFactory.Label(placeCluster, "", 30, Color.white, TextAnchor.MiddleCenter, FontStyle.Bold);
-            placeReason.rectTransform.Place(new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 140), new Vector2(900, 50));
+            placeReason.rectTransform.Place(new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(-60, 182), new Vector2(940, 50));
+            var sh = placeReason.gameObject.AddComponent<Shadow>(); sh.effectColor = new Color(0f, 0f, 0f, 0.85f); sh.effectDistance = new Vector2(2f, -2f);
+            BuildBuildBar();
             placeCluster.gameObject.SetActive(false);
         }
 
@@ -728,13 +732,18 @@ namespace Wildbond
         void UpdateActions(GameManager gm, PlayerController pl)
         {
             bool placing = BuildPlacement.I.Active;
-            if (placeCluster.gameObject.activeSelf != placing) placeCluster.gameObject.SetActive(placing);
+            if (placeCluster.gameObject.activeSelf != placing)
+            {
+                placeCluster.gameObject.SetActive(placing);
+                if (hotbarRoot != null) hotbarRoot.gameObject.SetActive(!placing && !WorldRules.Current.simpleControls);   // the build bar takes its place
+            }
             if (actionCluster.gameObject.activeSelf == placing) actionCluster.gameObject.SetActive(!placing);
             if (placing)
             {
                 var bp = BuildPlacement.I;
                 placeReason.text = bp.Valid ? UIFactory.Col(bp.Removing ? bp.CurrentName : $"Place {bp.CurrentName}", bp.Removing ? new Color(1f, 0.7f, 0.6f) : new Color(0.6f, 1f, 0.6f)) : UIFactory.Col(bp.Reason ?? "", new Color(1f, 0.55f, 0.45f));
                 placeReason.supportRichText = true;
+                UpdateBuildBar();
                 return;
             }
             var seed = gm.Capture.SelectedSeed(pl.Stats);

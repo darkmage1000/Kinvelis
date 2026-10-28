@@ -107,6 +107,13 @@ namespace Wildbond
             }
             foreach (var bd in ContentDB.BuildingList)
                 if (!sprites.ContainsKey("bld_" + bd.id)) jobs.Add(("bld_" + bd.id, ModelBuilder.BuildStatic(bd.parts, bd.palette, "bldicon_" + bd.id), false));
+            // house pieces (key "hp_<id>"): the build bar on the placing screen shows them
+            foreach (var hp in Housing.Pieces)
+            {
+                if (sprites.ContainsKey("hp_" + hp.id)) continue;
+                var hm = Housing.MeshFor(hp);
+                if (hm != null && hm.vertexCount > 0) jobs.Add(("hp_" + hp.id, hm, false));
+            }
             foreach (var sp in ContentDB.SpeciesList)
                 if (sp.parts != null && sp.parts.Length > 0 && !sprites.ContainsKey("kin_" + sp.id))
                     jobs.Add(("kin_" + sp.id, ModelBuilder.BuildStatic(sp.parts, sp.palette, "kinicon_" + sp.id), false));
