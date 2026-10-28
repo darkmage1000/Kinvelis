@@ -700,6 +700,15 @@ namespace Wildbond
                     Vector2 m = new Vector2(pc.pos.x, pc.pos.z), a = m - dir * Cell * 0.5f, b = m + dir * Cell * 0.5f;
                     // blocks from a little under its floor (the ground floor: well under, for slopes) to just under the floor above
                     float lo = pc.Y - (pc.level == 0 ? 2f : 0.6f), hi = PieceTop(pc) - 0.25f;
+                    // a wall under the top of a flight of stairs (the stairs arrive over it): it only blocks up to where the
+                    // steps pass over it, so feet on the last steps clear it (user, 2026-10-28: "I have to jump from the top
+                    // of the stairs to the 2nd floor"); the space under the steps is closed by the flight's own sides
+                    foreach (var st in stairs.Values)
+                    {
+                        if (st.level != pc.level) continue;
+                        EdgeOf(st.cx, st.cz, st.rot, out int tx, out int tz, out int tside);
+                        if (tx == pc.cx && tz == pc.cz && tside == pc.side) hi = Mathf.Min(hi, st.Y + LevelH - 1.25f);
+                    }
                     int nx = side == 1 ? pc.cx + 1 : pc.cx, nz = side == 0 ? pc.cz + 1 : pc.cz;
                     foreach (var k in new[] { Key(pc.cx, pc.cz), Key(nx, nz) })
                     {
